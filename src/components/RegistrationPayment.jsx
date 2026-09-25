@@ -74,8 +74,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
       qrCanvasRef.current,
       upiString,
       {
-        width: 200,
-        margin: 1.5,
+        width: 170,
+        margin: 1,
         color: {
           dark: '#0f172a',
           light: '#ffffff'
@@ -226,10 +226,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch max-w-6xl mx-auto">
         
-        {/* LEFT COLUMN: Student Details Form (7 cols) */}
-        <div className="lg:col-span-7 rounded-3xl p-6 sm:p-8 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.1)]">
+        {/* LEFT COLUMN: Student Details Form (50% Width) */}
+        <div className="flex flex-col justify-between rounded-3xl p-6 sm:p-8 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.1)] h-full">
           <div className="flex items-center justify-between pb-6 mb-6 border-b border-white/10">
             <div>
               <span className="text-xs font-outfit font-extrabold text-cyan-300 uppercase tracking-wider">STEP 1 OF 2</span>
@@ -240,7 +240,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col justify-between">
             {/* Full Name */}
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
@@ -380,67 +380,74 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 />
               </div>
             </div>
+            {/* Minting Guarantee Pill */}
+            <div className="mt-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3 text-xs text-slate-300">
+              <ShieldCheck className="w-5 h-5 text-cyber-cyan shrink-0" />
+              <span>Your details will be cryptographically minted onto your personalized 3D VIP Pass.</span>
+            </div>
           </form>
         </div>
 
-        {/* RIGHT COLUMN: Dynamic UPI Payment Gateway (5 cols) */}
-        <div className="lg:col-span-5 rounded-3xl p-6 sm:p-8 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(168,85,247,0.1)] relative overflow-hidden">
+        {/* RIGHT COLUMN: Dynamic UPI Payment Gateway (50% Width) */}
+        <div className="flex flex-col justify-between rounded-3xl p-6 sm:p-8 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(168,85,247,0.1)] relative overflow-hidden h-full">
           
-          <div className="flex items-center justify-between pb-6 mb-6 border-b border-white/10">
-            <div>
-              <span className="text-xs font-outfit font-extrabold text-amber-300 uppercase tracking-wider">STEP 2 OF 2</span>
-              <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">UPI Payment</h3>
-            </div>
-            <div className="w-10 h-10 rounded-xl bg-amber-500/25 border border-amber-500/40 flex items-center justify-center text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
-              <CreditCard className="w-5 h-5" />
-            </div>
-          </div>
-
-          {/* Pricing Banner */}
-          <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-cyber-violet/20 via-obsidian-900 to-cyber-cyan/20 border border-white/15 flex items-center justify-between">
-            <div>
-              <div className="text-xs font-mono text-slate-400">JUNIOR VIP PASS FEE</div>
-              <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="font-outfit font-extrabold text-3xl text-white">₹{EVENT_DETAILS.ticketPrice}</span>
-                <span className="text-xs text-slate-400 line-through">₹799</span>
-                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                  EARLY BIRD (50% OFF)
-                </span>
+          <div>
+            <div className="flex items-center justify-between pb-6 mb-5 border-b border-white/10">
+              <div>
+                <span className="text-xs font-outfit font-extrabold text-amber-300 uppercase tracking-wider">STEP 2 OF 2</span>
+                <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">UPI Payment</h3>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-amber-500/25 border border-amber-500/40 flex items-center justify-center text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+                <CreditCard className="w-5 h-5" />
               </div>
             </div>
-          </div>
 
-          {/* Dynamic QR Code Scanner Container */}
-          <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-white/5 border border-white/10 mb-6 text-center relative group">
-            <div className="p-3 bg-white rounded-2xl shadow-2xl relative">
-              <canvas ref={qrCanvasRef} className="rounded-lg max-w-full block" />
-              {/* Center Hologram Icon */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-9 h-9 rounded-lg bg-obsidian-950 border border-cyber-cyan flex items-center justify-center shadow-lg">
-                  <Sparkles className="w-5 h-5 text-cyber-cyan animate-pulse" />
+            {/* Pricing Banner */}
+            <div className="mb-4 p-3.5 rounded-2xl bg-gradient-to-r from-cyber-violet/20 via-obsidian-900 to-cyber-cyan/20 border border-white/15 flex items-center justify-between">
+              <div>
+                <div className="text-xs font-mono text-slate-400">JUNIOR VIP PASS FEE</div>
+                <div className="flex items-baseline gap-2 mt-0.5">
+                  <span className="font-outfit font-extrabold text-3xl text-white">₹{EVENT_DETAILS.ticketPrice}</span>
+                  <span className="text-xs text-slate-400 line-through">₹799</span>
+                  <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    EARLY BIRD (50% OFF)
+                  </span>
                 </div>
               </div>
             </div>
 
-            <p className="mt-3 text-xs font-semibold text-white flex items-center gap-1.5">
-              <Smartphone className="w-3.5 h-3.5 text-cyber-cyan" />
-              <span>Scan with any UPI App</span>
-            </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              Google Pay • PhonePe • Paytm • BHIM • CRED
-            </p>
+            {/* Dynamic QR Code Scanner Container */}
+            <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 mb-4 text-center relative group">
+              <div className="p-2.5 bg-white rounded-2xl shadow-2xl relative">
+                <canvas ref={qrCanvasRef} className="rounded-lg max-w-full block" />
+                {/* Center Hologram Icon */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-8 h-8 rounded-lg bg-obsidian-950 border border-cyber-cyan flex items-center justify-center shadow-lg">
+                    <Sparkles className="w-4 h-4 text-cyber-cyan animate-pulse" />
+                  </div>
+                </div>
+              </div>
 
-            {/* Official UPI ID Copy Widget */}
-            <div className="mt-4 flex items-center gap-2 w-full max-w-xs bg-obsidian-950/80 px-3 py-2 rounded-xl border border-white/10 text-xs">
-              <span className="font-mono text-slate-300 truncate flex-1">{EVENT_DETAILS.upiId}</span>
-              <button
-                type="button"
-                onClick={() => copyToClipboard(EVENT_DETAILS.upiId)}
-                className="p-1.5 rounded-lg bg-white/10 hover:bg-cyber-cyan/20 text-slate-200 hover:text-cyber-cyan transition-colors"
-                title="Copy UPI ID"
-              >
-                {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              </button>
+              <p className="mt-2.5 text-xs font-semibold text-white flex items-center gap-1.5">
+                <Smartphone className="w-3.5 h-3.5 text-cyber-cyan" />
+                <span>Scan with any UPI App</span>
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Google Pay • PhonePe • Paytm • BHIM • CRED
+              </p>
+
+              {/* Official UPI ID Copy Widget */}
+              <div className="mt-3 flex items-center gap-2 w-full max-w-xs bg-obsidian-950/80 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+                <span className="font-mono text-slate-300 truncate flex-1">{EVENT_DETAILS.upiId}</span>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(EVENT_DETAILS.upiId)}
+                  className="p-1.5 rounded-lg bg-white/10 hover:bg-cyber-cyan/20 text-slate-200 hover:text-cyber-cyan transition-colors"
+                  title="Copy UPI ID"
+                >
+                  {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -470,7 +477,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 Payment Screenshot (Optional / Instant Verification)
               </label>
               <div className="relative">
-                <label className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl border border-dashed border-white/20 hover:border-cyber-cyan/60 bg-white/5 hover:bg-white/10 cursor-pointer transition-all">
+                <label className="flex items-center justify-center gap-3 w-full py-2.5 px-4 rounded-xl border border-dashed border-white/20 hover:border-cyber-cyan/60 bg-white/5 hover:bg-white/10 cursor-pointer transition-all">
                   <Upload className="w-4 h-4 text-cyber-cyan" />
                   <span className="text-xs text-slate-300 truncate">
                     {screenshotPreview ? 'Screenshot Attached ✓' : 'Upload Receipt / Slip'}
@@ -494,12 +501,12 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
 
             {/* Verify & Generate Pass CTA Button */}
-            <div className="pt-2">
+            <div className="pt-1">
               <button
                 type="button"
                 onClick={handleSubmit}
                 disabled={isVerifying}
-                className={`w-full py-4 rounded-2xl font-outfit font-bold text-sm tracking-wider flex items-center justify-center gap-2 border transition-all duration-300 ${
+                className={`w-full py-3.5 rounded-2xl font-outfit font-bold text-sm tracking-wider flex items-center justify-center gap-2 border transition-all duration-300 ${
                   isVerifying
                     ? 'bg-cyber-violet/40 border-cyber-violet/60 text-slate-300 cursor-wait'
                     : 'bg-gradient-to-r from-cyber-cyan via-purple-600 to-cyber-violet text-white hover:shadow-neon-violet hover:scale-[1.02] active:scale-95 border-white/20'
@@ -525,7 +532,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
 
             {/* Security Guarantee Note */}
-            <p className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1 pt-1">
+            <p className="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-cyber-cyan" />
               <span>Official Student Council Verified • Instant Ticket Download</span>
             </p>
