@@ -338,20 +338,6 @@ export default function Background() {
     };
   }, [spawnBeatWave]);
 
-  // Click anywhere on page to trigger concert beat drop celebration
-  const handlePageClick = useCallback((e) => {
-    if (window.innerWidth < 768) return;
-    if (e.target && e.target.closest('button, a, input, [role="button"], select, textarea')) {
-      return;
-    }
-    triggerConcertBeat(e.clientX, e.clientY);
-  }, [triggerConcertBeat]);
-
-  useEffect(() => {
-    window.addEventListener('pointerdown', handlePageClick);
-    return () => window.removeEventListener('pointerdown', handlePageClick);
-  }, [handlePageClick]);
-
   return (
     <>
       {/* 1. Desktop & Mobile Background Image */}

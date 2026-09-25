@@ -787,26 +787,6 @@ export default function ThreeCanvas() {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Interactive Click on Canvas triggers Precision Lightning Strike
-    const handlePointerDown = (e) => {
-      if (e.target && e.target.closest('button, a, input, [role="button"], aside, nav, main')) {
-        return;
-      }
-      // Calculate 3D target coordinates from click
-      const rect = renderer.domElement.getBoundingClientRect();
-      const ndcX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const ndcY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-      const clickVector = new THREE.Vector3(ndcX, ndcY, 0.5);
-      clickVector.unproject(camera);
-      clickVector.sub(camera.position).normalize();
-      const dist = (0 - camera.position.z) / clickVector.z;
-      const worldClickPos = camera.position.clone().add(clickVector.multiplyScalar(dist));
-
-      triggerLightningStrike(worldClickPos);
-    };
-    window.addEventListener('pointerdown', handlePointerDown);
-
     // Audio status check
     const audioInterval = setInterval(() => {
       setIsAudioActive(!!soundController.isPlaying);
@@ -1001,7 +981,6 @@ export default function ThreeCanvas() {
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('pointerdown', handlePointerDown);
       window.removeEventListener('resize', handleResize);
       clearInterval(audioInterval);
       cancelAnimationFrame(animationFrameId);
