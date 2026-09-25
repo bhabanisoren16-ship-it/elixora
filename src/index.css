@@ -1,0 +1,358 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Lazy Dog';
+  src: url('/fonts/lazydog_khurasan.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LazyDog';
+  src: url('/fonts/lazydog_khurasan.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #06070f;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8b5cf6, #06b6d4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #a855f7, #22d3ee);
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(12, 14, 27, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-card-glow {
+  background: rgba(10, 12, 22, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.glass-card-cyan {
+  background: rgba(10, 12, 22, 0.2);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.glass-card-gold {
+  background: rgba(10, 12, 22, 0.2);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+/* 3D Transform Utilities for Holographic Pass */
+.perspective-1000 {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Holographic Rainbow Foil Sheen */
+.holographic-foil {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 128, 0.25) 0%,
+    rgba(0, 242, 254, 0.3) 25%,
+    rgba(251, 191, 36, 0.25) 50%,
+    rgba(139, 92, 246, 0.35) 75%,
+    rgba(255, 0, 128, 0.25) 100%
+  );
+  background-size: 300% 300%;
+  mix-blend-mode: color-dodge;
+  pointer-events: none;
+}
+
+/* Animated Neon Gradient Border */
+.neon-border-animated {
+  position: relative;
+}
+.neon-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg, #8b5cf6, #06b6d4, #ec4899, #fbbf24, #8b5cf6);
+  background-size: 300% 300%;
+  animation: borderRotate 4s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes borderRotate {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Cyber Grid Background lines */
+.cyber-grid {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ==========================================================================
+   METALLIC CHROME & LIQUID METAL TYPOGRAPHY STYLES
+   ========================================================================== */
+
+/* 1. Hyper Titanium & Desert Chrome (Platinum sky reflecting warm stage lights) */
+.metallic-titanium {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f1f5f9 16%,
+    #94a3b8 32%,
+    #e2e8f0 44%,
+    #ffffff 48.5%,
+    #140c04 50%,
+    #3e1f07 53%,
+    #8c4f08 65%,
+    #e6a817 78%,
+    #fef3c7 89%,
+    #ffffff 94%,
+    #783c08 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  letter-spacing: 0.03em;
+  filter: 
+    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.95))
+    drop-shadow(0 2px 0 #180d04)
+    drop-shadow(0 4px 2px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 8px 25px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 0 35px rgba(245, 158, 11, 0.5));
+}
+
+/* 2. Cyber Gold (Molten 24K Gold & Polished Brass Specular Metal) */
+.metallic-gold {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #fffbeb 14%,
+    #fef08a 28%,
+    #f59e0b 44%,
+    #ffffff 48.5%,
+    #271202 50%,
+    #451a03 53%,
+    #92400e 65%,
+    #f59e0b 78%,
+    #fde047 89%,
+    #ffffff 94%,
+    #78350f 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  letter-spacing: 0.03em;
+  filter: 
+    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.95))
+    drop-shadow(0 2px 0 #210c01)
+    drop-shadow(0 4px 2px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 8px 25px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 0 35px rgba(251, 191, 36, 0.6));
+}
+
+/* 3. Cyber Chrome (Pure Liquid Platinum & Silver Horizon Metal) */
+.metallic-chrome {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f8fafc 15%,
+    #cbd5e1 32%,
+    #e2e8f0 44%,
+    #ffffff 48.5%,
+    #090d16 50%,
+    #131a2a 53%,
+    #334155 64%,
+    #64748b 76%,
+    #cbd5e1 88%,
+    #ffffff 94%,
+    #475569 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  letter-spacing: 0.03em;
+  filter: 
+    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.95))
+    drop-shadow(0 2px 0 #050811)
+    drop-shadow(0 4px 2px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 8px 25px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 0 35px rgba(0, 242, 254, 0.45));
+}
+
+/* ==========================================================================
+   SATURDAY NIGHT STYLE: HOT PINK SLICED GLITCH & WHITE SCRIPT
+   ========================================================================== */
+
+.rave-pink-container {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+}
+
+.rave-pink-title {
+  position: relative;
+  display: inline-block;
+  font-family: 'Anton', 'Unbounded', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #ff208e;
+  letter-spacing: 0.02em;
+  line-height: 0.95;
+  text-shadow: 
+    3px 3px 0px #240014,
+    6px 6px 0px #0c0007,
+    10px 10px 0px #000000,
+    0 0 45px rgba(255, 32, 142, 0.7);
+}
+
+/* Horizontal razor slits cut into the primary text */
+.rave-pink-cut {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%, #000 18%,
+    transparent 18.5%, transparent 22%,
+    #000 22.5%, #000 45%,
+    transparent 45.5%, transparent 49%,
+    #000 49.5%, #000 70%,
+    transparent 70.5%, transparent 74%,
+    #000 74.5%, #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%, #000 18%,
+    transparent 18.5%, transparent 22%,
+    #000 22.5%, #000 45%,
+    transparent 45.5%, transparent 49%,
+    #000 49.5%, #000 70%,
+    transparent 70.5%, transparent 74%,
+    #000 74.5%, #000 100%
+  );
+}
+
+/* Glitch Slices Layer 1 (Offset Right) */
+.rave-slice-right {
+  position: absolute;
+  inset: 0;
+  color: #ff208e;
+  pointer-events: none;
+  transform: translate(7px, -1px);
+  text-shadow: 
+    3px 3px 0px #240014,
+    7px 7px 0px #000000;
+  clip-path: polygon(
+    0 18%, 100% 18%, 100% 25%, 0 25%,
+    0 69%, 100% 69%, 100% 77%, 0 77%
+  );
+}
+
+/* Glitch Slices Layer 2 (Offset Left) */
+.rave-slice-left {
+  position: absolute;
+  inset: 0;
+  color: #ff208e;
+  pointer-events: none;
+  transform: translate(-6px, 1px);
+  text-shadow: 
+    3px 3px 0px #240014,
+    7px 7px 0px #000000;
+  clip-path: polygon(
+    0 44%, 100% 44%, 100% 52%, 0 52%
+  );
+}
+
+/* Fluid White Brush Script Overlay matching "Night" */
+.rave-script-text {
+  font-family: 'Satisfy', 'Caveat', cursive;
+  color: #ffffff;
+  text-transform: none;
+  font-weight: 700;
+  letter-spacing: normal;
+  display: inline-block;
+  line-height: 1;
+  filter: 
+    drop-shadow(0 2px 2px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 6px 12px rgba(0, 0, 0, 0.95))
+    drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+}
+
+/* ==========================================================================
+   CYBER BRUTALIST TECHNO / "HUMANITY" FLYER STYLE
+   ========================================================================== */
+
+.techno-humanity-title {
+  font-family: 'Oxanium', 'Orbitron', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  line-height: 0.92;
+  /* Stark, monumental solid white with deep brutalist drop-shadow */
+  text-shadow: 
+    0 2px 0 #000000,
+    0 4px 0 #050505,
+    0 8px 0 #000000,
+    0 15px 35px rgba(0, 0, 0, 0.95);
+}
+
+/* Fluid Marbled Neon Art Header Bar (matching the colorful artwork strip in the screenshot) */
+.fluid-marbled-banner {
+  background: linear-gradient(
+    90deg,
+    #ff007f 0%,
+    #7928ca 20%,
+    #0070f3 40%,
+    #00dfd8 60%,
+    #ffbe0b 80%,
+    #ff007f 100%
+  );
+  background-size: 200% 200%;
+  animation: fluidShift 8s ease infinite alternate;
+}
+
+@keyframes fluidShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
