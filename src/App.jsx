@@ -88,7 +88,6 @@ export default function App() {
             <a href="#details" className="hover:text-cyber-cyan transition-colors">EVENT BLUEPRINT</a>
             <a href="#venue" className="hover:text-cyber-cyan transition-colors">VENUE DIRECTIONS</a>
             <a href="#register" className="hover:text-cyber-cyan transition-colors">GET PASS</a>
-            <a href="#seniors" className="hover:text-amber-400 text-amber-300 font-semibold transition-colors">SENIOR PORTAL</a>
           </div>
 
           <div className="flex items-center gap-4 text-xs font-mono text-slate-400">
