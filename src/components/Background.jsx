@@ -376,48 +376,6 @@ export default function Background() {
         className="fixed inset-0 z-10 pointer-events-none"
         aria-hidden="true"
       />
-
-      {/* 3. Bottom-Left Interactive Music & Beat Controller */}
-      <div className="hidden md:block fixed bottom-5 left-4 sm:left-6 z-40 pointer-events-auto">
-        <button
-          onClick={(e) => triggerConcertBeat(e.clientX, e.clientY)}
-          title="Click to drop a concert laser flash & trigger sub-bass beat wave!"
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-outfit font-bold glass-panel bg-obsidian-950/90 border border-cyan-400/60 text-cyan-300 shadow-[0_0_25px_rgba(6,182,212,0.35)] backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:bg-cyan-500/20 active:scale-95 group ${
-            isBeating
-              ? 'bg-cyan-400 text-obsidian-950 border-cyan-300 scale-105 shadow-[0_0_30px_rgba(0,242,254,0.9)]'
-              : ''
-          }`}
-        >
-          <Disc
-            className={`w-4 h-4 text-cyan-400 transition-transform duration-500 ${
-              isBeating ? 'animate-spin text-obsidian-950' : 'group-hover:rotate-180'
-            }`}
-          />
-          <span>Stage Beat 🎧</span>
-
-          {/* Equalizer animation */}
-          <span className="flex items-end gap-0.5 h-3.5 w-3 ml-1">
-            <span
-              className={`w-0.5 rounded-full transition-all duration-150 ${
-                isBeating ? 'bg-obsidian-950 h-3 animate-pulse' : 'bg-cyan-400 animate-bounce h-2'
-              }`}
-              style={{ animationDelay: '0ms' }}
-            />
-            <span
-              className={`w-0.5 rounded-full transition-all duration-150 ${
-                isBeating ? 'bg-obsidian-950 h-3.5 animate-pulse' : 'bg-amber-400 animate-bounce h-3.5'
-              }`}
-              style={{ animationDelay: '150ms' }}
-            />
-            <span
-              className={`w-0.5 rounded-full transition-all duration-150 ${
-                isBeating ? 'bg-obsidian-950 h-2 animate-pulse' : 'bg-cyan-400 animate-bounce h-1.5'
-              }`}
-              style={{ animationDelay: '300ms' }}
-            />
-          </span>
-        </button>
-      </div>
     </>
   );
 }

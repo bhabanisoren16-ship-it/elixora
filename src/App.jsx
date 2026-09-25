@@ -68,43 +68,6 @@ export default function App() {
         />
       )}
 
-      {/* 5. Footer */}
-      <footer className="relative z-10 border-t border-white/10 glass-panel bg-obsidian-950/90 py-12 px-4 sm:px-6 lg:px-8 mt-20">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyber-violet to-cyber-cyan p-[2px]">
-              <div className="w-full h-full bg-obsidian-900 rounded-[10px] flex items-center justify-center font-outfit font-bold text-white text-sm">
-                E
-              </div>
-            </div>
-            <div>
-              <span className="font-outfit font-extrabold text-lg text-white">ELIXORA 2.0</span>
-              <p className="text-xs text-slate-400">The Official College Freshers' Experience</p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-mono">
-            <a href="#hero" className="hover:text-cyber-cyan transition-colors">BACK TO TOP</a>
-            <a href="#details" className="hover:text-cyber-cyan transition-colors">EVENT BLUEPRINT</a>
-            <a href="#venue" className="hover:text-cyber-cyan transition-colors">VENUE DIRECTIONS</a>
-            <a href="#register" className="hover:text-cyber-cyan transition-colors">GET PASS</a>
-          </div>
-
-          <div className="flex items-center gap-4 text-xs font-mono text-slate-400">
-            <span>Organized by Student Council</span>
-            <span>•</span>
-            <span className="text-cyber-gold font-bold">#Elixora2.0</span>
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-white/5 text-center text-xs text-slate-400 font-mono flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>© 2026 ELIXORA 2.0 Cultural Directorate. All rights reserved.</p>
-          <p className="text-slate-400 flex items-center justify-center gap-1">
-            Engineered with 3D WebGL, Three.js & Tailwind CSS
-          </p>
-        </div>
-      </footer>
-
     </div>
   );
 }
