@@ -24,8 +24,8 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
     <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 py-3">
       <div className="max-w-7xl mx-auto rounded-2xl glass-panel bg-obsidian-950/80 border border-white/10 shadow-2xl backdrop-blur-xl px-4 sm:px-6 py-2.5 flex items-center justify-between">
         
-        {/* Brand Logo */}
-        <a href="#hero" className="flex items-center gap-3 group" onClick={() => soundController.playClick()}>
+        {/* Brand Logo (Hidden per user request) */}
+        <a href="#hero" className="hidden" onClick={() => soundController.playClick()}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-rose-500 to-cyan-400 p-[2px] transition-transform duration-300 group-hover:scale-105 shadow-[0_0_15px_rgba(251,191,36,0.5)]">
             <div className="w-full h-full bg-obsidian-900 rounded-[10px] flex items-center justify-center">
               <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-cyan-300 text-lg">
@@ -68,7 +68,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
         </nav>
 
         {/* Right Action Buttons */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
           {/* Audio Synthesizer Toggle */}
           <button
             onClick={toggleSound}
