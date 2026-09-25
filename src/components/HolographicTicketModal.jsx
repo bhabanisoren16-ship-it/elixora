@@ -280,37 +280,55 @@ export default function HolographicTicketModal({ passData, onClose }) {
               {/* Top Bar of VIP Badge */}
               <div className="relative z-20 flex items-center justify-between pb-3 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyber-violet to-cyber-cyan p-[2px]">
+                  <div className={`w-8 h-8 rounded-xl p-[2px] ${
+                    passData.isSenior 
+                      ? 'bg-gradient-to-tr from-amber-400 via-rose-500 to-amber-300' 
+                      : 'bg-gradient-to-tr from-cyber-violet to-cyber-cyan'
+                  }`}>
                     <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center font-outfit font-black text-xs text-white">
-                      E
+                      {passData.isSenior ? 'SR' : 'E'}
                     </div>
                   </div>
                   <div>
                     <span className="font-outfit font-extrabold text-sm tracking-wider text-white">
                       ELIXORA 2.0
                     </span>
-                    <span className="block text-[8px] font-mono text-cyber-cyan uppercase">
-                      Official Freshers' Pass
+                    <span className={`block text-[8px] font-mono uppercase ${
+                      passData.isSenior ? 'text-amber-300 font-bold' : 'text-cyber-cyan'
+                    }`}>
+                      {passData.isSenior ? 'Official Senior VIP Pass' : "Official Freshers' Pass"}
                     </span>
                   </div>
                 </div>
 
-                <div className="px-2.5 py-1 rounded-full bg-cyber-gold/20 border border-cyber-gold/50 flex items-center gap-1 shadow-neon-gold">
-                  <Sparkles className="w-3 h-3 text-cyber-gold animate-spin-slow" />
-                  <span className="font-outfit font-bold text-[9px] text-cyber-gold tracking-wider">
-                    VIP BADGE
+                <div className={`px-2.5 py-1 rounded-full border flex items-center gap-1 ${
+                  passData.isSenior 
+                    ? 'bg-amber-500/25 border-amber-400/60 shadow-[0_0_15px_rgba(245,158,11,0.4)]' 
+                    : 'bg-cyber-gold/20 border-cyber-gold/50 shadow-neon-gold'
+                }`}>
+                  <Sparkles className={`w-3 h-3 animate-spin-slow ${
+                    passData.isSenior ? 'text-amber-300' : 'text-cyber-gold'
+                  }`} />
+                  <span className={`font-outfit font-bold text-[9px] tracking-wider ${
+                    passData.isSenior ? 'text-amber-200' : 'text-cyber-gold'
+                  }`}>
+                    {passData.isSenior ? 'SENIOR VIP' : 'VIP BADGE'}
                   </span>
                 </div>
               </div>
 
               {/* Middle Section: Student Avatar & Details */}
-              <div className="relative z-20 my-auto py-4">
+              <div className="relative z-20 my-auto py-3">
                 
                 {/* Holographic Avatar Initials Ring */}
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-3">
                   <div className="relative">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyber-cyan via-purple-500 to-cyber-gold p-[2px] shadow-neon-cyan">
-                      <div className="w-full h-full rounded-[14px] bg-obsidian-900 flex items-center justify-center font-outfit font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-white">
+                    <div className={`w-18 h-18 p-[2px] rounded-2xl shadow-neon-cyan ${
+                      passData.isSenior
+                        ? 'bg-gradient-to-tr from-amber-400 via-rose-500 to-cyber-cyan shadow-[0_0_20px_rgba(245,158,11,0.5)]'
+                        : 'bg-gradient-to-tr from-cyber-cyan via-purple-500 to-cyber-gold'
+                    }`}>
+                      <div className="w-16 h-16 rounded-[14px] bg-obsidian-900 flex items-center justify-center font-outfit font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-white">
                         {passData.fullName
                           ? passData.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
                           : 'EX'}
@@ -325,18 +343,30 @@ export default function HolographicTicketModal({ passData, onClose }) {
 
                 {/* Student Full Name */}
                 <div className="text-center">
-                  <h3 className="font-outfit font-bold text-2xl text-white tracking-tight leading-tight">
+                  <h3 className="font-outfit font-bold text-xl sm:text-2xl text-white tracking-tight leading-tight">
                     {passData.fullName}
                   </h3>
-                  <div className="mt-1 flex items-center justify-center gap-2 text-xs font-mono text-cyber-cyan">
-                    <span>ID: <strong>{passData.rollNo}</strong></span>
+                  <div className="mt-1 flex items-center justify-center gap-2 text-xs font-mono text-cyber-cyan flex-wrap">
+                    <span>ID: <strong className="text-white">{passData.rollNo}</strong></span>
                     <span>•</span>
-                    <span className="truncate max-w-[190px]">{passData.branch}</span>
+                    <span className="truncate max-w-[200px]">{passData.branch}</span>
                   </div>
+                  {passData.batch && (
+                    <div className="mt-1">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                        {passData.batch}
+                      </span>
+                    </div>
+                  )}
+                  {passData.seniorQuote && (
+                    <p className="mt-2 text-[11px] text-slate-300 italic px-2 max-w-xs mx-auto line-clamp-1">
+                      "{passData.seniorQuote}"
+                    </p>
+                  )}
                 </div>
 
                 {/* Ticket Key Metadata Grid */}
-                <div className="grid grid-cols-2 gap-2 mt-5 p-3 rounded-2xl bg-white/5 border border-white/10 text-xs">
+                <div className="grid grid-cols-2 gap-2 mt-4 p-3 rounded-2xl bg-white/5 border border-white/10 text-xs">
                   <div>
                     <span className="text-[10px] font-mono text-slate-400 block uppercase">DATE & TIME</span>
                     <span className="font-semibold text-white text-[11px] block mt-0.5">24 OCT 2026 • 6:30 PM</span>
@@ -347,11 +377,19 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   </div>
                   <div>
                     <span className="text-[10px] font-mono text-slate-400 block uppercase">ACCESS TIER</span>
-                    <span className="font-semibold text-cyber-gold text-[11px] block mt-0.5">VIP All-Access</span>
+                    <span className={`font-semibold text-[11px] block mt-0.5 ${
+                      passData.isSenior ? 'text-amber-300' : 'text-cyber-gold'
+                    }`}>
+                      {passData.isSenior 
+                        ? (passData.role ? passData.role.split('(')[0].trim() : 'Senior VIP Access') 
+                        : 'VIP All-Access'}
+                    </span>
                   </div>
                   <div>
                     <span className="text-[10px] font-mono text-slate-400 block uppercase">GATE & ZONE</span>
-                    <span className="font-semibold text-cyber-cyan text-[11px] block mt-0.5">Gate 2 • Sector A</span>
+                    <span className="font-semibold text-cyber-cyan text-[11px] block mt-0.5">
+                      {passData.isSenior ? 'VIP Lounge • Sector S' : 'Gate 2 • Sector A'}
+                    </span>
                   </div>
                 </div>
 

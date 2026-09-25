@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Sparkles, Ticket, Menu, X, Compass, Calendar, Palette } from 'lucide-react';
+import { Volume2, VolumeX, Sparkles, Ticket, Menu, X, Compass, Calendar, Palette, GraduationCap } from 'lucide-react';
 import { soundController } from '../utils/audio';
 
 export default function Navbar({ onOpenPass, hasGeneratedPass }) {
@@ -17,6 +17,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
     { name: 'Event Details', href: '#details', icon: Calendar },
     { name: 'Dress Code', href: '#dress-code', icon: Palette },
     { name: 'Venue & Guide', href: '#venue', icon: Compass },
+    { name: 'Seniors', href: '#seniors', icon: GraduationCap },
     { name: 'Get Pass', href: '#register', icon: Ticket, highlight: true },
   ];
 
@@ -53,14 +54,19 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
           {navLinks.map((link) => {
             const Icon = link.icon;
             if (link.highlight) return null;
+            const isSenior = link.name === 'Seniors';
             return (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={() => soundController.playClick()}
-                className="px-3.5 py-1.5 rounded-lg text-xs lg:text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1.5"
+                className={`px-3 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-all flex items-center gap-1.5 ${
+                  isSenior
+                    ? 'text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 border border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                }`}
               >
-                <Icon className="w-3.5 h-3.5 text-cyber-cyan opacity-80" />
+                <Icon className={`w-3.5 h-3.5 ${isSenior ? 'text-amber-400' : 'text-cyber-cyan opacity-80'}`} />
                 {link.name}
               </a>
             );
@@ -138,6 +144,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
         <div className="md:hidden mt-2 p-4 rounded-2xl glass-panel bg-obsidian-950/95 border border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col gap-2">
           {navLinks.map((link) => {
             const Icon = link.icon;
+            const isSenior = link.name === 'Seniors';
             return (
               <a
                 key={link.name}
@@ -146,9 +153,13 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                   soundController.playClick();
                   setMobileMenuOpen(false);
                 }}
-                className="px-4 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2.5"
+                className={`px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2.5 transition-all ${
+                  isSenior
+                    ? 'text-amber-300 bg-amber-500/10 border border-amber-500/30 font-semibold'
+                    : 'text-slate-300 hover:text-white hover:bg-white/10'
+                }`}
               >
-                <Icon className="w-4 h-4 text-cyber-cyan" />
+                <Icon className={`w-4 h-4 ${isSenior ? 'text-amber-400' : 'text-cyber-cyan'}`} />
                 {link.name}
               </a>
             );
