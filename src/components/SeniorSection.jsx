@@ -30,56 +30,48 @@ import {
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 
-// Whitelist of pre-registered seniors for instant verification & demo testing
+// Official authorized roster of registered seniors
 const REGISTERED_SENIORS = {
-  '25110046': {
-    name: '',
-    branch: 'Computer Science & AI',
-    batch: "Batch of '22 • 4th Year Senior",
-    role: 'Senior VIP Pass (Full Access + Red Carpet)',
-    phone: '',
-    email: ''
-  },
-  '220101045': {
-    name: 'Aarav Sharma',
-    branch: 'Computer Science & AI',
-    batch: "Batch of '22 • 4th Year Senior",
-    role: 'Senior Organizing Committee',
-    phone: '9876543210',
-    email: 'aarav.sharma@college.edu'
-  },
-  '220102088': {
-    name: 'Riya Sen',
-    branch: 'Electronics & Communication (ECE)',
-    batch: "Batch of '22 • 4th Year Senior",
-    role: 'Cultural Council Secretary',
-    phone: '9812345678',
-    email: 'riya.sen@college.edu'
-  },
-  '230101012': {
-    name: 'Devendra Patel',
-    branch: 'Information Technology',
-    batch: "Batch of '23 • 3rd Year Senior",
-    role: 'Senior Mentor & Guide',
-    phone: '9823456789',
-    email: 'devendra.p@college.edu'
-  },
-  '230104033': {
-    name: 'Ananya Roy',
-    branch: 'Biotechnology & Bioinformatics',
-    batch: "Batch of '23 • 3rd Year Senior",
-    role: 'Senior Stage Coordinator',
-    phone: '9834567890',
-    email: 'ananya.roy@college.edu'
-  },
-  'SENIOR2026': {
-    name: 'Vikramaditya Rao',
-    branch: 'Computer Science & AI',
-    batch: "Batch of '22 • Senior Lead",
-    role: 'Senior Guest & Council Patron',
-    phone: '9845678901',
-    email: 'vikram.rao@college.edu'
-  }
+  '25110039': { name: 'Anandita Mohanty', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110040': { name: 'Ankita Priyadarshini', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110041': { name: 'Anwesha Mishra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110042': { name: 'Arpita Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110043': { name: 'Astha Agrawalla', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110044': { name: 'Ayushman Mahapatra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110045': { name: 'Barenya Ranjan Acharya', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110046': { name: 'Bhabani Shankar Soren', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior Lead" },
+  '25110047': { name: 'Bishnupriya Sahu', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110048': { name: 'Biswaranjan Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110049': { name: 'D Niharika Patra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110050': { name: 'Deepsikha Biswal', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110051': { name: 'Devika Tripathy', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110052': { name: 'Dipesh Behera', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110053': { name: 'Ipsita Bhol', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110054': { name: 'Jayasmita Rout', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110055': { name: 'Jigyansha Mishra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110056': { name: 'Lipsita Dash', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110057': { name: 'Lokesh Kumar Nayak', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110058': { name: 'Mahek Habib', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110059': { name: 'Manas Pritam Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110060': { name: 'Manoswani Lenka', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110061': { name: 'Nirup Sundar Muduli', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110062': { name: 'Paurnamashi Samal', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110063': { name: 'Prateek Sahu', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110064': { name: 'Priyadarshani Malik', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110065': { name: 'S Saiman Satyajit', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110066': { name: 'S Shubhashree Swain', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110067': { name: 'Sai Sourav Khandual', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110068': { name: 'Samikshya Padhy', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110069': { name: 'Sangram Kumar Sahu', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110070': { name: 'Shradhashine Parida', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110071': { name: 'Soumyajeet Panda', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110072': { name: 'Soyal Parija', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110073': { name: 'Swagat Panda', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110074': { name: 'Swatiprava Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110075': { name: 'Turvi Bhuyan', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110076': { name: 'Bhaswati Mishra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '25110077': { name: 'Prabhuprasad Jena', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
+  '24110033': { name: 'Subrat Dhal', branch: 'Computer Science & Engineering', batch: "Batch of '24 • Senior" }
 };
 
 const SENIOR_TICKET_PRICE = 499;
@@ -97,8 +89,8 @@ export default function SeniorSection({ onPassGenerated }) {
   const [formData, setFormData] = useState({
     fullName: '',
     rollNo: '',
-    branch: 'Computer Science & AI',
-    batch: "Batch of '22 • 4th Year Senior",
+    branch: 'Computer Science & Engineering',
+    batch: "Batch of '25 • Senior",
     role: 'Senior VIP Pass (Full Access + Red Carpet)',
     phone: '',
     email: '',
@@ -117,7 +109,7 @@ export default function SeniorSection({ onPassGenerated }) {
   const qrCanvasRef = useRef(null);
 
   const branches = [
-    'Computer Science & AI',
+    'Computer Science & Engineering',
     'Information Technology',
     'Electronics & Communication (ECE)',
     'Electrical & Electronics (EEE)',
@@ -130,9 +122,9 @@ export default function SeniorSection({ onPassGenerated }) {
   ];
 
   const seniorBatches = [
-    "Batch of '22 • 4th Year Senior (Finalist)",
-    "Batch of '23 • 3rd Year Senior (Pre-Finalist)",
-    "Alumni Member & Honorary Guest",
+    "Batch of '25 • Senior",
+    "Batch of '24 • Senior",
+    "Batch of '23 • Senior",
     "Student Council Senior Executive"
   ];
 
@@ -140,42 +132,42 @@ export default function SeniorSection({ onPassGenerated }) {
     'Senior VIP Pass (Full Access + Red Carpet)',
     'Senior Mentor & Freshers Guide',
     'Organizing Committee Senior Lead',
-    'Alumni Patron Pass'
+    'Council Senior Patron'
   ];
 
-  // Helper: Verify Senior Registration Number and Open Dedicated Portal
+  // Helper: Verify Senior Registration Number strictly against the authorized roster
   const handleVerifyAccess = (e) => {
     if (e) e.preventDefault();
     const cleaned = accessRegNo.trim().toUpperCase();
 
     if (!cleaned) {
       setAccessError('Please enter your registered college registration number.');
-      soundController.playError();
-      return;
-    }
-
-    if (cleaned.length < 4) {
-      setAccessError('Please enter a valid registration number (at least 4 characters).');
-      soundController.playError();
+      soundController.playError?.();
       return;
     }
 
     setAccessError('');
     setIsVerifyingAccess(true);
-    soundController.playClick();
+    soundController.playClick?.();
 
     setTimeout(() => {
       setIsVerifyingAccess(false);
-      soundController.playSuccess();
 
-      // Retrieve registered profile or construct default verified senior profile
+      // STRICT CHECK: Only match with the registered registration numbers provided
       const found = REGISTERED_SENIORS[cleaned];
-      const profile = found || {
-        name: '',
-        branch: 'Computer Science & AI',
-        batch: cleaned.startsWith('23') 
-          ? "Batch of '23 • 3rd Year Senior (Pre-Finalist)" 
-          : "Batch of '22 • 4th Year Senior (Finalist)",
+
+      if (!found) {
+        soundController.playError?.();
+        setAccessError(`Registration number "${cleaned}" is not on the official senior list. Access is strictly restricted to registered seniors.`);
+        return;
+      }
+
+      soundController.playSuccess?.();
+
+      const profile = {
+        name: found.name,
+        branch: found.branch || 'Computer Science & Engineering',
+        batch: found.batch || "Batch of '25 • Senior",
         role: 'Senior VIP Pass (Full Access + Red Carpet)',
         phone: '',
         email: ''
@@ -185,17 +177,15 @@ export default function SeniorSection({ onPassGenerated }) {
       setFormData((prev) => ({
         ...prev,
         rollNo: cleaned,
-        fullName: profile.name || prev.fullName,
-        branch: profile.branch || prev.branch,
-        batch: profile.batch || prev.batch,
-        role: profile.role || prev.role,
-        phone: profile.phone || prev.phone,
-        email: profile.email || prev.email,
+        fullName: profile.name,
+        branch: profile.branch,
+        batch: profile.batch,
+        role: profile.role,
       }));
 
       setIsUnlocked(true);
-      setIsPortalOpen(true); // Opens the dedicated Senior Portal directly
-    }, 600);
+      setIsPortalOpen(true);
+    }, 500);
   };
 
   const handleQuickDemoId = (id) => {
@@ -421,7 +411,7 @@ export default function SeniorSection({ onPassGenerated }) {
                     setAccessRegNo(e.target.value);
                     if (accessError) setAccessError('');
                   }}
-                  placeholder="e.g. 25110046 or 220101045"
+                  placeholder="Enter Registration No. (e.g. 25110046)"
                   className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-black/50 border border-white/20 text-white placeholder-slate-500 text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
                 />
               </div>
@@ -454,13 +444,26 @@ export default function SeniorSection({ onPassGenerated }) {
               </button>
             </form>
 
-            {/* Quick Demo Registration Numbers for Testing */}
+            {/* Quick Demo Registration Numbers from Authorized Roster */}
             <div className="mt-8 pt-6 border-t border-white/10 text-left">
-              <span className="text-[11px] font-outfit font-bold text-slate-400 uppercase tracking-wider block mb-2.5">
-                ⚡ Quick Demo Registered Senior Numbers (1-Click Test):
-              </span>
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-[11px] font-outfit font-bold text-slate-400 uppercase tracking-wider">
+                  ⚡ Authorized Senior Roster (1-Click Test):
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  40 Registered
+                </span>
+              </div>
               <div className="flex flex-wrap gap-2">
-                {Object.keys(REGISTERED_SENIORS).map((id) => (
+                {[
+                  '25110046', // Bhabani Shankar Soren
+                  '25110039', // Anandita Mohanty
+                  '25110045', // Barenya Ranjan Acharya
+                  '25110052', // Dipesh Behera
+                  '25110063', // Prateek Sahu
+                  '25110070', // Shradhashine Parida
+                  '24110033', // Subrat Dhal
+                ].map((id) => (
                   <button
                     key={id}
                     type="button"
@@ -468,12 +471,15 @@ export default function SeniorSection({ onPassGenerated }) {
                     className="text-xs font-outfit font-semibold px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-white/15 hover:border-amber-500/40 transition-all flex items-center gap-1.5"
                   >
                     <span className="font-mono text-amber-400">{id}</span>
-                    {REGISTERED_SENIORS[id].name && (
+                    {REGISTERED_SENIORS[id] && (
                       <span className="text-[10px] text-slate-400">({REGISTERED_SENIORS[id].name.split(' ')[0]})</span>
                     )}
                   </button>
                 ))}
               </div>
+              <p className="mt-2 text-[10px] font-mono text-slate-400">
+                Official batch IDs: 25110039 to 25110077 &amp; 24110033
+              </p>
             </div>
 
           </div>
