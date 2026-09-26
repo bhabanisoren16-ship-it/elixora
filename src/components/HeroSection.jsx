@@ -51,10 +51,10 @@ export default function HeroSection({ onGrabPassClick }) {
         {/* Title Container with Party Theme Styling */}
         <div className="relative my-2 select-none">
           {/* Ambient Multi-Neon Party Glow behind title */}
-          <div className="absolute -inset-6 blur-3xl opacity-80 rounded-full pointer-events-none bg-gradient-to-r from-amber-500/35 via-rose-500/30 to-cyan-500/35 animate-pulse" />
+          <div className="absolute -inset-6 blur-3xl opacity-80 rounded-full pointer-events-none bg-gradient-to-r from-amber-500/35 via-rose-500/30 to-cyan-500/35 animate-ambient-glow" />
 
-          {/* Main Title: Exact font from user's image (Unbounded Black) */}
-          <div className="relative my-1 select-none">
+          {/* Main Title: Exact font from user's image (Unbounded Black) with subtle float */}
+          <div className="relative my-1 select-none animate-hero-float">
             <h1 className="font-unbounded font-black text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight text-white uppercase text-center leading-none transition-all duration-300 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)] hover:scale-[1.01]">
               ELIXORA 2.0
             </h1>
@@ -80,7 +80,7 @@ export default function HeroSection({ onGrabPassClick }) {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-amber-400/60 hover:shadow-neon-gold transition-all duration-300"
+              className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-amber-400/60 hover:-translate-y-1 hover:shadow-neon-gold transition-all duration-300"
             >
               <div className="font-outfit font-extrabold text-2xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-amber-100 to-amber-300 tracking-wider">
                 {String(item.value).padStart(2, '0')}
@@ -101,7 +101,7 @@ export default function HeroSection({ onGrabPassClick }) {
               soundController.playClick();
               onGrabPassClick();
             }}
-            className="w-full sm:w-auto px-6 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group"
+            className="w-full sm:w-auto px-6 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine"
           >
             <span>GRAB YOUR PASS</span>
             <ArrowRight className="w-4 h-4 text-amber-200 group-hover:translate-x-1.5 transition-transform" />

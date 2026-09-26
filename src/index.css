@@ -405,3 +405,87 @@ body {
   100% { background-position: 100% 50%; }
 }
 
+/* ==========================================================================
+   SUBTLE & ELEGANT MICRO-ANIMATIONS
+   ========================================================================== */
+
+/* 1. Subtle Desktop Cosmic Breathing Animation (Organic, slow life to the desktop backdrop) */
+@keyframes subtleBreathe {
+  0%, 100% {
+    transform: scale(1.0) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.026) translate3d(0, -0.4%, 0);
+  }
+}
+
+.animate-subtle-breathe {
+  animation: subtleBreathe 16s ease-in-out infinite;
+  transform-origin: center 32%;
+  will-change: transform;
+}
+
+/* 2. Hero Title Micro-Float (Gentle weightless levitation) */
+@keyframes heroMicroFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-hero-float {
+  animation: heroMicroFloat 6s ease-in-out infinite;
+}
+
+/* 3. Subtle Button Shimmer Sweep */
+@keyframes shimmerSweep {
+  0%, 30% {
+    transform: translateX(-150%) rotate(25deg);
+  }
+  70%, 100% {
+    transform: translateX(300%) rotate(25deg);
+  }
+}
+
+.shimmer-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 45%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 100%
+  );
+  transform: translateX(-150%) rotate(25deg);
+  animation: shimmerSweep 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* 4. Ambient Halo Glow Pulse */
+@keyframes ambientGlowPulse {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.88;
+    transform: scale(1.03);
+  }
+}
+
+.animate-ambient-glow {
+  animation: ambientGlowPulse 5s ease-in-out infinite;
+}
+
+

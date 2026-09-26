@@ -85,6 +85,7 @@ export default function Background() {
   const canvasRef = useRef(null);
   const [isBeating, setIsBeating] = useState(false);
   const sparksRef = useRef([]);
+  const shootingStarsRef = useRef([]);
   const activeBoltRef = useRef(null);
   const nextAutoStrikeTimeRef = useRef(Date.now() + 5000 + Math.random() * 3000);
   const lastStrikeTimeRef = useRef(Date.now());
@@ -288,7 +289,58 @@ export default function Background() {
         });
         ctx.restore();
 
-        // 3. Periodic Auto Lightning Timer (Strikes every 8-14s)
+        // 3. Subtle Cosmic Shooting Star Streaks (Graceful meteor every 7-12s)
+        if (Math.random() < 0.006 && shootingStarsRef.current.length < 2) {
+          const startX = Math.random() * w * 0.85;
+          const startY = Math.random() * h * 0.25;
+          const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.2;
+          const speed = 11 + Math.random() * 7;
+          shootingStarsRef.current.push({
+            x: startX,
+            y: startY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            length: 60 + Math.random() * 50,
+            alpha: 0.85,
+            fadeRate: 0.02,
+            color: Math.random() > 0.4 ? '#38bdf8' : '#fde047',
+          });
+        }
+
+        if (shootingStarsRef.current.length > 0) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          shootingStarsRef.current = shootingStarsRef.current.filter((star) => {
+            star.x += star.vx;
+            star.y += star.vy;
+            star.alpha -= star.fadeRate;
+
+            if (star.alpha > 0 && star.x < w && star.y < h) {
+              const tailX = star.x - star.vx * (star.length / 15);
+              const tailY = star.y - star.vy * (star.length / 15);
+              const grad = ctx.createLinearGradient(tailX, tailY, star.x, star.y);
+              grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+              grad.addColorStop(0.7, star.color);
+              grad.addColorStop(1, '#ffffff');
+
+              ctx.beginPath();
+              ctx.moveTo(tailX, tailY);
+              ctx.lineTo(star.x, star.y);
+              ctx.strokeStyle = grad;
+              ctx.lineWidth = 1.5;
+              ctx.lineCap = 'round';
+              ctx.globalAlpha = Math.max(0, star.alpha);
+              ctx.shadowColor = star.color;
+              ctx.shadowBlur = 8;
+              ctx.stroke();
+              return true;
+            }
+            return false;
+          });
+          ctx.restore();
+        }
+
+        // 4. Periodic Auto Lightning Timer (Strikes every 8-14s)
         const now = Date.now();
         if (!activeBoltRef.current && now > nextAutoStrikeTimeRef.current) {
           spawnBolt();
@@ -332,11 +384,11 @@ export default function Background() {
         }}
         aria-hidden="true"
       >
-        {/* Desktop Screen (md and wider): Precision Focal Framing on Cosmic Halo & Chrome Figure */}
+        {/* Desktop Screen (md and wider): Precision Focal Framing on Cosmic Halo & Chrome Figure with Subtle Breathe */}
         <img
           src="/background-desktop.jpg"
           alt="ELIXORA 2.0 Festival Background"
-          className="hidden md:block w-full h-full object-cover object-[center_32%] filter brightness-[1.04] contrast-[1.06] saturate-[1.10]"
+          className="hidden md:block w-full h-full object-cover object-[center_32%] filter brightness-[1.04] contrast-[1.06] saturate-[1.10] animate-subtle-breathe"
         />
 
         {/* Mobile Screen (< md): Native Portrait Cover - 100% Fixed & Frozen while scrolling */}
