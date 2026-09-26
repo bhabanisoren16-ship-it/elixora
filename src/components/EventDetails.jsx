@@ -1,17 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Calendar, Clock, MapPin, Navigation, Sparkles, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 
 export default function EventDetails() {
-  const [selectedSwatch, setSelectedSwatch] = useState(0);
-
-  const swatches = [
-    { name: 'Ultraviolet Glow', hex: '#8b5cf6', desc: 'Neon purple lights, cyber jackets & accessories' },
-    { name: 'Cyber Cyan', hex: '#06b6d4', desc: 'Electric blue accents, sneakers, eye glitter & liners' },
-    { name: 'Liquid Obsidian', hex: '#0a0d1a', desc: 'Sleek black base, midnight blazers & dark streetwear' },
-    { name: 'Starlight Gold', hex: '#fbbf24', desc: 'Metallic jewelry, shimmering chains & gold trim' },
-  ];
 
   return (
     <section id="details" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
@@ -171,8 +163,8 @@ export default function EventDetails() {
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10">
-          {/* Header & Swatches row */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-white/15 mb-6">
+          {/* Header row */}
+          <div className="pb-6 border-b border-white/15 mb-6">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-xs font-outfit font-bold uppercase mb-2">
                 <Shirt className="w-3.5 h-3.5" />
@@ -183,43 +175,6 @@ export default function EventDetails() {
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 font-outfit mt-1 max-w-xl">
                 Futuristic, stylish, and comfortable to dance. Think sleek streetwear infused with luminous accents.
-              </p>
-            </div>
-
-            {/* Signature Theme Swatches */}
-            <div>
-              <div className="text-xs font-outfit font-bold text-slate-300 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3 h-3 text-amber-400" />
-                <span>SIGNATURE THEME PALETTE:</span>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                {swatches.map((s, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setSelectedSwatch(idx);
-                      soundController.playClick();
-                    }}
-                    className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all duration-200 ${
-                      selectedSwatch === idx
-                        ? 'bg-white/15 border-white shadow-[0_0_15px_rgba(255,255,255,0.25)] scale-105'
-                        : 'bg-black/40 border-white/15 hover:border-white/40 hover:bg-white/5'
-                    }`}
-                  >
-                    <span
-                      className="w-3 h-3 rounded-full shadow-sm ring-1 ring-white/30 shrink-0"
-                      style={{ backgroundColor: s.hex }}
-                    />
-                    <span className="text-xs font-outfit font-bold text-white whitespace-nowrap">
-                      {s.name}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              {/* Active Swatch Description Note */}
-              <p className="text-[11px] text-cyan-300 font-outfit mt-2 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 animate-ping" />
-                <span>{swatches[selectedSwatch].name}: {swatches[selectedSwatch].desc}</span>
               </p>
             </div>
           </div>
