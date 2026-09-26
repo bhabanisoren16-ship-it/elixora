@@ -30,7 +30,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
     fullName: '',
     rollNo: '',
     phone: '',
-    email: '',
     diet: 'Veg',
     songRequest: '',
     utrNumber: '',
@@ -106,7 +105,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
       fullName: 'Aarav Sharma',
       rollNo: '26CS084',
       phone: '9876543210',
-      email: 'aarav.sharma26@college.edu',
       diet: 'Veg',
       songRequest: 'Starboy - The Weeknd',
       utrNumber: '427189035124',
@@ -123,11 +121,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
       newErrors.phone = 'Phone number is required';
     } else if (!/^\d{10}$/.test(formData.phone.replace(/[\s-]/g, ''))) {
       newErrors.phone = 'Enter a valid 10-digit mobile number';
-    }
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email address is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Enter a valid email address';
     }
     if (!formData.utrNumber.trim()) {
       newErrors.utrNumber = 'Transaction ID / UTR is required';
@@ -266,45 +259,24 @@ export default function RegistrationPayment({ onPassGenerated }) {
               {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
             </div>
 
-            {/* Contact Number & Email */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                  Contact Number (WhatsApp) <span className="text-cyber-cyan">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="10-digit mobile"
-                    className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
-                      errors.phone ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                    } text-white placeholder-slate-500 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                  />
-                </div>
-                {errors.phone && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
+            {/* Contact Number */}
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
+                Contact Number (WhatsApp) <span className="text-cyber-cyan">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="10-digit mobile"
+                  className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
+                    errors.phone ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                  } text-white placeholder-slate-500 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                />
               </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                  College / Personal Email <span className="text-cyber-cyan">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="student@college.edu"
-                    className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
-                      errors.email ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                    } text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                  />
-                </div>
-                {errors.email && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.email}</p>}
-              </div>
+              {errors.phone && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
             </div>
 
             {/* Diet & Song Request */}
