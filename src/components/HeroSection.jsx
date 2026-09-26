@@ -70,12 +70,6 @@ export default function HeroSection({ onGrabPassClick }) {
           </div>
         </div>
 
-        {/* Welcoming junior hook */}
-        <p className="max-w-xl mx-auto mt-3 text-xs sm:text-sm text-slate-200 font-normal leading-relaxed drop-shadow-md">
-          Step into the ultimate sunset block party crafted exclusively for our newest batch.
-          Live DJ vinyl sets, golden-hour vibes, neon mocktails &amp; custom VIP passes.
-        </p>
-
         {/* Real-time Countdown Timer Grid */}
         <div className="mt-5 mb-5 inline-grid grid-cols-4 gap-2 sm:gap-3 max-w-sm sm:max-w-md mx-auto w-full px-2">
           {[
