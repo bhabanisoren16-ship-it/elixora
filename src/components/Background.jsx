@@ -5,13 +5,11 @@ export default function Background() {
   const canvasRef = useRef(null);
   const [isBeating, setIsBeating] = useState(false);
   const [isStriking, setIsStriking] = useState(false);
-  const soundwavesRef = useRef([]);
   const sparksRef = useRef([]);
   const burstBeamsRef = useRef([]);
   const ribbonParticlesRef = useRef([]);
   const lightningStrikesRef = useRef([]);
   const animFrameRef = useRef(null);
-  const beatTimerRef = useRef(null);
 
   // Cubic Bézier calculation helper for plasma ribbon paths
   const getBezierPoint = (p0, p1, p2, p3, t) => {
@@ -70,7 +68,6 @@ export default function Background() {
     const h = canvas.height;
     const isDesktop = w >= 768;
 
-    // Default strike target is the figure's glowing halo disk
     const haloX = w * 0.5;
     const haloY = isDesktop ? h * 0.32 : h * 0.45;
 
@@ -81,7 +78,7 @@ export default function Background() {
     const startX = endX + (Math.random() - 0.5) * (w * 0.4);
     const startY = 0;
 
-    // Palette: Celestial Golden Amber (halo match) or Electric Cyan (liquid metal match)
+    // Palette: Celestial Golden Amber or Electric Cyan
     const isAmber = Math.random() > 0.35;
     const mainColor = isAmber ? '#ffb703' : '#00f2fe';
     const glowColor = isAmber ? '#ff7700' : '#38bdf8';
@@ -157,21 +154,7 @@ export default function Background() {
     soundController.playLightningThunder();
   }, []);
 
-  // Periodic solar beat pulse (radiates elliptical golden shockwaves from the halo)
-  const spawnBeatWave = useCallback((originX, originY, color) => {
-    soundwavesRef.current.push({
-      x: originX,
-      y: originY,
-      radius: 12,
-      maxRadius: 420,
-      speed: 3.0,
-      color: color || (Math.random() > 0.4 ? '#ffb703' : (Math.random() > 0.5 ? '#ff7700' : '#fbbf24')),
-      alpha: 0.85,
-      lineWidth: 2.2,
-    });
-  }, []);
-
-  // Interactive Solar Beat Drop: Spawns solar flare beams, halo shockwaves & golden embers
+  // Interactive Solar Beat Drop: Spawns solar flare beams & golden embers
   const triggerConcertBeat = useCallback((originX = null, originY = null) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -187,21 +170,7 @@ export default function Background() {
     setIsBeating(true);
     setTimeout(() => setIsBeating(false), 500);
 
-    // 1. Triple Expanding Elliptical Golden Shockwaves
-    for (let r = 0; r < 3; r++) {
-      soundwavesRef.current.push({
-        x,
-        y,
-        radius: 10 + r * 22,
-        maxRadius: 480 + r * 100,
-        speed: 5.2 + r * 2.0,
-        color: r % 2 === 0 ? '#ffb703' : '#ff7700',
-        alpha: 1.0,
-        lineWidth: 2.6,
-      });
-    }
-
-    // 2. Solar Flare Radiant Beams from halo center
+    // 1. Solar Flare Radiant Beams
     for (let b = 0; b < 8; b++) {
       const angle = (b / 8) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
       burstBeamsRef.current.push({
@@ -216,7 +185,7 @@ export default function Background() {
       });
     }
 
-    // 3. Golden Stardust & Solar Ember Explosion
+    // 2. Golden Stardust & Solar Ember Explosion
     for (let i = 0; i < 35; i++) {
       const angle = Math.random() * Math.PI * 2;
       const speed = 2.5 + Math.random() * 7;
@@ -245,7 +214,7 @@ export default function Background() {
           const isDesktop = w >= 768;
 
           if (Math.random() < 0.72) {
-            // Strike directly onto the glowing halo
+            // Strike towards the upper center
             spawnLightningStrike(w * 0.5, isDesktop ? h * 0.32 : h * 0.45, false);
           } else {
             // Strike along the cosmic ribbon flanks
@@ -264,7 +233,7 @@ export default function Background() {
     return () => clearTimeout(timerId);
   }, [spawnLightningStrike]);
 
-  // Click anywhere on page to trigger both a dramatic lightning strike and concert beat drop
+  // Click anywhere on page to trigger both a dramatic lightning strike and solar burst
   useEffect(() => {
     const handleWindowClick = (e) => {
       const target = e.target;
@@ -278,7 +247,7 @@ export default function Background() {
       }
       // Instant lightning strike to click location
       spawnLightningStrike(e.clientX, e.clientY, true);
-      // Synchronized beat drop ripples
+      // Synchronized solar flare burst
       triggerConcertBeat(e.clientX, e.clientY);
     };
 
@@ -313,77 +282,16 @@ export default function Background() {
       });
     }
 
-    // Automatic rhythm pulse every 800ms
-    const startBeatTimer = () => {
-      beatTimerRef.current = setInterval(() => {
-        if (canvasRef.current) {
-          const w = canvasRef.current.width;
-          const h = canvasRef.current.height;
-          const isDesktop = w >= 768;
-          // Pulse originating from the figure's luminous head halo
-          spawnBeatWave(w * 0.5, isDesktop ? h * 0.32 : h * 0.45);
-        }
-      }, 800);
-    };
-    startBeatTimer();
-
-    let startTime = performance.now();
-
-    const animate = (timestamp) => {
-      const time = (timestamp - startTime) / 1000;
+    const animate = () => {
       const w = canvas.width;
       const h = canvas.height;
 
       ctx.clearRect(0, 0, w, h);
 
       const isDesktop = w >= 768;
-      const haloX = w * 0.5;
-      const haloY = isDesktop ? h * 0.32 : h * 0.45;
 
       // =========================================================================
-      // 1. DESKTOP: SOLAR CORONA & BREATHING HALO RING GLOW
-      // =========================================================================
-      if (isDesktop) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-
-        const baseHaloRadius = Math.min(w, h) * (0.13 + Math.sin(time * 2.2) * 0.012);
-
-        // A. Multi-layer Radial Solar Corona Aura
-        const coronaGrad = ctx.createRadialGradient(
-          haloX,
-          haloY,
-          5,
-          haloX,
-          haloY,
-          baseHaloRadius * 2.6
-        );
-        const coronaAlpha = 0.28 + Math.sin(time * 2.8) * 0.08;
-        coronaGrad.addColorStop(0.0, `rgba(255, 240, 200, ${coronaAlpha * 1.2})`);
-        coronaGrad.addColorStop(0.2, `rgba(255, 170, 20, ${coronaAlpha * 0.85})`);
-        coronaGrad.addColorStop(0.55, `rgba(255, 80, 0, ${coronaAlpha * 0.4})`);
-        coronaGrad.addColorStop(1.0, 'rgba(255, 60, 0, 0)');
-
-        ctx.fillStyle = coronaGrad;
-        ctx.beginPath();
-        // Slightly elliptical horizontal aura matching the perspective of the head ring
-        ctx.ellipse(haloX, haloY, baseHaloRadius * 2.6, baseHaloRadius * 1.5, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // B. Pulsing Core Disc Edge Ring
-        ctx.beginPath();
-        ctx.ellipse(haloX, haloY, baseHaloRadius * 1.15, baseHaloRadius * 0.44, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(255, 230, 140, ${0.4 + Math.sin(time * 3.5) * 0.2})`;
-        ctx.lineWidth = 2.0;
-        ctx.shadowColor = '#ffea00';
-        ctx.shadowBlur = 20;
-        ctx.stroke();
-
-        ctx.restore();
-      }
-
-      // =========================================================================
-      // 2. DESKTOP: FLOWING PLASMA ENERGY ALONG COSMIC RIBBONS
+      // 1. DESKTOP: FLOWING PLASMA ENERGY ALONG COSMIC RIBBONS
       // =========================================================================
       if (isDesktop) {
         ctx.save();
@@ -463,33 +371,7 @@ export default function Background() {
       }
 
       // =========================================================================
-      // 3. PERSPECTIVE-MATCHED ELLIPTICAL HALO RESONANCE SHOCKWAVES
-      // =========================================================================
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      soundwavesRef.current = soundwavesRef.current.filter((wave) => {
-        wave.radius += wave.speed;
-        wave.alpha -= 0.007;
-
-        if (wave.alpha > 0 && wave.radius < wave.maxRadius) {
-          ctx.beginPath();
-          // Elliptical perspective matching the angle of the halo disc (0.38 aspect on desktop)
-          const yAspect = isDesktop ? 0.38 : 0.65;
-          ctx.ellipse(wave.x, wave.y, wave.radius, wave.radius * yAspect, 0, 0, Math.PI * 2);
-          ctx.strokeStyle = wave.color;
-          ctx.lineWidth = wave.lineWidth;
-          ctx.globalAlpha = Math.max(0, wave.alpha);
-          ctx.shadowColor = wave.color;
-          ctx.shadowBlur = 14;
-          ctx.stroke();
-          return true;
-        }
-        return false;
-      });
-      ctx.restore();
-
-      // =========================================================================
-      // 4. STRIKING FRACTAL LIGHTNING BOLTS (DUAL-PASS HIGH-VOLTAGE GLOW)
+      // 2. STRIKING FRACTAL LIGHTNING BOLTS (DUAL-PASS HIGH-VOLTAGE GLOW)
       // =========================================================================
       if (lightningStrikesRef.current.length > 0) {
         ctx.save();
@@ -538,7 +420,7 @@ export default function Background() {
       }
 
       // =========================================================================
-      // 5. CLICK-TRIGGERED SOLAR FLARE BURST BEAMS
+      // 3. CLICK-TRIGGERED SOLAR FLARE BURST BEAMS
       // =========================================================================
       if (burstBeamsRef.current.length > 0) {
         ctx.save();
@@ -574,12 +456,11 @@ export default function Background() {
       }
 
       // =========================================================================
-      // 6. DRIFTING COSMIC GOLDEN STARDUST & SOLAR EMBERS
+      // 4. DRIFTING COSMIC GOLDEN STARDUST & SOLAR EMBERS
       // =========================================================================
       if (Math.random() < 0.3 && sparksRef.current.length < 50) {
-        const nearHalo = isDesktop && Math.random() < 0.6;
-        const sx = nearHalo ? haloX + (Math.random() - 0.5) * w * 0.45 : Math.random() * w;
-        const sy = nearHalo ? haloY + (Math.random() - 0.5) * h * 0.35 : Math.random() * h;
+        const sx = Math.random() * w;
+        const sy = Math.random() * h;
 
         sparksRef.current.push({
           x: sx,
@@ -620,10 +501,9 @@ export default function Background() {
 
     return () => {
       window.removeEventListener('resize', resize);
-      if (beatTimerRef.current) clearInterval(beatTimerRef.current);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [spawnBeatWave]);
+  }, []);
 
   return (
     <>
@@ -666,7 +546,7 @@ export default function Background() {
         />
       </div>
 
-      {/* 2. Fullscreen Cosmic Solar Corona, Striking Lightning & Golden Stardust Canvas */}
+      {/* 2. Fullscreen Cosmic Striking Lightning, Plasma Ribbons & Golden Stardust Canvas */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-10 pointer-events-none"
