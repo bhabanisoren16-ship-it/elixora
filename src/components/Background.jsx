@@ -65,38 +65,31 @@ export default function Background() {
     if (!canvas) return;
     const w = canvas.width;
     const h = canvas.height;
-    const isDesktop = w >= 768;
+    // Only spawn ambient lightning on desktop and ensure no overlapping strikes
+    if (!isDesktop) return;
+    if (desktopLightningRef.current.length > 0) return;
 
     let x1, y1, x2, y2;
 
     if (targetX !== null && targetY !== null) {
-      // User Click: Lightning strikes from the top of the desktop straight through the cursor to the bottom
-      x1 = targetX + (Math.random() - 0.5) * (w * 0.25);
+      x1 = targetX + (Math.random() - 0.5) * (w * 0.2);
       y1 = 0;
-      x2 = targetX + (Math.random() - 0.5) * (w * 0.25);
+      x2 = targetX + (Math.random() - 0.5) * (w * 0.2);
       y2 = h;
     } else {
-      // Ambient strikes across the full desktop
+      // Occasional single bolt across desktop
       const strikePattern = Math.random();
-      if (strikePattern < 0.55) {
-        // 1. Full-height vertical strike spanning the desktop top-to-bottom
-        x1 = w * (0.08 + Math.random() * 0.84);
+      if (strikePattern < 0.6) {
+        x1 = w * (0.15 + Math.random() * 0.7);
         y1 = 0;
-        x2 = x1 + (Math.random() - 0.5) * (w * 0.4);
+        x2 = x1 + (Math.random() - 0.5) * (w * 0.35);
         y2 = h;
-      } else if (strikePattern < 0.82) {
-        // 2. Full desktop diagonal cross-screen strike
+      } else {
         const fromLeft = Math.random() > 0.5;
         x1 = fromLeft ? 0 : w;
-        y1 = Math.random() * h * 0.35;
-        x2 = fromLeft ? w * (0.6 + Math.random() * 0.4) : w * (0.0 + Math.random() * 0.4);
+        y1 = Math.random() * h * 0.3;
+        x2 = fromLeft ? w * (0.6 + Math.random() * 0.35) : w * (0.05 + Math.random() * 0.35);
         y2 = h * (0.65 + Math.random() * 0.35);
-      } else {
-        // 3. Central cosmic plunge down the desktop center
-        x1 = w * (0.35 + Math.random() * 0.3);
-        y1 = 0;
-        x2 = w * (0.3 + Math.random() * 0.4);
-        y2 = h * 0.92;
       }
     }
 
@@ -109,57 +102,37 @@ export default function Background() {
       y1,
       x2,
       y2,
-      isDesktop ? 70 : 45,
-      isDesktop ? 6 : 5
+      60,
+      5
     );
 
     desktopLightningRef.current.push({
       segments,
       alpha: 1.0,
-      fadeRate: isIntense ? 0.038 : 0.048,
+      fadeRate: 0.055,
       mainColor,
       glowColor,
       coreColor: '#ffffff',
-      glowWidth: isDesktop ? 6.5 : 4.5,
-      coreWidth: isDesktop ? 2.2 : 1.5,
+      glowWidth: 5.5,
+      coreWidth: 1.8,
       isAmber,
-      flashIntensity: isIntense ? 0.12 : 0.07,
     });
 
-    // Companion strike on desktop: 45% chance of a secondary strike across another section
-    if (isDesktop && Math.random() > 0.55 && !isIntense) {
-      const s2X1 = (x1 + w * 0.4) % w;
-      const s2X2 = s2X1 + (Math.random() - 0.5) * (w * 0.3);
-      const segs2 = generateFullDesktopLightningSegments(s2X1, 0, s2X2, h * 0.85, 55, 5);
-      desktopLightningRef.current.push({
-        segments: segs2,
-        alpha: 0.85,
-        fadeRate: 0.06,
-        mainColor: glowColor,
-        glowColor: mainColor,
-        coreColor: '#ffffff',
-        glowWidth: 4.5,
-        coreWidth: 1.4,
-        isAmber: !isAmber,
-        flashIntensity: 0.04,
-      });
-    }
-
-    // Spark burst at contact point
+    // Subtle spark dust at contact point
     const sparkX = targetX !== null ? targetX : x2;
     const sparkY = targetY !== null ? targetY : (y2 > h * 0.9 ? h * 0.85 : y2);
-    for (let i = 0; i < (isIntense ? 22 : 12); i++) {
+    for (let i = 0; i < (isIntense ? 14 : 8); i++) {
       const spAngle = Math.random() * Math.PI * 2;
-      const spSpeed = 2.0 + Math.random() * 6.5;
+      const spSpeed = 1.5 + Math.random() * 5.0;
       sparksRef.current.push({
         x: sparkX,
         y: sparkY,
         vx: Math.cos(spAngle) * spSpeed,
-        vy: Math.sin(spAngle) * spSpeed - 1.2,
-        size: 1.5 + Math.random() * 2.5,
+        vy: Math.sin(spAngle) * spSpeed - 1.0,
+        size: 1.4 + Math.random() * 2.0,
         color: Math.random() > 0.4 ? '#ffffff' : mainColor,
         alpha: 1.0,
-        fadeRate: 0.02 + Math.random() * 0.02,
+        fadeRate: 0.025 + Math.random() * 0.02,
       });
     }
   }, []);
@@ -212,22 +185,31 @@ export default function Background() {
     }
   }, []);
 
-  // Periodic Full Desktop Light Striking every 2.4s to 4.2s
+  // Occasional Desktop Ambient Light Strike (calm initial opening, 10-18s intervals)
   useEffect(() => {
     let timerId;
-    const scheduleNext = () => {
-      const delay = 2400 + Math.random() * 1800;
+    let isMounted = true;
+
+    const scheduleNext = (initial = false) => {
+      // 8-12 seconds on first opening, then 10-18 seconds thereafter
+      const delay = initial ? (8000 + Math.random() * 4000) : (10000 + Math.random() * 8000);
       timerId = setTimeout(() => {
-        spawnDesktopLightStrike();
-        scheduleNext();
+        if (!isMounted) return;
+        if (window.innerWidth >= 768) {
+          spawnDesktopLightStrike();
+        }
+        scheduleNext(false);
       }, delay);
     };
 
-    scheduleNext();
-    return () => clearTimeout(timerId);
+    scheduleNext(true);
+    return () => {
+      isMounted = false;
+      clearTimeout(timerId);
+    };
   }, [spawnDesktopLightStrike]);
 
-  // Click anywhere on page to trigger full desktop light strike and solar burst
+  // Click anywhere on page to trigger subtle solar burst
   useEffect(() => {
     const handleWindowClick = (e) => {
       const target = e.target;
@@ -239,15 +221,13 @@ export default function Background() {
       ) {
         return;
       }
-      // Full desktop lightning strike traversing through click location
-      spawnDesktopLightStrike(e.clientX, e.clientY, true);
-      // Synchronized solar flare burst
+      // Synchronized solar flare burst & turntable vinyl sound
       triggerConcertBeat(e.clientX, e.clientY);
     };
 
     window.addEventListener('click', handleWindowClick);
     return () => window.removeEventListener('click', handleWindowClick);
-  }, [spawnDesktopLightStrike, triggerConcertBeat]);
+  }, [triggerConcertBeat]);
 
   // Main 60fps Canvas Loop
   useEffect(() => {
@@ -379,15 +359,6 @@ export default function Background() {
         desktopLightningRef.current = desktopLightningRef.current.filter((strike) => {
           strike.alpha -= strike.fadeRate;
           if (strike.alpha <= 0) return false;
-
-          // Full Desktop Ambient Light Flash
-          if (strike.alpha > 0.65) {
-            const flashA = (strike.alpha - 0.65) * strike.flashIntensity * 2.8;
-            ctx.fillStyle = strike.isAmber
-              ? `rgba(255, 183, 3, ${flashA})`
-              : `rgba(0, 242, 254, ${flashA})`;
-            ctx.fillRect(0, 0, w, h);
-          }
 
           ctx.globalAlpha = Math.max(0, strike.alpha);
 
