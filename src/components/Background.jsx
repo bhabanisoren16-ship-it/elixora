@@ -1,11 +1,117 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { soundController } from '../utils/audio';
 
+// Helper: Generates a single, lightweight, clean lightning bolt targeting upper sky quadrants
+function createCleanBolt(w, h, isDesktop) {
+  try {
+    const segments = [];
+    const strikeSide = Math.random() > 0.5 ? 'left' : 'right';
+
+    let startX, startY, endX, endY;
+    if (isDesktop) {
+      // Desktop: Keep lightning in left/right sky to frame the central face & countdown cleanly
+      if (strikeSide === 'left') {
+        startX = w * (0.08 + Math.random() * 0.16);
+        startY = 0;
+        endX = w * (0.22 + Math.random() * 0.14);
+        endY = h * (0.30 + Math.random() * 0.22);
+      } else {
+        startX = w * (0.76 + Math.random() * 0.16);
+        startY = 0;
+        endX = w * (0.64 + Math.random() * 0.14);
+        endY = h * (0.30 + Math.random() * 0.22);
+      }
+    } else {
+      // Mobile: Keep high in the atmospheric sky above the hero text
+      startX = w * (0.2 + Math.random() * 0.6);
+      startY = 0;
+      endX = startX + (Math.random() - 0.5) * w * 0.3;
+      endY = h * (0.16 + Math.random() * 0.16);
+    }
+
+    // Recursive midpoint displacement - max depth 3 (yielding 8 to 16 clean segments)
+    function subdivide(x1, y1, x2, y2, depth, maxDepth, spread) {
+      if (depth >= maxDepth || segments.length >= 18) {
+        segments.push({ x1, y1, x2, y2 });
+        return;
+      }
+      const midX = (x1 + x2) / 2;
+      const midY = (y1 + y2) / 2;
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const len = Math.hypot(dx, dy);
+      if (len < 10) {
+        segments.push({ x1, y1, x2, y2 });
+        return;
+      }
+      // Perpendicular normal displacement
+      const nx = -dy / len;
+      const ny = dx / len;
+      const offset = (Math.random() - 0.5) * spread;
+      const displacedX = midX + nx * offset;
+      const displacedY = midY + ny * offset;
+
+      subdivide(x1, y1, displacedX, displacedY, depth + 1, maxDepth, spread * 0.55);
+      subdivide(displacedX, displacedY, x2, y2, depth + 1, maxDepth, spread * 0.55);
+
+      // Single small fork (max 1 per bolt)
+      if (depth === 1 && Math.random() < 0.35 && segments.length < 14) {
+        const forkAngle = (Math.random() - 0.5) * 0.7;
+        const forkLen = len * 0.35;
+        const forkEndX = displacedX + (dx * Math.cos(forkAngle) - dy * Math.sin(forkAngle)) * (forkLen / len);
+        const forkEndY = displacedY + (dx * Math.sin(forkAngle) + dy * Math.cos(forkAngle)) * (forkLen / len);
+        subdivide(displacedX, displacedY, forkEndX, forkEndY, depth + 2, maxDepth, spread * 0.3);
+      }
+    }
+
+    subdivide(startX, startY, endX, endY, 0, 3, isDesktop ? 60 : 35);
+
+    const isAmber = Math.random() > 0.65;
+    return {
+      segments: segments.slice(0, 20),
+      alpha: 1.0,
+      fadeRate: 0.055, // ~18 frames (300ms total lifetime)
+      glowColor: isAmber ? '#ffb703' : '#38bdf8',
+      isAmber,
+      createdAt: Date.now(),
+    };
+  } catch (err) {
+    console.error("Bolt generation error:", err);
+    return null;
+  }
+}
+
 export default function Background() {
   const canvasRef = useRef(null);
   const [isBeating, setIsBeating] = useState(false);
   const sparksRef = useRef([]);
+  const activeBoltRef = useRef(null);
+  const nextAutoStrikeTimeRef = useRef(Date.now() + 5000 + Math.random() * 3000);
+  const lastStrikeTimeRef = useRef(Date.now());
   const animFrameRef = useRef(null);
+
+  // Safe Lightning Bolt Spawner (guaranteed 1 active bolt max)
+  const spawnBolt = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || activeBoltRef.current !== null) return;
+    const w = canvas.width;
+    const h = canvas.height;
+    const isDesktop = w >= 768;
+
+    const newBolt = createCleanBolt(w, h, isDesktop);
+    if (newBolt) {
+      activeBoltRef.current = newBolt;
+      lastStrikeTimeRef.current = Date.now();
+      soundController.playLightningThunder();
+
+      // Hard watchdog timeout: force-clear bolt after 550ms if ever delayed
+      setTimeout(() => {
+        if (activeBoltRef.current && Date.now() - activeBoltRef.current.createdAt > 500) {
+          activeBoltRef.current = null;
+        }
+      }, 550);
+    }
+  }, []);
 
   // Interactive Solar Beat Drop: Spawns golden stardust embers & audio feedback
   const triggerConcertBeat = useCallback((originX = null, originY = null) => {
@@ -38,7 +144,12 @@ export default function Background() {
         fadeRate: 0.018 + Math.random() * 0.015,
       });
     }
-  }, []);
+
+    // Optional subtle strike on click (with 4s cooldown)
+    if (Date.now() - lastStrikeTimeRef.current > 4000 && Math.random() < 0.5) {
+      spawnBolt();
+    }
+  }, [spawnBolt]);
 
   // Click anywhere on page to trigger subtle solar ember burst
   useEffect(() => {
@@ -59,7 +170,7 @@ export default function Background() {
     return () => window.removeEventListener('click', handleWindowClick);
   }, [triggerConcertBeat]);
 
-  // Main 60fps Canvas Loop (Smooth Drifting Cosmic Stardust & Embers)
+  // Main 60fps Canvas Loop (Try-Catch Protected, Never Freezes)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -79,50 +190,117 @@ export default function Background() {
     window.addEventListener('resize', resize, { passive: true });
 
     const animate = () => {
-      const w = canvas.width;
-      const h = canvas.height;
+      try {
+        const w = canvas.width;
+        const h = canvas.height;
+        const isDesktop = w >= 768;
 
-      ctx.clearRect(0, 0, w, h);
+        ctx.clearRect(0, 0, w, h);
 
-      // Ambient Drifting Cosmic Golden Stardust & Solar Embers
-      if (Math.random() < 0.35 && sparksRef.current.length < 60) {
-        const sx = Math.random() * w;
-        const sy = Math.random() * h;
+        // 1. Safe Single-Bolt Lightning Render
+        const bolt = activeBoltRef.current;
+        if (bolt && bolt.segments && bolt.segments.length > 0) {
+          bolt.alpha -= bolt.fadeRate;
 
-        sparksRef.current.push({
-          x: sx,
-          y: sy,
-          vx: (Math.random() - 0.5) * 0.7,
-          vy: -(0.3 + Math.random() * 1.2),
-          size: 1.2 + Math.random() * 2.2,
-          color: Math.random() > 0.25 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#38bdf8',
-          alpha: 0.85,
-          fadeRate: 0.005 + Math.random() * 0.006,
-        });
-      }
+          if (bolt.alpha > 0) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
 
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      sparksRef.current = sparksRef.current.filter((sp) => {
-        sp.x += sp.vx;
-        sp.y += sp.vy;
-        sp.alpha -= sp.fadeRate;
+            // Subtle Atmospheric Pulse (only during peak flash alpha > 0.85)
+            if (bolt.alpha > 0.85) {
+              const flashA = (bolt.alpha - 0.85) * 0.45;
+              ctx.fillStyle = bolt.isAmber
+                ? `rgba(255, 183, 3, ${flashA})`
+                : `rgba(56, 189, 248, ${flashA})`;
+              ctx.fillRect(0, 0, w, h);
+            }
 
-        if (sp.alpha > 0 && sp.y > 0) {
-          ctx.beginPath();
-          ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
-          ctx.fillStyle = sp.color;
-          ctx.shadowColor = sp.color;
-          ctx.shadowBlur = 8;
-          ctx.globalAlpha = Math.max(0, sp.alpha);
-          ctx.fill();
-          return true;
+            ctx.globalAlpha = Math.max(0, Math.min(1, bolt.alpha));
+
+            // Pass 1: Soft Electric Aura
+            ctx.beginPath();
+            for (let i = 0; i < bolt.segments.length; i++) {
+              const s = bolt.segments[i];
+              ctx.moveTo(s.x1, s.y1);
+              ctx.lineTo(s.x2, s.y2);
+            }
+            ctx.strokeStyle = bolt.glowColor;
+            ctx.lineWidth = isDesktop ? 3.5 : 2.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.shadowColor = bolt.glowColor;
+            ctx.shadowBlur = 12;
+            ctx.stroke();
+
+            // Pass 2: Crisp White Core
+            ctx.beginPath();
+            for (let i = 0; i < bolt.segments.length; i++) {
+              const s = bolt.segments[i];
+              ctx.moveTo(s.x1, s.y1);
+              ctx.lineTo(s.x2, s.y2);
+            }
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = isDesktop ? 1.5 : 1.0;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.shadowColor = '#ffffff';
+            ctx.shadowBlur = 6;
+            ctx.stroke();
+
+            ctx.restore();
+          } else {
+            activeBoltRef.current = null;
+          }
         }
-        return false;
-      });
-      ctx.restore();
 
-      animFrameRef.current = requestAnimationFrame(animate);
+        // 2. Ambient Drifting Cosmic Golden Stardust & Solar Embers
+        if (Math.random() < 0.35 && sparksRef.current.length < 50) {
+          sparksRef.current.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.7,
+            vy: -(0.3 + Math.random() * 1.2),
+            size: 1.2 + Math.random() * 2.2,
+            color: Math.random() > 0.25 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#38bdf8',
+            alpha: 0.85,
+            fadeRate: 0.005 + Math.random() * 0.006,
+          });
+        }
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        sparksRef.current = sparksRef.current.filter((sp) => {
+          sp.x += sp.vx;
+          sp.y += sp.vy;
+          sp.alpha -= sp.fadeRate;
+
+          if (sp.alpha > 0 && sp.y > 0) {
+            ctx.beginPath();
+            ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
+            ctx.fillStyle = sp.color;
+            ctx.shadowColor = sp.color;
+            ctx.shadowBlur = 8;
+            ctx.globalAlpha = Math.max(0, sp.alpha);
+            ctx.fill();
+            return true;
+          }
+          return false;
+        });
+        ctx.restore();
+
+        // 3. Periodic Auto Lightning Timer (Strikes every 8-14s)
+        const now = Date.now();
+        if (!activeBoltRef.current && now > nextAutoStrikeTimeRef.current) {
+          spawnBolt();
+          nextAutoStrikeTimeRef.current = now + 8000 + Math.random() * 6000;
+        }
+
+      } catch (err) {
+        console.error("Canvas render error caught cleanly:", err);
+        activeBoltRef.current = null;
+      } finally {
+        animFrameRef.current = requestAnimationFrame(animate);
+      }
     };
 
     animFrameRef.current = requestAnimationFrame(animate);
@@ -131,7 +309,7 @@ export default function Background() {
       window.removeEventListener('resize', resize);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, []);
+  }, [spawnBolt]);
 
   return (
     <>
