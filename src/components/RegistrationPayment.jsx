@@ -31,7 +31,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
     rollNo: '',
     phone: '',
     diet: 'Veg',
-    songRequest: '',
     utrNumber: '',
   });
 
@@ -106,7 +105,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
       rollNo: '26CS084',
       phone: '9876543210',
       diet: 'Veg',
-      songRequest: 'Starboy - The Weeknd',
       utrNumber: '427189035124',
     });
     setScreenshotPreview('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80');
@@ -218,8 +216,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between pt-1">
-            <div className="flex-1 flex flex-col justify-between space-y-3.5 lg:space-y-0 pb-3">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between">
+            <div className="flex-1 flex flex-col justify-between space-y-3.5 lg:space-y-0">
               {/* Full Name */}
               <div>
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
@@ -302,28 +300,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   ))}
                 </div>
               </div>
-
-              {/* DJ Track Request */}
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                  DJ Track Request (Optional)
-                </label>
-                <input
-                  type="text"
-                  name="songRequest"
-                  value={formData.songRequest}
-                  onChange={handleInputChange}
-                  placeholder="Song name & artist"
-                  className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border border-white/15 focus:border-cyber-cyan text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all"
-                />
-              </div>
             </div>
-
-            {/* Symmetrical Security Note */}
-            <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1 pt-2">
-              <ShieldCheck className="w-3 h-3 text-cyber-cyan" />
-              <span>Official Student Council Verified • Instant Pass Minting</span>
-            </p>
           </form>
         </div>
 
