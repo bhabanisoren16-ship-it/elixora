@@ -411,7 +411,7 @@ export default function SeniorSection({ onPassGenerated }) {
                     setAccessRegNo(e.target.value);
                     if (accessError) setAccessError('');
                   }}
-                  placeholder="Enter Registration No. (e.g. 25110046)"
+                  placeholder="Enter Registration No."
                   className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-black/50 border border-white/20 text-white placeholder-slate-500 text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
                 />
               </div>
