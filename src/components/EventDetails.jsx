@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
+import { Calendar, Clock, MapPin, Navigation, Sparkles, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 
