@@ -520,7 +520,7 @@ export default function SeniorSection({ onPassGenerated }) {
                     </span>
                   </div>
                   <p className="text-xs text-slate-400 font-outfit">
-                    Fill Senior Dossier, Pay on Barcode, and Attach Payment Proof
+                    Fill Senior Details, Pay on Barcode, and Attach Payment Proof
                   </p>
                 </div>
               </div>

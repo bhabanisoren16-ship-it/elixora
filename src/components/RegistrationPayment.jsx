@@ -188,7 +188,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
           Registration &amp; Pass Checkout
         </h2>
         <p className="mt-2 text-slate-300 max-w-2xl mx-auto text-sm sm:text-base font-outfit">
-          Fill your student dossier, complete payment via dynamic UPI QR, and your personalized 3D VIP pass will be rendered instantly.
+          Fill your student details, complete payment via dynamic UPI QR, and your personalized 3D VIP pass will be rendered instantly.
         </p>
 
         {/* Demo Fast-Fill Button */}
@@ -209,7 +209,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
           <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-white/10">
             <div>
               <span className="text-xs font-outfit font-extrabold text-cyan-300 uppercase tracking-wider">STEP 1 OF 2</span>
-              <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Student Dossier</h3>
+              <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Student Details</h3>
             </div>
             <div className="w-9 h-9 rounded-xl bg-cyan-500/25 border border-cyan-500/40 flex items-center justify-center text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
               <User className="w-4 h-4" />
@@ -425,7 +425,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                     <Loader2 className="w-4 h-4 animate-spin text-cyber-cyan" />
                     <span>
                       {verificationStep === 1 && 'VERIFYING UTR ON BANK LEDGER...'}
-                      {verificationStep === 2 && 'AUTHENTICATING FRESHER DOSSIER...'}
+                      {verificationStep === 2 && 'AUTHENTICATING FRESHER DETAILS...'}
                       {verificationStep === 3 && 'MINTING 3D HOLOGRAPHIC PASS...'}
                     </span>
                   </>
