@@ -124,11 +124,11 @@ export default function Background() {
   const glintRef = useRef(null);
   const activeBoltRef = useRef(null);
 
-  // Fast start on localhost: first strike at 2.0s
   const nextAutoStrikeTimeRef = useRef(Date.now() + 2000);
   const nextRibbonPulseTimeRef = useRef(Date.now() + 600);
   const nextGlintTimeRef = useRef(Date.now() + 2200);
   const lastStrikeTimeRef = useRef(Date.now());
+  const mousePosRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
   const animFrameRef = useRef(null);
 
   // High-Voltage Striking Lightning Effect (Strikes Sky, Halo, or Click Target + Sky Flash + Thunder)
@@ -325,6 +325,18 @@ export default function Background() {
     return () => window.removeEventListener('click', handleWindowClick);
   }, [spawnStrikingEffect, triggerConcertBeat]);
 
+  // Smooth micro-parallax tracking on mouse move
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const normX = (e.clientX / window.innerWidth - 0.5) * 2;
+      const normY = (e.clientY / window.innerHeight - 0.5) * 2;
+      mousePosRef.current.targetX = normX;
+      mousePosRef.current.targetY = normY;
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
   // Main 60fps Canvas Loop (Try-Catch Protected, 100% Crash-Proof)
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -352,8 +364,14 @@ export default function Background() {
 
         ctx.clearRect(0, 0, w, h);
 
-        const haloCenterX = w * 0.5;
-        const haloCenterY = isDesktop ? h * 0.32 : h * 0.20;
+        const m = mousePosRef.current;
+        m.x += (m.targetX - m.x) * 0.04;
+        m.y += (m.targetY - m.y) * 0.04;
+        const parallaxX = isDesktop ? m.x * 5.0 : 0;
+        const parallaxY = isDesktop ? m.y * 3.5 : 0;
+
+        const haloCenterX = w * 0.5 + parallaxX;
+        const haloCenterY = (isDesktop ? h * 0.32 : h * 0.20) + parallaxY;
         const haloRadiusX = isDesktop ? 135 : 85;
         const haloRadiusY = isDesktop ? 46 : 28;
 
@@ -380,6 +398,73 @@ export default function Background() {
         ctx.arc(0, 0, haloRadiusX * 1.4, 0, Math.PI * 2);
         ctx.fillStyle = haloGrad;
         ctx.fill();
+        ctx.restore();
+
+        // 1b. LITTLE EFFECT: ORBITING SOLAR PLASMA MOTES CIRCLING THE HALO DISC
+        const orbitalAngle = (now * 0.0015) % (Math.PI * 2);
+        const cosTilt = Math.cos(-0.09);
+        const sinTilt = Math.sin(-0.09);
+
+        for (let o = 0; o < 2; o++) {
+          const theta = orbitalAngle + o * Math.PI;
+          const ox = Math.cos(theta) * haloRadiusX;
+          const oy = Math.sin(theta) * haloRadiusY;
+
+          // In perspective tilt, front rim has sin(theta) > 0
+          const isFront = Math.sin(theta) > 0;
+          const orbAlpha = isFront ? 0.95 : 0.40;
+          const orbSize = (isFront ? 2.5 : 1.7) * (isDesktop ? 1.0 : 0.85);
+
+          const rx = haloCenterX + (ox * cosTilt - oy * sinTilt);
+          const ry = haloCenterY + (ox * sinTilt + oy * cosTilt);
+
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          ctx.beginPath();
+          ctx.arc(rx, ry, orbSize, 0, Math.PI * 2);
+          ctx.fillStyle = o === 0 ? '#ffea00' : '#ff9500';
+          ctx.shadowColor = '#ff7700';
+          ctx.shadowBlur = 12;
+          ctx.globalAlpha = orbAlpha;
+          ctx.fill();
+
+          // Delicate trailing solar flare dust
+          for (let t = 1; t <= 3; t++) {
+            const prevTheta = theta - t * 0.07;
+            const pox = Math.cos(prevTheta) * haloRadiusX;
+            const poy = Math.sin(prevTheta) * haloRadiusY;
+            const prx = haloCenterX + (pox * cosTilt - poy * sinTilt);
+            const pry = haloCenterY + (pox * sinTilt + poy * cosTilt);
+
+            ctx.beginPath();
+            ctx.arc(prx, pry, orbSize * (1 - t * 0.25), 0, Math.PI * 2);
+            ctx.fillStyle = '#ffaa00';
+            ctx.shadowBlur = 6;
+            ctx.globalAlpha = orbAlpha * (1 - t * 0.28);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        // 2a. LITTLE EFFECT: CONTINUOUS LIVING AMBIENT SHIMMER ALONG RIBBON CURVES
+        const ribbonBreath = 0.12 + 0.06 * Math.sin(now * 0.0018);
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        ctx.strokeStyle = '#ff7700';
+        ctx.lineWidth = isDesktop ? 1.6 : 1.1;
+        ctx.shadowColor = '#ff5500';
+        ctx.shadowBlur = 8;
+        ctx.globalAlpha = ribbonBreath;
+
+        for (let pIdx = 0; pIdx < 3; pIdx++) {
+          ctx.beginPath();
+          for (let step = 0; step <= 12; step++) {
+            const pt = getRibbonPoint(pIdx, step / 12, w, h, isDesktop);
+            if (step === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          }
+          ctx.stroke();
+        }
         ctx.restore();
 
         // 2. IMAGE-BASED ANIMATION: MOLTEN LIGHT PULSES COURSING ALONG THE RIBBONS
