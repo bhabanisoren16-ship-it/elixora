@@ -33,6 +33,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
   
   const cardRef = useRef(null);
   const ticketExportRef = useRef(null);
+  const mouseRafRef = useRef(null);
 
   // Trigger Confetti upon initial open
   useEffect(() => {
@@ -82,32 +83,49 @@ export default function HolographicTicketModal({ passData, onClose }) {
       setTicketQrUrl(url);
     }).catch(err => console.error(err));
 
+    return () => {
+      if (mouseRafRef.current) cancelAnimationFrame(mouseRafRef.current);
+    };
   }, [passData]);
 
-  // Mouse Parallax & 3D Interactive Tilt on VIP Badge
+  // Mouse Parallax & 3D Interactive Tilt on VIP Badge (Throttled via requestAnimationFrame)
   const handleMouseMove = (e) => {
     if (!cardRef.current || isFlipped) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    if (mouseRafRef.current) return;
 
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
+    const clientX = e.clientX;
+    const clientY = e.clientY;
 
-    const rotX = ((y - centerY) / centerY) * -16;
-    const rotY = ((x - centerX) / centerX) * 16;
+    mouseRafRef.current = requestAnimationFrame(() => {
+      mouseRafRef.current = null;
+      if (!cardRef.current) return;
 
-    setRotateX(rotX);
-    setRotateY(rotY);
+      const rect = cardRef.current.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
 
-    setGlarePosition({
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100,
-      opacity: 0.65,
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotX = ((y - centerY) / centerY) * -16;
+      const rotY = ((x - centerX) / centerX) * 16;
+
+      setRotateX(rotX);
+      setRotateY(rotY);
+
+      setGlarePosition({
+        x: (x / rect.width) * 100,
+        y: (y / rect.height) * 100,
+        opacity: 0.65,
+      });
     });
   };
 
   const handleMouseLeave = () => {
+    if (mouseRafRef.current) {
+      cancelAnimationFrame(mouseRafRef.current);
+      mouseRafRef.current = null;
+    }
     setRotateX(0);
     setRotateY(0);
     setGlarePosition(prev => ({ ...prev, opacity: 0 }));

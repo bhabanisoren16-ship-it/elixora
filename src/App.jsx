@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import Background from './components/Background';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
@@ -6,9 +6,10 @@ import EventDetails from './components/EventDetails';
 import LineupSection from './components/LineupSection';
 import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
-import HolographicTicketModal from './components/HolographicTicketModal';
 import { soundController } from './utils/audio';
 import { Sparkles, Shield } from 'lucide-react';
+
+const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
 
 export default function App() {
   const [passData, setPassData] = useState(null);
@@ -62,10 +63,12 @@ export default function App() {
 
       {/* 4. Interactive 3D Holographic Pass Modal */}
       {isModalOpen && passData && (
-        <HolographicTicketModal
-          passData={passData}
-          onClose={() => setIsModalOpen(false)}
-        />
+        <Suspense fallback={null}>
+          <HolographicTicketModal
+            passData={passData}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </Suspense>
       )}
 
     </div>

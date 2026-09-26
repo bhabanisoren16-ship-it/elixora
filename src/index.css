@@ -425,27 +425,28 @@ body {
   will-change: transform;
 }
 
-/* 2. Hero Title Micro-Float (Gentle weightless levitation) */
+/* 2. Hero Title Micro-Float (100% GPU Composited translate3d) */
 @keyframes heroMicroFloat {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0px, 0);
   }
   50% {
-    transform: translateY(-4px);
+    transform: translate3d(0, -4px, 0);
   }
 }
 
 .animate-hero-float {
   animation: heroMicroFloat 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* 3. Subtle Button Shimmer Sweep */
 @keyframes shimmerSweep {
   0%, 30% {
-    transform: translateX(-150%) rotate(25deg);
+    transform: translate3d(-150%, 0, 0) rotate(25deg);
   }
   70%, 100% {
-    transform: translateX(300%) rotate(25deg);
+    transform: translate3d(300%, 0, 0) rotate(25deg);
   }
 }
 
@@ -467,35 +468,70 @@ body {
     rgba(255, 255, 255, 0.22) 50%,
     transparent 100%
   );
-  transform: translateX(-150%) rotate(25deg);
+  transform: translate3d(-150%, 0, 0) rotate(25deg);
   animation: shimmerSweep 4.5s ease-in-out infinite;
   pointer-events: none;
+  will-change: transform;
 }
 
 /* 4. Ambient Halo Glow Pulse */
 @keyframes ambientGlowPulse {
   0%, 100% {
     opacity: 0.65;
-    transform: scale(0.97);
+    transform: scale3d(0.98, 0.98, 1);
   }
   50% {
     opacity: 0.88;
-    transform: scale(1.03);
+    transform: scale3d(1.02, 1.02, 1);
   }
 }
 
 .animate-ambient-glow {
   animation: ambientGlowPulse 5s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
-/* 5. Striking Electric Aura for Title & Key Accents */
+/* 5. Striking Electric Aura for Title & Key Accents (Optimized GPU Raster) */
 .striking-electric-aura {
   text-shadow: 
-    0 0 25px rgba(255, 183, 3, 0.55),
-    0 0 50px rgba(255, 119, 0, 0.40),
-    0 0 80px rgba(0, 242, 254, 0.30),
-    0 4px 25px rgba(0, 0, 0, 0.95);
+    0 0 16px rgba(255, 106, 0, 0.60),
+    0 0 35px rgba(255, 183, 3, 0.40),
+    0 3px 15px rgba(0, 0, 0, 0.95);
 }
 
+/* 6. Hardware GPU Layer Promotion Utility */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
 
+/* 7. Virtualized Offscreen Section Rendering for Butter-Smooth 60/120fps Scrolling */
+#details,
+#contest,
+#register,
+#seniors {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 700px;
+}
 
+/* 8. Mobile & Integrated GPU Glass Fill-Rate Optimization */
+@media (max-width: 768px) {
+  .glass-panel {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+  .backdrop-blur-lg,
+  .backdrop-blur-md {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+}
