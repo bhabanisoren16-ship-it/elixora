@@ -257,11 +257,16 @@ export default function Background() {
     if (!ctx) return;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // On mobile, ignore height-only resizes caused by address-bar collapse during scrolling
+      if (canvas.width !== w || Math.abs(canvas.height - h) > 120) {
+        canvas.width = w;
+        canvas.height = h;
+      }
     };
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
 
     // Initial plasma ribbon particles for desktop view
     ribbonParticlesRef.current = [];
@@ -527,7 +532,21 @@ export default function Background() {
     <>
       {/* 1. Desktop & Mobile Background Image */}
       <div
-        className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none"
+        className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none mobile-fixed-background"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          height: '100%',
+          transform: 'translate3d(0, 0, 0)',
+          WebkitTransform: 'translate3d(0, 0, 0)',
+          willChange: 'transform',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+        }}
         aria-hidden="true"
       >
         {/* Desktop Screen (md and wider): Precision Focal Framing on Cosmic Halo & Chrome Figure */}
@@ -537,11 +556,22 @@ export default function Background() {
           className="hidden md:block w-full h-full object-cover object-[center_32%] filter brightness-[1.04] contrast-[1.06] saturate-[1.10]"
         />
 
-        {/* Mobile Screen (< md): Native Portrait Cover */}
+        {/* Mobile Screen (< md): Native Portrait Cover - 100% Fixed & Frozen while scrolling */}
         <img
           src="/background-mobile.jpg"
           alt="ELIXORA 2.0 Festival Background"
           className="block md:hidden w-full h-full object-cover object-[center_20%] filter brightness-[1.02] contrast-[1.04]"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center 20%',
+            transform: 'translate3d(0, 0, 0)',
+            WebkitTransform: 'translate3d(0, 0, 0)',
+          }}
         />
 
         {/* Subtle Dark Vignette: Keeps Navbar & Lower Content Clean and Readable */}
@@ -559,6 +589,15 @@ export default function Background() {
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-10 pointer-events-none"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          transform: 'translate3d(0, 0, 0)',
+          WebkitTransform: 'translate3d(0, 0, 0)',
+        }}
         aria-hidden="true"
       />
     </>

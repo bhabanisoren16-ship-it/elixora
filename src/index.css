@@ -35,6 +35,56 @@ html, body, * {
   scrollbar-width: none; /* Firefox */
 }
 
+/* Modern overflow clipping that avoids breaking position: fixed on mobile Safari & Chrome */
+html {
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: clip;
+  min-height: 100%;
+  position: relative;
+}
+
+/* Ensure background picture is 100% frozen and does NOT move while scrolling in mobile view */
+@media (max-width: 767px) {
+  .mobile-fixed-background {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    height: -webkit-fill-available !important;
+    transform: translate3d(0, 0, 0) !important;
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    will-change: transform !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+    overflow: hidden !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .mobile-fixed-background img {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 20% !important;
+    transform: translate3d(0, 0, 0) !important;
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    will-change: transform !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+  }
+}
+
 /* Glassmorphism Classes */
 .glass-panel {
   background: rgba(12, 14, 27, 0.45);
