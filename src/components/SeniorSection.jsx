@@ -188,12 +188,6 @@ export default function SeniorSection({ onPassGenerated }) {
     }, 500);
   };
 
-  const handleQuickDemoId = (id) => {
-    setAccessRegNo(id);
-    setAccessError('');
-    soundController.playClick();
-  };
-
   const handleLockAgain = () => {
     soundController.playClick();
     setIsUnlocked(false);
@@ -443,44 +437,6 @@ export default function SeniorSection({ onPassGenerated }) {
                 )}
               </button>
             </form>
-
-            {/* Quick Demo Registration Numbers from Authorized Roster */}
-            <div className="mt-8 pt-6 border-t border-white/10 text-left">
-              <div className="flex items-center justify-between mb-2.5">
-                <span className="text-[11px] font-outfit font-bold text-slate-400 uppercase tracking-wider">
-                  ⚡ Authorized Senior Roster (1-Click Test):
-                </span>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                  40 Registered
-                </span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  '25110046', // Bhabani Shankar Soren
-                  '25110039', // Anandita Mohanty
-                  '25110045', // Barenya Ranjan Acharya
-                  '25110052', // Dipesh Behera
-                  '25110063', // Prateek Sahu
-                  '25110070', // Shradhashine Parida
-                  '24110033', // Subrat Dhal
-                ].map((id) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => handleQuickDemoId(id)}
-                    className="text-xs font-outfit font-semibold px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-amber-500/20 text-slate-300 hover:text-amber-300 border border-white/15 hover:border-amber-500/40 transition-all flex items-center gap-1.5"
-                  >
-                    <span className="font-mono text-amber-400">{id}</span>
-                    {REGISTERED_SENIORS[id] && (
-                      <span className="text-[10px] text-slate-400">({REGISTERED_SENIORS[id].name.split(' ')[0]})</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-              <p className="mt-2 text-[10px] font-mono text-slate-400">
-                Official batch IDs: 25110039 to 25110077 &amp; 24110033
-              </p>
-            </div>
 
           </div>
         </div>
