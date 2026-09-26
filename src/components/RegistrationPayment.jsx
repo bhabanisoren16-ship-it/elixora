@@ -204,10 +204,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start max-w-5xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch max-w-5xl mx-auto">
         
         {/* LEFT COLUMN: Student Details Form (50% Width) */}
-        <div className="rounded-3xl p-5 sm:p-6 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.1)]">
+        <div className="flex flex-col justify-between rounded-3xl p-5 sm:p-6 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.1)] h-full">
           <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-white/10">
             <div>
               <span className="text-xs font-outfit font-extrabold text-cyan-300 uppercase tracking-wider">STEP 1 OF 2</span>
@@ -218,29 +218,29 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3.5">
-            {/* Full Name */}
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                Full Name <span className="text-cyber-cyan">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Aarav Sharma"
-                  className={`w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border ${
-                    errors.fullName ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                  } text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                />
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between">
+            <div className="space-y-3">
+              {/* Full Name */}
+              <div>
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                  Full Name <span className="text-cyber-cyan">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Aarav Sharma"
+                    className={`w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border ${
+                      errors.fullName ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                    } text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                  />
+                </div>
+                {errors.fullName && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.fullName}</p>}
               </div>
-              {errors.fullName && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.fullName}</p>}
-            </div>
 
-            {/* Roll ID & WhatsApp in 2-Column Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Roll / Student ID */}
               <div>
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
                   Roll / Student ID <span className="text-cyber-cyan">*</span>
@@ -260,9 +260,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
               </div>
 
+              {/* Contact Number */}
               <div>
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                  Contact (WhatsApp) <span className="text-cyber-cyan">*</span>
+                  Contact Number (WhatsApp) <span className="text-cyber-cyan">*</span>
                 </label>
                 <div className="relative">
                   <input
@@ -278,15 +279,13 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 </div>
                 {errors.phone && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
               </div>
-            </div>
 
-            {/* Diet & Song Request */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Refreshment Preference */}
               <div>
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
                   Refreshment Preference
                 </label>
-                <div className="flex gap-1.5">
+                <div className="flex gap-2">
                   {['Veg', 'Non-Veg', 'Jain/Vegan'].map((item) => (
                     <button
                       type="button"
@@ -304,6 +303,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 </div>
               </div>
 
+              {/* DJ Track Request */}
               <div>
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
                   DJ Track Request (Optional)
@@ -318,11 +318,17 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 />
               </div>
             </div>
+
+            {/* Symmetrical Security Note */}
+            <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1 pt-3">
+              <ShieldCheck className="w-3 h-3 text-cyber-cyan" />
+              <span>Official Student Council Verified • Instant Pass Minting</span>
+            </p>
           </form>
         </div>
 
         {/* RIGHT COLUMN: Dynamic UPI Payment Gateway (50% Width) */}
-        <div className="rounded-3xl p-5 sm:p-6 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(168,85,247,0.1)] relative overflow-hidden">
+        <div className="flex flex-col justify-between rounded-3xl p-5 sm:p-6 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(168,85,247,0.1)] relative overflow-hidden h-full">
           
           <div>
             <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-white/10">
