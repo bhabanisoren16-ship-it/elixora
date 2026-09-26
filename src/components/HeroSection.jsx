@@ -55,7 +55,7 @@ export default function HeroSection({ onGrabPassClick }) {
 
           {/* Main Title: Exact font from user's image (Unbounded Black) */}
           <div className="relative my-1 select-none">
-            <h1 className="font-unbounded font-black text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight text-white uppercase text-center leading-none transition-all duration-300 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)] hover:scale-[1.01] striking-electric-aura">
+            <h1 className="font-unbounded font-black text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight text-white uppercase text-center leading-none transition-all duration-300 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)] hover:scale-[1.01]">
               ELIXORA 2.0
             </h1>
           </div>

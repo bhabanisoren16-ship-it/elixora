@@ -4,11 +4,10 @@ import { soundController } from '../utils/audio';
 export default function Background() {
   const canvasRef = useRef(null);
   const [isBeating, setIsBeating] = useState(false);
-  const [isStriking, setIsStriking] = useState(false);
   const sparksRef = useRef([]);
   const burstBeamsRef = useRef([]);
   const ribbonParticlesRef = useRef([]);
-  const lightningStrikesRef = useRef([]);
+  const littleLightningRef = useRef([]);
   const animFrameRef = useRef(null);
 
   // Cubic Bézier calculation helper for plasma ribbon paths
@@ -24,11 +23,11 @@ export default function Background() {
     };
   };
 
-  // Fractal Branching Generator for Electric Lightning Strikes
-  const generateLightningSegments = (x1, y1, x2, y2, displace = 55, depth = 5) => {
+  // Delicate generator for subtle "little lightning" micro-arcs
+  const generateLittleLightningSegments = (x1, y1, x2, y2, displace = 18, depth = 3) => {
     const segments = [];
     const recurse = (xa, ya, xb, yb, disp, d) => {
-      if (d <= 0 || disp < 2.5) {
+      if (d <= 0 || disp < 2) {
         segments.push({ x1: xa, y1: ya, x2: xb, y2: yb });
         return;
       }
@@ -44,114 +43,80 @@ export default function Background() {
       const splitX = mx + nx * offset;
       const splitY = my + ny * offset;
 
-      recurse(xa, ya, splitX, splitY, disp * 0.55, d - 1);
-      recurse(splitX, splitY, xb, yb, disp * 0.55, d - 1);
+      recurse(xa, ya, splitX, splitY, disp * 0.5, d - 1);
+      recurse(splitX, splitY, xb, yb, disp * 0.5, d - 1);
 
-      // Branch out child forked lightning bolts
-      if (Math.random() < 0.45 && d > 1) {
-        const branchAngle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 1.1;
-        const branchLen = len * (0.22 + Math.random() * 0.38);
+      // 1 small delicate side fork
+      if (Math.random() < 0.35 && d > 1) {
+        const branchAngle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.8;
+        const branchLen = len * (0.2 + Math.random() * 0.25);
         const bx = splitX + Math.cos(branchAngle) * branchLen;
         const by = splitY + Math.sin(branchAngle) * branchLen;
-        recurse(splitX, splitY, bx, by, disp * 0.4, d - 2);
+        recurse(splitX, splitY, bx, by, disp * 0.35, d - 2);
       }
     };
     recurse(x1, y1, x2, y2, displace, depth);
     return segments;
   };
 
-  // High-Voltage Striking Lightning Effect (Fractal Bolts + Sky Flash + Electric Thunder)
-  const spawnLightningStrike = useCallback((targetX = null, targetY = null, isIntense = false) => {
+  // Spawn subtle, delicate little lightning micro-arcs
+  const spawnLittleLightning = useCallback((targetX = null, targetY = null) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const w = canvas.width;
     const h = canvas.height;
-    const isDesktop = w >= 768;
 
-    const haloX = w * 0.5;
-    const haloY = isDesktop ? h * 0.32 : h * 0.45;
+    let x1, y1, x2, y2;
+    if (targetX !== null && targetY !== null) {
+      // Subtle click spark
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 35 + Math.random() * 55;
+      x1 = targetX + Math.cos(angle) * dist;
+      y1 = targetY + Math.sin(angle) * dist;
+      x2 = targetX;
+      y2 = targetY;
+    } else {
+      // Ambient micro-arc in cosmic space
+      const cx = w * (0.18 + Math.random() * 0.64);
+      const cy = h * (0.15 + Math.random() * 0.5);
+      const arcAngle = (Math.random() - 0.5) * Math.PI + Math.PI / 2;
+      const arcLen = 60 + Math.random() * 110;
+      x1 = cx;
+      y1 = cy;
+      x2 = cx + Math.cos(arcAngle) * arcLen;
+      y2 = cy + Math.sin(arcAngle) * arcLen;
+    }
 
-    const endX = targetX !== null ? targetX : haloX + (Math.random() - 0.5) * 80;
-    const endY = targetY !== null ? targetY : haloY;
+    const isAmber = Math.random() > 0.4;
+    const color = isAmber ? '#fbbf24' : '#38bdf8';
 
-    // Bolt originates from the cosmic sky edge
-    const startX = endX + (Math.random() - 0.5) * (w * 0.4);
-    const startY = 0;
+    const segments = generateLittleLightningSegments(x1, y1, x2, y2, 16, 4);
 
-    // Palette: Celestial Golden Amber or Electric Cyan
-    const isAmber = Math.random() > 0.35;
-    const mainColor = isAmber ? '#ffb703' : '#00f2fe';
-    const glowColor = isAmber ? '#ff7700' : '#38bdf8';
-
-    const segments = generateLightningSegments(
-      startX,
-      startY,
-      endX,
-      endY,
-      isDesktop ? 65 : 45,
-      isDesktop ? 6 : 5
-    );
-
-    lightningStrikesRef.current.push({
+    littleLightningRef.current.push({
       segments,
-      alpha: 1.0,
-      fadeRate: isIntense ? 0.038 : 0.048,
-      mainColor,
-      glowColor,
+      alpha: 0.75,
+      fadeRate: 0.045,
+      color,
       coreColor: '#ffffff',
-      glowWidth: isIntense ? 6.5 : 4.5,
-      coreWidth: isIntense ? 2.4 : 1.7,
+      glowWidth: 2.4,
+      coreWidth: 1.0,
     });
 
-    // Secondary sub-branch strike for multi-stroke atmospheric realism
-    if (isDesktop && Math.random() > 0.35) {
-      const s2X = startX + (Math.random() - 0.5) * 160;
-      const segs2 = generateLightningSegments(
-        s2X,
-        0,
-        endX + (Math.random() - 0.5) * 120,
-        endY + (Math.random() - 0.5) * 60,
-        45,
-        4
-      );
-      lightningStrikesRef.current.push({
-        segments: segs2,
-        alpha: 0.85,
-        fadeRate: 0.06,
-        mainColor: glowColor,
-        glowColor: mainColor,
-        coreColor: '#ffffff',
-        glowWidth: 3.5,
-        coreWidth: 1.2,
-      });
-    }
-
-    // Explosive electric spark shower at strike impact point
-    for (let i = 0; i < (isIntense ? 26 : 16); i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = 3.0 + Math.random() * 8.0;
+    // Subtle spark dust at tip
+    for (let i = 0; i < 4; i++) {
+      const spAngle = Math.random() * Math.PI * 2;
+      const spSpeed = 1.0 + Math.random() * 2.5;
       sparksRef.current.push({
-        x: endX,
-        y: endY,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1.5,
-        size: 1.8 + Math.random() * 3.2,
-        color: Math.random() > 0.35 ? '#ffffff' : mainColor,
-        alpha: 1.0,
-        fadeRate: 0.018 + Math.random() * 0.02,
+        x: x2,
+        y: y2,
+        vx: Math.cos(spAngle) * spSpeed,
+        vy: Math.sin(spAngle) * spSpeed - 0.5,
+        size: 1.0 + Math.random() * 1.5,
+        color,
+        alpha: 0.8,
+        fadeRate: 0.025 + Math.random() * 0.02,
       });
     }
-
-    // Realistic double-flicker atmospheric sky illumination
-    setIsStriking(true);
-    setTimeout(() => setIsStriking(false), 85);
-    setTimeout(() => {
-      setIsStriking(true);
-      setTimeout(() => setIsStriking(false), 65);
-    }, 125);
-
-    // Audio thunder effect
-    soundController.playLightningThunder();
   }, []);
 
   // Interactive Solar Beat Drop: Spawns solar flare beams & golden embers
@@ -186,54 +151,38 @@ export default function Background() {
     }
 
     // 2. Golden Stardust & Solar Ember Explosion
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 30; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 2.5 + Math.random() * 7;
+      const speed = 2.5 + Math.random() * 6;
       sparksRef.current.push({
         x,
         y,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 1.2,
-        size: 1.8 + Math.random() * 3.5,
+        size: 1.6 + Math.random() * 3.0,
         color: Math.random() > 0.3 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#38bdf8',
         alpha: 1.0,
-        fadeRate: 0.015 + Math.random() * 0.015,
+        fadeRate: 0.018 + Math.random() * 0.015,
       });
     }
   }, []);
 
-  // Periodic ambient lightning strikes every 3.8s to 6.2s
+  // Periodic subtle little lightning every 2.0s to 3.8s
   useEffect(() => {
     let timerId;
-    const scheduleNextStrike = () => {
-      const delay = 3600 + Math.random() * 2600;
+    const scheduleNext = () => {
+      const delay = 1800 + Math.random() * 2000;
       timerId = setTimeout(() => {
-        if (canvasRef.current) {
-          const w = canvasRef.current.width;
-          const h = canvasRef.current.height;
-          const isDesktop = w >= 768;
-
-          if (Math.random() < 0.72) {
-            // Strike towards the upper center
-            spawnLightningStrike(w * 0.5, isDesktop ? h * 0.32 : h * 0.45, false);
-          } else {
-            // Strike along the cosmic ribbon flanks
-            const sideX = Math.random() > 0.5
-              ? w * (0.12 + Math.random() * 0.22)
-              : w * (0.66 + Math.random() * 0.22);
-            const sideY = h * (0.2 + Math.random() * 0.5);
-            spawnLightningStrike(sideX, sideY, false);
-          }
-        }
-        scheduleNextStrike();
+        spawnLittleLightning();
+        scheduleNext();
       }, delay);
     };
 
-    scheduleNextStrike();
+    scheduleNext();
     return () => clearTimeout(timerId);
-  }, [spawnLightningStrike]);
+  }, [spawnLittleLightning]);
 
-  // Click anywhere on page to trigger both a dramatic lightning strike and solar burst
+  // Click anywhere on page to trigger subtle micro-spark and solar burst
   useEffect(() => {
     const handleWindowClick = (e) => {
       const target = e.target;
@@ -245,15 +194,15 @@ export default function Background() {
       ) {
         return;
       }
-      // Instant lightning strike to click location
-      spawnLightningStrike(e.clientX, e.clientY, true);
+      // Delicate little electric spark to click location
+      spawnLittleLightning(e.clientX, e.clientY);
       // Synchronized solar flare burst
       triggerConcertBeat(e.clientX, e.clientY);
     };
 
     window.addEventListener('click', handleWindowClick);
     return () => window.removeEventListener('click', handleWindowClick);
-  }, [spawnLightningStrike, triggerConcertBeat]);
+  }, [spawnLittleLightning, triggerConcertBeat]);
 
   // Main 60fps Canvas Loop
   useEffect(() => {
@@ -371,46 +320,46 @@ export default function Background() {
       }
 
       // =========================================================================
-      // 2. STRIKING FRACTAL LIGHTNING BOLTS (DUAL-PASS HIGH-VOLTAGE GLOW)
+      // 2. LITTLE LIGHTNING (SUBTLE MICRO-ARCS)
       // =========================================================================
-      if (lightningStrikesRef.current.length > 0) {
+      if (littleLightningRef.current.length > 0) {
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
 
-        lightningStrikesRef.current = lightningStrikesRef.current.filter((strike) => {
-          strike.alpha -= strike.fadeRate;
-          if (strike.alpha <= 0) return false;
+        littleLightningRef.current = littleLightningRef.current.filter((arc) => {
+          arc.alpha -= arc.fadeRate;
+          if (arc.alpha <= 0) return false;
 
-          ctx.globalAlpha = Math.max(0, strike.alpha);
+          ctx.globalAlpha = Math.max(0, arc.alpha);
 
-          // Pass 1: Wide diffused outer glow in vibrant amber or cyan
+          // Subtle soft glow
           ctx.beginPath();
-          for (let s = 0; s < strike.segments.length; s++) {
-            const seg = strike.segments[s];
+          for (let s = 0; s < arc.segments.length; s++) {
+            const seg = arc.segments[s];
             ctx.moveTo(seg.x1, seg.y1);
             ctx.lineTo(seg.x2, seg.y2);
           }
-          ctx.strokeStyle = strike.glowColor;
-          ctx.lineWidth = strike.glowWidth;
+          ctx.strokeStyle = arc.color;
+          ctx.lineWidth = arc.glowWidth;
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
-          ctx.shadowColor = strike.mainColor;
-          ctx.shadowBlur = 24;
+          ctx.shadowColor = arc.color;
+          ctx.shadowBlur = 10;
           ctx.stroke();
 
-          // Pass 2: High-intensity searing white core
+          // Fine white core
           ctx.beginPath();
-          for (let s = 0; s < strike.segments.length; s++) {
-            const seg = strike.segments[s];
+          for (let s = 0; s < arc.segments.length; s++) {
+            const seg = arc.segments[s];
             ctx.moveTo(seg.x1, seg.y1);
             ctx.lineTo(seg.x2, seg.y2);
           }
-          ctx.strokeStyle = strike.coreColor;
-          ctx.lineWidth = strike.coreWidth;
+          ctx.strokeStyle = arc.coreColor;
+          ctx.lineWidth = arc.coreWidth;
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
           ctx.shadowColor = '#ffffff';
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 5;
           ctx.stroke();
 
           return true;
@@ -535,18 +484,9 @@ export default function Background() {
             isBeating ? 'opacity-100' : 'opacity-0'
           }`}
         />
-
-        {/* Striking Atmospheric Lightning Flash Overlay (Double-Flicker Sky Illumination) */}
-        <div
-          className={`absolute inset-0 pointer-events-none transition-opacity duration-100 mix-blend-screen ${
-            isStriking
-              ? 'opacity-100 bg-gradient-to-b from-amber-300/30 via-white/15 to-transparent'
-              : 'opacity-0'
-          }`}
-        />
       </div>
 
-      {/* 2. Fullscreen Cosmic Striking Lightning, Plasma Ribbons & Golden Stardust Canvas */}
+      {/* 2. Fullscreen Canvas: Flowing Cosmic Ribbons, Little Lightning & Golden Stardust */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-10 pointer-events-none"
