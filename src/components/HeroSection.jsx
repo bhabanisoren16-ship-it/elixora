@@ -44,7 +44,7 @@ export default function HeroSection({ onGrabPassClick }) {
         {/* Top Tagline Pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian-950/80 border border-amber-500/50 text-amber-300 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-2 shadow-lg backdrop-blur-md">
           <Sparkles className="w-3 h-3 text-amber-400 animate-spin-slow" />
-          <span>The Official Freshers' Festival • Welcome Class of '26</span>
+          <span>Welcome Class 26</span>
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
         </div>
 
