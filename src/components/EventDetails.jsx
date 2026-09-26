@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Navigation, Sparkles, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
+import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 
@@ -10,10 +10,6 @@ export default function EventDetails() {
       
       {/* Section Header */}
       <div className="text-center mb-14">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-violet/20 border border-cyber-violet/50 text-cyber-violet text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
-          <Sparkles className="w-3.5 h-3.5 text-cyber-violet" />
-          <span>ESSENTIAL DOSSIER</span>
-        </div>
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Event Details &amp; Blueprint
         </h2>
