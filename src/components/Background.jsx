@@ -7,7 +7,7 @@ export default function Background() {
   const sparksRef = useRef([]);
   const burstBeamsRef = useRef([]);
   const ribbonParticlesRef = useRef([]);
-  const littleLightningRef = useRef([]);
+  const desktopLightningRef = useRef([]);
   const animFrameRef = useRef(null);
 
   // Cubic Bézier calculation helper for plasma ribbon paths
@@ -23,11 +23,11 @@ export default function Background() {
     };
   };
 
-  // Delicate generator for subtle "little lightning" micro-arcs
-  const generateLittleLightningSegments = (x1, y1, x2, y2, displace = 18, depth = 3) => {
+  // High-Energy Full Desktop Fractal Lightning Generator
+  const generateFullDesktopLightningSegments = (x1, y1, x2, y2, displace = 65, depth = 6) => {
     const segments = [];
     const recurse = (xa, ya, xb, yb, disp, d) => {
-      if (d <= 0 || disp < 2) {
+      if (d <= 0 || disp < 3.5) {
         segments.push({ x1: xa, y1: ya, x2: xb, y2: yb });
         return;
       }
@@ -43,78 +43,123 @@ export default function Background() {
       const splitX = mx + nx * offset;
       const splitY = my + ny * offset;
 
-      recurse(xa, ya, splitX, splitY, disp * 0.5, d - 1);
-      recurse(splitX, splitY, xb, yb, disp * 0.5, d - 1);
+      recurse(xa, ya, splitX, splitY, disp * 0.55, d - 1);
+      recurse(splitX, splitY, xb, yb, disp * 0.55, d - 1);
 
-      // 1 small delicate side fork
-      if (Math.random() < 0.35 && d > 1) {
-        const branchAngle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.8;
-        const branchLen = len * (0.2 + Math.random() * 0.25);
+      // Branch out dramatic forks across the full desktop
+      if (Math.random() < 0.45 && d > 1) {
+        const branchAngle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 1.15;
+        const branchLen = len * (0.25 + Math.random() * 0.35);
         const bx = splitX + Math.cos(branchAngle) * branchLen;
         const by = splitY + Math.sin(branchAngle) * branchLen;
-        recurse(splitX, splitY, bx, by, disp * 0.35, d - 2);
+        recurse(splitX, splitY, bx, by, disp * 0.45, d - 2);
       }
     };
     recurse(x1, y1, x2, y2, displace, depth);
     return segments;
   };
 
-  // Spawn subtle, delicate little lightning micro-arcs
-  const spawnLittleLightning = useCallback((targetX = null, targetY = null) => {
+  // Spawn Full Desktop Light / Lightning Strikes
+  const spawnDesktopLightStrike = useCallback((targetX = null, targetY = null, isIntense = false) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const w = canvas.width;
     const h = canvas.height;
+    const isDesktop = w >= 768;
 
     let x1, y1, x2, y2;
+
     if (targetX !== null && targetY !== null) {
-      // Subtle click spark
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 35 + Math.random() * 55;
-      x1 = targetX + Math.cos(angle) * dist;
-      y1 = targetY + Math.sin(angle) * dist;
-      x2 = targetX;
-      y2 = targetY;
+      // User Click: Lightning strikes from the top of the desktop straight through the cursor to the bottom
+      x1 = targetX + (Math.random() - 0.5) * (w * 0.25);
+      y1 = 0;
+      x2 = targetX + (Math.random() - 0.5) * (w * 0.25);
+      y2 = h;
     } else {
-      // Ambient micro-arc in cosmic space
-      const cx = w * (0.18 + Math.random() * 0.64);
-      const cy = h * (0.15 + Math.random() * 0.5);
-      const arcAngle = (Math.random() - 0.5) * Math.PI + Math.PI / 2;
-      const arcLen = 60 + Math.random() * 110;
-      x1 = cx;
-      y1 = cy;
-      x2 = cx + Math.cos(arcAngle) * arcLen;
-      y2 = cy + Math.sin(arcAngle) * arcLen;
+      // Ambient strikes across the full desktop
+      const strikePattern = Math.random();
+      if (strikePattern < 0.55) {
+        // 1. Full-height vertical strike spanning the desktop top-to-bottom
+        x1 = w * (0.08 + Math.random() * 0.84);
+        y1 = 0;
+        x2 = x1 + (Math.random() - 0.5) * (w * 0.4);
+        y2 = h;
+      } else if (strikePattern < 0.82) {
+        // 2. Full desktop diagonal cross-screen strike
+        const fromLeft = Math.random() > 0.5;
+        x1 = fromLeft ? 0 : w;
+        y1 = Math.random() * h * 0.35;
+        x2 = fromLeft ? w * (0.6 + Math.random() * 0.4) : w * (0.0 + Math.random() * 0.4);
+        y2 = h * (0.65 + Math.random() * 0.35);
+      } else {
+        // 3. Central cosmic plunge down the desktop center
+        x1 = w * (0.35 + Math.random() * 0.3);
+        y1 = 0;
+        x2 = w * (0.3 + Math.random() * 0.4);
+        y2 = h * 0.92;
+      }
     }
 
     const isAmber = Math.random() > 0.4;
-    const color = isAmber ? '#fbbf24' : '#38bdf8';
+    const mainColor = isAmber ? '#ffb703' : '#00f2fe';
+    const glowColor = isAmber ? '#ff7700' : '#0284c7';
 
-    const segments = generateLittleLightningSegments(x1, y1, x2, y2, 16, 4);
+    const segments = generateFullDesktopLightningSegments(
+      x1,
+      y1,
+      x2,
+      y2,
+      isDesktop ? 70 : 45,
+      isDesktop ? 6 : 5
+    );
 
-    littleLightningRef.current.push({
+    desktopLightningRef.current.push({
       segments,
-      alpha: 0.75,
-      fadeRate: 0.045,
-      color,
+      alpha: 1.0,
+      fadeRate: isIntense ? 0.038 : 0.048,
+      mainColor,
+      glowColor,
       coreColor: '#ffffff',
-      glowWidth: 2.4,
-      coreWidth: 1.0,
+      glowWidth: isDesktop ? 6.5 : 4.5,
+      coreWidth: isDesktop ? 2.2 : 1.5,
+      isAmber,
+      flashIntensity: isIntense ? 0.12 : 0.07,
     });
 
-    // Subtle spark dust at tip
-    for (let i = 0; i < 4; i++) {
+    // Companion strike on desktop: 45% chance of a secondary strike across another section
+    if (isDesktop && Math.random() > 0.55 && !isIntense) {
+      const s2X1 = (x1 + w * 0.4) % w;
+      const s2X2 = s2X1 + (Math.random() - 0.5) * (w * 0.3);
+      const segs2 = generateFullDesktopLightningSegments(s2X1, 0, s2X2, h * 0.85, 55, 5);
+      desktopLightningRef.current.push({
+        segments: segs2,
+        alpha: 0.85,
+        fadeRate: 0.06,
+        mainColor: glowColor,
+        glowColor: mainColor,
+        coreColor: '#ffffff',
+        glowWidth: 4.5,
+        coreWidth: 1.4,
+        isAmber: !isAmber,
+        flashIntensity: 0.04,
+      });
+    }
+
+    // Spark burst at contact point
+    const sparkX = targetX !== null ? targetX : x2;
+    const sparkY = targetY !== null ? targetY : (y2 > h * 0.9 ? h * 0.85 : y2);
+    for (let i = 0; i < (isIntense ? 22 : 12); i++) {
       const spAngle = Math.random() * Math.PI * 2;
-      const spSpeed = 1.0 + Math.random() * 2.5;
+      const spSpeed = 2.0 + Math.random() * 6.5;
       sparksRef.current.push({
-        x: x2,
-        y: y2,
+        x: sparkX,
+        y: sparkY,
         vx: Math.cos(spAngle) * spSpeed,
-        vy: Math.sin(spAngle) * spSpeed - 0.5,
-        size: 1.0 + Math.random() * 1.5,
-        color,
-        alpha: 0.8,
-        fadeRate: 0.025 + Math.random() * 0.02,
+        vy: Math.sin(spAngle) * spSpeed - 1.2,
+        size: 1.5 + Math.random() * 2.5,
+        color: Math.random() > 0.4 ? '#ffffff' : mainColor,
+        alpha: 1.0,
+        fadeRate: 0.02 + Math.random() * 0.02,
       });
     }
   }, []);
@@ -167,22 +212,22 @@ export default function Background() {
     }
   }, []);
 
-  // Periodic subtle little lightning every 2.0s to 3.8s
+  // Periodic Full Desktop Light Striking every 2.4s to 4.2s
   useEffect(() => {
     let timerId;
     const scheduleNext = () => {
-      const delay = 1800 + Math.random() * 2000;
+      const delay = 2400 + Math.random() * 1800;
       timerId = setTimeout(() => {
-        spawnLittleLightning();
+        spawnDesktopLightStrike();
         scheduleNext();
       }, delay);
     };
 
     scheduleNext();
     return () => clearTimeout(timerId);
-  }, [spawnLittleLightning]);
+  }, [spawnDesktopLightStrike]);
 
-  // Click anywhere on page to trigger subtle micro-spark and solar burst
+  // Click anywhere on page to trigger full desktop light strike and solar burst
   useEffect(() => {
     const handleWindowClick = (e) => {
       const target = e.target;
@@ -194,15 +239,15 @@ export default function Background() {
       ) {
         return;
       }
-      // Delicate little electric spark to click location
-      spawnLittleLightning(e.clientX, e.clientY);
+      // Full desktop lightning strike traversing through click location
+      spawnDesktopLightStrike(e.clientX, e.clientY, true);
       // Synchronized solar flare burst
       triggerConcertBeat(e.clientX, e.clientY);
     };
 
     window.addEventListener('click', handleWindowClick);
     return () => window.removeEventListener('click', handleWindowClick);
-  }, [spawnLittleLightning, triggerConcertBeat]);
+  }, [spawnDesktopLightStrike, triggerConcertBeat]);
 
   // Main 60fps Canvas Loop
   useEffect(() => {
@@ -320,46 +365,70 @@ export default function Background() {
       }
 
       // =========================================================================
-      // 2. LITTLE LIGHTNING (SUBTLE MICRO-ARCS)
+      // 2. LIGHT STRIKING IN FULL DESKTOP (FULL-SCREEN FRACTAL LIGHTNING & ILLUMINATION)
       // =========================================================================
-      if (littleLightningRef.current.length > 0) {
+      if (desktopLightningRef.current.length > 0) {
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
 
-        littleLightningRef.current = littleLightningRef.current.filter((arc) => {
-          arc.alpha -= arc.fadeRate;
-          if (arc.alpha <= 0) return false;
+        desktopLightningRef.current = desktopLightningRef.current.filter((strike) => {
+          strike.alpha -= strike.fadeRate;
+          if (strike.alpha <= 0) return false;
 
-          ctx.globalAlpha = Math.max(0, arc.alpha);
+          // Full Desktop Ambient Light Flash
+          if (strike.alpha > 0.65) {
+            const flashA = (strike.alpha - 0.65) * strike.flashIntensity * 2.8;
+            ctx.fillStyle = strike.isAmber
+              ? `rgba(255, 183, 3, ${flashA})`
+              : `rgba(0, 242, 254, ${flashA})`;
+            ctx.fillRect(0, 0, w, h);
+          }
 
-          // Subtle soft glow
+          ctx.globalAlpha = Math.max(0, strike.alpha);
+
+          // Pass 1: Wide full-desktop atmospheric neon aura
           ctx.beginPath();
-          for (let s = 0; s < arc.segments.length; s++) {
-            const seg = arc.segments[s];
+          for (let s = 0; s < strike.segments.length; s++) {
+            const seg = strike.segments[s];
             ctx.moveTo(seg.x1, seg.y1);
             ctx.lineTo(seg.x2, seg.y2);
           }
-          ctx.strokeStyle = arc.color;
-          ctx.lineWidth = arc.glowWidth;
+          ctx.strokeStyle = strike.glowColor;
+          ctx.lineWidth = strike.glowWidth;
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
-          ctx.shadowColor = arc.color;
-          ctx.shadowBlur = 10;
+          ctx.shadowColor = strike.mainColor;
+          ctx.shadowBlur = 26;
           ctx.stroke();
 
-          // Fine white core
+          // Pass 2: Vibrant full-desktop lightning body
           ctx.beginPath();
-          for (let s = 0; s < arc.segments.length; s++) {
-            const seg = arc.segments[s];
+          for (let s = 0; s < strike.segments.length; s++) {
+            const seg = strike.segments[s];
             ctx.moveTo(seg.x1, seg.y1);
             ctx.lineTo(seg.x2, seg.y2);
           }
-          ctx.strokeStyle = arc.coreColor;
-          ctx.lineWidth = arc.coreWidth;
+          ctx.strokeStyle = strike.mainColor;
+          ctx.lineWidth = strike.glowWidth * 0.55;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.shadowColor = strike.mainColor;
+          ctx.shadowBlur = 14;
+          ctx.stroke();
+
+          // Pass 3: Searing white core
+          ctx.beginPath();
+          for (let s = 0; s < strike.segments.length; s++) {
+            const seg = strike.segments[s];
+            ctx.moveTo(seg.x1, seg.y1);
+            ctx.lineTo(seg.x2, seg.y2);
+          }
+          ctx.strokeStyle = strike.coreColor;
+          ctx.lineWidth = strike.coreWidth;
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
           ctx.shadowColor = '#ffffff';
-          ctx.shadowBlur = 5;
+          ctx.shadowBlur = 8;
           ctx.stroke();
 
           return true;
@@ -486,7 +555,7 @@ export default function Background() {
         />
       </div>
 
-      {/* 2. Fullscreen Canvas: Flowing Cosmic Ribbons, Little Lightning & Golden Stardust */}
+      {/* 2. Fullscreen Canvas: Full Desktop Light Striking, Plasma Ribbons & Golden Stardust */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-10 pointer-events-none"
