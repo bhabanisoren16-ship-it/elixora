@@ -218,8 +218,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between">
-            <div className="space-y-3">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between pt-1">
+            <div className="flex-1 flex flex-col justify-between space-y-3.5 lg:space-y-0 pb-3">
               {/* Full Name */}
               <div>
                 <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
@@ -291,7 +291,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                       type="button"
                       key={item}
                       onClick={() => setFormData({ ...formData, diet: item })}
-                      className={`flex-1 py-2 rounded-xl text-xs font-medium border transition-all ${
+                      className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all ${
                         formData.diet === item
                           ? 'bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)]'
                           : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
@@ -314,13 +314,13 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   value={formData.songRequest}
                   onChange={handleInputChange}
                   placeholder="Song name & artist"
-                  className="w-full px-4 py-2 rounded-xl bg-obsidian-900/90 border border-white/15 focus:border-cyber-cyan text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all"
+                  className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border border-white/15 focus:border-cyber-cyan text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all"
                 />
               </div>
             </div>
 
             {/* Symmetrical Security Note */}
-            <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1 pt-3">
+            <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1 pt-2">
               <ShieldCheck className="w-3 h-3 text-cyber-cyan" />
               <span>Official Student Council Verified • Instant Pass Minting</span>
             </p>
