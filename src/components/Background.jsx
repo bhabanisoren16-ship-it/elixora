@@ -347,15 +347,15 @@ export default function Background() {
       >
         {/* Desktop Screen (md and wider): Native 16:9 Widescreen Artwork fitting the desktop viewport 100% */}
         <img
-          src="/anime-party-desktop.jpg"
-          alt="ELIXORA 2.0 Anime Street Festival"
+          src="/background-desktop.jpg"
+          alt="ELIXORA 2.0 Festival Background"
           className="hidden md:block w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.04]"
         />
 
         {/* Mobile Screen (< md): Native Portrait Cover */}
         <img
-          src="/anime-party.jpg"
-          alt="ELIXORA 2.0 Anime Street Festival"
+          src="/background-mobile.jpg"
+          alt="ELIXORA 2.0 Festival Background"
           className="block md:hidden w-full h-full object-cover object-[center_20%] filter brightness-[1.02] contrast-[1.04]"
         />
 
