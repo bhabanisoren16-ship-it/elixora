@@ -115,7 +115,6 @@ function generateStrikingBranches(x1, y1, x2, y2, displace = 50, depth = 4) {
 export default function Background() {
   const canvasRef = useRef(null);
   const [isBeating, setIsBeating] = useState(false);
-  const [isStriking, setIsStriking] = useState(false);
 
   const sparksRef = useRef([]);
   const shootingStarsRef = useRef([]);
@@ -220,38 +219,13 @@ export default function Background() {
 
     lastStrikeTimeRef.current = Date.now();
 
-    // 1. Realistic Double-Flicker Sky Illumination Flash
-    setIsStriking(true);
-    setTimeout(() => setIsStriking(false), 90);
-    setTimeout(() => {
-      setIsStriking(true);
-      setTimeout(() => setIsStriking(false), 75);
-    }, 135);
-
-    // 2. Explosive electric sparks shower at strike impact (molten gold & solar embers)
-    for (let i = 0; i < (isIntense ? 24 : 14); i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = 2.5 + Math.random() * 7.0;
-      sparksRef.current.push({
-        x: endX,
-        y: endY,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1.2,
-        size: 1.5 + Math.random() * 3.0,
-        color: Math.random() > 0.35 ? '#ffffff' : (Math.random() > 0.5 ? mainColor : palette.spark),
-        alpha: 1.0,
-        fadeRate: 0.016 + Math.random() * 0.018,
-      });
-    }
-
-    // 3. Flare up the solar halo & surge molten ribbons
-    haloBurstRef.current = 1.0;
+    // 1. Smooth ribbon energy surge without any flashing or popping
     ribbonPulsesRef.current.push(
-      { pathIndex: 0, progress: 0, speed: 0.014, tailLength: 0.18, color: mainColor },
-      { pathIndex: 1, progress: 0, speed: 0.014, tailLength: 0.18, color: glowColor }
+      { pathIndex: 0, progress: 0, speed: 0.012, tailLength: 0.16, color: mainColor },
+      { pathIndex: 1, progress: 0, speed: 0.012, tailLength: 0.16, color: glowColor }
     );
 
-    // 4. Thunder FX Audio
+    // 2. Smooth Thunder FX Audio
     soundController.playLightningThunder();
 
     // 5. Watchdog timeout to guarantee bolt never freezes
@@ -316,14 +290,13 @@ export default function Background() {
       ) {
         return;
       }
-      // Instant dramatic strike directly to click location!
+      // Smooth lightning strike directly to click location with zero pop
       spawnStrikingEffect(e.clientX, e.clientY, true);
-      triggerConcertBeat(e.clientX, e.clientY);
     };
 
     window.addEventListener('click', handleWindowClick);
     return () => window.removeEventListener('click', handleWindowClick);
-  }, [spawnStrikingEffect, triggerConcertBeat]);
+  }, [spawnStrikingEffect]);
 
   // Smooth micro-parallax tracking on mouse move
   useEffect(() => {
@@ -812,15 +785,6 @@ export default function Background() {
         <div
           className={`absolute inset-0 bg-gradient-to-t from-amber-600/15 via-orange-500/10 to-transparent pointer-events-none transition-opacity duration-300 ${
             isBeating ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-
-        {/* Striking Sky Illumination Flash Overlay (Molten Orange & Solar Gold Atmosphere) */}
-        <div
-          className={`absolute inset-0 pointer-events-none transition-opacity duration-75 mix-blend-screen ${
-            isStriking
-              ? 'opacity-100 bg-gradient-to-b from-orange-500/40 via-amber-400/25 to-transparent'
-              : 'opacity-0'
           }`}
         />
       </div>
