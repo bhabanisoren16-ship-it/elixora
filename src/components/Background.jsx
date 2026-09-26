@@ -20,7 +20,6 @@ function getRibbonPoint(pathIndex, t, w, h, isDesktop) {
 
   if (isDesktop) {
     if (pathIndex === 0) {
-      // Left Molten Ribbon: Swoops from upper-left down across the left flank
       return getCubicBezier(
         { x: w * 0.35, y: -10 },
         { x: w * 0.28, y: h * 0.22 },
@@ -29,7 +28,6 @@ function getRibbonPoint(pathIndex, t, w, h, isDesktop) {
         ct
       );
     } else if (pathIndex === 1) {
-      // Right Molten Ribbon: Swoops down from upper-right across the right flank
       return getCubicBezier(
         { x: w * 0.68, y: -10 },
         { x: w * 0.76, y: h * 0.24 },
@@ -38,7 +36,6 @@ function getRibbonPoint(pathIndex, t, w, h, isDesktop) {
         ct
       );
     } else {
-      // Bottom Chest Loop: Curving under the figure's collar/chest
       return getCubicBezier(
         { x: w * 0.44, y: h * 0.62 },
         { x: w * 0.48, y: h * 0.94 },
@@ -48,7 +45,6 @@ function getRibbonPoint(pathIndex, t, w, h, isDesktop) {
       );
     }
   } else {
-    // Mobile Portrait framing (artwork centered at center 20%)
     if (pathIndex === 0) {
       return getCubicBezier(
         { x: w * 0.32, y: -10 },
@@ -77,84 +73,50 @@ function getRibbonPoint(pathIndex, t, w, h, isDesktop) {
   }
 }
 
-// Helper: Generates a single, lightweight, clean lightning bolt targeting upper sky quadrants
-function createCleanBolt(w, h, isDesktop) {
-  try {
-    const segments = [];
-    const strikeSide = Math.random() > 0.5 ? 'left' : 'right';
-
-    let startX, startY, endX, endY;
-    if (isDesktop) {
-      if (strikeSide === 'left') {
-        startX = w * (0.08 + Math.random() * 0.16);
-        startY = 0;
-        endX = w * (0.22 + Math.random() * 0.14);
-        endY = h * (0.30 + Math.random() * 0.22);
-      } else {
-        startX = w * (0.76 + Math.random() * 0.16);
-        startY = 0;
-        endX = w * (0.64 + Math.random() * 0.14);
-        endY = h * (0.30 + Math.random() * 0.22);
-      }
-    } else {
-      startX = w * (0.2 + Math.random() * 0.6);
-      startY = 0;
-      endX = startX + (Math.random() - 0.5) * w * 0.3;
-      endY = h * (0.16 + Math.random() * 0.16);
+// High-Voltage Fractal Branching Generator for Dramatic Striking Lightning
+function generateStrikingBranches(x1, y1, x2, y2, displace = 50, depth = 4) {
+  const segments = [];
+  function recurse(xa, ya, xb, yb, disp, d) {
+    if (d <= 0 || disp < 2.5 || segments.length >= 26) {
+      segments.push({ x1: xa, y1: ya, x2: xb, y2: yb });
+      return;
     }
-
-    function subdivide(x1, y1, x2, y2, depth, maxDepth, spread) {
-      if (depth >= maxDepth || segments.length >= 18) {
-        segments.push({ x1, y1, x2, y2 });
-        return;
-      }
-      const midX = (x1 + x2) / 2;
-      const midY = (y1 + y2) / 2;
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      const len = Math.hypot(dx, dy);
-      if (len < 10) {
-        segments.push({ x1, y1, x2, y2 });
-        return;
-      }
-      const nx = -dy / len;
-      const ny = dx / len;
-      const offset = (Math.random() - 0.5) * spread;
-      const displacedX = midX + nx * offset;
-      const displacedY = midY + ny * offset;
-
-      subdivide(x1, y1, displacedX, displacedY, depth + 1, maxDepth, spread * 0.55);
-      subdivide(displacedX, displacedY, x2, y2, depth + 1, maxDepth, spread * 0.55);
-
-      if (depth === 1 && Math.random() < 0.35 && segments.length < 14) {
-        const forkAngle = (Math.random() - 0.5) * 0.7;
-        const forkLen = len * 0.35;
-        const forkEndX = displacedX + (dx * Math.cos(forkAngle) - dy * Math.sin(forkAngle)) * (forkLen / len);
-        const forkEndY = displacedY + (dx * Math.sin(forkAngle) + dy * Math.cos(forkAngle)) * (forkLen / len);
-        subdivide(displacedX, displacedY, forkEndX, forkEndY, depth + 2, maxDepth, spread * 0.3);
-      }
+    const mx = (xa + xb) / 2;
+    const my = (ya + yb) / 2;
+    const dx = xb - xa;
+    const dy = yb - ya;
+    const len = Math.hypot(dx, dy);
+    if (len < 8) {
+      segments.push({ x1: xa, y1: ya, x2: xb, y2: yb });
+      return;
     }
+    const nx = -dy / len;
+    const ny = dx / len;
+    const offset = (Math.random() - 0.5) * disp * 1.8;
+    const splitX = mx + nx * offset;
+    const splitY = my + ny * offset;
 
-    subdivide(startX, startY, endX, endY, 0, 3, isDesktop ? 60 : 35);
+    recurse(xa, ya, splitX, splitY, disp * 0.55, d - 1);
+    recurse(splitX, splitY, xb, yb, disp * 0.55, d - 1);
 
-    const isAmber = Math.random() > 0.65;
-    return {
-      segments: segments.slice(0, 20),
-      alpha: 1.0,
-      fadeRate: 0.055,
-      glowColor: isAmber ? '#ffb703' : '#38bdf8',
-      isAmber,
-      createdAt: Date.now(),
-    };
-  } catch (err) {
-    console.error("Bolt generation error:", err);
-    return null;
+    // Forked secondary branch
+    if (Math.random() < 0.40 && d > 1 && segments.length < 22) {
+      const branchAngle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 1.0;
+      const branchLen = len * (0.24 + Math.random() * 0.36);
+      const bx = splitX + Math.cos(branchAngle) * branchLen;
+      const by = splitY + Math.sin(branchAngle) * branchLen;
+      recurse(splitX, splitY, bx, by, disp * 0.45, d - 2);
+    }
   }
+  recurse(x1, y1, x2, y2, displace, depth);
+  return segments;
 }
 
 export default function Background() {
   const canvasRef = useRef(null);
   const [isBeating, setIsBeating] = useState(false);
+  const [isStriking, setIsStriking] = useState(false);
+
   const sparksRef = useRef([]);
   const shootingStarsRef = useRef([]);
   const ribbonPulsesRef = useRef([]);
@@ -162,36 +124,116 @@ export default function Background() {
   const glintRef = useRef(null);
   const activeBoltRef = useRef(null);
 
-  const nextAutoStrikeTimeRef = useRef(Date.now() + 6000 + Math.random() * 4000);
-  const nextRibbonPulseTimeRef = useRef(Date.now() + 800);
-  const nextGlintTimeRef = useRef(Date.now() + 2500);
+  // Fast start on localhost: first strike at 2.0s
+  const nextAutoStrikeTimeRef = useRef(Date.now() + 2000);
+  const nextRibbonPulseTimeRef = useRef(Date.now() + 600);
+  const nextGlintTimeRef = useRef(Date.now() + 2200);
   const lastStrikeTimeRef = useRef(Date.now());
   const animFrameRef = useRef(null);
 
-  // Safe Lightning Bolt Spawner (guaranteed 1 active bolt max)
-  const spawnBolt = useCallback(() => {
+  // High-Voltage Striking Lightning Effect (Strikes Sky, Halo, or Click Target + Sky Flash + Thunder)
+  const spawnStrikingEffect = useCallback((targetX = null, targetY = null, isIntense = true) => {
     const canvas = canvasRef.current;
-    if (!canvas || activeBoltRef.current !== null) return;
+    if (!canvas) return;
     const w = canvas.width;
     const h = canvas.height;
     const isDesktop = w >= 768;
 
-    const newBolt = createCleanBolt(w, h, isDesktop);
-    if (newBolt) {
-      activeBoltRef.current = newBolt;
-      lastStrikeTimeRef.current = Date.now();
-      soundController.playLightningThunder();
+    // Destination: clicked point or celestial halo perimeter
+    const haloX = w * 0.5;
+    const haloY = isDesktop ? h * 0.32 : h * 0.20;
 
-      // Hard watchdog timeout: force-clear bolt after 550ms if ever delayed
-      setTimeout(() => {
-        if (activeBoltRef.current && Date.now() - activeBoltRef.current.createdAt > 500) {
-          activeBoltRef.current = null;
-        }
-      }, 550);
+    const endX = targetX !== null ? targetX : haloX + (Math.random() - 0.5) * (isDesktop ? 220 : 120);
+    const endY = targetY !== null ? targetY : haloY + (Math.random() - 0.5) * 50;
+
+    // Bolt originates from the heavens
+    const startX = endX + (Math.random() - 0.5) * (w * 0.45);
+    const startY = 0;
+
+    const isAmber = Math.random() > 0.35;
+    const mainColor = isAmber ? '#ffb703' : '#00f2fe';
+    const glowColor = isAmber ? '#ff7700' : '#38bdf8';
+
+    // Primary striking bolt
+    const primarySegments = generateStrikingBranches(
+      startX,
+      startY,
+      endX,
+      endY,
+      isDesktop ? 65 : 45,
+      4
+    );
+
+    // Optional companion bolt for multi-stroke atmospheric realism
+    let secondarySegments = [];
+    if (isDesktop && Math.random() > 0.35) {
+      const s2X = startX + (Math.random() - 0.5) * 140;
+      secondarySegments = generateStrikingBranches(
+        s2X,
+        0,
+        endX + (Math.random() - 0.5) * 90,
+        endY + (Math.random() - 0.5) * 40,
+        45,
+        3
+      );
     }
+
+    activeBoltRef.current = {
+      primary: primarySegments,
+      secondary: secondarySegments,
+      alpha: 1.0,
+      fadeRate: isIntense ? 0.042 : 0.052, // ~260ms lifetime
+      mainColor,
+      glowColor,
+      isAmber,
+      createdAt: Date.now(),
+    };
+
+    lastStrikeTimeRef.current = Date.now();
+
+    // 1. Realistic Double-Flicker Sky Illumination Flash
+    setIsStriking(true);
+    setTimeout(() => setIsStriking(false), 90);
+    setTimeout(() => {
+      setIsStriking(true);
+      setTimeout(() => setIsStriking(false), 75);
+    }, 135);
+
+    // 2. Explosive electric sparks shower at strike impact
+    for (let i = 0; i < (isIntense ? 24 : 14); i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2.5 + Math.random() * 7.0;
+      sparksRef.current.push({
+        x: endX,
+        y: endY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1.2,
+        size: 1.5 + Math.random() * 3.0,
+        color: Math.random() > 0.35 ? '#ffffff' : mainColor,
+        alpha: 1.0,
+        fadeRate: 0.016 + Math.random() * 0.018,
+      });
+    }
+
+    // 3. Flare up the solar halo & surge molten ribbons
+    haloBurstRef.current = 1.0;
+    ribbonPulsesRef.current.push(
+      { pathIndex: 0, progress: 0, speed: 0.014, tailLength: 0.18, color: mainColor },
+      { pathIndex: 1, progress: 0, speed: 0.014, tailLength: 0.18, color: glowColor }
+    );
+
+    // 4. Thunder FX Audio
+    soundController.playLightningThunder();
+
+    // 5. Watchdog timeout to guarantee bolt never freezes
+    setTimeout(() => {
+      if (activeBoltRef.current && Date.now() - activeBoltRef.current.createdAt > 450) {
+        activeBoltRef.current = null;
+      }
+    }, 480);
   }, []);
 
-  // Interactive Solar Beat Drop: Spawns solar halo burst, ribbon energy surges & embers
+  // Interactive Solar Beat Drop: Spawns solar halo burst & ribbon surges
   const triggerConcertBeat = useCallback((originX = null, originY = null) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -231,14 +273,9 @@ export default function Background() {
         fadeRate: 0.018 + Math.random() * 0.015,
       });
     }
+  }, []);
 
-    // Optional subtle strike on click (with 4s cooldown)
-    if (Date.now() - lastStrikeTimeRef.current > 4000 && Math.random() < 0.4) {
-      spawnBolt();
-    }
-  }, [spawnBolt]);
-
-  // Click anywhere on page to trigger solar ember burst & ribbon energy surge
+  // Click anywhere on page to trigger instant lightning strike and solar burst
   useEffect(() => {
     const handleWindowClick = (e) => {
       const target = e.target;
@@ -250,12 +287,14 @@ export default function Background() {
       ) {
         return;
       }
+      // Instant dramatic strike directly to click location!
+      spawnStrikingEffect(e.clientX, e.clientY, true);
       triggerConcertBeat(e.clientX, e.clientY);
     };
 
     window.addEventListener('click', handleWindowClick);
     return () => window.removeEventListener('click', handleWindowClick);
-  }, [triggerConcertBeat]);
+  }, [spawnStrikingEffect, triggerConcertBeat]);
 
   // Main 60fps Canvas Loop (Try-Catch Protected, 100% Crash-Proof)
   useEffect(() => {
@@ -299,7 +338,7 @@ export default function Background() {
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
         ctx.translate(haloCenterX, haloCenterY);
-        ctx.rotate(-0.09); // Matches tilted perspective of the disc in the artwork
+        ctx.rotate(-0.09);
         ctx.scale(1, haloRadiusY / haloRadiusX);
 
         const haloGrad = ctx.createRadialGradient(0, 0, haloRadiusX * 0.25, 0, 0, haloRadiusX * 1.4);
@@ -320,7 +359,7 @@ export default function Background() {
           ribbonPulsesRef.current.push({
             pathIndex: chosenPath,
             progress: 0,
-            speed: 0.005 + Math.random() * 0.005,
+            speed: 0.006 + Math.random() * 0.006,
             tailLength: 0.14,
             color: Math.random() > 0.4 ? '#ff9500' : '#ffc107',
           });
@@ -361,7 +400,6 @@ export default function Background() {
 
               const pulseFade = Math.min(1, pulse.progress * 4, (1.1 - pulse.progress) * 4);
 
-              // Outer ribbon aura
               ctx.strokeStyle = grad;
               ctx.lineWidth = isDesktop ? 3.5 : 2.5;
               ctx.lineCap = 'round';
@@ -371,7 +409,6 @@ export default function Background() {
               ctx.globalAlpha = Math.max(0, pulseFade * 0.9);
               ctx.stroke();
 
-              // Inner bright core
               ctx.strokeStyle = '#ffffff';
               ctx.lineWidth = isDesktop ? 1.4 : 1.0;
               ctx.shadowColor = '#ffffff';
@@ -379,7 +416,6 @@ export default function Background() {
               ctx.globalAlpha = Math.max(0, pulseFade);
               ctx.stroke();
 
-              // Leading photon point
               ctx.beginPath();
               ctx.arc(headPt.x, headPt.y, isDesktop ? 2.5 : 1.8, 0, Math.PI * 2);
               ctx.fillStyle = '#ffffff';
@@ -387,7 +423,6 @@ export default function Background() {
               ctx.shadowBlur = 10;
               ctx.fill();
 
-              // Shed ambient golden embers from the ribbon
               if (Math.random() < 0.25 && sparksRef.current.length < 55) {
                 sparksRef.current.push({
                   x: headPt.x,
@@ -407,7 +442,7 @@ export default function Background() {
           ctx.restore();
         }
 
-        // 3. IMAGE-BASED ANIMATION: SPECULAR CHROME DIAMOND GLINT (Throat & Chin Reflections)
+        // 3. IMAGE-BASED ANIMATION: SPECULAR CHROME DIAMOND GLINT (Reflections)
         if (now > nextGlintTimeRef.current && !glintRef.current) {
           glintRef.current = {
             x: haloCenterX + (Math.random() - 0.5) * (isDesktop ? 24 : 16),
@@ -455,52 +490,46 @@ export default function Background() {
           }
         }
 
-        // 4. Safe Single-Bolt Lightning Render (Perimeter Sky)
+        // 4. DRAMATIC HIGH-VOLTAGE STRIKING LIGHTNING BOLTS (DUAL-PASS HIGH-GLOW)
         const bolt = activeBoltRef.current;
-        if (bolt && bolt.segments && bolt.segments.length > 0) {
+        if (bolt && bolt.primary && bolt.primary.length > 0) {
           bolt.alpha -= bolt.fadeRate;
 
           if (bolt.alpha > 0) {
             ctx.save();
             ctx.globalCompositeOperation = 'screen';
-
-            if (bolt.alpha > 0.85) {
-              const flashA = (bolt.alpha - 0.85) * 0.45;
-              ctx.fillStyle = bolt.isAmber
-                ? `rgba(255, 183, 3, ${flashA})`
-                : `rgba(56, 189, 248, ${flashA})`;
-              ctx.fillRect(0, 0, w, h);
-            }
-
             ctx.globalAlpha = Math.max(0, Math.min(1, bolt.alpha));
 
-            ctx.beginPath();
-            for (let i = 0; i < bolt.segments.length; i++) {
-              const s = bolt.segments[i];
-              ctx.moveTo(s.x1, s.y1);
-              ctx.lineTo(s.x2, s.y2);
-            }
-            ctx.strokeStyle = bolt.glowColor;
-            ctx.lineWidth = isDesktop ? 3.5 : 2.5;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.shadowColor = bolt.glowColor;
-            ctx.shadowBlur = 12;
-            ctx.stroke();
+            const drawSegments = (segs, strokeColor, lineWidth, blur, shadowColor) => {
+              ctx.beginPath();
+              for (let i = 0; i < segs.length; i++) {
+                const s = segs[i];
+                ctx.moveTo(s.x1, s.y1);
+                ctx.lineTo(s.x2, s.y2);
+              }
+              ctx.strokeStyle = strokeColor;
+              ctx.lineWidth = lineWidth;
+              ctx.lineCap = 'round';
+              ctx.lineJoin = 'round';
+              ctx.shadowColor = shadowColor || strokeColor;
+              ctx.shadowBlur = blur;
+              ctx.stroke();
+            };
 
-            ctx.beginPath();
-            for (let i = 0; i < bolt.segments.length; i++) {
-              const s = bolt.segments[i];
-              ctx.moveTo(s.x1, s.y1);
-              ctx.lineTo(s.x2, s.y2);
+            // Pass 1: Diffused Outer High-Voltage Glow
+            drawSegments(bolt.primary, bolt.glowColor, isDesktop ? 6.5 : 4.5, 24, bolt.glowColor);
+
+            // Pass 2: Intense Neon Core Body
+            drawSegments(bolt.primary, bolt.mainColor, isDesktop ? 3.2 : 2.2, 12, bolt.mainColor);
+
+            // Pass 3: Searing White Center Beam
+            drawSegments(bolt.primary, '#ffffff', isDesktop ? 1.6 : 1.1, 6, '#ffffff');
+
+            // Secondary companion strike (multi-stroke atmospheric realism)
+            if (bolt.secondary && bolt.secondary.length > 0) {
+              drawSegments(bolt.secondary, bolt.glowColor, isDesktop ? 3.8 : 2.6, 14, bolt.glowColor);
+              drawSegments(bolt.secondary, '#ffffff', isDesktop ? 1.3 : 0.9, 5, '#ffffff');
             }
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = isDesktop ? 1.5 : 1.0;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.shadowColor = '#ffffff';
-            ctx.shadowBlur = 6;
-            ctx.stroke();
 
             ctx.restore();
           } else {
@@ -594,10 +623,10 @@ export default function Background() {
           ctx.restore();
         }
 
-        // 7. Periodic Auto Lightning Timer (Strikes every 8-14s)
+        // 7. Auto Striking Lightning Scheduler (Strikes every 4.5 - 7.5s on localhost)
         if (!activeBoltRef.current && now > nextAutoStrikeTimeRef.current) {
-          spawnBolt();
-          nextAutoStrikeTimeRef.current = now + 8000 + Math.random() * 6000;
+          spawnStrikingEffect();
+          nextAutoStrikeTimeRef.current = now + 4500 + Math.random() * 3000;
         }
 
       } catch (err) {
@@ -614,7 +643,7 @@ export default function Background() {
       window.removeEventListener('resize', resize);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [spawnBolt]);
+  }, [spawnStrikingEffect]);
 
   return (
     <>
@@ -671,9 +700,18 @@ export default function Background() {
             isBeating ? 'opacity-100' : 'opacity-0'
           }`}
         />
+
+        {/* Striking Sky Illumination Flash Overlay (Double-Flicker Atmospheric Illumination) */}
+        <div
+          className={`absolute inset-0 pointer-events-none transition-opacity duration-75 mix-blend-screen ${
+            isStriking
+              ? 'opacity-100 bg-gradient-to-b from-amber-300/35 via-white/20 to-transparent'
+              : 'opacity-0'
+          }`}
+        />
       </div>
 
-      {/* 2. Fullscreen Canvas: Artwork-Synchronized Solar Halo Corona, Molten Ribbon Pulses, Chrome Glints & Stardust */}
+      {/* 2. Fullscreen Canvas: Striking Lightning Bolts, Solar Halo Corona, Molten Ribbon Pulses & Embers */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-10 pointer-events-none"

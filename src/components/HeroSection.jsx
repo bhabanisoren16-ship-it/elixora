@@ -53,9 +53,9 @@ export default function HeroSection({ onGrabPassClick }) {
           {/* Ambient Multi-Neon Party Glow behind title */}
           <div className="absolute -inset-6 blur-3xl opacity-80 rounded-full pointer-events-none bg-gradient-to-r from-amber-500/35 via-rose-500/30 to-cyan-500/35 animate-ambient-glow" />
 
-          {/* Main Title: Exact font from user's image (Unbounded Black) with subtle float */}
+          {/* Main Title: Exact font from user's image (Unbounded Black) with striking aura & subtle float */}
           <div className="relative my-1 select-none animate-hero-float">
-            <h1 className="font-unbounded font-black text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight text-white uppercase text-center leading-none transition-all duration-300 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)] hover:scale-[1.01]">
+            <h1 className="font-unbounded font-black text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight text-white uppercase text-center leading-none transition-all duration-300 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)] hover:scale-[1.01] striking-electric-aura">
               ELIXORA 2.0
             </h1>
           </div>
