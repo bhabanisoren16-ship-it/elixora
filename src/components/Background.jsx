@@ -150,9 +150,38 @@ export default function Background() {
     const startX = endX + (Math.random() - 0.5) * (w * 0.45);
     const startY = 0;
 
-    const isAmber = Math.random() > 0.35;
-    const mainColor = isAmber ? '#ffb703' : '#00f2fe';
-    const glowColor = isAmber ? '#ff7700' : '#38bdf8';
+    // Palette based 100% on the background artwork's molten solar orange ribbons & glowing halo
+    const strikePalettes = [
+      {
+        main: '#ff6a00', // Molten Solar Orange
+        glow: '#ff3700',
+        core: '#ffffff',
+        spark: '#ff9e00',
+      },
+      {
+        main: '#ffb703', // Radiant Celestial Halo Gold
+        glow: '#ff7700',
+        core: '#fffdf0',
+        spark: '#ffc107',
+      },
+      {
+        main: '#ff8500', // Deep Fiery Amber
+        glow: '#e63900',
+        core: '#ffffff',
+        spark: '#ffa200',
+      },
+      {
+        main: '#ffa200', // Solar Corona Fire
+        glow: '#ff4d00',
+        core: '#fff9e6',
+        spark: '#ffb703',
+      },
+    ];
+
+    const palette = strikePalettes[Math.floor(Math.random() * strikePalettes.length)];
+    const mainColor = palette.main;
+    const glowColor = palette.glow;
+    const coreColor = palette.core;
 
     // Primary striking bolt
     const primarySegments = generateStrikingBranches(
@@ -185,7 +214,7 @@ export default function Background() {
       fadeRate: isIntense ? 0.042 : 0.052, // ~260ms lifetime
       mainColor,
       glowColor,
-      isAmber,
+      coreColor,
       createdAt: Date.now(),
     };
 
@@ -199,7 +228,7 @@ export default function Background() {
       setTimeout(() => setIsStriking(false), 75);
     }, 135);
 
-    // 2. Explosive electric sparks shower at strike impact
+    // 2. Explosive electric sparks shower at strike impact (molten gold & solar embers)
     for (let i = 0; i < (isIntense ? 24 : 14); i++) {
       const angle = Math.random() * Math.PI * 2;
       const speed = 2.5 + Math.random() * 7.0;
@@ -209,7 +238,7 @@ export default function Background() {
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 1.2,
         size: 1.5 + Math.random() * 3.0,
-        color: Math.random() > 0.35 ? '#ffffff' : mainColor,
+        color: Math.random() > 0.35 ? '#ffffff' : (Math.random() > 0.5 ? mainColor : palette.spark),
         alpha: 1.0,
         fadeRate: 0.016 + Math.random() * 0.018,
       });
@@ -268,7 +297,7 @@ export default function Background() {
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - 1.2,
         size: 1.5 + Math.random() * 2.8,
-        color: Math.random() > 0.3 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#38bdf8',
+        color: Math.random() > 0.3 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#ffd166',
         alpha: 1.0,
         fadeRate: 0.018 + Math.random() * 0.015,
       });
@@ -522,13 +551,13 @@ export default function Background() {
             // Pass 2: Intense Neon Core Body
             drawSegments(bolt.primary, bolt.mainColor, isDesktop ? 3.2 : 2.2, 12, bolt.mainColor);
 
-            // Pass 3: Searing White Center Beam
-            drawSegments(bolt.primary, '#ffffff', isDesktop ? 1.6 : 1.1, 6, '#ffffff');
+            // Pass 3: Searing Incandescent Core Beam
+            drawSegments(bolt.primary, bolt.coreColor || '#ffffff', isDesktop ? 1.6 : 1.1, 6, '#ffffff');
 
             // Secondary companion strike (multi-stroke atmospheric realism)
             if (bolt.secondary && bolt.secondary.length > 0) {
               drawSegments(bolt.secondary, bolt.glowColor, isDesktop ? 3.8 : 2.6, 14, bolt.glowColor);
-              drawSegments(bolt.secondary, '#ffffff', isDesktop ? 1.3 : 0.9, 5, '#ffffff');
+              drawSegments(bolt.secondary, bolt.coreColor || '#ffffff', isDesktop ? 1.3 : 0.9, 5, '#ffffff');
             }
 
             ctx.restore();
@@ -545,7 +574,7 @@ export default function Background() {
             vx: (Math.random() - 0.5) * 0.7,
             vy: -(0.3 + Math.random() * 1.2),
             size: 1.2 + Math.random() * 2.2,
-            color: Math.random() > 0.25 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#38bdf8',
+            color: Math.random() > 0.3 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#ffd166',
             alpha: 0.85,
             fadeRate: 0.005 + Math.random() * 0.006,
           });
@@ -586,7 +615,7 @@ export default function Background() {
             length: 60 + Math.random() * 50,
             alpha: 0.85,
             fadeRate: 0.02,
-            color: Math.random() > 0.4 ? '#38bdf8' : '#fde047',
+            color: Math.random() > 0.4 ? '#ffb703' : '#fff3c4',
           });
         }
 
@@ -701,11 +730,11 @@ export default function Background() {
           }`}
         />
 
-        {/* Striking Sky Illumination Flash Overlay (Double-Flicker Atmospheric Illumination) */}
+        {/* Striking Sky Illumination Flash Overlay (Molten Orange & Solar Gold Atmosphere) */}
         <div
           className={`absolute inset-0 pointer-events-none transition-opacity duration-75 mix-blend-screen ${
             isStriking
-              ? 'opacity-100 bg-gradient-to-b from-amber-300/35 via-white/20 to-transparent'
+              ? 'opacity-100 bg-gradient-to-b from-orange-500/40 via-amber-400/25 to-transparent'
               : 'opacity-0'
           }`}
         />
