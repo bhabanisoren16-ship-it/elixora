@@ -59,7 +59,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
       qrCanvasRef.current,
       upiString,
       {
-        width: 170,
+        width: 150,
         margin: 1,
         color: {
           dark: '#0f172a',
@@ -204,11 +204,11 @@ export default function RegistrationPayment({ onPassGenerated }) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch max-w-6xl mx-auto">
         
         {/* LEFT COLUMN: Student Details Form (50% Width) */}
-        <div className="flex flex-col justify-between rounded-3xl p-6 sm:p-8 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.1)] h-full">
-          <div className="flex items-center justify-between pb-6 mb-6 border-b border-white/10">
+        <div className="flex flex-col justify-between rounded-3xl p-5 sm:p-7 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.1)] h-full">
+          <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
             <div>
               <span className="text-xs font-outfit font-extrabold text-cyan-300 uppercase tracking-wider">STEP 1 OF 2</span>
               <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Student Dossier</h3>
@@ -218,118 +218,139 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5 flex-1 flex flex-col justify-between">
-            {/* Full Name */}
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                Full Name <span className="text-cyber-cyan">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Aarav Sharma"
-                  className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
-                    errors.fullName ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                  } text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                />
-              </div>
-              {errors.fullName && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.fullName}</p>}
-            </div>
-
-            {/* Roll / Student ID */}
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                Roll / Student ID <span className="text-cyber-cyan">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  name="rollNo"
-                  value={formData.rollNo}
-                  onChange={handleInputChange}
-                  placeholder="e.g. 26CS084"
-                  className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
-                    errors.rollNo ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                  } text-white placeholder-slate-500 text-sm uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                />
-              </div>
-              {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
-            </div>
-
-            {/* Contact Number */}
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                Contact Number (WhatsApp) <span className="text-cyber-cyan">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="10-digit mobile"
-                  className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
-                    errors.phone ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                  } text-white placeholder-slate-500 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                />
-              </div>
-              {errors.phone && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
-            </div>
-
-            {/* Diet & Song Request */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between">
+            <div className="space-y-3.5">
+              {/* Full Name */}
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                  Refreshment Preference
+                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                  Full Name <span className="text-cyber-cyan">*</span>
                 </label>
-                <div className="flex gap-2">
-                  {['Veg', 'Non-Veg', 'Jain/Vegan'].map((item) => (
-                    <button
-                      type="button"
-                      key={item}
-                      onClick={() => setFormData({ ...formData, diet: item })}
-                      className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all ${
-                        formData.diet === item
-                          ? 'bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan font-bold'
-                          : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
-                      }`}
-                    >
-                      {item}
-                    </button>
-                  ))}
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Aarav Sharma"
+                    className={`w-full px-4 py-3 rounded-xl bg-obsidian-900/90 border ${
+                      errors.fullName ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                    } text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                  />
+                </div>
+                {errors.fullName && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.fullName}</p>}
+              </div>
+
+              {/* Roll ID & WhatsApp in 2-Column Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                    Roll / Student ID <span className="text-cyber-cyan">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="rollNo"
+                      value={formData.rollNo}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 26CS084"
+                      className={`w-full px-4 py-3 rounded-xl bg-obsidian-900/90 border ${
+                        errors.rollNo ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                      } text-white placeholder-slate-500 text-sm uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                    />
+                  </div>
+                  {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                    Contact (WhatsApp) <span className="text-cyber-cyan">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="10-digit mobile"
+                      className={`w-full px-4 py-3 rounded-xl bg-obsidian-900/90 border ${
+                        errors.phone ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                      } text-white placeholder-slate-500 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                    />
+                  </div>
+                  {errors.phone && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                  DJ Track Request (Optional)
-                </label>
-                <input
-                  type="text"
-                  name="songRequest"
-                  value={formData.songRequest}
-                  onChange={handleInputChange}
-                  placeholder="Song name & artist"
-                  className="w-full px-4 py-3 rounded-xl bg-obsidian-900/90 border border-white/15 focus:border-cyber-cyan text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all"
-                />
+              {/* Diet & Song Request */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                    Refreshment Preference
+                  </label>
+                  <div className="flex gap-1.5">
+                    {['Veg', 'Non-Veg', 'Jain/Vegan'].map((item) => (
+                      <button
+                        type="button"
+                        key={item}
+                        onClick={() => setFormData({ ...formData, diet: item })}
+                        className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all ${
+                          formData.diet === item
+                            ? 'bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)]'
+                            : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
+                    DJ Track Request (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    name="songRequest"
+                    value={formData.songRequest}
+                    onChange={handleInputChange}
+                    placeholder="Song name & artist"
+                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border border-white/15 focus:border-cyber-cyan text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all"
+                  />
+                </div>
               </div>
             </div>
-            {/* Minting Guarantee Pill */}
-            <div className="mt-4 p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3 text-xs text-slate-300">
-              <ShieldCheck className="w-5 h-5 text-cyber-cyan shrink-0" />
-              <span>Your details will be cryptographically minted onto your personalized 3D VIP Pass.</span>
+
+            {/* Bottom Inclusions & Minting Note */}
+            <div className="mt-5 space-y-3">
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                  <span className="text-[10px] font-mono text-cyan-300 font-bold block">RED CARPET</span>
+                  <span className="text-[9px] text-slate-400 block">Fast-Track Entry</span>
+                </div>
+                <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                  <span className="text-[10px] font-mono text-amber-300 font-bold block">NEON GLOW</span>
+                  <span className="text-[9px] text-slate-400 block">Complimentary Kit</span>
+                </div>
+                <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                  <span className="text-[10px] font-mono text-purple-300 font-bold block">AFTER PARTY</span>
+                  <span className="text-[9px] text-slate-400 block">Floor Access</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3 text-xs text-slate-300">
+                <ShieldCheck className="w-5 h-5 text-cyber-cyan shrink-0" />
+                <span>Your details will be cryptographically minted onto your personalized 3D VIP Pass.</span>
+              </div>
             </div>
           </form>
         </div>
 
         {/* RIGHT COLUMN: Dynamic UPI Payment Gateway (50% Width) */}
-        <div className="flex flex-col justify-between rounded-3xl p-6 sm:p-8 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(168,85,247,0.1)] relative overflow-hidden h-full">
+        <div className="flex flex-col justify-between rounded-3xl p-5 sm:p-7 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(168,85,247,0.1)] relative overflow-hidden h-full">
           
           <div>
-            <div className="flex items-center justify-between pb-6 mb-5 border-b border-white/10">
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
               <div>
                 <span className="text-xs font-outfit font-extrabold text-amber-300 uppercase tracking-wider">STEP 2 OF 2</span>
                 <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">UPI Payment</h3>
@@ -340,7 +361,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
 
             {/* Pricing Banner */}
-            <div className="mb-4 p-3.5 rounded-2xl bg-gradient-to-r from-cyber-violet/20 via-obsidian-900 to-cyber-cyan/20 border border-white/15 flex items-center justify-between">
+            <div className="mb-3.5 p-3 rounded-2xl bg-gradient-to-r from-cyber-violet/20 via-obsidian-900 to-cyber-cyan/20 border border-white/15 flex items-center justify-between">
               <div>
                 <div className="text-xs font-mono text-slate-400">JUNIOR VIP PASS FEE</div>
                 <div className="flex items-baseline gap-2 mt-0.5">
@@ -354,7 +375,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
 
             {/* Dynamic QR Code Scanner Container */}
-            <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/5 border border-white/10 mb-4 text-center relative group">
+            <div className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-white/5 border border-white/10 mb-3.5 text-center relative group">
               <div className="p-2.5 bg-white rounded-2xl shadow-2xl relative">
                 <canvas ref={qrCanvasRef} className="rounded-lg max-w-full block" />
                 {/* Center Hologram Icon */}
@@ -374,7 +395,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
               </p>
 
               {/* Official UPI ID Copy Widget */}
-              <div className="mt-3 flex items-center gap-2 w-full max-w-xs bg-obsidian-950/80 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
+              <div className="mt-2.5 flex items-center gap-2 w-full max-w-xs bg-obsidian-950/80 px-3 py-1.5 rounded-xl border border-white/10 text-xs">
                 <span className="font-mono text-slate-300 truncate flex-1">{EVENT_DETAILS.upiId}</span>
                 <button
                   type="button"
@@ -389,7 +410,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
           </div>
 
           {/* Payment Verification Form */}
-          <div className="space-y-4">
+          <div className="space-y-3.5">
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1.5">
                 UPI Reference / UTR Number (12 Digits) <span className="text-cyber-gold">*</span>
@@ -401,7 +422,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 onChange={handleInputChange}
                 placeholder="e.g. 427189035124"
                 maxLength={18}
-                className={`w-full px-4 py-3 rounded-xl bg-obsidian-900/90 border ${
+                className={`w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border ${
                   errors.utrNumber ? 'border-rose-500' : 'border-white/15 focus:border-cyber-gold'
                 } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyber-gold transition-all`}
               />
@@ -414,7 +435,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 Payment Screenshot (Optional / Instant Verification)
               </label>
               <div className="relative">
-                <label className="flex items-center justify-center gap-3 w-full py-2.5 px-4 rounded-xl border border-dashed border-white/20 hover:border-cyber-cyan/60 bg-white/5 hover:bg-white/10 cursor-pointer transition-all">
+                <label className="flex items-center justify-center gap-3 w-full py-2 px-4 rounded-xl border border-dashed border-white/20 hover:border-cyber-cyan/60 bg-white/5 hover:bg-white/10 cursor-pointer transition-all">
                   <Upload className="w-4 h-4 text-cyber-cyan" />
                   <span className="text-xs text-slate-300 truncate">
                     {screenshotPreview ? 'Screenshot Attached ✓' : 'Upload Receipt / Slip'}
@@ -428,8 +449,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 </label>
               </div>
               {screenshotPreview && (
-                <div className="mt-2 flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/10">
-                  <img src={screenshotPreview} alt="Screenshot slip" className="w-8 h-8 rounded object-cover" />
+                <div className="mt-1.5 flex items-center gap-2 p-1.5 rounded-xl bg-white/5 border border-white/10">
+                  <img src={screenshotPreview} alt="Screenshot slip" className="w-7 h-7 rounded object-cover" />
                   <span className="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Receipt ready for verification
                   </span>
@@ -443,7 +464,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isVerifying}
-                className={`w-full py-3.5 rounded-2xl font-outfit font-bold text-sm tracking-wider flex items-center justify-center gap-2 border transition-all duration-300 ${
+                className={`w-full py-3 rounded-2xl font-outfit font-bold text-sm tracking-wider flex items-center justify-center gap-2 border transition-all duration-300 ${
                   isVerifying
                     ? 'bg-cyber-violet/40 border-cyber-violet/60 text-slate-300 cursor-wait'
                     : 'bg-gradient-to-r from-cyber-cyan via-purple-600 to-cyber-violet text-white hover:shadow-neon-violet hover:scale-[1.02] active:scale-95 border-white/20'
