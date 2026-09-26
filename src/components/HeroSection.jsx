@@ -64,7 +64,7 @@ export default function HeroSection({ onGrabPassClick }) {
           <div className="flex items-center justify-center gap-3 mt-3 mb-4">
             <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-r from-transparent to-cyan-400" />
             <p className="font-outfit text-xs sm:text-sm tracking-[0.25em] text-cyan-300 font-extrabold uppercase drop-shadow-[0_0_12px_rgba(6,182,212,0.9)]">
-              SUNSET BLOCK PARTY • FRESHERS '26
+              FRESHERS '26
             </p>
             <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-l from-transparent to-cyan-400" />
           </div>
