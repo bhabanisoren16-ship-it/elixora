@@ -157,14 +157,14 @@ export default function EventDetails() {
       </div>
 
       {/* Box 2: Dedicated Dress Costume Box with Boys & Girls Photo Space */}
-      <div id="dress-code" className="rounded-3xl sm:rounded-[2rem] p-5 sm:p-7 lg:p-8 border border-white/20 bg-obsidian-950/70 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(245,158,11,0.12)] hover:border-amber-400/40 relative overflow-hidden transition-all duration-300">
+      <div id="dress-code" className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 border border-white/20 bg-obsidian-950/70 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(245,158,11,0.12)] hover:border-amber-400/40 relative overflow-hidden transition-all duration-300">
         {/* Ambient atmospheric glows */}
         <div className="absolute -top-24 -right-24 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10">
           {/* Header row */}
-          <div className="pb-6 border-b border-white/15 mb-6">
+          <div className="pb-5 border-b border-white/15 mb-5">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-xs font-outfit font-bold uppercase mb-2">
                 <Shirt className="w-3.5 h-3.5" />
@@ -181,7 +181,7 @@ export default function EventDetails() {
 
           {/* Costume Photo Space for Boys and Girls */}
           <div>
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-outfit text-amber-300 tracking-wider uppercase font-bold flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                 COSTUME INSPIRATION LOOKBOOK
@@ -191,12 +191,12 @@ export default function EventDetails() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
               
               {/* Boys Costume Card */}
-              <div className="rounded-2xl p-5 sm:p-6 bg-obsidian-900/60 backdrop-blur-md border border-white/15 hover:border-amber-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
+              <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 bg-obsidian-900/60 backdrop-blur-md border border-white/15 hover:border-amber-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-outfit font-bold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]" />
                       BOYS' ATTIRE LOOKBOOK
@@ -207,25 +207,25 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space */}
-                  <div className="relative rounded-2xl overflow-hidden h-72 sm:h-80 w-full mb-4 border border-white/15 group-hover:border-amber-400/50 transition-all bg-black/50 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/15 group-hover:border-amber-400/50 transition-all bg-black/50 shadow-md">
                     <img
                       src="/costume-boys.jpg"
                       alt="Boys Formal Tuxedo and Suit Attire"
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-3 left-3 right-3 text-xs text-white font-outfit font-medium px-3 py-2 rounded-xl bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-medium px-3 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>Tailored black tuxedo with satin lapels &amp; crisp bowtie</span>
+                      <span className="truncate sm:whitespace-normal">Tailored black tuxedo with satin lapels &amp; crisp bowtie</span>
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed mb-4">
+                  <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed mb-3">
                     Sharp black tuxedo or tailored blazer, crisp white collared dress shirt, classic bowtie or silk necktie, and polished formal shoes.
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-white/10 flex flex-wrap gap-2">
+                <div className="pt-2.5 border-t border-white/10 flex flex-wrap gap-2">
                   <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#BlackTie</span>
                   <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#TailoredSuit</span>
                   <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#FormalAttire</span>
@@ -233,9 +233,9 @@ export default function EventDetails() {
               </div>
 
               {/* Girls Costume Card */}
-              <div className="rounded-2xl p-5 sm:p-6 bg-obsidian-900/60 backdrop-blur-md border border-white/15 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
+              <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 bg-obsidian-900/60 backdrop-blur-md border border-white/15 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-outfit font-bold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
                       GIRLS' ATTIRE LOOKBOOK
@@ -246,25 +246,25 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space */}
-                  <div className="relative rounded-2xl overflow-hidden h-72 sm:h-80 w-full mb-4 border border-white/15 group-hover:border-cyan-400/50 transition-all bg-black/50 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/15 group-hover:border-cyan-400/50 transition-all bg-black/50 shadow-md">
                     <img
                       src="/costume-girls.jpg"
                       alt="Girls Cyber Costume Style"
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-3 left-3 right-3 text-xs text-white font-outfit font-medium px-3 py-2 rounded-xl bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-medium px-3 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2">
                       <Sparkles className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                      <span>Iridescent party dress with cyan glow &amp; UV glitter</span>
+                      <span className="truncate sm:whitespace-normal">Iridescent party dress with cyan glow &amp; UV glitter</span>
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed mb-4">
+                  <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed mb-3">
                     Shimmering metallic or holographic fabrics accented with electric cyan and ultraviolet jewelry, plus UV face art.
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-white/10 flex flex-wrap gap-2">
+                <div className="pt-2.5 border-t border-white/10 flex flex-wrap gap-2">
                   <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#Iridescent</span>
                   <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#HolographicGlow</span>
                   <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#UVFacePaint</span>
