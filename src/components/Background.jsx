@@ -1,6 +1,82 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { soundController } from '../utils/audio';
 
+// Cubic Bézier calculation helper for smooth parametric curves matching the artwork's ribbons
+function getCubicBezier(p0, p1, p2, p3, t) {
+  const u = 1 - t;
+  const tt = t * t;
+  const uu = u * u;
+  const uuu = uu * u;
+  const ttt = tt * t;
+  return {
+    x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
+    y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y,
+  };
+}
+
+// Maps points along the 3 distinct glowing molten orange ribbons in background-desktop / background-mobile
+function getRibbonPoint(pathIndex, t, w, h, isDesktop) {
+  const ct = Math.max(0, Math.min(1, t));
+
+  if (isDesktop) {
+    if (pathIndex === 0) {
+      // Left Molten Ribbon: Swoops from upper-left down across the left flank
+      return getCubicBezier(
+        { x: w * 0.35, y: -10 },
+        { x: w * 0.28, y: h * 0.22 },
+        { x: w * 0.12, y: h * 0.40 },
+        { x: -15, y: h * 0.62 },
+        ct
+      );
+    } else if (pathIndex === 1) {
+      // Right Molten Ribbon: Swoops down from upper-right across the right flank
+      return getCubicBezier(
+        { x: w * 0.68, y: -10 },
+        { x: w * 0.76, y: h * 0.24 },
+        { x: w * 0.88, y: h * 0.44 },
+        { x: w + 20, y: h * 0.34 },
+        ct
+      );
+    } else {
+      // Bottom Chest Loop: Curving under the figure's collar/chest
+      return getCubicBezier(
+        { x: w * 0.44, y: h * 0.62 },
+        { x: w * 0.48, y: h * 0.94 },
+        { x: w * 0.58, y: h * 0.98 },
+        { x: w * 0.70, y: h * 0.78 },
+        ct
+      );
+    }
+  } else {
+    // Mobile Portrait framing (artwork centered at center 20%)
+    if (pathIndex === 0) {
+      return getCubicBezier(
+        { x: w * 0.32, y: -10 },
+        { x: w * 0.24, y: h * 0.18 },
+        { x: w * 0.08, y: h * 0.36 },
+        { x: -10, y: h * 0.56 },
+        ct
+      );
+    } else if (pathIndex === 1) {
+      return getCubicBezier(
+        { x: w * 0.70, y: -10 },
+        { x: w * 0.78, y: h * 0.20 },
+        { x: w * 0.92, y: h * 0.40 },
+        { x: w + 10, y: h * 0.30 },
+        ct
+      );
+    } else {
+      return getCubicBezier(
+        { x: w * 0.38, y: h * 0.48 },
+        { x: w * 0.46, y: h * 0.72 },
+        { x: w * 0.62, y: h * 0.76 },
+        { x: w * 0.74, y: h * 0.58 },
+        ct
+      );
+    }
+  }
+}
+
 // Helper: Generates a single, lightweight, clean lightning bolt targeting upper sky quadrants
 function createCleanBolt(w, h, isDesktop) {
   try {
@@ -9,7 +85,6 @@ function createCleanBolt(w, h, isDesktop) {
 
     let startX, startY, endX, endY;
     if (isDesktop) {
-      // Desktop: Keep lightning in left/right sky to frame the central face & countdown cleanly
       if (strikeSide === 'left') {
         startX = w * (0.08 + Math.random() * 0.16);
         startY = 0;
@@ -22,14 +97,12 @@ function createCleanBolt(w, h, isDesktop) {
         endY = h * (0.30 + Math.random() * 0.22);
       }
     } else {
-      // Mobile: Keep high in the atmospheric sky above the hero text
       startX = w * (0.2 + Math.random() * 0.6);
       startY = 0;
       endX = startX + (Math.random() - 0.5) * w * 0.3;
       endY = h * (0.16 + Math.random() * 0.16);
     }
 
-    // Recursive midpoint displacement - max depth 3 (yielding 8 to 16 clean segments)
     function subdivide(x1, y1, x2, y2, depth, maxDepth, spread) {
       if (depth >= maxDepth || segments.length >= 18) {
         segments.push({ x1, y1, x2, y2 });
@@ -44,7 +117,6 @@ function createCleanBolt(w, h, isDesktop) {
         segments.push({ x1, y1, x2, y2 });
         return;
       }
-      // Perpendicular normal displacement
       const nx = -dy / len;
       const ny = dx / len;
       const offset = (Math.random() - 0.5) * spread;
@@ -54,7 +126,6 @@ function createCleanBolt(w, h, isDesktop) {
       subdivide(x1, y1, displacedX, displacedY, depth + 1, maxDepth, spread * 0.55);
       subdivide(displacedX, displacedY, x2, y2, depth + 1, maxDepth, spread * 0.55);
 
-      // Single small fork (max 1 per bolt)
       if (depth === 1 && Math.random() < 0.35 && segments.length < 14) {
         const forkAngle = (Math.random() - 0.5) * 0.7;
         const forkLen = len * 0.35;
@@ -70,7 +141,7 @@ function createCleanBolt(w, h, isDesktop) {
     return {
       segments: segments.slice(0, 20),
       alpha: 1.0,
-      fadeRate: 0.055, // ~18 frames (300ms total lifetime)
+      fadeRate: 0.055,
       glowColor: isAmber ? '#ffb703' : '#38bdf8',
       isAmber,
       createdAt: Date.now(),
@@ -86,8 +157,14 @@ export default function Background() {
   const [isBeating, setIsBeating] = useState(false);
   const sparksRef = useRef([]);
   const shootingStarsRef = useRef([]);
+  const ribbonPulsesRef = useRef([]);
+  const haloBurstRef = useRef(0);
+  const glintRef = useRef(null);
   const activeBoltRef = useRef(null);
-  const nextAutoStrikeTimeRef = useRef(Date.now() + 5000 + Math.random() * 3000);
+
+  const nextAutoStrikeTimeRef = useRef(Date.now() + 6000 + Math.random() * 4000);
+  const nextRibbonPulseTimeRef = useRef(Date.now() + 800);
+  const nextGlintTimeRef = useRef(Date.now() + 2500);
   const lastStrikeTimeRef = useRef(Date.now());
   const animFrameRef = useRef(null);
 
@@ -114,7 +191,7 @@ export default function Background() {
     }
   }, []);
 
-  // Interactive Solar Beat Drop: Spawns golden stardust embers & audio feedback
+  // Interactive Solar Beat Drop: Spawns solar halo burst, ribbon energy surges & embers
   const triggerConcertBeat = useCallback((originX = null, originY = null) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -123,14 +200,23 @@ export default function Background() {
     const isDesktop = w >= 768;
 
     const x = originX !== null ? originX : w * 0.5;
-    const y = originY !== null ? originY : (isDesktop ? h * 0.32 : h * 0.5);
+    const y = originY !== null ? originY : (isDesktop ? h * 0.32 : h * 0.20);
 
     // Audio feedback
     soundController.playVinylScratch();
     setIsBeating(true);
     setTimeout(() => setIsBeating(false), 400);
 
-    // Golden Stardust & Solar Ember Explosion
+    // Flare up the solar halo corona
+    haloBurstRef.current = 1.0;
+
+    // Send energy pulses surging along the ribbons
+    ribbonPulsesRef.current.push(
+      { pathIndex: 0, progress: 0, speed: 0.012, tailLength: 0.16, color: '#ffc107' },
+      { pathIndex: 1, progress: 0, speed: 0.012, tailLength: 0.16, color: '#ff9500' }
+    );
+
+    // Golden Stardust & Solar Ember Explosion from halo
     for (let i = 0; i < 28; i++) {
       const angle = Math.random() * Math.PI * 2;
       const speed = 2.0 + Math.random() * 5.5;
@@ -147,12 +233,12 @@ export default function Background() {
     }
 
     // Optional subtle strike on click (with 4s cooldown)
-    if (Date.now() - lastStrikeTimeRef.current > 4000 && Math.random() < 0.5) {
+    if (Date.now() - lastStrikeTimeRef.current > 4000 && Math.random() < 0.4) {
       spawnBolt();
     }
   }, [spawnBolt]);
 
-  // Click anywhere on page to trigger subtle solar ember burst
+  // Click anywhere on page to trigger solar ember burst & ribbon energy surge
   useEffect(() => {
     const handleWindowClick = (e) => {
       const target = e.target;
@@ -171,7 +257,7 @@ export default function Background() {
     return () => window.removeEventListener('click', handleWindowClick);
   }, [triggerConcertBeat]);
 
-  // Main 60fps Canvas Loop (Try-Catch Protected, Never Freezes)
+  // Main 60fps Canvas Loop (Try-Catch Protected, 100% Crash-Proof)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -181,7 +267,6 @@ export default function Background() {
     const resize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      // Prevent mobile address-bar collapse while scrolling from clearing canvas
       if (canvas.width !== w || Math.abs(canvas.height - h) > 120) {
         canvas.width = w;
         canvas.height = h;
@@ -195,10 +280,182 @@ export default function Background() {
         const w = canvas.width;
         const h = canvas.height;
         const isDesktop = w >= 768;
+        const now = Date.now();
 
         ctx.clearRect(0, 0, w, h);
 
-        // 1. Safe Single-Bolt Lightning Render
+        const haloCenterX = w * 0.5;
+        const haloCenterY = isDesktop ? h * 0.32 : h * 0.20;
+        const haloRadiusX = isDesktop ? 135 : 85;
+        const haloRadiusY = isDesktop ? 46 : 28;
+
+        // 1. IMAGE-BASED ANIMATION: SOLAR HALO CORONA BREATHING GLOW
+        const breathVal = 0.5 + 0.5 * Math.sin(now * 0.0022);
+        const haloAlpha = 0.20 + 0.14 * breathVal + haloBurstRef.current * 0.45;
+        if (haloBurstRef.current > 0.01) {
+          haloBurstRef.current *= 0.94;
+        }
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        ctx.translate(haloCenterX, haloCenterY);
+        ctx.rotate(-0.09); // Matches tilted perspective of the disc in the artwork
+        ctx.scale(1, haloRadiusY / haloRadiusX);
+
+        const haloGrad = ctx.createRadialGradient(0, 0, haloRadiusX * 0.25, 0, 0, haloRadiusX * 1.4);
+        haloGrad.addColorStop(0, `rgba(255, 230, 110, ${haloAlpha * 0.85})`);
+        haloGrad.addColorStop(0.35, `rgba(255, 130, 0, ${haloAlpha * 0.60})`);
+        haloGrad.addColorStop(0.70, `rgba(255, 60, 0, ${haloAlpha * 0.28})`);
+        haloGrad.addColorStop(1.0, 'rgba(255, 30, 0, 0)');
+
+        ctx.beginPath();
+        ctx.arc(0, 0, haloRadiusX * 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = haloGrad;
+        ctx.fill();
+        ctx.restore();
+
+        // 2. IMAGE-BASED ANIMATION: MOLTEN LIGHT PULSES COURSING ALONG THE RIBBONS
+        if (now > nextRibbonPulseTimeRef.current && ribbonPulsesRef.current.length < 3) {
+          const chosenPath = Math.floor(Math.random() * 3);
+          ribbonPulsesRef.current.push({
+            pathIndex: chosenPath,
+            progress: 0,
+            speed: 0.005 + Math.random() * 0.005,
+            tailLength: 0.14,
+            color: Math.random() > 0.4 ? '#ff9500' : '#ffc107',
+          });
+          nextRibbonPulseTimeRef.current = now + 1800 + Math.random() * 2000;
+        }
+
+        if (ribbonPulsesRef.current.length > 0) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          ribbonPulsesRef.current = ribbonPulsesRef.current.filter((pulse) => {
+            pulse.progress += pulse.speed;
+            const startT = Math.max(0, pulse.progress - pulse.tailLength);
+            const endT = Math.min(1, pulse.progress);
+
+            if (startT >= 1.0) return false;
+
+            const steps = 7;
+            ctx.beginPath();
+            let headPt = null;
+            let tailPt = null;
+            for (let i = 0; i <= steps; i++) {
+              const stepT = startT + (endT - startT) * (i / steps);
+              const pt = getRibbonPoint(pulse.pathIndex, stepT, w, h, isDesktop);
+              if (i === 0) {
+                tailPt = pt;
+                ctx.moveTo(pt.x, pt.y);
+              } else {
+                ctx.lineTo(pt.x, pt.y);
+              }
+              if (i === steps) headPt = pt;
+            }
+
+            if (headPt && tailPt) {
+              const grad = ctx.createLinearGradient(tailPt.x, tailPt.y, headPt.x, headPt.y);
+              grad.addColorStop(0, 'rgba(255, 90, 0, 0)');
+              grad.addColorStop(0.6, pulse.color);
+              grad.addColorStop(1, '#ffffff');
+
+              const pulseFade = Math.min(1, pulse.progress * 4, (1.1 - pulse.progress) * 4);
+
+              // Outer ribbon aura
+              ctx.strokeStyle = grad;
+              ctx.lineWidth = isDesktop ? 3.5 : 2.5;
+              ctx.lineCap = 'round';
+              ctx.lineJoin = 'round';
+              ctx.shadowColor = '#ff6a00';
+              ctx.shadowBlur = 15;
+              ctx.globalAlpha = Math.max(0, pulseFade * 0.9);
+              ctx.stroke();
+
+              // Inner bright core
+              ctx.strokeStyle = '#ffffff';
+              ctx.lineWidth = isDesktop ? 1.4 : 1.0;
+              ctx.shadowColor = '#ffffff';
+              ctx.shadowBlur = 6;
+              ctx.globalAlpha = Math.max(0, pulseFade);
+              ctx.stroke();
+
+              // Leading photon point
+              ctx.beginPath();
+              ctx.arc(headPt.x, headPt.y, isDesktop ? 2.5 : 1.8, 0, Math.PI * 2);
+              ctx.fillStyle = '#ffffff';
+              ctx.shadowColor = '#ffb703';
+              ctx.shadowBlur = 10;
+              ctx.fill();
+
+              // Shed ambient golden embers from the ribbon
+              if (Math.random() < 0.25 && sparksRef.current.length < 55) {
+                sparksRef.current.push({
+                  x: headPt.x,
+                  y: headPt.y,
+                  vx: (Math.random() - 0.5) * 0.8,
+                  vy: -(0.4 + Math.random() * 1.3),
+                  size: 1.2 + Math.random() * 2.0,
+                  color: Math.random() > 0.4 ? '#ffb703' : '#ff7700',
+                  alpha: 0.85,
+                  fadeRate: 0.012 + Math.random() * 0.012,
+                });
+              }
+            }
+
+            return pulse.progress < 1.0 + pulse.tailLength;
+          });
+          ctx.restore();
+        }
+
+        // 3. IMAGE-BASED ANIMATION: SPECULAR CHROME DIAMOND GLINT (Throat & Chin Reflections)
+        if (now > nextGlintTimeRef.current && !glintRef.current) {
+          glintRef.current = {
+            x: haloCenterX + (Math.random() - 0.5) * (isDesktop ? 24 : 16),
+            y: haloCenterY + (isDesktop ? 44 : 28) + Math.random() * (isDesktop ? 32 : 18),
+            alpha: 0,
+            phase: 'in',
+            size: isDesktop ? 12 : 9,
+          };
+          nextGlintTimeRef.current = now + 4000 + Math.random() * 4500;
+        }
+
+        if (glintRef.current) {
+          const g = glintRef.current;
+          if (g.phase === 'in') {
+            g.alpha += 0.08;
+            if (g.alpha >= 1) g.phase = 'out';
+          } else {
+            g.alpha -= 0.05;
+            if (g.alpha <= 0) glintRef.current = null;
+          }
+
+          if (glintRef.current) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'screen';
+            ctx.globalAlpha = Math.max(0, Math.min(1, g.alpha));
+            ctx.translate(g.x, g.y);
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.3;
+            ctx.shadowColor = '#ffea00';
+            ctx.shadowBlur = 8;
+
+            ctx.beginPath();
+            ctx.moveTo(-g.size, 0);
+            ctx.lineTo(g.size, 0);
+            ctx.moveTo(0, -g.size);
+            ctx.lineTo(0, g.size);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+
+        // 4. Safe Single-Bolt Lightning Render (Perimeter Sky)
         const bolt = activeBoltRef.current;
         if (bolt && bolt.segments && bolt.segments.length > 0) {
           bolt.alpha -= bolt.fadeRate;
@@ -207,7 +464,6 @@ export default function Background() {
             ctx.save();
             ctx.globalCompositeOperation = 'screen';
 
-            // Subtle Atmospheric Pulse (only during peak flash alpha > 0.85)
             if (bolt.alpha > 0.85) {
               const flashA = (bolt.alpha - 0.85) * 0.45;
               ctx.fillStyle = bolt.isAmber
@@ -218,7 +474,6 @@ export default function Background() {
 
             ctx.globalAlpha = Math.max(0, Math.min(1, bolt.alpha));
 
-            // Pass 1: Soft Electric Aura
             ctx.beginPath();
             for (let i = 0; i < bolt.segments.length; i++) {
               const s = bolt.segments[i];
@@ -233,7 +488,6 @@ export default function Background() {
             ctx.shadowBlur = 12;
             ctx.stroke();
 
-            // Pass 2: Crisp White Core
             ctx.beginPath();
             for (let i = 0; i < bolt.segments.length; i++) {
               const s = bolt.segments[i];
@@ -254,7 +508,7 @@ export default function Background() {
           }
         }
 
-        // 2. Ambient Drifting Cosmic Golden Stardust & Solar Embers
+        // 5. Ambient Drifting Cosmic Golden Stardust & Solar Embers
         if (Math.random() < 0.35 && sparksRef.current.length < 50) {
           sparksRef.current.push({
             x: Math.random() * w,
@@ -289,7 +543,7 @@ export default function Background() {
         });
         ctx.restore();
 
-        // 3. Subtle Cosmic Shooting Star Streaks (Graceful meteor every 7-12s)
+        // 6. Subtle Cosmic Shooting Star Streaks
         if (Math.random() < 0.006 && shootingStarsRef.current.length < 2) {
           const startX = Math.random() * w * 0.85;
           const startY = Math.random() * h * 0.25;
@@ -340,8 +594,7 @@ export default function Background() {
           ctx.restore();
         }
 
-        // 4. Periodic Auto Lightning Timer (Strikes every 8-14s)
-        const now = Date.now();
+        // 7. Periodic Auto Lightning Timer (Strikes every 8-14s)
         if (!activeBoltRef.current && now > nextAutoStrikeTimeRef.current) {
           spawnBolt();
           nextAutoStrikeTimeRef.current = now + 8000 + Math.random() * 6000;
@@ -420,7 +673,7 @@ export default function Background() {
         />
       </div>
 
-      {/* 2. Fullscreen Canvas: Drifting Cosmic Golden Stardust & Embers */}
+      {/* 2. Fullscreen Canvas: Artwork-Synchronized Solar Halo Corona, Molten Ribbon Pulses, Chrome Glints & Stardust */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-10 pointer-events-none"
