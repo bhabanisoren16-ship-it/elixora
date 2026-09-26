@@ -29,7 +29,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
   const [formData, setFormData] = useState({
     fullName: '',
     rollNo: '',
-    branch: 'Computer Science & AI',
     phone: '',
     email: '',
     diet: 'Veg',
@@ -45,19 +44,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
   const [verificationStep, setVerificationStep] = useState(0);
 
   const qrCanvasRef = useRef(null);
-
-  const branches = [
-    'Computer Science & AI',
-    'Information Technology',
-    'Electronics & Communication (ECE)',
-    'Electrical & Electronics (EEE)',
-    'Mechanical Engineering',
-    'Biotechnology & Bioinformatics',
-    'Aerospace & Robotics',
-    'Architecture & Planning',
-    'Design & Digital Media',
-    'Management Studies (MBA/BBA)',
-  ];
 
   // Generate UPI QR Code dynamically whenever Roll No or Name changes
   useEffect(() => {
@@ -119,7 +105,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
     setFormData({
       fullName: 'Aarav Sharma',
       rollNo: '26CS084',
-      branch: 'Computer Science & AI',
       phone: '9876543210',
       email: 'aarav.sharma26@college.edu',
       diet: 'Veg',
@@ -261,44 +246,24 @@ export default function RegistrationPayment({ onPassGenerated }) {
               {errors.fullName && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.fullName}</p>}
             </div>
 
-            {/* Roll Number & Branch */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                  Roll / Student ID <span className="text-cyber-cyan">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="rollNo"
-                    value={formData.rollNo}
-                    onChange={handleInputChange}
-                    placeholder="e.g. 26CS084"
-                    className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
-                      errors.rollNo ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                    } text-white placeholder-slate-500 text-sm uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                  />
-                </div>
-                {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                  Department / Branch <span className="text-cyber-cyan">*</span>
-                </label>
-                <select
-                  name="branch"
-                  value={formData.branch}
+            {/* Roll / Student ID */}
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
+                Roll / Student ID <span className="text-cyber-cyan">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  name="rollNo"
+                  value={formData.rollNo}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border border-white/15 focus:border-cyber-cyan text-white text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all"
-                >
-                  {branches.map((b) => (
-                    <option key={b} value={b} className="bg-obsidian-900 text-white">
-                      {b}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="e.g. 26CS084"
+                  className={`w-full px-4 py-3.5 rounded-xl bg-obsidian-900/90 border ${
+                    errors.rollNo ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                  } text-white placeholder-slate-500 text-sm uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                />
               </div>
+              {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
             </div>
 
             {/* Contact Number & Email */}

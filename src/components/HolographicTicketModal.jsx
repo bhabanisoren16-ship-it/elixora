@@ -348,8 +348,12 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   </h3>
                   <div className="mt-1 flex items-center justify-center gap-2 text-xs font-mono text-cyber-cyan flex-wrap">
                     <span>ID: <strong className="text-white">{passData.rollNo}</strong></span>
-                    <span>•</span>
-                    <span className="truncate max-w-[200px]">{passData.branch}</span>
+                    {passData.branch && (
+                      <>
+                        <span>•</span>
+                        <span className="truncate max-w-[200px]">{passData.branch}</span>
+                      </>
+                    )}
                   </div>
                   {passData.batch && (
                     <div className="mt-1">
