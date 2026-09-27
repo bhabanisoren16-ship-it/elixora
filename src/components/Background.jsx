@@ -280,7 +280,7 @@ export default function Background() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     // Cache precalculated ribbon points on resize
@@ -795,13 +795,6 @@ export default function Background() {
 
         {/* Subtle Dark Vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/45 via-transparent to-obsidian-950/85 pointer-events-none" />
-
-        {/* Dynamic Solar Fire Pulse on Beat Trigger */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-t from-amber-600/15 via-orange-500/10 to-transparent pointer-events-none transition-opacity duration-300 ${
-            isBeating ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
       </div>
 
       {/* 2. Fullscreen Canvas: Striking Lightning Bolts, Solar Halo Corona, Molten Ribbon Pulses & Embers */}

@@ -9,17 +9,24 @@ class SoundController {
   }
 
   init() {
-    if (!this.ctx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      this.ctx = new AudioContext();
-    }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    try {
+      if (!this.ctx && typeof window !== 'undefined') {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          this.ctx = new AudioContext();
+        }
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+    } catch (e) {
+      console.warn('AudioContext not available or autoplay restricted:', e);
     }
   }
 
   toggleAmbient() {
     this.init();
+    if (!this.ctx) return false;
     if (this.isPlaying) {
       this.stopAmbient();
       return false;
@@ -32,9 +39,11 @@ class SoundController {
   startAmbient() {
     if (this.isPlaying) return;
     this.init();
+    if (!this.ctx) return;
 
-    // Master ambient gain
-    this.gainNode = this.ctx.createGain();
+    try {
+      // Master ambient gain
+      this.gainNode = this.ctx.createGain();
     this.gainNode.gain.setValueAtTime(0.01, this.ctx.currentTime);
     this.gainNode.gain.exponentialRampToValueAtTime(0.12, this.ctx.currentTime + 3);
 
@@ -71,6 +80,9 @@ class SoundController {
     this.filter.connect(this.gainNode);
     this.gainNode.connect(this.ctx.destination);
     this.isPlaying = true;
+    } catch (err) {
+      console.warn('Ambient start failed:', err);
+    }
   }
 
   stopAmbient() {
