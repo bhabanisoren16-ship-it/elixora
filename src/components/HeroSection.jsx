@@ -37,7 +37,7 @@ export default function HeroSection({ onGrabPassClick }) {
   }, [targetDate]);
 
   return (
-    <section id="hero" className="relative min-h-[90vh] sm:min-h-screen pt-24 sm:pt-28 pb-12 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <section id="hero" className="relative min-h-[90vh] sm:min-h-screen pt-28 pb-12 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
         
