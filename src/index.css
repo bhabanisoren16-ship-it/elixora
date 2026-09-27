@@ -39,19 +39,19 @@ html, body, * {
 html {
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
 }
 
 body {
   overflow-x: clip;
   min-height: 100%;
-  position: relative;
+  overscroll-behavior-y: none;
 }
 
 /* Ensure background picture is 100% frozen and does NOT move while scrolling in mobile view */
 @media (max-width: 767px) {
   .mobile-fixed-background {
     position: fixed !important;
-    inset: 0 !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
@@ -59,16 +59,18 @@ body {
     width: 100% !important;
     width: 100vw !important;
     height: 100% !important;
+    height: 100lvh !important;
     height: 100vh !important;
-    height: 100dvh !important;
-    transform: translate3d(0, 0, 0) !important;
-    -webkit-transform: translate3d(0, 0, 0) !important;
-    will-change: transform !important;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
+    min-height: 100% !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    will-change: auto !important;
     overflow: hidden !important;
     z-index: 0 !important;
     pointer-events: none !important;
+    touch-action: none !important;
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
   }
 
   .mobile-fixed-background img {
@@ -76,14 +78,18 @@ body {
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
+    width: 100vw !important;
     height: 100% !important;
+    height: 100lvh !important;
+    height: 100vh !important;
+    min-height: 100% !important;
     object-fit: cover !important;
     object-position: center 20% !important;
-    transform: translate3d(0, 0, 0) !important;
-    -webkit-transform: translate3d(0, 0, 0) !important;
-    will-change: transform !important;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    will-change: auto !important;
+    pointer-events: none !important;
+    touch-action: none !important;
   }
 }
 

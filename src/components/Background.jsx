@@ -745,22 +745,18 @@ export default function Background() {
 
   return (
     <>
-      {/* 1. Desktop & Mobile Background Image */}
+      {/* 1. Desktop & Mobile Background Image - 100% Locked to Viewport */}
       <div
-        className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none mobile-fixed-background gpu-accelerated"
+        className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none mobile-fixed-background"
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          width: '100%',
-          height: '100%',
-          transform: 'translate3d(0, 0, 0)',
-          WebkitTransform: 'translate3d(0, 0, 0)',
-          willChange: 'transform',
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden',
+          width: '100vw',
+          height: '100lvh',
+          minHeight: '100%',
         }}
         aria-hidden="true"
       >
@@ -784,12 +780,11 @@ export default function Background() {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
+            width: '100vw',
+            height: '100lvh',
+            minHeight: '100%',
             objectFit: 'cover',
             objectPosition: 'center 20%',
-            transform: 'translate3d(0, 0, 0)',
-            WebkitTransform: 'translate3d(0, 0, 0)',
           }}
         />
 
