@@ -97,19 +97,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
     }
   };
 
-  // Quick Mock Demo Filler for instant testing
-  const fillDemoData = () => {
-    soundController.playClick();
-    setFormData({
-      fullName: 'Aarav Sharma',
-      rollNo: '26CS084',
-      phone: '9876543210',
-      diet: 'Veg',
-      utrNumber: '427189035124',
-    });
-    setScreenshotPreview('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80');
-    setErrors({});
-  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -191,15 +178,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
           Fill your student details, complete payment via dynamic UPI QR, and your personalized 3D VIP pass will be rendered instantly.
         </p>
 
-        {/* Demo Fast-Fill Button */}
-        <button
-          type="button"
-          onClick={fillDemoData}
-          className="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-cyber-violet/20 hover:bg-cyber-violet/30 border border-cyber-violet/40 text-cyber-violet text-xs font-mono transition-colors"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Auto-Fill Sample Data (Fast Demo)</span>
-        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch max-w-5xl mx-auto">
