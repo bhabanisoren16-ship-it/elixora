@@ -48,16 +48,18 @@ export default function HeroSection({ onGrabPassClick }) {
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
         </div>
 
-        {/* Title Container with Party Theme Styling */}
-        <div className="relative my-2 select-none">
-          {/* Ambient Multi-Neon Party Glow behind title */}
-          <div className="absolute -inset-6 blur-3xl opacity-80 rounded-full pointer-events-none bg-gradient-to-r from-amber-500/35 via-rose-500/30 to-cyan-500/35 animate-ambient-glow" />
-
-          {/* Main Title: Exact font from user's image (Unbounded Black) with striking aura & subtle float */}
-          <div className="relative my-1 select-none animate-hero-float">
-            <h1 className="font-unbounded font-black text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight text-white uppercase text-center leading-none transition-all duration-300 drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)] hover:scale-[1.01] striking-electric-aura">
-              ELIXORA 2.0
-            </h1>
+        {/* Title Container with Exact Official Logo Graphic */}
+        <div className="relative my-3 select-none flex flex-col items-center justify-center">
+          {/* Main Title Graphic: 100% Exact Typography from Official Artwork */}
+          <div className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full px-2">
+            <h1 className="sr-only">ELIXORA 2.0</h1>
+            <img
+              src="/elixora-title.png"
+              alt="ELIXORA 2.0"
+              className="w-full max-w-[290px] xs:max-w-[340px] sm:max-w-lg md:max-w-xl lg:max-w-2xl h-auto object-contain mx-auto transition-transform duration-300 hover:scale-[1.02] drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]"
+              loading="eager"
+              decoding="sync"
+            />
           </div>
 
           {/* Subtext */}
