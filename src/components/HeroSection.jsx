@@ -37,33 +37,33 @@ export default function HeroSection({ onGrabPassClick }) {
   }, [targetDate]);
 
   return (
-    <section id="hero" className="relative min-h-[90vh] sm:min-h-screen pt-28 pb-12 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <section id="hero" className="relative min-h-[85vh] sm:min-h-screen pt-24 sm:pt-28 pb-8 sm:pb-12 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
         
         {/* Top Tagline Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian-950/80 border border-amber-500/50 text-amber-300 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-2 shadow-lg backdrop-blur-md">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian-950/80 border border-amber-500/50 text-amber-300 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-1.5 sm:mb-2 shadow-lg backdrop-blur-md">
           <Sparkles className="w-3 h-3 text-amber-400 animate-spin-slow" />
           <span>Welcome Class of 26</span>
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
         </div>
 
         {/* Title Container with Exact Official Logo Graphic */}
-        <div className="relative my-3 select-none flex flex-col items-center justify-center">
+        <div className="relative my-1 sm:my-2 select-none flex flex-col items-center justify-center">
           {/* Main Title Graphic: 100% Exact Typography from Official Artwork */}
-          <div className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full px-2">
+          <div className="relative my-0.5 select-none animate-hero-float flex items-center justify-center w-full px-2">
             <h1 className="sr-only">ELIXORA 2.0</h1>
             <img
               src="/elixora-title.png"
               alt="ELIXORA 2.0"
-              className="w-full max-w-[290px] xs:max-w-[340px] sm:max-w-lg md:max-w-xl lg:max-w-2xl h-auto object-contain mx-auto transition-transform duration-300 hover:scale-[1.02] drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]"
+              className="w-full max-w-[280px] xs:max-w-[320px] sm:max-w-lg md:max-w-xl lg:max-w-2xl h-auto object-contain mx-auto transition-transform duration-300 hover:scale-[1.02] drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]"
               loading="eager"
               decoding="sync"
             />
           </div>
 
           {/* Subtext */}
-          <div className="flex items-center justify-center gap-3 mt-3 mb-4">
+          <div className="flex items-center justify-center gap-3 mt-1.5 sm:mt-2 mb-1 sm:mb-2">
             <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-r from-transparent to-cyan-400" />
             <p className="font-outfit text-xs sm:text-sm tracking-[0.25em] text-cyan-300 font-extrabold uppercase drop-shadow-[0_0_12px_rgba(6,182,212,0.9)]">
               FRESHERS '26
@@ -73,7 +73,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* Real-time Countdown Timer Grid */}
-        <div className="mt-5 mb-5 inline-grid grid-cols-4 gap-2 sm:gap-3 max-w-sm sm:max-w-md mx-auto w-full px-2">
+        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-3 max-w-xs sm:max-w-md mx-auto w-full px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
             { label: 'HOURS', value: timeLeft.hours },
@@ -84,7 +84,7 @@ export default function HeroSection({ onGrabPassClick }) {
               key={idx}
               className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-amber-400/60 hover:-translate-y-1 hover:shadow-neon-gold transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-2xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-amber-100 to-amber-300 tracking-wider">
+              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-amber-100 to-amber-300 tracking-wider">
                 {String(item.value).padStart(2, '0')}
               </div>
               <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-amber-400">
@@ -97,13 +97,13 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 mt-1 sm:mt-2">
           <button
             onClick={() => {
               soundController.playClick();
               onGrabPassClick();
             }}
-            className="w-full sm:w-auto px-6 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine"
+            className="w-full sm:w-auto px-5 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine"
           >
             <span>GRAB YOUR PASS</span>
             <ArrowRight className="w-4 h-4 text-amber-200 group-hover:translate-x-1.5 transition-transform" />
