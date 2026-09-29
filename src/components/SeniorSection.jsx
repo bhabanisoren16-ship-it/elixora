@@ -83,7 +83,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isPortalOpen, setIsPortalOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
+  // Smooth scroll format
 
   // Notify App and add body class to hide Navbar when Senior Portal is open
   useEffect(() => {
@@ -274,6 +274,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setErrors({});
     soundController.playSuccess?.();
     setCurrentStep(2);
+  };
+
+  const scrollToBox = (boxId) => {
+    soundController.playClick?.();
+    const el = document.getElementById(boxId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -594,54 +602,28 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               </button>
             </div>
 
-            {/* Step Navigation Pill Indicator (Interactive 3-Step Wizard) */}
+            {/* Step Navigation Pill Indicator (Smooth Scroll Jump Navigation) */}
             <div className="shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/[0.02] border-b border-white/5 flex flex-wrap items-center justify-between gap-2 text-xs font-outfit font-semibold text-slate-400">
               <button
                 type="button"
-                onClick={() => {
-                  soundController.playClick?.();
-                  setCurrentStep(1);
-                }}
-                className={`flex items-center gap-2 transition-all cursor-pointer ${
-                  currentStep === 1 ? 'text-amber-300 font-bold scale-105' : 'text-slate-400 hover:text-white'
-                }`}
+                onClick={() => scrollToBox('senior-box-1')}
+                className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
               >
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
-                  currentStep === 1
-                    ? 'bg-amber-500 text-obsidian-950 shadow-[0_0_10px_rgba(251,191,36,0.6)]'
-                    : currentStep > 1
-                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'
-                    : 'bg-white/10 text-slate-400'
-                }`}>
-                  {currentStep > 1 ? '✓' : '1'}
+                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
+                  1
                 </span>
-                <span>1. Fill Senior Details</span>
+                <span>1. Senior Details</span>
               </button>
 
               <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
 
               <button
                 type="button"
-                onClick={() => {
-                  if (currentStep === 1) {
-                    handleNextFromStep1();
-                  } else {
-                    soundController.playClick?.();
-                    setCurrentStep(2);
-                  }
-                }}
-                className={`flex items-center gap-2 transition-all cursor-pointer ${
-                  currentStep === 2 ? 'text-amber-300 font-bold scale-105' : 'text-slate-400 hover:text-white'
-                }`}
+                onClick={() => scrollToBox('senior-box-2')}
+                className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
               >
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
-                  currentStep === 2
-                    ? 'bg-amber-500 text-obsidian-950 shadow-[0_0_10px_rgba(251,191,36,0.6)]'
-                    : currentStep > 2
-                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'
-                    : 'bg-white/10 text-slate-400'
-                }`}>
-                  {currentStep > 2 ? '✓' : '2'}
+                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
+                  2
                 </span>
                 <span>2. Pay on Given Barcode</span>
               </button>
@@ -650,392 +632,324 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
               <button
                 type="button"
-                onClick={() => {
-                  if (currentStep === 1) {
-                    handleNextFromStep1();
-                  } else {
-                    soundController.playClick?.();
-                    setCurrentStep(3);
-                  }
-                }}
-                className={`flex items-center gap-2 transition-all cursor-pointer ${
-                  currentStep === 3 ? 'text-amber-300 font-bold scale-105' : 'text-slate-400 hover:text-white'
-                }`}
+                onClick={() => scrollToBox('senior-box-3')}
+                className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
               >
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
-                  currentStep === 3
-                    ? 'bg-amber-500 text-obsidian-950 shadow-[0_0_10px_rgba(251,191,36,0.6)]'
-                    : 'bg-white/10 text-slate-400'
-                }`}>
+                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
                   3
                 </span>
-                <span>3. Attach Proof &amp; Mint Pass</span>
+                <span>3. Attach Proof &amp; Mint</span>
               </button>
             </div>
 
             {/* Portal Main Body Grid */}
             <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 lg:p-8">
-              <form onSubmit={handleSubmit} className="w-full">
+              <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto space-y-6 pb-6">
                 
                 {/* ================================================================= */}
-                {/* STEP 1: SENIOR PERSONAL DETAILS (SEPARATE BOX) */}
+                {/* BOX 1: SENIOR PERSONAL DETAILS */}
                 {/* ================================================================= */}
-                {currentStep === 1 && (
-                  <div className="max-w-2xl mx-auto bg-white/[0.02] p-5 sm:p-7 rounded-2xl border border-white/10 animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
-                      <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
-                        <User className="w-4 h-4 text-amber-400" />
-                        <span>Senior Personal Details</span>
-                      </h4>
-                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
-                        STEP 1 OF 3
-                      </span>
-                    </div>
+                <div id="senior-box-1" className="scroll-mt-4 bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
+                  <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
+                    <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
+                      <User className="w-4 h-4 text-amber-400" />
+                      <span>Senior Personal Details</span>
+                    </h4>
+                    <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                      STEP 1 OF 3
+                    </span>
+                  </div>
 
-                    <div className="space-y-4">
-                      {/* Grid: Full Name & Roll No */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                            Senior Full Name <span className="text-amber-400">*</span>
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              name="fullName"
-                              value={formData.fullName}
-                              onChange={handleInputChange}
-                              placeholder="e.g. Aarav Sharma"
-                              className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
-                                errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
-                              } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
-                            />
-                            <User className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
-                          </div>
-                          {errors.fullName && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.fullName}</p>}
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                            College Roll / Reg. No. <span className="text-emerald-400 font-bold">✓ (Verified)</span>
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="text"
-                              name="rollNo"
-                              value={formData.rollNo}
-                              readOnly
-                              className="w-full px-4 py-3 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed"
-                            />
-                            <CheckCircle2 className="absolute right-3.5 top-3.5 w-4 h-4 text-emerald-400" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Grid: Batch & WhatsApp Contact */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                            Senior Batch / Year
-                          </label>
-                          <select
-                            name="batch"
-                            value={formData.batch}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
-                          >
-                            {seniorBatches.map((b) => (
-                              <option key={b} value={b} className="bg-obsidian-950 text-white">
-                                {b}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                            WhatsApp Contact <span className="text-amber-400">*</span>
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="tel"
-                              name="phone"
-                              value={formData.phone}
-                              onChange={handleInputChange}
-                              placeholder="10-digit number"
-                              className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
-                                errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
-                              } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
-                            />
-                            <Phone className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
-                          </div>
-                          {errors.phone && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.phone}</p>}
-                        </div>
-                      </div>
-
-                      {/* Senior Advice / Wisdom Quote */}
+                  <div className="space-y-4">
+                    {/* Grid: Full Name & Roll No */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                          Senior Advice / Message for Freshers (Optional)
+                          Senior Full Name <span className="text-amber-400">*</span>
                         </label>
                         <div className="relative">
                           <input
                             type="text"
-                            name="seniorQuote"
-                            value={formData.seniorQuote}
+                            name="fullName"
+                            value={formData.fullName}
                             onChange={handleInputChange}
-                            placeholder="e.g. Dream big, stay focused, and cherish every single moment!"
-                            className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
+                            placeholder="e.g. Aarav Sharma"
+                            className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
+                              errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
+                            } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
                           />
-                          <Quote className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                          <User className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                         </div>
+                        {errors.fullName && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.fullName}</p>}
                       </div>
-                    </div>
 
-                    {/* Step 1 Actions */}
-                    <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-end">
-                      <button
-                        type="button"
-                        onClick={handleNextFromStep1}
-                        className="px-6 py-3.5 rounded-xl font-outfit font-extrabold text-sm tracking-wide bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_20px_rgba(251,191,36,0.6)] hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
-                      >
-                        <span>Proceed to Payment (Step 2)</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* ================================================================= */}
-                {/* STEP 2: PAY ON GIVEN BARCODE (SEPARATE BOX) */}
-                {/* ================================================================= */}
-                {currentStep === 2 && (
-                  <div className="max-w-xl mx-auto bg-white/[0.02] p-5 sm:p-7 rounded-2xl border border-white/10 animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
-                      <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-amber-400" />
-                        <span>Pay on Given Barcode</span>
-                      </h4>
-                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
-                        STEP 2 OF 3
-                      </span>
-                    </div>
-
-                    {/* Amount & Privilege Tag + Copy UPI Bar */}
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 mb-4">
                       <div>
-                        <span className="text-[10px] font-mono text-slate-400 uppercase block">SENIOR VIP PASS</span>
-                        <div className="flex items-baseline gap-2 mt-0.5">
-                          <span className="font-outfit font-extrabold text-2xl text-white">₹{SENIOR_TICKET_PRICE}</span>
-                          <span className="text-xs text-slate-400 line-through">₹999</span>
+                        <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                          College Roll / Reg. No. <span className="text-emerald-400 font-bold">✓ (Verified)</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            name="rollNo"
+                            value={formData.rollNo}
+                            readOnly
+                            className="w-full px-4 py-3 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed"
+                          />
+                          <CheckCircle2 className="absolute right-3.5 top-3.5 w-4 h-4 text-emerald-400" />
                         </div>
                       </div>
+                    </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-bold font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                          VIP PASS
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => copyToClipboard(EVENT_DETAILS.upiId)}
-                          className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-outfit text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-                          title="Copy UPI ID"
+                    {/* Grid: Batch & WhatsApp Contact */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                          Senior Batch / Year
+                        </label>
+                        <select
+                          name="batch"
+                          value={formData.batch}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
                         >
-                          {copiedUpi ? (
-                            <>
-                              <Check className="w-3.5 h-3.5 text-emerald-400" />
-                              <span>Copied</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3.5 h-3.5" />
-                              <span>Copy UPI</span>
-                            </>
-                          )}
-                        </button>
+                          {seniorBatches.map((b) => (
+                            <option key={b} value={b} className="bg-obsidian-950 text-white">
+                              {b}
+                            </option>
+                          ))}
+                        </select>
                       </div>
-                    </div>
 
-                    {/* Given Barcode (QR Code) Canvas Container */}
-                    <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-white/5 border border-white/10 text-center mb-4">
-                      <div className="p-2.5 bg-white rounded-2xl shadow-xl relative inline-block">
-                        <canvas ref={qrCanvasRef} className="rounded-lg max-w-full block" />
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="w-8 h-8 rounded-lg bg-obsidian-950 border border-amber-400 flex items-center justify-center shadow-lg">
-                            <Crown className="w-4 h-4 text-amber-400" />
-                          </div>
+                      <div>
+                        <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                          WhatsApp Contact <span className="text-amber-400">*</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            placeholder="10-digit number"
+                            className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
+                              errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
+                            } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
+                          />
+                          <Phone className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                         </div>
-                      </div>
-                      <p className="mt-2.5 text-sm font-semibold text-white">
-                        Scan with GPay, PhonePe, Paytm, or BHIM
-                      </p>
-                      <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-xs font-mono text-slate-400 mt-1">
-                        <span>UPI: <strong className="text-slate-300 font-medium">{EVENT_DETAILS.upiId}</strong></span>
-                        <span className="text-amber-400/90">• Ref: ELX26-SR-{formData.rollNo}</span>
+                        {errors.phone && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.phone}</p>}
                       </div>
                     </div>
 
-                    {/* Step 2 Actions */}
-                    <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundController.playClick?.();
-                          setCurrentStep(1);
-                        }}
-                        className="px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-outfit text-xs font-bold transition-all cursor-pointer"
-                      >
-                        ← Back to Details
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          soundController.playClick?.();
-                          setCurrentStep(3);
-                        }}
-                        className="px-5 py-3 rounded-xl font-outfit font-extrabold text-sm tracking-wide bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_20px_rgba(251,191,36,0.6)] hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
-                      >
-                        <span>I Have Paid — Attach Proof (Step 3)</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* ================================================================= */}
-                {/* STEP 3: ATTACH PAYMENT PROOF & MINT PASS (SEPARATE BOX) */}
-                {/* ================================================================= */}
-                {currentStep === 3 && (
-                  <div className="max-w-xl mx-auto bg-white/[0.02] p-5 sm:p-7 rounded-2xl border border-white/10 animate-in fade-in duration-200">
-                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
-                      <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
-                        <Upload className="w-4 h-4 text-amber-400" />
-                        <span>Attach Payment Proof &amp; Mint Pass</span>
-                      </h4>
-                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
-                        STEP 3 OF 3
-                      </span>
-                    </div>
-
-                    <div className="space-y-5">
-                      {/* Screenshot File Upload */}
-                      <div>
-                        <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                          Payment Screenshot / Receipt Proof <span className="text-amber-400">*</span>
-                        </label>
-                        
-                        {!screenshotPreview ? (
-                          <label className={`flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed ${
-                            errors.screenshot ? 'border-rose-500 bg-rose-500/5' : 'border-white/20 hover:border-amber-400/60 bg-white/5 hover:bg-white/10'
-                          } cursor-pointer transition-all text-center group`}>
-                            <div className="w-12 h-12 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 mb-2 group-hover:scale-110 transition-transform">
-                              <Upload className="w-5 h-5" />
-                            </div>
-                            <span className="text-sm font-outfit font-bold text-white mb-0.5">
-                              Click to browse or drop payment receipt
-                            </span>
-                            <span className="text-xs text-slate-400 font-outfit">
-                              Supports JPG, PNG (Max 8MB)
-                            </span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleScreenshotChange}
-                              className="hidden"
-                            />
-                          </label>
-                        ) : (
-                          <div className="p-3 rounded-xl bg-obsidian-900 border border-emerald-500/40 relative">
-                            <div className="flex items-center gap-3">
-                              <img
-                                src={screenshotPreview}
-                                alt="Payment Proof"
-                                className="w-14 h-14 rounded-lg object-cover border border-white/20"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-outfit font-bold">
-                                  <CheckCircle2 className="w-3.5 h-3.5" />
-                                  <span>Proof Attached</span>
-                                </div>
-                                <p className="text-xs text-slate-300 font-mono truncate mt-0.5">
-                                  {screenshotFileName || 'receipt_screenshot.png'}
-                                </p>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={handleRemoveScreenshot}
-                                className="p-1.5 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors cursor-pointer"
-                                title="Remove screenshot"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        {errors.screenshot && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.screenshot}</p>}
-                      </div>
-
-                      {/* 12-Digit UTR */}
-                      <div>
-                        <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                          12-Digit UPI Transaction UTR / Ref ID <span className="text-amber-400">*</span>
-                        </label>
+                    {/* Senior Advice / Wisdom Quote */}
+                    <div>
+                      <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                        Senior Advice / Message for Freshers (Optional)
+                      </label>
+                      <div className="relative">
                         <input
                           type="text"
-                          name="utrNumber"
-                          value={formData.utrNumber}
+                          name="seniorQuote"
+                          value={formData.seniorQuote}
                           onChange={handleInputChange}
-                          placeholder="e.g. 427819234812"
-                          className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
-                            errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
-                          } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
+                          placeholder="e.g. Dream big, stay focused, and cherish every single moment!"
+                          className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
                         />
-                        {errors.utrNumber && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.utrNumber}</p>}
-                      </div>
-
-                      {/* Step 3 Actions */}
-                      <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            soundController.playClick?.();
-                            setCurrentStep(2);
-                          }}
-                          className="px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-outfit text-xs font-bold transition-all cursor-pointer"
-                        >
-                          ← Back to Barcode
-                        </button>
-
-                        <button
-                          type="submit"
-                          disabled={isMintingPass}
-                          className={`flex-1 sm:flex-initial px-6 py-3.5 rounded-xl font-outfit font-extrabold text-sm tracking-wide flex items-center justify-center gap-2 border transition-all duration-300 ${
-                            isMintingPass
-                              ? 'bg-amber-500/30 border-amber-500/50 text-slate-300 cursor-wait'
-                              : 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-[1.01] active:scale-95 border-amber-300/50 cursor-pointer'
-                          }`}
-                        >
-                          {isMintingPass ? (
-                            <>
-                              <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                              <span>
-                                {mintingStep === 1 && 'VERIFYING UTR ON SENIOR LEDGER...'}
-                                {mintingStep === 2 && 'AUTHENTICATING ATTACHED PAYMENT PROOF...'}
-                                {mintingStep === 3 && 'MINTING 3D SENIOR VIP PASS...'}
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              <Crown className="w-4 h-4 text-obsidian-950" />
-                              <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
-                            </>
-                          )}
-                        </button>
+                        <Quote className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
+
+                {/* ================================================================= */}
+                {/* BOX 2: PAY ON GIVEN BARCODE */}
+                {/* ================================================================= */}
+                <div id="senior-box-2" className="scroll-mt-4 bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
+                  <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+                    <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-amber-400" />
+                      <span>Pay on Given Barcode</span>
+                    </h4>
+                    <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                      STEP 2 OF 3
+                    </span>
+                  </div>
+
+                  {/* Amount & Privilege Tag + Copy UPI Bar */}
+                  <div className="flex items-center justify-between p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 mb-4">
+                    <div>
+                      <span className="text-[10px] font-mono text-slate-400 uppercase block">SENIOR VIP PASS</span>
+                      <div className="flex items-baseline gap-2 mt-0.5">
+                        <span className="font-outfit font-extrabold text-2xl text-white">₹{SENIOR_TICKET_PRICE}</span>
+                        <span className="text-xs text-slate-400 line-through">₹999</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-bold font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                        VIP PASS
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(EVENT_DETAILS.upiId)}
+                        className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-outfit text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                        title="Copy UPI ID"
+                      >
+                        {copiedUpi ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Copy UPI</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Given Barcode (QR Code) Canvas Container */}
+                  <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                    <div className="p-2.5 bg-white rounded-2xl shadow-xl relative inline-block">
+                      <canvas ref={qrCanvasRef} className="rounded-lg max-w-full block" />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-8 h-8 rounded-lg bg-obsidian-950 border border-amber-400 flex items-center justify-center shadow-lg">
+                          <Crown className="w-4 h-4 text-amber-400" />
+                        </div>
+                      </div>
+                    </div>
+                    <p className="mt-2.5 text-sm font-semibold text-white">
+                      Scan with GPay, PhonePe, Paytm, or BHIM
+                    </p>
+                    <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-xs font-mono text-slate-400 mt-1">
+                      <span>UPI: <strong className="text-slate-300 font-medium">{EVENT_DETAILS.upiId}</strong></span>
+                      <span className="text-amber-400/90">• Ref: ELX26-SR-{formData.rollNo}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ================================================================= */}
+                {/* BOX 3: ATTACH PAYMENT PROOF & MINT PASS */}
+                {/* ================================================================= */}
+                <div id="senior-box-3" className="scroll-mt-4 bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
+                  <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
+                    <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
+                      <Upload className="w-4 h-4 text-amber-400" />
+                      <span>Attach Payment Proof &amp; Mint Pass</span>
+                    </h4>
+                    <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                      STEP 3 OF 3
+                    </span>
+                  </div>
+
+                  <div className="space-y-5">
+                    {/* Screenshot File Upload */}
+                    <div>
+                      <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                        Payment Screenshot / Receipt Proof <span className="text-amber-400">*</span>
+                      </label>
+                      
+                      {!screenshotPreview ? (
+                        <label className={`flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed ${
+                          errors.screenshot ? 'border-rose-500 bg-rose-500/5' : 'border-white/20 hover:border-amber-400/60 bg-white/5 hover:bg-white/10'
+                        } cursor-pointer transition-all text-center group`}>
+                          <div className="w-12 h-12 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 mb-2 group-hover:scale-110 transition-transform">
+                            <Upload className="w-5 h-5" />
+                          </div>
+                          <span className="text-sm font-outfit font-bold text-white mb-0.5">
+                            Click to browse or drop payment receipt
+                          </span>
+                          <span className="text-xs text-slate-400 font-outfit">
+                            Supports JPG, PNG (Max 8MB)
+                          </span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleScreenshotChange}
+                            className="hidden"
+                          />
+                        </label>
+                      ) : (
+                        <div className="p-3 rounded-xl bg-obsidian-900 border border-emerald-500/40 relative">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={screenshotPreview}
+                              alt="Payment Proof"
+                              className="w-14 h-14 rounded-lg object-cover border border-white/20"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-outfit font-bold">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span>Proof Attached</span>
+                              </div>
+                              <p className="text-xs text-slate-300 font-mono truncate mt-0.5">
+                                {screenshotFileName || 'receipt_screenshot.png'}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={handleRemoveScreenshot}
+                              className="p-1.5 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors cursor-pointer"
+                              title="Remove screenshot"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {errors.screenshot && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.screenshot}</p>}
+                    </div>
+
+                    {/* 12-Digit UTR */}
+                    <div>
+                      <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                        12-Digit UPI Transaction UTR / Ref ID <span className="text-amber-400">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="utrNumber"
+                        value={formData.utrNumber}
+                        onChange={handleInputChange}
+                        placeholder="e.g. 427819234812"
+                        className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
+                          errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
+                        } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
+                      />
+                      {errors.utrNumber && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.utrNumber}</p>}
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        disabled={isMintingPass}
+                        className={`w-full py-4 rounded-xl font-outfit font-extrabold text-sm tracking-wide flex items-center justify-center gap-2 border transition-all duration-300 ${
+                          isMintingPass
+                            ? 'bg-amber-500/30 border-amber-500/50 text-slate-300 cursor-wait'
+                            : 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-[1.01] active:scale-95 border-amber-300/50 cursor-pointer'
+                        }`}
+                      >
+                        {isMintingPass ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                            <span>
+                              {mintingStep === 1 && 'VERIFYING UTR ON SENIOR LEDGER...'}
+                              {mintingStep === 2 && 'AUTHENTICATING ATTACHED PAYMENT PROOF...'}
+                              {mintingStep === 3 && 'MINTING 3D SENIOR VIP PASS...'}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Crown className="w-4 h-4 text-obsidian-950" />
+                            <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
               </form>
             </div>
