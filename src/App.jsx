@@ -14,6 +14,7 @@ const HolographicTicketModal = lazy(() => import('./components/HolographicTicket
 export default function App() {
   const [passData, setPassData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(false);
 
   const handlePassGenerated = (generatedPass) => {
     setPassData(generatedPass);

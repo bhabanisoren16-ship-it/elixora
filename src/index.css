@@ -534,3 +534,9 @@ body {
     -webkit-backdrop-filter: blur(6px) !important;
   }
 }
+
+/* 8. Hide Navigation Bar when Senior VIP Portal or Modals are Open */
+body.senior-portal-open header,
+body.senior-portal-open nav {
+  display: none !important;
+}

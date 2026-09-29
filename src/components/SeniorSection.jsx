@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { 
@@ -76,12 +77,26 @@ const REGISTERED_SENIORS = {
 
 const SENIOR_TICKET_PRICE = 499;
 
-export default function SeniorSection({ onPassGenerated }) {
+export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
+  // Notify App and add body class to hide Navbar when Senior Portal is open
+  useEffect(() => {
+    onPortalToggle?.(isPortalOpen);
+    if (isPortalOpen) {
+      document.body.classList.add('senior-portal-open');
+    } else {
+      document.body.classList.remove('senior-portal-open');
+    }
+    return () => {
+      document.body.classList.remove('senior-portal-open');
+    };
+  }, [isPortalOpen, onPortalToggle]);
+
   // Authentication Gate State
   const [accessRegNo, setAccessRegNo] = useState('');
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isPortalOpen, setIsPortalOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
   const [accessError, setAccessError] = useState('');
   const [verifiedSeniorProfile, setVerifiedSeniorProfile] = useState(null);
 
@@ -108,31 +123,11 @@ export default function SeniorSection({ onPassGenerated }) {
 
   const qrCanvasRef = useRef(null);
 
-  const branches = [
-    'Computer Science & Engineering',
-    'Information Technology',
-    'Electronics & Communication (ECE)',
-    'Electrical & Electronics (EEE)',
-    'Mechanical Engineering',
-    'Biotechnology & Bioinformatics',
-    'Aerospace & Robotics',
-    'Architecture & Planning',
-    'Design & Digital Media',
-    'Management Studies (MBA/BBA)',
-  ];
-
   const seniorBatches = [
     "Batch of '25 • Senior",
     "Batch of '24 • Senior",
     "Batch of '23 • Senior",
     "Student Council Senior Executive"
-  ];
-
-  const seniorRoles = [
-    'Senior VIP Pass (Full Access + Red Carpet)',
-    'Senior Mentor & Freshers Guide',
-    'Organizing Committee Senior Lead',
-    'Council Senior Patron'
   ];
 
   // Helper: Verify Senior Registration Number strictly against the authorized roster
@@ -184,6 +179,7 @@ export default function SeniorSection({ onPassGenerated }) {
       }));
 
       setIsUnlocked(true);
+      setCurrentStep(1);
       setIsPortalOpen(true);
     }, 500);
   };
@@ -213,7 +209,7 @@ export default function SeniorSection({ onPassGenerated }) {
         qrCanvasRef.current,
         upiString,
         {
-          width: 220,
+          width: 175,
           margin: 1.5,
           color: {
             dark: '#0f172a',
@@ -227,7 +223,58 @@ export default function SeniorSection({ onPassGenerated }) {
     }, 60);
 
     return () => clearTimeout(timer);
-  }, [isPortalOpen, formData.rollNo]);
+  }, [isPortalOpen, currentStep, formData.rollNo]);
+
+  // Lock body scroll and listen for Escape key when Senior Portal modal is open
+  useEffect(() => {
+    if (!isPortalOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const originalPaddingRight = document.body.style.paddingRight;
+
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        soundController.playClick?.();
+        setIsPortalOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPortalOpen]);
+
+
+  // Step 1 validation before advancing to Step 2
+  const handleNextFromStep1 = () => {
+    const newErrors = {};
+    if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required.';
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'WhatsApp number is required.';
+    } else if (!/^\d{10}$/.test(formData.phone.replace(/[^0-9]/g, ''))) {
+      newErrors.phone = 'Please enter a valid 10-digit WhatsApp number.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      soundController.playError?.();
+      return;
+    }
+
+    setErrors({});
+    soundController.playSuccess?.();
+    setCurrentStep(2);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -493,17 +540,25 @@ export default function SeniorSection({ onPassGenerated }) {
       {/* ========================================================================= */}
       {/* DEDICATED SENIOR VIP PORTAL MODAL (DETAILS + BARCODE PAYMENT + PROOF ATTACH) */}
       {/* ========================================================================= */}
-      {isPortalOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-obsidian-950/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-300">
+      {isPortalOpen && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[100] overflow-y-auto bg-obsidian-950/90 backdrop-blur-xl flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-300"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              soundController.playClick?.();
+              setIsPortalOpen(false);
+            }
+          }}
+        >
           
-          <div className="relative w-full max-w-5xl bg-obsidian-950/95 border border-amber-500/40 rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(245,158,11,0.25)] overflow-hidden my-auto">
+          <div className="relative w-full max-w-5xl my-auto bg-obsidian-950/95 border border-amber-500/40 rounded-2xl sm:rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(245,158,11,0.25)] overflow-hidden flex flex-col max-h-[92vh]">
             
             {/* Background Atmosphere */}
             <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
             {/* Portal Top Bar */}
-            <div className="relative z-10 px-6 py-5 border-b border-white/10 flex items-center justify-between bg-black/40 backdrop-blur-md">
+            <div className="shrink-0 relative z-10 px-4 sm:px-6 py-3.5 sm:py-4 border-b border-white/10 flex items-center justify-between bg-black/50 backdrop-blur-md">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-600 p-[2px] shadow-[0_0_15px_rgba(245,158,11,0.4)]">
                   <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-amber-300">
@@ -539,226 +594,266 @@ export default function SeniorSection({ onPassGenerated }) {
               </button>
             </div>
 
-            {/* Step Navigation Pill Indicator */}
-            <div className="px-6 py-3 bg-white/[0.02] border-b border-white/5 flex flex-wrap items-center justify-between gap-2 text-xs font-outfit font-semibold text-slate-400">
-              <div className="flex items-center gap-2 text-amber-300">
-                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-[10px] text-amber-300 font-bold">1</span>
-                <span>Fill Senior Details</span>
-              </div>
+            {/* Step Navigation Pill Indicator (Interactive 3-Step Wizard) */}
+            <div className="shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/[0.02] border-b border-white/5 flex flex-wrap items-center justify-between gap-2 text-xs font-outfit font-semibold text-slate-400">
+              <button
+                type="button"
+                onClick={() => {
+                  soundController.playClick?.();
+                  setCurrentStep(1);
+                }}
+                className={`flex items-center gap-2 transition-all cursor-pointer ${
+                  currentStep === 1 ? 'text-amber-300 font-bold scale-105' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                  currentStep === 1
+                    ? 'bg-amber-500 text-obsidian-950 shadow-[0_0_10px_rgba(251,191,36,0.6)]'
+                    : currentStep > 1
+                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'
+                    : 'bg-white/10 text-slate-400'
+                }`}>
+                  {currentStep > 1 ? '✓' : '1'}
+                </span>
+                <span>1. Fill Senior Details</span>
+              </button>
+
               <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
-              <div className="flex items-center gap-2 text-amber-300">
-                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-[10px] text-amber-300 font-bold">2</span>
-                <span>Pay Money on Given Barcode</span>
-              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (currentStep === 1) {
+                    handleNextFromStep1();
+                  } else {
+                    soundController.playClick?.();
+                    setCurrentStep(2);
+                  }
+                }}
+                className={`flex items-center gap-2 transition-all cursor-pointer ${
+                  currentStep === 2 ? 'text-amber-300 font-bold scale-105' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                  currentStep === 2
+                    ? 'bg-amber-500 text-obsidian-950 shadow-[0_0_10px_rgba(251,191,36,0.6)]'
+                    : currentStep > 2
+                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'
+                    : 'bg-white/10 text-slate-400'
+                }`}>
+                  {currentStep > 2 ? '✓' : '2'}
+                </span>
+                <span>2. Pay on Given Barcode</span>
+              </button>
+
               <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
-              <div className="flex items-center gap-2 text-amber-300">
-                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-[10px] text-amber-300 font-bold">3</span>
-                <span>Attach Payment Proof &amp; Mint Pass</span>
-              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (currentStep === 1) {
+                    handleNextFromStep1();
+                  } else {
+                    soundController.playClick?.();
+                    setCurrentStep(3);
+                  }
+                }}
+                className={`flex items-center gap-2 transition-all cursor-pointer ${
+                  currentStep === 3 ? 'text-amber-300 font-bold scale-105' : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
+                  currentStep === 3
+                    ? 'bg-amber-500 text-obsidian-950 shadow-[0_0_10px_rgba(251,191,36,0.6)]'
+                    : 'bg-white/10 text-slate-400'
+                }`}>
+                  3
+                </span>
+                <span>3. Attach Proof &amp; Mint Pass</span>
+              </button>
             </div>
 
             {/* Portal Main Body Grid */}
-            <div className="p-6 sm:p-8 max-h-[75vh] overflow-y-auto">
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 lg:p-8">
+              <form onSubmit={handleSubmit} className="w-full">
                 
                 {/* ================================================================= */}
-                {/* SECTION 1: SENIOR DETAILS FORM (7 Columns) */}
+                {/* STEP 1: SENIOR PERSONAL DETAILS (SEPARATE BOX) */}
                 {/* ================================================================= */}
-                <div className="lg:col-span-7 space-y-5 bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                    <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
-                      <User className="w-4 h-4 text-amber-400" />
-                      <span>Senior Personal Details</span>
-                    </h4>
-                    <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
-                      STEP 1 OF 3
-                    </span>
-                  </div>
-
-                  {/* Full Name */}
-                  <div>
-                    <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                      Senior Full Name <span className="text-amber-400">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleInputChange}
-                        placeholder="e.g. Aarav Sharma"
-                        className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
-                          errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
-                        } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
-                      />
-                      <User className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
-                    </div>
-                    {errors.fullName && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.fullName}</p>}
-                  </div>
-
-                  {/* Registration Number (Locked & Verified) */}
-                  <div>
-                    <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                      Registered College Roll / Registration No. <span className="text-emerald-400 font-bold">✓ (Verified)</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="rollNo"
-                        value={formData.rollNo}
-                        readOnly
-                        className="w-full px-4 py-3 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed"
-                      />
-                      <CheckCircle2 className="absolute right-3.5 top-3.5 w-4 h-4 text-emerald-400" />
-                    </div>
-                  </div>
-
-                  {/* Senior Batch & Branch in Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                        Senior Batch / Year
-                      </label>
-                      <select
-                        name="batch"
-                        value={formData.batch}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
-                      >
-                        {seniorBatches.map((b) => (
-                          <option key={b} value={b} className="bg-obsidian-950 text-white">
-                            {b}
-                          </option>
-                        ))}
-                      </select>
+                {currentStep === 1 && (
+                  <div className="max-w-2xl mx-auto bg-white/[0.02] p-5 sm:p-7 rounded-2xl border border-white/10 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
+                      <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
+                        <User className="w-4 h-4 text-amber-400" />
+                        <span>Senior Personal Details</span>
+                      </h4>
+                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                        STEP 1 OF 3
+                      </span>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                        Department / Branch
-                      </label>
-                      <select
-                        name="branch"
-                        value={formData.branch}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
-                      >
-                        {branches.map((b) => (
-                          <option key={b} value={b} className="bg-obsidian-950 text-white">
-                            {b}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
+                    <div className="space-y-4">
+                      {/* Grid: Full Name & Roll No */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            Senior Full Name <span className="text-amber-400">*</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              name="fullName"
+                              value={formData.fullName}
+                              onChange={handleInputChange}
+                              placeholder="e.g. Aarav Sharma"
+                              className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
+                                errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
+                              } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
+                            />
+                            <User className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                          </div>
+                          {errors.fullName && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.fullName}</p>}
+                        </div>
 
-                  {/* Senior Access Designation */}
-                  <div>
-                    <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                      Senior Access Privilege
-                    </label>
-                    <select
-                      name="role"
-                      value={formData.role}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
-                    >
-                      {seniorRoles.map((r) => (
-                        <option key={r} value={r} className="bg-obsidian-950 text-white">
-                          {r}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Phone & Email */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                        WhatsApp Contact <span className="text-amber-400">*</span>
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
-                          placeholder="10-digit number"
-                          className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
-                            errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
-                          } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
-                        />
-                        <Phone className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                        <div>
+                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            College Roll / Reg. No. <span className="text-emerald-400 font-bold">✓ (Verified)</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              name="rollNo"
+                              value={formData.rollNo}
+                              readOnly
+                              className="w-full px-4 py-3 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed"
+                            />
+                            <CheckCircle2 className="absolute right-3.5 top-3.5 w-4 h-4 text-emerald-400" />
+                          </div>
+                        </div>
                       </div>
-                      {errors.phone && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.phone}</p>}
-                    </div>
 
-                    <div>
-                      <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                        College Email (Optional)
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          placeholder="senior@college.edu"
-                          className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
-                        />
-                        <Mail className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                      {/* Grid: Batch & WhatsApp Contact */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            Senior Batch / Year
+                          </label>
+                          <select
+                            name="batch"
+                            value={formData.batch}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
+                          >
+                            {seniorBatches.map((b) => (
+                              <option key={b} value={b} className="bg-obsidian-950 text-white">
+                                {b}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                            WhatsApp Contact <span className="text-amber-400">*</span>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="tel"
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleInputChange}
+                              placeholder="10-digit number"
+                              className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
+                                errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
+                              } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
+                            />
+                            <Phone className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                          </div>
+                          {errors.phone && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.phone}</p>}
+                        </div>
+                      </div>
+
+                      {/* Senior Advice / Wisdom Quote */}
+                      <div>
+                        <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                          Senior Advice / Message for Freshers (Optional)
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            name="seniorQuote"
+                            value={formData.seniorQuote}
+                            onChange={handleInputChange}
+                            placeholder="e.g. Dream big, stay focused, and cherish every single moment!"
+                            className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
+                          />
+                          <Quote className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Senior Advice / Wisdom Quote */}
-                  <div>
-                    <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-                      Senior Advice / Message for Freshers (Optional)
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="seniorQuote"
-                        value={formData.seniorQuote}
-                        onChange={handleInputChange}
-                        placeholder="e.g. Dream big, stay focused, and cherish every single moment!"
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
-                      />
-                      <Quote className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                    {/* Step 1 Actions */}
+                    <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-end">
+                      <button
+                        type="button"
+                        onClick={handleNextFromStep1}
+                        className="px-6 py-3.5 rounded-xl font-outfit font-extrabold text-sm tracking-wide bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_20px_rgba(251,191,36,0.6)] hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <span>Proceed to Payment (Step 2)</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* ================================================================= */}
-                {/* SECTION 2 & 3: PAY ON GIVEN BARCODE & ATTACH PAYMENT PROOF (5 Cols) */}
+                {/* STEP 2: PAY ON GIVEN BARCODE (SEPARATE BOX) */}
                 {/* ================================================================= */}
-                <div className="lg:col-span-5 space-y-6">
-                  
-                  {/* BARCODE CARD */}
-                  <div className="bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10 relative overflow-hidden">
-                    <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                {currentStep === 2 && (
+                  <div className="max-w-xl mx-auto bg-white/[0.02] p-5 sm:p-7 rounded-2xl border border-white/10 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
                       <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
                         <CreditCard className="w-4 h-4 text-amber-400" />
                         <span>Pay on Given Barcode</span>
                       </h4>
-                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
-                        STEP 2
+                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                        STEP 2 OF 3
                       </span>
                     </div>
 
-                    {/* Amount & Privilege Tag */}
-                    <div className="flex items-baseline justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 mb-4">
+                    {/* Amount & Privilege Tag + Copy UPI Bar */}
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 mb-4">
                       <div>
-                        <span className="text-[10px] font-mono text-slate-400 uppercase block">SENIOR PASS AMOUNT</span>
+                        <span className="text-[10px] font-mono text-slate-400 uppercase block">SENIOR VIP PASS</span>
                         <div className="flex items-baseline gap-2 mt-0.5">
                           <span className="font-outfit font-extrabold text-2xl text-white">₹{SENIOR_TICKET_PRICE}</span>
                           <span className="text-xs text-slate-400 line-through">₹999</span>
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold font-mono px-2 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                        VIP PASS
-                      </span>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold font-mono px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                          VIP PASS
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(EVENT_DETAILS.upiId)}
+                          className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-outfit text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                          title="Copy UPI ID"
+                        >
+                          {copiedUpi ? (
+                            <>
+                              <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              <span>Copied</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3.5 h-3.5" />
+                              <span>Copy UPI</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
 
                     {/* Given Barcode (QR Code) Canvas Container */}
@@ -771,50 +866,59 @@ export default function SeniorSection({ onPassGenerated }) {
                           </div>
                         </div>
                       </div>
-                      <p className="mt-2 text-xs font-semibold text-white">
+                      <p className="mt-2.5 text-sm font-semibold text-white">
                         Scan with GPay, PhonePe, Paytm, or BHIM
                       </p>
-                      <span className="text-[10px] font-mono text-slate-400 mt-0.5">
-                        Ref: ELX26-SR-{formData.rollNo}
-                      </span>
+                      <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-xs font-mono text-slate-400 mt-1">
+                        <span>UPI: <strong className="text-slate-300 font-medium">{EVENT_DETAILS.upiId}</strong></span>
+                        <span className="text-amber-400/90">• Ref: ELX26-SR-{formData.rollNo}</span>
+                      </div>
                     </div>
 
-                    {/* Copy UPI ID */}
-                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
-                      <span className="font-mono text-slate-300 truncate flex-1">{EVENT_DETAILS.upiId}</span>
+                    {/* Step 2 Actions */}
+                    <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
                       <button
                         type="button"
-                        onClick={() => copyToClipboard(EVENT_DETAILS.upiId)}
-                        className="ml-2 px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-outfit font-bold flex items-center gap-1 transition-colors shrink-0"
+                        onClick={() => {
+                          soundController.playClick?.();
+                          setCurrentStep(1);
+                        }}
+                        className="px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-outfit text-xs font-bold transition-all cursor-pointer"
                       >
-                        {copiedUpi ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            <span>Copied</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3.5 h-3.5" />
-                            <span>Copy UPI</span>
-                          </>
-                        )}
+                        ← Back to Details
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          soundController.playClick?.();
+                          setCurrentStep(3);
+                        }}
+                        className="px-5 py-3 rounded-xl font-outfit font-extrabold text-sm tracking-wide bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_20px_rgba(251,191,36,0.6)] hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <span>I Have Paid — Attach Proof (Step 3)</span>
+                        <ArrowRight className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
+                )}
 
-                  {/* ATTACH PAYMENT PROOF CARD */}
-                  <div className="bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
-                    <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                {/* ================================================================= */}
+                {/* STEP 3: ATTACH PAYMENT PROOF & MINT PASS (SEPARATE BOX) */}
+                {/* ================================================================= */}
+                {currentStep === 3 && (
+                  <div className="max-w-xl mx-auto bg-white/[0.02] p-5 sm:p-7 rounded-2xl border border-white/10 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
                       <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
                         <Upload className="w-4 h-4 text-amber-400" />
-                        <span>Attach Payment Proof</span>
+                        <span>Attach Payment Proof &amp; Mint Pass</span>
                       </h4>
-                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30">
-                        STEP 3
+                      <span className="text-[11px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
+                        STEP 3 OF 3
                       </span>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {/* Screenshot File Upload */}
                       <div>
                         <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
@@ -822,16 +926,16 @@ export default function SeniorSection({ onPassGenerated }) {
                         </label>
                         
                         {!screenshotPreview ? (
-                          <label className={`flex flex-col items-center justify-center p-5 rounded-xl border-2 border-dashed ${
+                          <label className={`flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed ${
                             errors.screenshot ? 'border-rose-500 bg-rose-500/5' : 'border-white/20 hover:border-amber-400/60 bg-white/5 hover:bg-white/10'
                           } cursor-pointer transition-all text-center group`}>
-                            <div className="w-10 h-10 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 mb-2 group-hover:scale-110 transition-transform">
+                            <div className="w-12 h-12 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 mb-2 group-hover:scale-110 transition-transform">
                               <Upload className="w-5 h-5" />
                             </div>
-                            <span className="text-xs font-outfit font-bold text-white mb-0.5">
+                            <span className="text-sm font-outfit font-bold text-white mb-0.5">
                               Click to browse or drop payment receipt
                             </span>
-                            <span className="text-[11px] text-slate-400 font-outfit">
+                            <span className="text-xs text-slate-400 font-outfit">
                               Supports JPG, PNG (Max 8MB)
                             </span>
                             <input
@@ -861,7 +965,7 @@ export default function SeniorSection({ onPassGenerated }) {
                               <button
                                 type="button"
                                 onClick={handleRemoveScreenshot}
-                                className="p-1.5 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors"
+                                className="p-1.5 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors cursor-pointer"
                                 title="Remove screenshot"
                               >
                                 <X className="w-4 h-4" />
@@ -872,7 +976,7 @@ export default function SeniorSection({ onPassGenerated }) {
                         {errors.screenshot && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.screenshot}</p>}
                       </div>
 
-                      {/* UTR / Transaction ID */}
+                      {/* 12-Digit UTR */}
                       <div>
                         <label className="block text-xs font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1.5">
                           12-Digit UPI Transaction UTR / Ref ID <span className="text-amber-400">*</span>
@@ -890,44 +994,56 @@ export default function SeniorSection({ onPassGenerated }) {
                         {errors.utrNumber && <p className="text-rose-400 text-xs mt-1 font-outfit">{errors.utrNumber}</p>}
                       </div>
 
-                      {/* Mint Pass Submit Button */}
-                      <button
-                        type="submit"
-                        disabled={isMintingPass}
-                        className={`w-full py-4 rounded-xl font-outfit font-extrabold text-sm tracking-wide flex items-center justify-center gap-2 border transition-all duration-300 ${
-                          isMintingPass
-                            ? 'bg-amber-500/30 border-amber-500/50 text-slate-300 cursor-wait'
-                            : 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-[1.02] active:scale-95 border-amber-300/50'
-                        }`}
-                      >
-                        {isMintingPass ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
-                            <span>
-                              {mintingStep === 1 && 'VERIFYING UTR ON SENIOR LEDGER...'}
-                              {mintingStep === 2 && 'AUTHENTICATING ATTACHED PAYMENT PROOF...'}
-                              {mintingStep === 3 && 'MINTING 3D SENIOR VIP PASS...'}
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <Crown className="w-4 h-4 text-obsidian-950" />
-                            <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
-                          </>
-                        )}
-                      </button>
+                      {/* Step 3 Actions */}
+                      <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            soundController.playClick?.();
+                            setCurrentStep(2);
+                          }}
+                          className="px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-outfit text-xs font-bold transition-all cursor-pointer"
+                        >
+                          ← Back to Barcode
+                        </button>
 
+                        <button
+                          type="submit"
+                          disabled={isMintingPass}
+                          className={`flex-1 sm:flex-initial px-6 py-3.5 rounded-xl font-outfit font-extrabold text-sm tracking-wide flex items-center justify-center gap-2 border transition-all duration-300 ${
+                            isMintingPass
+                              ? 'bg-amber-500/30 border-amber-500/50 text-slate-300 cursor-wait'
+                              : 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-[1.01] active:scale-95 border-amber-300/50 cursor-pointer'
+                          }`}
+                        >
+                          {isMintingPass ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin text-amber-400" />
+                              <span>
+                                {mintingStep === 1 && 'VERIFYING UTR ON SENIOR LEDGER...'}
+                                {mintingStep === 2 && 'AUTHENTICATING ATTACHED PAYMENT PROOF...'}
+                                {mintingStep === 3 && 'MINTING 3D SENIOR VIP PASS...'}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <Crown className="w-4 h-4 text-obsidian-950" />
+                              <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-
-                </div>
+                )}
 
               </form>
             </div>
 
           </div>
 
-        </div>
+        </div>,
+        document.body
       )}
 
     </section>
