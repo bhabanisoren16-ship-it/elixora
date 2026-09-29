@@ -59,6 +59,7 @@ export default function App() {
         {/* Senior VIP Portal & Gated Access */}
         <SeniorSection
           onPassGenerated={handlePassGenerated}
+          onPortalToggle={setIsSeniorPortalOpen}
         />
       </main>
 
