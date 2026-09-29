@@ -110,26 +110,16 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     "Student Council Senior Executive"
   ];
 
-  // Check saved session on mount
+  // Strictly reset & ensure portal is locked on page load / refresh
   useEffect(() => {
     try {
-      const savedRoll = sessionStorage.getItem('elixora_senior_roll');
-      if (savedRoll && REGISTERED_SENIORS[savedRoll]) {
-        const found = REGISTERED_SENIORS[savedRoll];
-        setVerifiedSeniorProfile(found);
-        setFormData((prev) => ({
-          ...prev,
-          rollNo: savedRoll,
-          fullName: found.name,
-          branch: found.branch || 'Biotechnology',
-          batch: found.batch || "Batch of '25 • Senior",
-          role: 'Senior VIP Pass (Full Access + Red Carpet)',
-        }));
-        setIsUnlocked(true);
-      }
+      sessionStorage.removeItem('elixora_senior_roll');
     } catch (e) {
-      console.warn('Session storage read error:', e);
+      console.warn('Session storage clear error:', e);
     }
+    setIsUnlocked(false);
+    setIsPortalOpen(false);
+    setVerifiedSeniorProfile(null);
   }, []);
 
   // Notify parent and body class when Senior Portal modal is open
@@ -148,7 +138,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   // Helper: Verify Senior Registration Number strictly against the authorized roster
   const handleVerifyAccess = (e) => {
     if (e) e.preventDefault();
-    const cleaned = accessRegNo.trim().toUpperCase();
+    const cleaned = accessRegNo.trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
     if (!cleaned) {
       setAccessError('Please enter your registered college registration number.');
@@ -168,7 +158,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       if (!found) {
         soundController.playError?.();
-        setAccessError(`Registration number "${cleaned}" is not on the official senior list. Access is strictly restricted to registered seniors.`);
+        setAccessError(`Access Denied: Registration number "${cleaned}" is not on the official senior list. Senior portal can be accessed through matched registration number only.`);
+        setIsUnlocked(false);
+        setIsPortalOpen(false);
         return;
       }
 
@@ -193,24 +185,38 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         role: profile.role,
       }));
 
-      try {
-        sessionStorage.setItem('elixora_senior_roll', cleaned);
-      } catch (err) {}
-
       setIsUnlocked(true);
       setIsPortalOpen(true);
-    }, 500);
+    }, 450);
   };
 
-  const handleLockAgain = () => {
+  const handleClosePortal = () => {
     soundController.playClick?.();
+    setIsPortalOpen(false);
+    setIsUnlocked(false);
+    setAccessRegNo('');
+    setVerifiedSeniorProfile(null);
+    setFormData({
+      fullName: '',
+      rollNo: '',
+      branch: 'Biotechnology',
+      batch: "Batch of '25 • Senior",
+      role: 'Senior VIP Pass (Full Access + Red Carpet)',
+      phone: '',
+      email: '',
+      seniorQuote: '',
+      utrNumber: '',
+    });
+    setScreenshotPreview(null);
+    setScreenshotFileName('');
+    setErrors({});
     try {
       sessionStorage.removeItem('elixora_senior_roll');
     } catch (err) {}
-    setIsUnlocked(false);
-    setIsPortalOpen(false);
-    setAccessRegNo('');
-    setVerifiedSeniorProfile(null);
+  };
+
+  const handleLockAgain = () => {
+    handleClosePortal();
   };
 
   // Generate UPI QR Code dynamically for Senior Pass
@@ -261,8 +267,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        soundController.playClick?.();
-        setIsPortalOpen(false);
+        handleClosePortal();
       }
     };
 
@@ -327,6 +332,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   const validateForm = () => {
     const newErrors = {};
 
+    // 1. Strict Gate Check: Registration number MUST match an authorized senior on the official list
+    const cleanRoll = (formData.rollNo || '').trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    if (!cleanRoll || !REGISTERED_SENIORS[cleanRoll]) {
+      newErrors.rollNo = 'Access Denied: Senior portal can be accessed through matched registration number only.';
+    }
+
     if (!formData.fullName.trim()) {
       newErrors.fullName = 'Please enter your full name';
     }
@@ -354,6 +365,15 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
 
+    // Security Gate: Ensure only matched registration number can submit
+    const cleanRoll = (formData.rollNo || '').trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    if (!cleanRoll || !REGISTERED_SENIORS[cleanRoll]) {
+      soundController.playError?.();
+      setAccessError('Access Denied: Senior portal can be accessed through matched registration number only.');
+      handleClosePortal();
+      return;
+    }
+
     if (!validateForm()) {
       soundController.playError?.();
       return;
@@ -377,20 +397,16 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setTimeout(() => {
       setIsMintingPass(false);
       setMintingStep(0);
-      setIsPortalOpen(false); // Close portal modal
+      handleClosePortal();
       soundController.playSuccess?.();
 
       const ticketId = `ELX-SR-${Math.floor(100000 + Math.random() * 900000)}`;
 
-      const resolvedBranch = (formData.rollNo && REGISTERED_SENIORS[formData.rollNo]?.branch)
-        || verifiedSeniorProfile?.branch
-        || 'Biotechnology';
-
       onPassGenerated?.({
         ticketId,
         fullName: formData.fullName,
-        rollNo: formData.rollNo.toUpperCase().trim(),
-        branch: resolvedBranch,
+        rollNo: cleanRoll,
+        branch: 'Biotechnology',
         batch: formData.batch,
         role: formData.role,
         seniorQuote: formData.seniorQuote || 'Welcome Freshers to the Legacy of Elixora!',
@@ -453,7 +469,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               Restricted Senior Access
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 font-outfit max-w-md mx-auto mb-6">
-              Enter your college registration number to verify your senior eligibility on the council roster and unlock checkout.
+              Senior portal can be accessed through matched registration number only. Enter your official college registration number to verify against the council roster and unlock portal.
             </p>
 
             {/* Input Form */}
@@ -469,7 +485,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     setAccessRegNo(e.target.value);
                     if (accessError) setAccessError('');
                   }}
-                  placeholder="Enter Registration No."
+                  placeholder="Enter Senior Registration No."
                   className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-black/50 border border-white/20 text-white placeholder-slate-500 text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
                 />
               </div>
@@ -491,7 +507,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 {isVerifyingAccess ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>VERIFYING ON SENIOR ROSTER...</span>
+                    <span>CHECKING SENIOR ROSTER...</span>
                   </>
                 ) : (
                   <>
@@ -501,6 +517,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 )}
               </button>
             </form>
+
+            <p className="text-[11px] text-slate-400 font-outfit mt-4">
+              * Senior portal is strictly gated. Only pre-registered seniors (Batch '25 Biotechnology) with matching registration numbers can enter.
+            </p>
 
           </div>
         </div>
@@ -528,7 +548,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   Senior Portal Unlocked
                 </h3>
                 <p className="text-xs text-slate-300 font-mono mt-0.5">
-                  Registration ID: <span className="text-amber-300 font-bold">{formData.rollNo}</span>
+                  Registration ID: <span className="text-amber-300 font-bold">{formData.rollNo}</span> • <span className="text-emerald-300">{formData.fullName}</span>
                 </p>
               </div>
             </div>
@@ -552,7 +572,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 className="w-full sm:w-auto py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/15 text-xs font-outfit font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Lock className="w-3.5 h-3.5 text-slate-400" />
-                <span>Switch ID</span>
+                <span>Lock &amp; Switch ID</span>
               </button>
             </div>
           </div>
@@ -563,7 +583,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       {/* ========================================================================= */}
       {/* DEDICATED SENIOR VIP PORTAL MODAL (DETAILS + BARCODE PAYMENT + PROOF ATTACH) */}
       {/* ========================================================================= */}
-      {isPortalOpen && typeof document !== 'undefined' && createPortal(
+      {isPortalOpen && isUnlocked && formData.rollNo && REGISTERED_SENIORS[formData.rollNo] && typeof document !== 'undefined' && createPortal(
         <div 
           className="fixed inset-0 z-[100] w-full h-full bg-obsidian-950 text-slate-100 flex flex-col overflow-y-auto overscroll-contain animate-in fade-in duration-300"
         >
@@ -610,14 +630,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
             {/* Close Button */}
             <button
               type="button"
-              onClick={() => {
-                soundController.playClick?.();
-                setIsPortalOpen(false);
-              }}
-              className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-              title="Close Portal (Esc)"
+              onClick={handleClosePortal}
+              className="px-3 py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-slate-300 hover:text-rose-300 flex items-center gap-1.5 transition-colors cursor-pointer text-xs font-outfit font-medium"
+              title="Close & Lock Portal (Esc)"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
+              <span className="hidden sm:inline">Close &amp; Lock</span>
             </button>
           </header>
 
@@ -714,7 +732,26 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             name="rollNo"
                             value={formData.rollNo}
                             readOnly
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed"
+                            disabled
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed select-none"
+                          />
+                          <CheckCircle2 className="absolute right-3 top-3 w-4 h-4 text-emerald-400" />
+                        </div>
+                      </div>
+
+                      {/* Department / Branch */}
+                      <div>
+                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
+                          Department / Branch <span className="text-emerald-400 font-bold">✓ (Biotechnology)</span>
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            name="branch"
+                            value={formData.branch || 'Biotechnology'}
+                            readOnly
+                            disabled
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-outfit text-sm cursor-not-allowed select-none"
                           />
                           <CheckCircle2 className="absolute right-3 top-3 w-4 h-4 text-emerald-400" />
                         </div>
@@ -985,6 +1022,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       <ShieldCheck className="w-3 h-3 text-emerald-400" />
                       <span>Official Student Council Verified • Instant Pass Generation</span>
                     </p>
+
+                    <button
+                      type="button"
+                      onClick={handleClosePortal}
+                      className="w-full py-2 text-center text-xs text-slate-400 hover:text-rose-300 font-outfit transition-colors cursor-pointer"
+                    >
+                      ← Exit &amp; Lock Senior Portal
+                    </button>
                   </div>
                 </div>
 
