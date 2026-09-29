@@ -78,6 +78,13 @@ const REGISTERED_SENIORS = {
 const SENIOR_TICKET_PRICE = 499;
 
 export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
+  // Authentication Gate State
+  const [accessRegNo, setAccessRegNo] = useState('');
+  const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+
   // Notify App and add body class to hide Navbar when Senior Portal is open
   useEffect(() => {
     onPortalToggle?.(isPortalOpen);
@@ -90,13 +97,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       document.body.classList.remove('senior-portal-open');
     };
   }, [isPortalOpen, onPortalToggle]);
-
-  // Authentication Gate State
-  const [accessRegNo, setAccessRegNo] = useState('');
-  const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [isPortalOpen, setIsPortalOpen] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
   const [accessError, setAccessError] = useState('');
   const [verifiedSeniorProfile, setVerifiedSeniorProfile] = useState(null);
 
