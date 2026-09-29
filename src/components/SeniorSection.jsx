@@ -24,40 +24,40 @@ import { soundController } from '../utils/audio';
 
 // Official authorized roster of registered seniors
 const REGISTERED_SENIORS = {
-  '25110039': { name: 'Anandita Mohanty', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110040': { name: 'Ankita Priyadarshini', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110041': { name: 'Anwesha Mishra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110042': { name: 'Arpita Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110043': { name: 'Astha Agrawalla', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110044': { name: 'Ayushman Mahapatra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110045': { name: 'Barenya Ranjan Acharya', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110046': { name: 'Bhabani Shankar Soren', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior Lead" },
-  '25110047': { name: 'Bishnupriya Sahu', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110048': { name: 'Biswaranjan Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110049': { name: 'D Niharika Patra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110050': { name: 'Deepsikha Biswal', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110051': { name: 'Devika Tripathy', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110052': { name: 'Dipesh Behera', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110053': { name: 'Ipsita Bhol', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110054': { name: 'Jayasmita Rout', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110055': { name: 'Jigyansha Mishra', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110056': { name: 'Lipsita Dash', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110057': { name: 'Lokesh Kumar Nayak', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110058': { name: 'Mahek Habib', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110059': { name: 'Minati Soren', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110060': { name: 'Omm Prakash Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110061': { name: 'Piyush Kumar Dash', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110062': { name: 'Prachiranjan Biswal', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110063': { name: 'Prateek Kumar Mallick', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110064': { name: 'Pratik Priyadarshan Nayak', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110065': { name: 'Priyambada Acharya', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110066': { name: 'Ritesh Seth', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110067': { name: 'Rohan Kumar Rana', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110068': { name: 'Rohan Pradhan', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110069': { name: 'Rohit Kumar Sahoo', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110070': { name: 'Ruturaj Singh', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110071': { name: 'Sahil Agrawal', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" },
-  '25110072': { name: 'Sambit Kumar Sahu', branch: 'Computer Science & Engineering', batch: "Batch of '25 • Senior" }
+  '25110039': { name: 'Anandita Mohanty', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110040': { name: 'Ankita Priyadarshini', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110041': { name: 'Anwesha Mishra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110042': { name: 'Arpita Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110043': { name: 'Astha Agrawalla', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110044': { name: 'Ayushman Mahapatra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110045': { name: 'Barenya Ranjan Acharya', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110046': { name: 'Bhabani Shankar Soren', branch: 'Biotechnology', batch: "Batch of '25 • Senior Lead" },
+  '25110047': { name: 'Bishnupriya Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110048': { name: 'Biswaranjan Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110049': { name: 'D Niharika Patra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110050': { name: 'Deepsikha Biswal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110051': { name: 'Devika Tripathy', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110052': { name: 'Dipesh Behera', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110053': { name: 'Ipsita Bhol', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110054': { name: 'Jayasmita Rout', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110055': { name: 'Jigyansha Mishra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110056': { name: 'Lipsita Dash', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110057': { name: 'Lokesh Kumar Nayak', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110058': { name: 'Mahek Habib', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110059': { name: 'Minati Soren', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110060': { name: 'Omm Prakash Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110061': { name: 'Piyush Kumar Dash', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110062': { name: 'Prachiranjan Biswal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110063': { name: 'Prateek Kumar Mallick', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110064': { name: 'Pratik Priyadarshan Nayak', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110065': { name: 'Priyambada Acharya', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110066': { name: 'Ritesh Seth', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110067': { name: 'Rohan Kumar Rana', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110068': { name: 'Rohan Pradhan', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110069': { name: 'Rohit Kumar Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110070': { name: 'Ruturaj Singh', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110071': { name: 'Sahil Agrawal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110072': { name: 'Sambit Kumar Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" }
 };
 
 const SENIOR_TICKET_PRICE = 499;
@@ -76,7 +76,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     rollNo: '',
     phone: '',
     diet: 'Veg',
-    branch: 'Computer Science & Engineering',
+    branch: 'Biotechnology',
     batch: "Batch of '25 • Senior",
     role: 'Senior VIP Pass (Full Access + Red Carpet)',
     seniorQuote: '',
@@ -104,7 +104,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           ...prev,
           rollNo: savedRoll,
           fullName: found.name,
-          branch: found.branch || 'Computer Science & Engineering',
+          branch: found.branch || 'Biotechnology',
           batch: found.batch || "Batch of '25 • Senior",
           role: 'Senior VIP Pass (Full Access + Red Carpet)',
         }));
@@ -114,6 +114,25 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       console.warn('Session storage read error:', e);
     }
   }, []);
+
+  // Ensure active senior profile data (branch, batch, name) stays synced with official roster
+  useEffect(() => {
+    if (formData.rollNo && REGISTERED_SENIORS[formData.rollNo]) {
+      const senior = REGISTERED_SENIORS[formData.rollNo];
+      setVerifiedSeniorProfile(senior);
+      setFormData((prev) => {
+        if (prev.branch !== senior.branch || prev.batch !== senior.batch) {
+          return {
+            ...prev,
+            branch: senior.branch,
+            batch: senior.batch || prev.batch,
+            fullName: senior.name || prev.fullName,
+          };
+        }
+        return prev;
+      });
+    }
+  }, [formData.rollNo]);
 
   // Notify parent if portal toggle callback provided
   useEffect(() => {
@@ -184,7 +203,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         ...prev,
         rollNo: cleaned,
         fullName: found.name,
-        branch: found.branch || 'Computer Science & Engineering',
+        branch: found.branch || 'Biotechnology',
         batch: found.batch || "Batch of '25 • Senior",
         role: 'Senior VIP Pass (Full Access + Red Carpet)',
       }));
@@ -302,6 +321,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       const generatedPass = {
         ...formData,
+        branch: (formData.rollNo && REGISTERED_SENIORS[formData.rollNo]?.branch) || verifiedSeniorProfile?.branch || 'Biotechnology',
+        batch: (formData.rollNo && REGISTERED_SENIORS[formData.rollNo]?.batch) || verifiedSeniorProfile?.batch || formData.batch,
         ticketId,
         tier: 'VIP SENIOR ACCESS',
         entryGate: 'Red Carpet Arch (Senior Gate 1)',
@@ -323,6 +344,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       onPassGenerated?.(generatedPass);
     }, 3000);
   };
+
+  // Real-time resolved senior branch & batch guaranteed to match official roster
+  const displayBranch = (formData.rollNo && REGISTERED_SENIORS[formData.rollNo]?.branch) 
+    || verifiedSeniorProfile?.branch 
+    || (formData.branch && !formData.branch.includes('Computer') ? formData.branch : 'Biotechnology');
+  const displayBatch = (formData.rollNo && REGISTERED_SENIORS[formData.rollNo]?.batch)
+    || verifiedSeniorProfile?.batch
+    || formData.batch;
 
   return (
     <section id="seniors" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
@@ -438,7 +467,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   </span>
                 </div>
                 <p className="text-xs text-slate-400 font-outfit">
-                  {formData.branch} • {formData.batch}
+                  {displayBranch} • {displayBatch}
                 </p>
               </div>
             </div>
