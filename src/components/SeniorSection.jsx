@@ -423,8 +423,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       {/* STATE 1: LOCKED GATEWAY (ENTER REGISTRATION NUMBER) */}
       {!isUnlocked ? (
-        <div className="max-w-2xl mx-auto rounded-3xl p-6 sm:p-10 border border-amber-500/35 bg-obsidian-950/80 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(245,158,11,0.15)] relative overflow-hidden transition-all duration-300">
+        <div className="max-w-2xl mx-auto rounded-3xl p-6 sm:p-10 border border-amber-500/35 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(245,158,11,0.15)] relative overflow-hidden transition-all duration-300">
           
+          {/* Subtle Background Poster Artwork */}
+          <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
+            <img src="/background-desktop.jpg" alt="" className="w-full h-full object-cover object-[center_35%] filter brightness-75 contrast-125" />
+            <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/80 to-obsidian-950/70" />
+          </div>
+
           {/* Ambient Glows */}
           <div className="absolute -top-24 -right-24 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-cyber-gold/15 rounded-full blur-3xl pointer-events-none" />
@@ -500,9 +506,15 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         </div>
       ) : (
         /* STATE 2: UNLOCKED SENIOR ACCESS CARD (CLICK TO OPEN DEDICATED PORTAL) */
-        <div className="max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 border border-emerald-500/40 bg-obsidian-950/80 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(16,185,129,0.15)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+        <div className="max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 border border-emerald-500/40 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(16,185,129,0.15)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
           
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+          {/* Subtle Background Poster Artwork */}
+          <div className="absolute inset-0 pointer-events-none opacity-25" aria-hidden="true">
+            <img src="/background-desktop.jpg" alt="" className="w-full h-full object-cover object-[center_35%] filter brightness-75 contrast-125" />
+            <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/85 to-obsidian-950/70" />
+          </div>
+
+          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4 text-center sm:text-left">
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shrink-0 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
                 <ShieldCheck className="w-8 h-8" />
@@ -555,9 +567,22 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         <div 
           className="fixed inset-0 z-[100] w-full h-full bg-obsidian-950 text-slate-100 flex flex-col overflow-y-auto overscroll-contain animate-in fade-in duration-300"
         >
-          {/* Background Atmosphere Glows */}
-          <div className="fixed top-0 right-1/4 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="fixed bottom-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+          {/* Fullscreen Backdrop Poster Background with Ambient Cyber Lighting */}
+          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+            <picture className="w-full h-full block">
+              <source media="(min-width: 768px)" srcSet="/background-desktop.jpg" />
+              <img 
+                src="/background-mobile.jpg" 
+                alt="Senior Portal Backdrop" 
+                className="w-full h-full object-cover object-[center_28%] filter brightness-[0.30] contrast-[1.18] saturate-[1.20]" 
+              />
+            </picture>
+            {/* Multi-layered dark gradient & vignette overlay to guarantee maximum readability and contrast */}
+            <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/92 via-obsidian-950/75 to-obsidian-950/95" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(10,10,18,0.75)_100%)]" />
+            <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-amber-500/15 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-cyber-gold/10 rounded-full blur-3xl" />
+          </div>
 
           {/* Sticky Fullscreen Top Bar Header */}
           <header className="shrink-0 sticky top-0 z-50 px-4 sm:px-8 py-3.5 sm:py-4 border-b border-white/10 flex items-center justify-between bg-obsidian-950/95 backdrop-blur-xl">
@@ -637,13 +662,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           </nav>
 
           {/* Full-Screen Scrollable Content Area */}
-          <main className="flex-1 w-full py-8 px-4 sm:px-6 lg:px-8 flex justify-center">
+          <main className="flex-1 w-full py-8 px-4 sm:px-6 lg:px-8 flex justify-center relative z-10">
             <form onSubmit={handleSubmit} className="w-full max-w-3xl space-y-8 pb-16">
                 
                 {/* ================================================================= */}
                 {/* BOX 1: SENIOR PERSONAL DETAILS */}
                 {/* ================================================================= */}
-                <div id="senior-box-1" className="scroll-mt-4 bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
+                <div id="senior-box-1" className="scroll-mt-4 bg-obsidian-950/85 backdrop-blur-xl p-5 sm:p-6 rounded-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                   <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
                     <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
                       <User className="w-4 h-4 text-amber-400" />
@@ -758,7 +783,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 {/* ================================================================= */}
                 {/* BOX 2: PAY ON GIVEN BARCODE */}
                 {/* ================================================================= */}
-                <div id="senior-box-2" className="scroll-mt-4 bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
+                <div id="senior-box-2" className="scroll-mt-4 bg-obsidian-950/85 backdrop-blur-xl p-5 sm:p-6 rounded-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                   <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
                     <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
                       <CreditCard className="w-4 h-4 text-amber-400" />
@@ -827,7 +852,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 {/* ================================================================= */}
                 {/* BOX 3: ATTACH PAYMENT PROOF & MINT PASS */}
                 {/* ================================================================= */}
-                <div id="senior-box-3" className="scroll-mt-4 bg-white/[0.02] p-5 sm:p-6 rounded-2xl border border-white/10">
+                <div id="senior-box-3" className="scroll-mt-4 bg-obsidian-950/85 backdrop-blur-xl p-5 sm:p-6 rounded-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
                   <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-5">
                     <h4 className="font-outfit font-bold text-lg text-white flex items-center gap-2">
                       <Upload className="w-4 h-4 text-amber-400" />
