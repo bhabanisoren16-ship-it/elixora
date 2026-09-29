@@ -179,7 +179,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       }));
 
       setIsUnlocked(true);
-      setCurrentStep(1);
       setIsPortalOpen(true);
     }, 500);
   };
@@ -223,7 +222,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     }, 60);
 
     return () => clearTimeout(timer);
-  }, [isPortalOpen, currentStep, formData.rollNo]);
+  }, [isPortalOpen, formData.rollNo]);
 
   // Lock body scroll and listen for Escape key when Senior Portal modal is open
   useEffect(() => {
@@ -255,26 +254,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   }, [isPortalOpen]);
 
 
-  // Step 1 validation before advancing to Step 2
-  const handleNextFromStep1 = () => {
-    const newErrors = {};
-    if (!formData.fullName.trim()) newErrors.fullName = 'Full Name is required.';
-    if (!formData.phone.trim()) {
-      newErrors.phone = 'WhatsApp number is required.';
-    } else if (!/^\d{10}$/.test(formData.phone.replace(/[^0-9]/g, ''))) {
-      newErrors.phone = 'Please enter a valid 10-digit WhatsApp number.';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      soundController.playError?.();
-      return;
-    }
-
-    setErrors({});
-    soundController.playSuccess?.();
-    setCurrentStep(2);
-  };
 
   const scrollToBox = (boxId) => {
     soundController.playClick?.();
