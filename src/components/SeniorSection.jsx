@@ -529,101 +529,92 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       {/* ========================================================================= */}
       {isPortalOpen && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[100] overflow-y-auto bg-obsidian-950/90 backdrop-blur-xl flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-300"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              soundController.playClick?.();
-              setIsPortalOpen(false);
-            }
-          }}
+          className="fixed inset-0 z-[100] w-full h-full bg-obsidian-950 text-slate-100 flex flex-col overflow-y-auto overscroll-contain animate-in fade-in duration-300"
         >
-          
-          <div className="relative w-full max-w-5xl my-auto bg-obsidian-950/95 border border-amber-500/40 rounded-2xl sm:rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.9),0_0_50px_rgba(245,158,11,0.25)] overflow-hidden flex flex-col max-h-[92vh]">
-            
-            {/* Background Atmosphere */}
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+          {/* Background Atmosphere Glows */}
+          <div className="fixed top-0 right-1/4 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="fixed bottom-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Portal Top Bar */}
-            <div className="shrink-0 relative z-10 px-4 sm:px-6 py-3.5 sm:py-4 border-b border-white/10 flex items-center justify-between bg-black/50 backdrop-blur-md">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-600 p-[2px] shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-                  <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-amber-300">
-                    <Crown className="w-5 h-5 text-amber-400" />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-outfit font-extrabold text-lg sm:text-xl text-white">
-                      ELIXORA 2.0 • SENIOR VIP PORTAL
-                    </span>
-                    <span className="hidden sm:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
-                      VERIFIED: {formData.rollNo}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-400 font-outfit">
-                    Fill Senior Details, Pay on Barcode, and Attach Payment Proof
-                  </p>
+          {/* Sticky Fullscreen Top Bar Header */}
+          <header className="shrink-0 sticky top-0 z-50 px-4 sm:px-8 py-3.5 sm:py-4 border-b border-white/10 flex items-center justify-between bg-obsidian-950/95 backdrop-blur-xl">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-600 p-[2px] shadow-[0_0_15px_rgba(245,158,11,0.4)]">
+                <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-amber-300">
+                  <Crown className="w-5 h-5 text-amber-400" />
                 </div>
               </div>
-
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  soundController.playClick();
-                  setIsPortalOpen(false);
-                }}
-                className="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
-                title="Close Portal"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-outfit font-extrabold text-lg sm:text-xl text-white">
+                    ELIXORA 2.0 • SENIOR VIP PORTAL
+                  </span>
+                  <span className="hidden sm:inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
+                    VERIFIED: {formData.rollNo}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 font-outfit">
+                  Fill Senior Details, Pay on Barcode, and Attach Payment Proof
+                </p>
+              </div>
             </div>
 
-            {/* Step Navigation Pill Indicator (Smooth Scroll Jump Navigation) */}
-            <div className="shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/[0.02] border-b border-white/5 flex flex-wrap items-center justify-between gap-2 text-xs font-outfit font-semibold text-slate-400">
-              <button
-                type="button"
-                onClick={() => scrollToBox('senior-box-1')}
-                className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
-              >
-                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
-                  1
-                </span>
-                <span>1. Senior Details</span>
-              </button>
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => {
+                soundController.playClick();
+                setIsPortalOpen(false);
+              }}
+              className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+              title="Close Portal (Esc)"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </header>
 
-              <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
+          {/* Sticky Step Navigation Pill Jump Bar */}
+          <nav className="shrink-0 sticky top-[69px] sm:top-[73px] z-40 px-4 sm:px-8 py-2.5 sm:py-3 bg-obsidian-950/90 backdrop-blur-md border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs font-outfit font-semibold text-slate-400">
+            <button
+              type="button"
+              onClick={() => scrollToBox('senior-box-1')}
+              className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
+            >
+              <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
+                1
+              </span>
+              <span>1. Senior Details</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={() => scrollToBox('senior-box-2')}
-                className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
-              >
-                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
-                  2
-                </span>
-                <span>2. Pay on Given Barcode</span>
-              </button>
+            <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
 
-              <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
+            <button
+              type="button"
+              onClick={() => scrollToBox('senior-box-2')}
+              className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
+            >
+              <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
+                2
+              </span>
+              <span>2. Pay on Given Barcode</span>
+            </button>
 
-              <button
-                type="button"
-                onClick={() => scrollToBox('senior-box-3')}
-                className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
-              >
-                <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
-                  3
-                </span>
-                <span>3. Attach Proof &amp; Mint</span>
-              </button>
-            </div>
+            <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
 
-            {/* Portal Main Body Grid */}
-            <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 lg:p-8">
-              <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto space-y-6 pb-6">
+            <button
+              type="button"
+              onClick={() => scrollToBox('senior-box-3')}
+              className="flex items-center gap-2 hover:text-amber-300 transition-colors cursor-pointer"
+            >
+              <span className="w-5 h-5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 flex items-center justify-center text-[10px] font-bold">
+                3
+              </span>
+              <span>3. Attach Proof &amp; Mint</span>
+            </button>
+          </nav>
+
+          {/* Full-Screen Scrollable Content Area */}
+          <main className="flex-1 w-full py-8 px-4 sm:px-6 lg:px-8 flex justify-center">
+            <form onSubmit={handleSubmit} className="w-full max-w-3xl space-y-8 pb-16">
                 
                 {/* ================================================================= */}
                 {/* BOX 1: SENIOR PERSONAL DETAILS */}
@@ -931,10 +922,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
 
               </form>
-            </div>
-
-          </div>
-
+          </main>
         </div>,
         document.body
       )}
