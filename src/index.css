@@ -423,14 +423,100 @@ body {
     transform: scale(1.0) translate3d(0, 0, 0);
   }
   50% {
-    transform: scale(1.026) translate3d(0, -0.4%, 0);
+    transform: scale(1.028) translate3d(0, -0.5%, 0);
   }
 }
 
 .animate-subtle-breathe {
-  animation: subtleBreathe 16s ease-in-out infinite;
-  transform-origin: center 32%;
+  animation: subtleBreathe 18s ease-in-out infinite;
+  transform-origin: center 35%;
   will-change: transform;
+}
+
+/* 1b. Mobile Concert Breathing Animation */
+@keyframes mobileBreathe {
+  0%, 100% {
+    transform: scale(1.0) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.035) translate3d(0, -0.8%, 0);
+  }
+}
+
+.animate-mobile-breathe {
+  animation: mobileBreathe 14s ease-in-out infinite;
+  transform-origin: center 25%;
+  will-change: transform;
+}
+
+/* 1c. Rhythmic Concert Stage Beat Pulse */
+@keyframes stagePulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
+.animate-stage-pulse {
+  animation: stagePulse 4s ease-in-out infinite;
+  transform-origin: center top;
+  will-change: transform, opacity;
+}
+
+/* 1d. Sweeping Neon Laser Beams */
+@keyframes laserSweepLeft {
+  0%, 100% {
+    transform: rotate(-22deg) scaleY(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: rotate(18deg) scaleY(1.08);
+    opacity: 0.65;
+  }
+}
+
+.animate-laser-left {
+  animation: laserSweepLeft 8s ease-in-out infinite;
+  transform-origin: 50% 0%;
+  will-change: transform, opacity;
+}
+
+@keyframes laserSweepRight {
+  0%, 100% {
+    transform: rotate(20deg) scaleY(1.05);
+    opacity: 0.3;
+  }
+  50% {
+    transform: rotate(-18deg) scaleY(1);
+    opacity: 0.7;
+  }
+}
+
+.animate-laser-right {
+  animation: laserSweepRight 7.2s ease-in-out infinite;
+  transform-origin: 50% 0%;
+  will-change: transform, opacity;
+}
+
+/* 1e. Drifting Atmospheric Concert Haze */
+@keyframes stageHaze {
+  0%, 100% {
+    opacity: 0.2;
+    transform: translate3d(-3%, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.42;
+    transform: translate3d(3%, -1.5%, 0) scale(1.04);
+  }
+}
+
+.animate-stage-haze {
+  animation: stageHaze 12s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 /* 2. Hero Title Micro-Float (100% GPU Composited translate3d) */

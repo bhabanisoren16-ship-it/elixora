@@ -7,7 +7,6 @@ import {
   Copy, 
   Check, 
   Upload, 
-  Sparkles, 
   AlertCircle, 
   CheckCircle2, 
   ArrowRight, 
@@ -168,7 +167,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/50 text-cyber-cyan text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-          <Sparkles className="w-3.5 h-3.5 text-cyber-cyan" />
           <span>PORTAL GATEWAY • BIOTECHNOLOGY FRESHERS '26</span>
         </div>
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
@@ -288,10 +286,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
           <div>
             <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-white/10">
               <div>
-                <span className="text-xs font-outfit font-extrabold text-amber-300 uppercase tracking-wider">STEP 2 OF 2</span>
+                <span className="text-xs font-outfit font-extrabold text-cyan-300 uppercase tracking-wider">STEP 2 OF 2</span>
                 <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">UPI Payment</h3>
               </div>
-              <div className="w-9 h-9 rounded-xl bg-amber-500/25 border border-amber-500/40 flex items-center justify-center text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+              <div className="w-9 h-9 rounded-xl bg-cyan-500/25 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
                 <CreditCard className="w-4 h-4" />
               </div>
             </div>
@@ -303,7 +301,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 <canvas ref={qrCanvasRef} className="rounded-lg block" />
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-6 h-6 rounded-lg bg-obsidian-950 border border-cyber-cyan flex items-center justify-center shadow-lg">
-                    <Sparkles className="w-3 h-3 text-cyber-cyan animate-pulse" />
+                    <QrCode className="w-3.5 h-3.5 text-cyber-cyan" />
                   </div>
                 </div>
               </div>
@@ -341,7 +339,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
           <div className="space-y-3">
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                UPI Reference / UTR Number (12 Digits) <span className="text-cyber-gold">*</span>
+                UPI Reference / UTR Number (12 Digits) <span className="text-cyber-cyan">*</span>
               </label>
               <input
                 type="text"
@@ -351,8 +349,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 placeholder="e.g. 427189035124"
                 maxLength={18}
                 className={`w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border ${
-                  errors.utrNumber ? 'border-rose-500' : 'border-white/15 focus:border-cyber-gold'
-                } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyber-gold transition-all`}
+                  errors.utrNumber ? 'border-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
               />
               {errors.utrNumber && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.utrNumber}</p>}
             </div>
@@ -409,7 +407,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 text-cyber-gold" />
                     <span>VERIFY & GENERATE PASS</span>
                     <ArrowRight className="w-4 h-4 text-cyan-200" />
                   </>

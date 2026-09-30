@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight, Clock } from 'lucide-react';
 import { soundController } from '../utils/audio';
 
 export default function HeroSection({ onGrabPassClick }) {
@@ -41,11 +41,9 @@ export default function HeroSection({ onGrabPassClick }) {
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
         
-        {/* Top Tagline Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian-950/80 border border-amber-500/50 text-amber-300 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-1.5 sm:mb-2 shadow-lg backdrop-blur-md">
-          <Sparkles className="w-3 h-3 text-amber-400 animate-spin-slow" />
-          <span>Welcome Biotechnology Freshers '26</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+        {/* Top Tagline Pill (Zero Black - Translucent Cyan Glass) */}
+        <div className="inline-flex items-center justify-center px-4 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/40 text-cyan-200 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-1.5 sm:mb-2 shadow-[0_0_15px_rgba(0,229,255,0.25)] backdrop-blur-md">
+          <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">Welcome Biotechnology Freshers '26</span>
         </div>
 
         {/* Title Container with Exact Official Logo Graphic */}
@@ -62,13 +60,40 @@ export default function HeroSection({ onGrabPassClick }) {
             />
           </div>
 
-          {/* Subtext */}
-          <div className="flex items-center justify-center gap-3 mt-1.5 sm:mt-2 mb-1 sm:mb-2">
-            <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-r from-transparent to-cyan-400" />
-            <p className="font-outfit text-xs sm:text-sm md:text-base tracking-[0.25em] text-cyan-300 font-extrabold uppercase drop-shadow-[0_0_12px_rgba(6,182,212,0.9)]">
-              BIOTECHNOLOGY FRESHERS '26
-            </p>
-            <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-l from-transparent to-cyan-400" />
+          {/* Highlighted Subtitle with Background Concert Colors (Clean without sparkle signs) */}
+          <div className="relative flex items-center justify-center gap-2.5 sm:gap-4 mt-2 sm:mt-2.5 mb-1 sm:mb-2 select-none">
+            {/* Colorful Stage Atmosphere Aura behind text (100% transparent, no black container) */}
+            <div 
+              className="absolute -inset-x-6 -inset-y-1.5 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-amber-500/20 blur-md rounded-full pointer-events-none -z-10" 
+              aria-hidden="true"
+            />
+
+            {/* Left Accent Laser Beam */}
+            <span className="hidden xs:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
+            
+            <h2 className="font-outfit text-xs sm:text-sm md:text-base tracking-[0.20em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2">
+              <span 
+                className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300"
+                style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.9)) drop-shadow(0 0 14px rgba(0,229,255,0.9))' }}
+              >
+                BIOTECHNOLOGY
+              </span>
+              <span 
+                className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-purple-300"
+                style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.9)) drop-shadow(0 0 14px rgba(217,70,239,0.9))' }}
+              >
+                FRESHERS
+              </span>
+              <span 
+                className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400"
+                style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.9)) drop-shadow(0 0 14px rgba(251,191,36,0.95))' }}
+              >
+                '26
+              </span>
+            </h2>
+
+            {/* Right Accent Laser Beam */}
+            <span className="hidden xs:block h-[2px] w-8 sm:w-16 bg-gradient-to-l from-transparent via-amber-400 to-orange-400 shadow-[0_0_10px_#fbbf24]" />
           </div>
         </div>
 
@@ -82,16 +107,16 @@ export default function HeroSection({ onGrabPassClick }) {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-amber-400/60 hover:-translate-y-1 hover:shadow-neon-gold transition-all duration-300"
+              className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-cyan-400/60 hover:-translate-y-1 hover:shadow-neon-cyan transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-amber-100 to-amber-300 tracking-wider">
+              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-amber-400">
+              <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-cyan-300">
                 {item.label}
               </div>
               {/* Corner accents */}
-              <div className="absolute top-1 right-1 w-1 h-1 rounded-full bg-amber-400/70" />
+              <div className="absolute top-1 right-1 w-1 h-1 rounded-full bg-cyan-400/80 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
             </div>
           ))}
         </div>
@@ -103,16 +128,16 @@ export default function HeroSection({ onGrabPassClick }) {
               soundController.playClick();
               onGrabPassClick();
             }}
-            className="w-full sm:w-auto px-5 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(251,191,36,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine"
+            className="w-full sm:w-auto px-5 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine"
           >
             <span>GRAB YOUR PASS</span>
-            <ArrowRight className="w-4 h-4 text-amber-200 group-hover:translate-x-1.5 transition-transform" />
+            <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
           </button>
 
           <a
             href="#details"
             onClick={() => soundController.playClick()}
-            className="w-full sm:w-auto px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-obsidian-900/80 border border-white/20 text-slate-200 font-outfit font-semibold text-xs sm:text-sm hover:bg-white/10 hover:border-amber-400/40 transition-all flex items-center justify-center gap-2 backdrop-blur-md"
+            className="w-full sm:w-auto px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-obsidian-900/80 border border-white/20 text-slate-200 font-outfit font-semibold text-xs sm:text-sm hover:bg-white/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all flex items-center justify-center gap-2 backdrop-blur-md"
           >
             <span>Explore Event Guide</span>
           </a>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { soundController } from '../utils/audio';
-import { Disc3, Music2, Plane, Sparkles, Zap, Radio, Volume2 } from 'lucide-react';
+import { Disc3, Music2, Plane, Zap, Radio, Volume2 } from 'lucide-react';
 
 export default function ThreeCanvas() {
   const mountRef = useRef(null);
@@ -1015,7 +1015,7 @@ export default function ThreeCanvas() {
           
           {/* Status Indicator */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-[11px] font-mono font-semibold tracking-wider text-slate-300 border-r border-white/10">
-            <span className={`w-2 h-2 rounded-full ${isStriking ? 'bg-amber-300 animate-ping' : isAudioActive ? 'bg-cyber-cyan animate-ping' : 'bg-cyber-violet animate-pulse'}`} />
+            <span className={`w-2 h-2 rounded-full ${isStriking ? 'bg-cyan-300 animate-ping' : isAudioActive ? 'bg-cyber-cyan animate-ping' : 'bg-cyber-violet animate-pulse'}`} />
             <span>FESTIVAL 3D:</span>
           </div>
 
@@ -1025,8 +1025,8 @@ export default function ThreeCanvas() {
             title="Unleash an electric lightning bolt across the festival sky!"
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-outfit font-bold transition-all duration-300 ${
               isStriking
-                ? 'bg-amber-300 text-obsidian-950 scale-110 shadow-[0_0_20px_rgba(251,191,36,0.9)]'
-                : 'bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 text-obsidian-950 shadow-neon-gold hover:scale-105 active:scale-95'
+                ? 'bg-cyan-300 text-obsidian-950 scale-110 shadow-[0_0_20px_rgba(6,182,212,0.9)]'
+                : 'bg-gradient-to-r from-cyan-400 via-sky-400 to-cyan-200 text-obsidian-950 shadow-neon-cyan hover:scale-105 active:scale-95'
             }`}
           >
             <Zap className={`w-3.5 h-3.5 fill-current ${isStriking ? 'animate-bounce' : ''}`} />
@@ -1057,7 +1057,7 @@ export default function ThreeCanvas() {
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-cyber-cyan" />
+            <Radio className="w-3.5 h-3.5 text-cyber-cyan" />
             <span className="hidden sm:inline">Festival</span>
           </button>
 
@@ -1071,7 +1071,7 @@ export default function ThreeCanvas() {
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Disc3 className="w-3.5 h-3.5 text-cyber-gold" />
+            <Disc3 className="w-3.5 h-3.5 text-cyber-cyan" />
             <span className="hidden sm:inline">DJ Deck</span>
           </button>
 

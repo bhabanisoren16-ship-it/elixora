@@ -8,7 +8,7 @@ import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
 import { soundController } from './utils/audio';
-import { Sparkles, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
 

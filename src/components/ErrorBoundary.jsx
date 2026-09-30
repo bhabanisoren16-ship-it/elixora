@@ -23,7 +23,7 @@ export default class ErrorBoundary extends React.Component {
       return (
         <div className="min-h-screen bg-obsidian-950 text-slate-100 flex items-center justify-center p-6 text-center">
           <div className="max-w-md w-full p-8 rounded-3xl bg-obsidian-900/90 border border-white/20 backdrop-blur-xl shadow-2xl">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-3xl">
               ✨
             </div>
             <h1 className="font-unbounded font-black text-2xl text-white mb-2 uppercase tracking-wide">
@@ -34,7 +34,7 @@ export default class ErrorBoundary extends React.Component {
             </p>
             <button
               onClick={this.handleReload}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-cyber-violet text-white font-outfit font-extrabold text-sm tracking-wider uppercase shadow-neon-gold hover:scale-105 transition-all"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-sm tracking-wider uppercase shadow-neon-cyan hover:scale-105 transition-all"
             >
               Reload Page
             </button>

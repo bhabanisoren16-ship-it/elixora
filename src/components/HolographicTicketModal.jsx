@@ -8,7 +8,6 @@ import {
   RotateCw, 
   X, 
   CheckCircle2, 
-  Sparkles, 
   ShieldCheck, 
   Calendar, 
   MapPin, 
@@ -203,7 +202,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
       
       {/* Background ambient neon pulse */}
       <div className="fixed inset-0 pointer-events-none flex items-center justify-center">
-        <div className="w-[600px] h-[600px] bg-gradient-to-tr from-cyber-violet/20 via-cyber-cyan/20 to-cyber-gold/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="w-[600px] h-[600px] bg-gradient-to-tr from-cyber-violet/20 via-cyber-cyan/20 to-sky-400/20 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
       <div className="relative w-full max-w-4xl mx-auto my-auto z-10 flex flex-col items-center">
@@ -232,7 +231,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
         {/* Personalized Welcome Header */}
         <div className="text-center mb-6">
           <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl text-white tracking-tight">
-            Welcome to ELIXORA 2.0, <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-purple-300 to-cyber-gold">{passData.fullName}</span>!
+            Welcome to ELIXORA 2.0, <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-purple-300 to-sky-300">{passData.fullName}</span>!
           </h2>
           <p className="text-xs sm:text-sm text-slate-300 mt-1">
             Your interactive 3D VIP credential is ready. Tilt with mouse to reveal holographic sheen or flip to view entry rules.
@@ -300,7 +299,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                 <div className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-xl p-[2px] ${
                     passData.isSenior 
-                      ? 'bg-gradient-to-tr from-amber-400 via-rose-500 to-amber-300' 
+                      ? 'bg-gradient-to-tr from-cyan-400 via-sky-500 to-cyber-violet' 
                       : 'bg-gradient-to-tr from-cyber-violet to-cyber-cyan'
                   }`}>
                     <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center font-outfit font-black text-xs text-white">
@@ -312,7 +311,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                       ELIXORA 2.0
                     </span>
                     <span className={`block text-[8px] font-mono uppercase ${
-                      passData.isSenior ? 'text-amber-300 font-bold' : 'text-cyber-cyan'
+                      passData.isSenior ? 'text-cyan-300 font-bold' : 'text-cyber-cyan'
                     }`}>
                       {passData.isSenior ? 'Official Senior VIP Pass' : "Official Freshers' Pass"}
                     </span>
@@ -321,14 +320,14 @@ export default function HolographicTicketModal({ passData, onClose }) {
 
                 <div className={`px-2.5 py-1 rounded-full border flex items-center gap-1 ${
                   passData.isSenior 
-                    ? 'bg-amber-500/25 border-amber-400/60 shadow-[0_0_15px_rgba(245,158,11,0.4)]' 
-                    : 'bg-cyber-gold/20 border-cyber-gold/50 shadow-neon-gold'
+                    ? 'bg-cyan-500/25 border-cyan-400/60 shadow-[0_0_15px_rgba(6,182,212,0.4)]' 
+                    : 'bg-cyan-500/20 border-cyan-500/50 shadow-neon-cyan'
                 }`}>
-                  <Sparkles className={`w-3 h-3 animate-spin-slow ${
-                    passData.isSenior ? 'text-amber-300' : 'text-cyber-gold'
+                  <span className={`w-1.5 h-1.5 rounded-full ${
+                    passData.isSenior ? 'bg-cyan-300' : 'bg-cyan-400'
                   }`} />
                   <span className={`font-outfit font-bold text-[9px] tracking-wider ${
-                    passData.isSenior ? 'text-amber-200' : 'text-cyber-gold'
+                    passData.isSenior ? 'text-cyan-200' : 'text-cyan-300'
                   }`}>
                     {passData.isSenior ? 'SENIOR VIP' : 'VIP BADGE'}
                   </span>
@@ -343,8 +342,8 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   <div className="relative">
                     <div className={`w-18 h-18 p-[2px] rounded-2xl shadow-neon-cyan ${
                       passData.isSenior
-                        ? 'bg-gradient-to-tr from-amber-400 via-rose-500 to-cyber-cyan shadow-[0_0_20px_rgba(245,158,11,0.5)]'
-                        : 'bg-gradient-to-tr from-cyber-cyan via-purple-500 to-cyber-gold'
+                        ? 'bg-gradient-to-tr from-cyan-400 via-sky-500 to-cyber-violet shadow-[0_0_20px_rgba(6,182,212,0.5)]'
+                        : 'bg-gradient-to-tr from-cyber-cyan via-purple-500 to-sky-400'
                     }`}>
                       <div className="w-16 h-16 rounded-[14px] bg-obsidian-900 flex items-center justify-center font-outfit font-extrabold text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-white">
                         {passData.fullName
@@ -375,7 +374,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   </div>
                   {passData.batch && (
                     <div className="mt-1">
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
                         {passData.batch}
                       </span>
                     </div>
@@ -400,7 +399,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   <div>
                     <span className="text-[10px] font-mono text-slate-400 block uppercase">ACCESS TIER</span>
                     <span className={`font-semibold text-[11px] block mt-0.5 ${
-                      passData.isSenior ? 'text-amber-300' : 'text-cyber-gold'
+                      passData.isSenior ? 'text-cyan-300' : 'text-cyan-400'
                     }`}>
                       {passData.isSenior 
                         ? (passData.role ? passData.role.split('(')[0].trim() : 'Senior VIP Access') 
@@ -421,7 +420,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
               <div className="relative z-20 pt-3 border-t border-white/10 flex items-center justify-between">
                 <div>
                   <div className="text-[9px] font-mono text-slate-400 uppercase">TICKET NUMBER</div>
-                  <div className="font-outfit font-black text-sm text-cyber-gold tracking-widest">
+                  <div className="font-outfit font-black text-sm text-cyan-300 tracking-widest">
                     {passData.ticketId}
                   </div>
                   <div className="text-[9px] font-mono text-slate-400 mt-1">

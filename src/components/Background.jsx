@@ -1,79 +1,9 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { soundController } from '../utils/audio';
+import desktopBg from '../assets/desktop-background.jpg';
+import mobileBg from '../assets/party-background.jpg';
 
-// Fast Cubic Bézier calculation helper
-function getCubicBezier(p0, p1, p2, p3, t) {
-  const u = 1 - t;
-  const tt = t * t;
-  const uu = u * u;
-  const uuu = uu * u;
-  const ttt = tt * t;
-  return {
-    x: uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
-    y: uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y,
-  };
-}
-
-// Maps points along the 3 distinct glowing molten orange ribbons in background-desktop / background-mobile
-function getRibbonPoint(pathIndex, t, w, h, isDesktop) {
-  const ct = Math.max(0, Math.min(1, t));
-
-  if (isDesktop) {
-    if (pathIndex === 0) {
-      return getCubicBezier(
-        { x: w * 0.35, y: -10 },
-        { x: w * 0.28, y: h * 0.22 },
-        { x: w * 0.12, y: h * 0.40 },
-        { x: -15, y: h * 0.62 },
-        ct
-      );
-    } else if (pathIndex === 1) {
-      return getCubicBezier(
-        { x: w * 0.68, y: -10 },
-        { x: w * 0.76, y: h * 0.24 },
-        { x: w * 0.88, y: h * 0.44 },
-        { x: w + 20, y: h * 0.34 },
-        ct
-      );
-    } else {
-      return getCubicBezier(
-        { x: w * 0.44, y: h * 0.62 },
-        { x: w * 0.48, y: h * 0.94 },
-        { x: w * 0.58, y: h * 0.98 },
-        { x: w * 0.70, y: h * 0.78 },
-        ct
-      );
-    }
-  } else {
-    if (pathIndex === 0) {
-      return getCubicBezier(
-        { x: w * 0.32, y: -10 },
-        { x: w * 0.24, y: h * 0.18 },
-        { x: w * 0.08, y: h * 0.36 },
-        { x: -10, y: h * 0.56 },
-        ct
-      );
-    } else if (pathIndex === 1) {
-      return getCubicBezier(
-        { x: w * 0.70, y: -10 },
-        { x: w * 0.78, y: h * 0.20 },
-        { x: w * 0.92, y: h * 0.40 },
-        { x: w + 10, y: h * 0.30 },
-        ct
-      );
-    } else {
-      return getCubicBezier(
-        { x: w * 0.38, y: h * 0.48 },
-        { x: w * 0.46, y: h * 0.72 },
-        { x: w * 0.62, y: h * 0.76 },
-        { x: w * 0.74, y: h * 0.58 },
-        ct
-      );
-    }
-  }
-}
-
-// High-Voltage Fractal Branching Generator for Dramatic Striking Lightning
+// High-Voltage Fractal Branching Generator for Concert Strobe & Lightning Lasers
 function generateStrikingBranches(x1, y1, x2, y2, displace = 50, depth = 4) {
   const segments = [];
   function recurse(xa, ya, xb, yb, disp, d) {
@@ -115,23 +45,13 @@ export default function Background() {
   const canvasRef = useRef(null);
 
   const sparksRef = useRef([]);
-  const shootingStarsRef = useRef([]);
-  const ribbonPulsesRef = useRef([]);
-  const cachedRibbonsRef = useRef([[], [], []]);
-  const haloBurstRef = useRef(0);
-  const glintRef = useRef(null);
   const activeBoltRef = useRef(null);
-
-  const nextAutoStrikeTimeRef = useRef(Date.now() + 2500);
-  const nextRibbonPulseTimeRef = useRef(Date.now() + 800);
-  const nextGlintTimeRef = useRef(Date.now() + 2200);
-  const lastStrikeTimeRef = useRef(Date.now());
+  const nextAutoStrikeTimeRef = useRef(Date.now() + 3500);
   const mousePosRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
-  const isScrolledOutRef = useRef(false);
   const isVisibleRef = useRef(true);
   const animFrameRef = useRef(null);
 
-  // High-Voltage Striking Lightning Effect (Zero Pop, Pure Smooth Dissolve)
+  // Concert Stage Laser & Lightning Strobe Strike (with Electric Palettes)
   const spawnStrikingEffect = useCallback((targetX = null, targetY = null, isIntense = true) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -139,20 +59,18 @@ export default function Background() {
     const h = canvas.height;
     const isDesktop = w >= 768;
 
-    const haloX = w * 0.5;
-    const haloY = isDesktop ? h * 0.32 : h * 0.20;
+    const sourceX = targetX !== null ? targetX : w * (0.2 + Math.random() * 0.6);
+    const startX = sourceX + (Math.random() - 0.5) * (w * 0.25);
+    const startY = 0; // Starts from top concert stage truss
 
-    const endX = targetX !== null ? targetX : haloX + (Math.random() - 0.5) * (isDesktop ? 220 : 120);
-    const endY = targetY !== null ? targetY : haloY + (Math.random() - 0.5) * 50;
-
-    const startX = endX + (Math.random() - 0.5) * (w * 0.45);
-    const startY = 0;
+    const endX = targetX !== null ? targetX : w * (0.25 + Math.random() * 0.5);
+    const endY = targetY !== null ? targetY : h * (0.55 + Math.random() * 0.35); // Reaches crowd
 
     const strikePalettes = [
-      { main: '#ff6a00', glow: '#ff3700', core: '#ffffff' },
-      { main: '#ffb703', glow: '#ff7700', core: '#fffdf0' },
-      { main: '#ff8500', glow: '#e63900', core: '#ffffff' },
-      { main: '#ffa200', glow: '#ff4d00', core: '#fff9e6' },
+      { main: '#00e5ff', glow: '#0284c7', core: '#ffffff' }, // Electric Cyan
+      { main: '#38bdf8', glow: '#0369a1', core: '#e0f2fe' }, // Neon Blue
+      { main: '#ff9e00', glow: '#ea580c', core: '#fffbeb' }, // Stage Pyro Amber
+      { main: '#c084fc', glow: '#7c3aed', core: '#faf5ff' }, // Electric Violet
     ];
 
     const palette = strikePalettes[Math.floor(Math.random() * strikePalettes.length)];
@@ -165,19 +83,19 @@ export default function Background() {
       startY,
       endX,
       endY,
-      isDesktop ? 60 : 40,
+      isDesktop ? 55 : 35,
       4
     );
 
     let secondarySegments = [];
     if (isDesktop && Math.random() > 0.4) {
-      const s2X = startX + (Math.random() - 0.5) * 140;
+      const s2X = startX + (Math.random() - 0.5) * 120;
       secondarySegments = generateStrikingBranches(
         s2X,
         0,
-        endX + (Math.random() - 0.5) * 90,
-        endY + (Math.random() - 0.5) * 40,
-        40,
+        endX + (Math.random() - 0.5) * 80,
+        endY + (Math.random() - 0.5) * 30,
+        35,
         3
       );
     }
@@ -193,14 +111,6 @@ export default function Background() {
       createdAt: Date.now(),
     };
 
-    lastStrikeTimeRef.current = Date.now();
-
-    // Surge smooth energy along ribbons without any pop
-    ribbonPulsesRef.current.push(
-      { pathIndex: 0, progress: 0, speed: 0.012, tailLength: 0.16, color: mainColor },
-      { pathIndex: 1, progress: 0, speed: 0.012, tailLength: 0.16, color: glowColor }
-    );
-
     soundController.playLightningThunder();
 
     setTimeout(() => {
@@ -210,7 +120,7 @@ export default function Background() {
     }, 480);
   }, []);
 
-  // Click anywhere on page to trigger smooth lightning strike
+  // Click anywhere on page to trigger interactive stage lightning
   useEffect(() => {
     const handleWindowClick = (e) => {
       const target = e.target;
@@ -241,32 +151,6 @@ export default function Background() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Viewport tracking: pause background canvas when hero section is out of view
-  useEffect(() => {
-    let observer;
-    const heroEl = document.getElementById('hero');
-    if ('IntersectionObserver' in window && heroEl) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          const entry = entries[0];
-          isScrolledOutRef.current = !entry.isIntersecting;
-        },
-        { threshold: 0.02 }
-      );
-      observer.observe(heroEl);
-    } else {
-      const handleScroll = () => {
-        isScrolledOutRef.current = window.scrollY > window.innerHeight * 1.35;
-      };
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
-
-    return () => {
-      if (observer) observer.disconnect();
-    };
-  }, []);
-
   // Page visibility API: pause render loop when tab is backgrounded
   useEffect(() => {
     const handleVisibility = () => {
@@ -276,30 +160,19 @@ export default function Background() {
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
-  // Main 60fps Canvas Loop (100% Lag-Free: Zero shadowBlur, In-Place GC Free Arrays, O(1) Cache)
+  // Main 60fps Canvas Loop (Concert Stage Lighting & Beams)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    // Cache precalculated ribbon points on resize
     const resize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
       if (canvas.width !== w || Math.abs(canvas.height - h) > 120) {
         canvas.width = w;
         canvas.height = h;
-
-        const isDesktop = w >= 768;
-        const newCache = [[], [], []];
-        for (let pIdx = 0; pIdx < 3; pIdx++) {
-          const steps = 14;
-          for (let s = 0; s <= steps; s++) {
-            newCache[pIdx].push(getRibbonPoint(pIdx, s / steps, w, h, isDesktop));
-          }
-        }
-        cachedRibbonsRef.current = newCache;
       }
     };
     resize();
@@ -310,12 +183,10 @@ export default function Background() {
     const animate = (currentTime) => {
       animFrameRef.current = requestAnimationFrame(animate);
 
-      // Skip frame if tab is hidden or user has scrolled far down past hero
-      if (!isVisibleRef.current || isScrolledOutRef.current) {
+      if (!isVisibleRef.current) {
         return;
       }
 
-      // Delta throttle: cap to max 75fps to save battery & eliminate stutter
       const delta = currentTime - lastFrameTime;
       if (delta < 12) {
         return;
@@ -333,250 +204,124 @@ export default function Background() {
         const m = mousePosRef.current;
         m.x += (m.targetX - m.x) * 0.05;
         m.y += (m.targetY - m.y) * 0.05;
-        const parallaxX = isDesktop ? m.x * 4.5 : 0;
-        const parallaxY = isDesktop ? m.y * 3.0 : 0;
+        const parallaxX = isDesktop ? m.x * 6.0 : 0;
 
-        const haloCenterX = w * 0.5 + parallaxX;
-        const haloCenterY = (isDesktop ? h * 0.32 : h * 0.20) + parallaxY;
-        const haloRadiusX = isDesktop ? 135 : 85;
-        const haloRadiusY = isDesktop ? 46 : 28;
-
-        // 1. IMAGE-BASED ANIMATION: SOLAR HALO CORONA BREATHING GLOW (Zero shadowBlur)
-        const breathVal = 0.5 + 0.5 * Math.sin(now * 0.002);
-        const haloAlpha = 0.20 + 0.12 * breathVal + haloBurstRef.current * 0.4;
-        if (haloBurstRef.current > 0.01) {
-          haloBurstRef.current *= 0.94;
-        }
-
+        // 1. DYNAMIC CONCERT SPOTLIGHT BEAMS (Sweeping down through atmosphere)
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
-        ctx.translate(haloCenterX, haloCenterY);
-        ctx.rotate(-0.09);
-        ctx.scale(1, haloRadiusY / haloRadiusX);
 
-        const haloGrad = ctx.createRadialGradient(0, 0, haloRadiusX * 0.25, 0, 0, haloRadiusX * 1.35);
-        haloGrad.addColorStop(0, `rgba(255, 230, 110, ${haloAlpha * 0.8})`);
-        haloGrad.addColorStop(0.35, `rgba(255, 130, 0, ${haloAlpha * 0.55})`);
-        haloGrad.addColorStop(0.70, `rgba(255, 60, 0, ${haloAlpha * 0.25})`);
-        haloGrad.addColorStop(1.0, 'rgba(255, 30, 0, 0)');
+        const beamConfigs = isDesktop
+          ? [
+              { originFrac: 0.18, targetFrac: 0.28, speed: 0.0006, width: 90, color: 'rgba(56, 189, 248, 0.14)', phase: 0 },
+              { originFrac: 0.35, targetFrac: 0.42, speed: 0.0008, width: 75, color: 'rgba(0, 229, 255, 0.18)', phase: 1.2 },
+              { originFrac: 0.65, targetFrac: 0.58, speed: 0.0007, width: 80, color: 'rgba(0, 229, 255, 0.18)', phase: 2.5 },
+              { originFrac: 0.82, targetFrac: 0.72, speed: 0.0005, width: 95, color: 'rgba(56, 189, 248, 0.14)', phase: 3.8 },
+              { originFrac: 0.50, targetFrac: 0.50, speed: 0.0010, width: 110, color: 'rgba(192, 132, 252, 0.11)', phase: 4.5 },
+            ]
+          : [
+              { originFrac: 0.25, targetFrac: 0.35, speed: 0.0008, width: 55, color: 'rgba(0, 229, 255, 0.16)', phase: 0 },
+              { originFrac: 0.75, targetFrac: 0.65, speed: 0.0007, width: 60, color: 'rgba(56, 189, 248, 0.16)', phase: 2.0 },
+              { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: 70, color: 'rgba(192, 132, 252, 0.12)', phase: 4.0 },
+            ];
+
+        for (let i = 0; i < beamConfigs.length; i++) {
+          const b = beamConfigs[i];
+          const sweep = Math.sin(now * b.speed + b.phase) * (isDesktop ? 80 : 40);
+          const topX = w * b.originFrac + parallaxX * 0.4;
+          const topY = 0;
+          const bottomX = w * b.targetFrac + sweep + parallaxX;
+          const bottomY = h * 0.95;
+
+          const grad = ctx.createLinearGradient(topX, topY, bottomX, bottomY);
+          grad.addColorStop(0, 'rgba(255, 255, 255, 0.32)');
+          grad.addColorStop(0.25, b.color);
+          grad.addColorStop(0.75, b.color.replace(/0\.\d+\)/, '0.07)'));
+          grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+          ctx.beginPath();
+          ctx.moveTo(topX - 6, topY);
+          ctx.lineTo(topX + 6, topY);
+          ctx.lineTo(bottomX + b.width, bottomY);
+          ctx.lineTo(bottomX - b.width, bottomY);
+          ctx.closePath();
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
+
+        // 1b. CONCERT LASER BEAMS (Crisp, vibrant neon lasers slicing the sky)
+        const laserConfigs = isDesktop
+          ? [
+              { originFrac: 0.28, targetFrac: 0.15, speed: 0.0012, color: '#00e5ff', phase: 0.5 },
+              { originFrac: 0.38, targetFrac: 0.68, speed: 0.0009, color: '#c084fc', phase: 2.1 },
+              { originFrac: 0.62, targetFrac: 0.32, speed: 0.0011, color: '#38bdf8', phase: 3.4 },
+              { originFrac: 0.72, targetFrac: 0.86, speed: 0.0013, color: '#00e5ff', phase: 5.0 },
+            ]
+          : [
+              { originFrac: 0.35, targetFrac: 0.15, speed: 0.0012, color: '#00e5ff', phase: 0.5 },
+              { originFrac: 0.65, targetFrac: 0.85, speed: 0.0011, color: '#c084fc', phase: 3.2 },
+            ];
+
+        for (let i = 0; i < laserConfigs.length; i++) {
+          const l = laserConfigs[i];
+          const sweep = Math.sin(now * l.speed + l.phase) * (isDesktop ? 120 : 60);
+          const lx1 = w * l.originFrac + parallaxX * 0.4;
+          const ly1 = 0;
+          const lx2 = w * l.targetFrac + sweep + parallaxX;
+          const ly2 = h * 0.95;
+
+          const laserPulse = 0.35 + 0.3 * Math.sin(now * 0.0025 + l.phase);
+
+          // Outer diffused laser glow
+          ctx.beginPath();
+          ctx.moveTo(lx1, ly1);
+          ctx.lineTo(lx2, ly2);
+          ctx.strokeStyle = l.color;
+          ctx.lineWidth = isDesktop ? 3.5 : 2.2;
+          ctx.globalAlpha = laserPulse * 0.45;
+          ctx.stroke();
+
+          // Incandescent laser core
+          ctx.beginPath();
+          ctx.moveTo(lx1, ly1);
+          ctx.lineTo(lx2, ly2);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.0;
+          ctx.globalAlpha = laserPulse * 0.95;
+          ctx.stroke();
+        }
+
+        // 2. RHYTHMIC STAGE BASS PULSE (Stage center glow beating in music tempo)
+        const bassBeat = Math.pow(Math.max(0, Math.sin(now * 0.0028)), 3); // sharp rhythmic pop
+        const stagePulseRadius = isDesktop ? w * 0.28 : w * 0.45;
+        const stageCenterX = w * 0.5 + parallaxX * 0.3;
+        const stageCenterY = isDesktop ? h * 0.30 : h * 0.24;
+
+        const pulseGrad = ctx.createRadialGradient(
+          stageCenterX, stageCenterY, 5,
+          stageCenterX, stageCenterY, stagePulseRadius
+        );
+        pulseGrad.addColorStop(0, `rgba(0, 229, 255, ${0.16 + bassBeat * 0.22})`);
+        pulseGrad.addColorStop(0.35, `rgba(168, 85, 247, ${0.09 + bassBeat * 0.14})`);
+        pulseGrad.addColorStop(0.7, `rgba(245, 158, 11, ${0.04 + bassBeat * 0.07})`);
+        pulseGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         ctx.beginPath();
-        ctx.arc(0, 0, haloRadiusX * 1.35, 0, Math.PI * 2);
-        ctx.fillStyle = haloGrad;
+        ctx.arc(stageCenterX, stageCenterY, stagePulseRadius, 0, Math.PI * 2);
+        ctx.fillStyle = pulseGrad;
         ctx.fill();
+
+        // 2b. TOP STAGE PYRO & LIGHTING TRUSS WARMTH BREATH
+        const pyroBreath = 0.12 + 0.06 * Math.sin(now * 0.0015);
+        const topGrad = ctx.createRadialGradient(w * 0.5, 0, 10, w * 0.5, 0, h * 0.45);
+        topGrad.addColorStop(0, `rgba(255, 120, 20, ${pyroBreath * 1.2})`);
+        topGrad.addColorStop(0.4, `rgba(245, 158, 11, ${pyroBreath * 0.6})`);
+        topGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+        ctx.fillStyle = topGrad;
+        ctx.fillRect(0, 0, w, h * 0.5);
+
         ctx.restore();
 
-        // 1b. ORBITING SOLAR PLASMA MOTES CIRCLING THE HALO DISC (Hardware Geometry Glow)
-        const orbitalAngle = (now * 0.0014) % (Math.PI * 2);
-        const cosTilt = Math.cos(-0.09);
-        const sinTilt = Math.sin(-0.09);
-
-        ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-        for (let o = 0; o < 2; o++) {
-          const theta = orbitalAngle + o * Math.PI;
-          const ox = Math.cos(theta) * haloRadiusX;
-          const oy = Math.sin(theta) * haloRadiusY;
-
-          const isFront = Math.sin(theta) > 0;
-          const orbAlpha = isFront ? 0.95 : 0.40;
-          const orbSize = (isFront ? 2.4 : 1.6) * (isDesktop ? 1.0 : 0.85);
-
-          const rx = haloCenterX + (ox * cosTilt - oy * sinTilt);
-          const ry = haloCenterY + (ox * sinTilt + oy * cosTilt);
-
-          // Outer soft glow aura
-          ctx.beginPath();
-          ctx.arc(rx, ry, orbSize * 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = o === 0 ? 'rgba(255, 234, 0, 0.35)' : 'rgba(255, 149, 0, 0.35)';
-          ctx.globalAlpha = orbAlpha;
-          ctx.fill();
-
-          // Bright center core
-          ctx.beginPath();
-          ctx.arc(rx, ry, orbSize, 0, Math.PI * 2);
-          ctx.fillStyle = o === 0 ? '#ffea00' : '#ff9500';
-          ctx.globalAlpha = orbAlpha;
-          ctx.fill();
-        }
-        ctx.restore();
-
-        // 2a. CONTINUOUS LIVING AMBIENT SHIMMER ALONG CACHED RIBBONS (O(1) Array Lookup)
-        const ribbonBreath = 0.11 + 0.05 * Math.sin(now * 0.0018);
-        const cached = cachedRibbonsRef.current;
-        if (cached && cached[0].length > 0) {
-          ctx.save();
-          ctx.globalCompositeOperation = 'screen';
-          ctx.strokeStyle = '#ff7700';
-          ctx.lineWidth = isDesktop ? 1.5 : 1.0;
-          ctx.globalAlpha = ribbonBreath;
-
-          for (let pIdx = 0; pIdx < 3; pIdx++) {
-            const pts = cached[pIdx];
-            if (pts && pts.length > 0) {
-              ctx.beginPath();
-              ctx.moveTo(pts[0].x, pts[0].y);
-              for (let i = 1; i < pts.length; i++) {
-                ctx.lineTo(pts[i].x, pts[i].y);
-              }
-              ctx.stroke();
-            }
-          }
-          ctx.restore();
-        }
-
-        // 2b. MOLTEN LIGHT PULSES COURSING ALONG THE RIBBONS
-        if (now > nextRibbonPulseTimeRef.current && ribbonPulsesRef.current.length < 3) {
-          const chosenPath = Math.floor(Math.random() * 3);
-          ribbonPulsesRef.current.push({
-            pathIndex: chosenPath,
-            progress: 0,
-            speed: 0.006 + Math.random() * 0.005,
-            tailLength: 0.14,
-            color: Math.random() > 0.4 ? '#ff9500' : '#ffc107',
-          });
-          nextRibbonPulseTimeRef.current = now + 1800 + Math.random() * 2000;
-        }
-
-        if (ribbonPulsesRef.current.length > 0) {
-          ctx.save();
-          ctx.globalCompositeOperation = 'screen';
-          const pulses = ribbonPulsesRef.current;
-          let pulseWriteIdx = 0;
-          const pulseCount = pulses.length;
-
-          for (let p = 0; p < pulseCount; p++) {
-            const pulse = pulses[p];
-            pulse.progress += pulse.speed;
-            const startT = Math.max(0, pulse.progress - pulse.tailLength);
-            const endT = Math.min(1, pulse.progress);
-
-            if (startT < 1.0) {
-              const steps = 6;
-              ctx.beginPath();
-              let headPt = null;
-              let tailPt = null;
-              for (let i = 0; i <= steps; i++) {
-                const stepT = startT + (endT - startT) * (i / steps);
-                const pt = getRibbonPoint(pulse.pathIndex, stepT, w, h, isDesktop);
-                if (i === 0) {
-                  tailPt = pt;
-                  ctx.moveTo(pt.x, pt.y);
-                } else {
-                  ctx.lineTo(pt.x, pt.y);
-                }
-                if (i === steps) headPt = pt;
-              }
-
-              if (headPt && tailPt) {
-                const grad = ctx.createLinearGradient(tailPt.x, tailPt.y, headPt.x, headPt.y);
-                grad.addColorStop(0, 'rgba(255, 90, 0, 0)');
-                grad.addColorStop(0.6, pulse.color);
-                grad.addColorStop(1, '#ffffff');
-
-                const pulseFade = Math.min(1, pulse.progress * 4, (1.1 - pulse.progress) * 4);
-
-                // Outer soft stroke (No shadowBlur overhead!)
-                ctx.strokeStyle = grad;
-                ctx.lineWidth = isDesktop ? 3.5 : 2.5;
-                ctx.lineCap = 'round';
-                ctx.globalAlpha = Math.max(0, pulseFade * 0.75);
-                ctx.stroke();
-
-                // Inner sharp core
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = isDesktop ? 1.4 : 1.0;
-                ctx.globalAlpha = Math.max(0, pulseFade * 0.95);
-                ctx.stroke();
-
-                // Leading point
-                ctx.beginPath();
-                ctx.arc(headPt.x, headPt.y, isDesktop ? 2.4 : 1.8, 0, Math.PI * 2);
-                ctx.fillStyle = '#ffffff';
-                ctx.globalAlpha = pulseFade;
-                ctx.fill();
-
-                // In-place spawn of floating ember
-                const maxSparks = isDesktop ? 35 : 18;
-                if (Math.random() < 0.22 && sparksRef.current.length < maxSparks) {
-                  sparksRef.current.push({
-                    x: headPt.x,
-                    y: headPt.y,
-                    vx: (Math.random() - 0.5) * 0.7,
-                    vy: -(0.4 + Math.random() * 1.2),
-                    size: 1.2 + Math.random() * 1.8,
-                    color: Math.random() > 0.4 ? '#ffb703' : '#ff7700',
-                    alpha: 0.85,
-                    fadeRate: 0.012 + Math.random() * 0.012,
-                  });
-                }
-              }
-
-              if (pulse.progress < 1.0 + pulse.tailLength) {
-                pulses[pulseWriteIdx++] = pulse;
-              }
-            }
-          }
-          pulses.length = pulseWriteIdx;
-          ctx.restore();
-        }
-
-        // 3. SPECULAR CHROME DIAMOND GLINT (Zero shadowBlur)
-        if (now > nextGlintTimeRef.current && !glintRef.current) {
-          glintRef.current = {
-            x: haloCenterX + (Math.random() - 0.5) * (isDesktop ? 24 : 16),
-            y: haloCenterY + (isDesktop ? 44 : 28) + Math.random() * (isDesktop ? 32 : 18),
-            alpha: 0,
-            phase: 'in',
-            size: isDesktop ? 12 : 9,
-          };
-          nextGlintTimeRef.current = now + 4000 + Math.random() * 4500;
-        }
-
-        if (glintRef.current) {
-          const g = glintRef.current;
-          if (g.phase === 'in') {
-            g.alpha += 0.08;
-            if (g.alpha >= 1) g.phase = 'out';
-          } else {
-            g.alpha -= 0.05;
-            if (g.alpha <= 0) glintRef.current = null;
-          }
-
-          if (glintRef.current) {
-            ctx.save();
-            ctx.globalCompositeOperation = 'screen';
-            ctx.globalAlpha = Math.max(0, Math.min(1, g.alpha));
-            ctx.translate(g.x, g.y);
-
-            // Double stroke for glow
-            ctx.strokeStyle = 'rgba(255, 234, 0, 0.4)';
-            ctx.lineWidth = 2.4;
-            ctx.beginPath();
-            ctx.moveTo(-g.size, 0);
-            ctx.lineTo(g.size, 0);
-            ctx.moveTo(0, -g.size);
-            ctx.lineTo(0, g.size);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1.2;
-            ctx.beginPath();
-            ctx.moveTo(-g.size, 0);
-            ctx.lineTo(g.size, 0);
-            ctx.moveTo(0, -g.size);
-            ctx.lineTo(0, g.size);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(0, 0, 1.8, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-            ctx.restore();
-          }
-        }
-
-        // 4. DRAMATIC HIGH-VOLTAGE STRIKING LIGHTNING BOLTS (Layered GPU Stroke, Zero shadowBlur)
+        // 3. INTERACTIVE CONCERT LIGHTNING / STROBE BOLTS
         const bolt = activeBoltRef.current;
         if (bolt && bolt.primary && bolt.primary.length > 0) {
           bolt.alpha -= bolt.fadeRate;
@@ -601,12 +346,12 @@ export default function Background() {
             };
 
             // Pass 1: Diffused Outer Aura (Hardware Screen Glow)
-            drawSegments(bolt.primary, bolt.glowColor, isDesktop ? 6.5 : 4.5, 0.4);
+            drawSegments(bolt.primary, bolt.glowColor, isDesktop ? 7.0 : 4.5, 0.45);
 
             // Pass 2: Intense Neon Body
             drawSegments(bolt.primary, bolt.mainColor, isDesktop ? 3.0 : 2.0, 0.85);
 
-            // Pass 3: Searing Incandescent Core Beam
+            // Pass 3: Incandescent Core Beam
             drawSegments(bolt.primary, bolt.coreColor || '#ffffff', isDesktop ? 1.5 : 1.0, 1.0);
 
             // Secondary companion strike
@@ -621,18 +366,19 @@ export default function Background() {
           }
         }
 
-        // 5. AMBIENT DRIFTING COSMIC STARDUST & EMBERS (IN-PLACE ZERO GC ALLOCATION)
-        const maxSparks = isDesktop ? 35 : 18;
-        if (Math.random() < 0.3 && sparksRef.current.length < maxSparks) {
+        // 4. ATMOSPHERIC CONCERT SPARKS & LIGHT MOTES (Rising from crowd)
+        const maxSparks = isDesktop ? 40 : 22;
+        if (Math.random() < 0.35 && sparksRef.current.length < maxSparks) {
+          const sparkColors = ['#00e5ff', '#38bdf8', '#fbbf24', '#ffedd5', '#f472b6'];
           sparksRef.current.push({
             x: Math.random() * w,
-            y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.6,
-            vy: -(0.3 + Math.random() * 1.0),
-            size: 1.2 + Math.random() * 1.8,
-            color: Math.random() > 0.3 ? (Math.random() > 0.5 ? '#ffb703' : '#ff7700') : '#ffd166',
+            y: h * 0.45 + Math.random() * (h * 0.55),
+            vx: (Math.random() - 0.5) * 0.7,
+            vy: -(0.5 + Math.random() * 1.3),
+            size: 1.2 + Math.random() * 2.2,
+            color: sparkColors[Math.floor(Math.random() * sparkColors.length)],
             alpha: 0.85,
-            fadeRate: 0.005 + Math.random() * 0.005,
+            fadeRate: 0.006 + Math.random() * 0.007,
           });
         }
 
@@ -649,16 +395,15 @@ export default function Background() {
           sp.alpha -= sp.fadeRate;
 
           if (sp.alpha > 0 && sp.y > 0) {
-            // Fast 2-pass circle glow without expensive shadowBlur
             ctx.beginPath();
-            ctx.arc(sp.x, sp.y, sp.size * 1.8, 0, Math.PI * 2);
+            ctx.arc(sp.x, sp.y, sp.size * 2.0, 0, Math.PI * 2);
             ctx.fillStyle = sp.color;
             ctx.globalAlpha = sp.alpha * 0.35;
             ctx.fill();
 
             ctx.beginPath();
             ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
-            ctx.fillStyle = sp.color;
+            ctx.fillStyle = '#ffffff';
             ctx.globalAlpha = sp.alpha * 0.9;
             ctx.fill();
 
@@ -668,65 +413,10 @@ export default function Background() {
         sparks.length = sparkWriteIdx;
         ctx.restore();
 
-        // 6. SUBTLE COSMIC SHOOTING STAR STREAKS (Fast Hardware Gradient)
-        if (Math.random() < 0.005 && shootingStarsRef.current.length < 2) {
-          const startX = Math.random() * w * 0.85;
-          const startY = Math.random() * h * 0.25;
-          const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.2;
-          const speed = 11 + Math.random() * 7;
-          shootingStarsRef.current.push({
-            x: startX,
-            y: startY,
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            length: 60 + Math.random() * 50,
-            alpha: 0.85,
-            fadeRate: 0.02,
-            color: Math.random() > 0.4 ? '#ffb703' : '#fff3c4',
-          });
-        }
-
-        if (shootingStarsRef.current.length > 0) {
-          ctx.save();
-          ctx.globalCompositeOperation = 'screen';
-          const stars = shootingStarsRef.current;
-          let starWriteIdx = 0;
-          const starCount = stars.length;
-
-          for (let s = 0; s < starCount; s++) {
-            const star = stars[s];
-            star.x += star.vx;
-            star.y += star.vy;
-            star.alpha -= star.fadeRate;
-
-            if (star.alpha > 0 && star.x < w && star.y < h) {
-              const tailX = star.x - star.vx * (star.length / 15);
-              const tailY = star.y - star.vy * (star.length / 15);
-              const grad = ctx.createLinearGradient(tailX, tailY, star.x, star.y);
-              grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-              grad.addColorStop(0.7, star.color);
-              grad.addColorStop(1, '#ffffff');
-
-              ctx.beginPath();
-              ctx.moveTo(tailX, tailY);
-              ctx.lineTo(star.x, star.y);
-              ctx.strokeStyle = grad;
-              ctx.lineWidth = 1.4;
-              ctx.lineCap = 'round';
-              ctx.globalAlpha = Math.max(0, star.alpha);
-              ctx.stroke();
-
-              stars[starWriteIdx++] = star;
-            }
-          }
-          stars.length = starWriteIdx;
-          ctx.restore();
-        }
-
-        // 7. Auto Striking Lightning Scheduler
+        // 5. Auto Stage Lightning Scheduler
         if (!activeBoltRef.current && now > nextAutoStrikeTimeRef.current) {
           spawnStrikingEffect();
-          nextAutoStrikeTimeRef.current = now + 5000 + Math.random() * 3500;
+          nextAutoStrikeTimeRef.current = now + 6000 + Math.random() * 4000;
         }
 
       } catch (err) {
@@ -760,22 +450,22 @@ export default function Background() {
         }}
         aria-hidden="true"
       >
-        {/* Desktop Screen: Precision Focal Framing on Cosmic Halo with GPU-accelerated Subtle Breathe */}
+        {/* Desktop Screen (≥ md): Native 16:9 Widescreen Concert Atmosphere (Proper Edge-to-Edge Fit) */}
         <img
-          src="/background-desktop.jpg"
-          alt="ELIXORA 2.0 Festival Background"
+          src={desktopBg}
+          alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="hidden md:block w-full h-full object-cover object-[center_32%] filter brightness-[1.04] contrast-[1.06] saturate-[1.10] animate-subtle-breathe"
+          className="hidden md:block w-full h-full object-cover object-[center_35%] filter brightness-[1.04] contrast-[1.06] saturate-[1.10] animate-subtle-breathe"
         />
 
-        {/* Mobile Screen (< md): Native Portrait Cover - 100% Fixed & Frozen while scrolling */}
+        {/* Mobile Screen (< md): Native Portrait Fullscreen Cover with Organic Breathing */}
         <img
-          src="/background-mobile.jpg"
-          alt="ELIXORA 2.0 Festival Background"
+          src={mobileBg}
+          alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="block md:hidden w-full h-full object-cover object-[center_20%] filter brightness-[1.02] contrast-[1.04]"
+          className="block md:hidden w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.04] animate-mobile-breathe"
           style={{
             position: 'absolute',
             top: 0,
@@ -784,15 +474,37 @@ export default function Background() {
             height: '100lvh',
             minHeight: '100%',
             objectFit: 'cover',
-            objectPosition: 'center 20%',
+            objectPosition: 'center center',
           }}
         />
 
-        {/* Subtle Dark Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/45 via-transparent to-obsidian-950/85 pointer-events-none" />
+        {/* Rhythmic Stage Beat Pulse Glow (Concert Lighting Heartbeat) */}
+        <div 
+          className="absolute top-[28%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] sm:w-[950px] sm:h-[480px] bg-gradient-to-tr from-cyan-500/25 via-purple-600/20 to-sky-400/25 rounded-full blur-[90px] sm:blur-[130px] pointer-events-none animate-stage-pulse" 
+          aria-hidden="true"
+        />
+
+        {/* Sweeping Stage Laser Beams (CSS Accent Layers) */}
+        <div 
+          className="absolute top-0 left-1/3 w-[2px] h-[85vh] bg-gradient-to-b from-white via-cyan-400 to-transparent blur-[0.5px] pointer-events-none animate-laser-left shadow-[0_0_12px_#00e5ff]"
+          aria-hidden="true"
+        />
+        <div 
+          className="absolute top-0 right-1/3 w-[2px] h-[85vh] bg-gradient-to-b from-white via-purple-400 to-transparent blur-[0.5px] pointer-events-none animate-laser-right shadow-[0_0_12px_#c084fc]"
+          aria-hidden="true"
+        />
+
+        {/* Soft Ambient Concert Atmosphere Haze */}
+        <div 
+          className="absolute top-[12%] inset-x-0 h-[45%] bg-gradient-to-b from-cyan-500/10 via-purple-500/10 to-transparent blur-3xl pointer-events-none animate-stage-haze"
+          aria-hidden="true"
+        />
+
+        {/* Subtle Dark Vignette for Text Readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/40 via-transparent to-obsidian-950/85 pointer-events-none" />
       </div>
 
-      {/* 2. Fullscreen Canvas: Striking Lightning Bolts, Solar Halo Corona, Molten Ribbon Pulses & Embers */}
+      {/* 2. Fullscreen Canvas: Dynamic Stage Spotlights, Lasers & Festival Light Motes */}
       <canvas
         ref={canvasRef}
         className="fixed inset-0 z-10 pointer-events-none gpu-accelerated"

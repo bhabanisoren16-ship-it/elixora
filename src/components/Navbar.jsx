@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Sparkles, Ticket, Compass, Calendar, Palette, GraduationCap, Home } from 'lucide-react';
+import { Volume2, VolumeX, Ticket, Compass, Calendar, Palette, GraduationCap, Home } from 'lucide-react';
 import { soundController } from '../utils/audio';
 
 export default function Navbar({ onOpenPass, hasGeneratedPass }) {
@@ -38,9 +38,9 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
         
         {/* Brand Logo (Hidden per user request) */}
         <a href="#hero" className="hidden" onClick={() => soundController.playClick()}>
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-rose-500 to-cyan-400 p-[2px] transition-transform duration-300 group-hover:scale-105 shadow-[0_0_15px_rgba(251,191,36,0.5)]">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 via-sky-500 to-cyber-violet p-[2px] transition-transform duration-300 group-hover:scale-105 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
             <div className="w-full h-full bg-obsidian-900 rounded-[10px] flex items-center justify-center">
-              <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-cyan-300 text-lg">
+              <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-sky-200 text-lg">
                 E
               </span>
             </div>
@@ -50,7 +50,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
               <span className="font-outfit font-extrabold text-base sm:text-xl tracking-wider text-white">
                 ELIXORA 2.0
               </span>
-              <span className="text-[10px] font-outfit px-1.5 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold">
+              <span className="text-[10px] font-outfit px-1.5 py-0.5 rounded bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 font-bold">
                 '26
               </span>
             </div>
@@ -72,11 +72,11 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                 onClick={(e) => handleNavLinkClick(e, link.href)}
                 className={`px-3 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-all flex items-center gap-1.5 ${
                   isSenior
-                    ? 'text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 border border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
+                    ? 'text-cyan-300 hover:text-cyan-200 hover:bg-cyan-500/10 border border-cyan-400/30 shadow-[0_0_10px_rgba(6,182,212,0.2)]'
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isSenior ? 'text-amber-400' : 'text-cyber-cyan opacity-80'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isSenior ? 'text-cyan-400' : 'text-cyber-cyan opacity-80'}`} />
                 {link.name}
               </a>
             );
@@ -120,7 +120,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                 soundController.playClick();
                 onOpenPass();
               }}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-cyber-gold/20 to-amber-500/20 border border-cyber-gold/50 text-cyber-gold text-[11px] font-outfit font-bold shadow-neon-gold"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 to-sky-500/20 border border-cyan-400/50 text-cyan-300 text-[11px] font-outfit font-bold shadow-neon-cyan"
             >
               <Ticket className="w-3 h-3" />
               <span>VIP PASS</span>
@@ -150,11 +150,11 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                 onClick={(e) => handleNavLinkClick(e, link.href)}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                   isSenior
-                    ? 'text-amber-300 bg-amber-500/15 border border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.25)] font-semibold'
+                    ? 'text-cyan-300 bg-cyan-500/15 border border-cyan-400/40 shadow-[0_0_8px_rgba(6,182,212,0.25)] font-semibold'
                     : 'text-slate-300 hover:text-white bg-white/5 border border-white/10 active:bg-white/15'
                 }`}
               >
-                <Icon className={`w-3 h-3 ${isSenior ? 'text-amber-400' : 'text-cyber-cyan'}`} />
+                <Icon className={`w-3 h-3 ${isSenior ? 'text-cyan-400' : 'text-cyber-cyan'}`} />
                 <span>{link.name}</span>
               </a>
             );
@@ -198,7 +198,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                 soundController.playClick();
                 onOpenPass();
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyber-gold/20 to-amber-500/20 border border-cyber-gold/50 text-cyber-gold text-xs font-outfit font-bold hover:scale-105 transition-transform shadow-neon-gold"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 to-sky-500/20 border border-cyan-400/50 text-cyan-300 text-xs font-outfit font-bold hover:scale-105 transition-transform shadow-neon-cyan"
             >
               <Ticket className="w-3.5 h-3.5" />
               <span>MY VIP PASS</span>
