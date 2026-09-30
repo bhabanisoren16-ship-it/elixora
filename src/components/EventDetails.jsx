@@ -18,49 +18,49 @@ export default function EventDetails() {
         </p>
       </div>
 
-      {/* Box 1: Schedule & Venue Blueprint (When & Where) */}
-      <div className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 border border-white/20 bg-obsidian-950/45 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.12)] hover:border-cyan-400/40 relative overflow-hidden transition-all duration-300 mb-8">
-        {/* Subtle cyan and sky ambient light gradients blending with background */}
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Box 1: Schedule & Venue Blueprint (Translucent Glass Screen) */}
+      <div className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-8">
+        {/* Subtle ambient light glows shimmering behind the frosted glass */}
+        <div className="absolute -top-24 -left-24 w-80 h-80 bg-cyan-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-violet-500/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           
-          {/* Card 1: Date & Time + Calendar Sync */}
-          <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex flex-col justify-between bg-obsidian-900/40 backdrop-blur-md border border-white/15 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group">
+          {/* Card 1: Date & Time + Calendar Sync (Translucent Glass Card) */}
+          <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between translucent-glass-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/25 border border-cyan-500/50 flex items-center justify-center text-cyan-300 mb-3 shadow-[0_0_18px_rgba(6,182,212,0.3)]">
-                <Calendar className="w-5 h-5" />
+              <div className="w-11 h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3.5 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
+                <Calendar className="w-5 h-5 text-cyan-300" />
               </div>
 
-              <span className="text-xs font-outfit text-cyan-300 font-extrabold tracking-widest uppercase drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">WHEN TO ARRIVE</span>
-              <h3 className="font-outfit font-bold text-2xl sm:text-3xl text-white tracking-tight mt-1 mb-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
+              <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">WHEN TO ARRIVE</span>
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-3 drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
                 {EVENT_DETAILS.humanDate}
               </h3>
 
-              <div className="space-y-2 mb-3">
-                <div className="flex items-center gap-3 p-2.5 rounded-xl bg-black/35 backdrop-blur-md border border-white/15 shadow-inner">
+              <div className="space-y-2 mb-3.5">
+                <div className="flex items-center gap-3.5 p-3 rounded-xl bg-white/[0.08] backdrop-blur-md border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                   <Clock className="w-4 h-4 text-cyan-400 shrink-0" />
                   <div>
-                    <div className="text-[11px] text-slate-300 font-outfit font-medium">Entry &amp; Red Carpet</div>
-                    <div className="text-sm font-outfit font-bold text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">06:30 PM - 07:45 PM</div>
+                    <div className="text-xs text-cyan-200 font-outfit font-bold tracking-wide">Entry &amp; Red Carpet</div>
+                    <div className="text-sm sm:text-base font-outfit font-black text-white drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">06:30 PM - 07:45 PM</div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Calendar Sync Actions */}
-            <div className="mt-auto pt-3 border-t border-white/15 space-y-1.5">
+            <div className="mt-auto pt-3.5 border-t border-white/20 space-y-2">
               <a
                 href={getGoogleCalendarUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => soundController.playClick()}
-                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-500/30 via-sky-500/25 to-violet-500/30 hover:from-cyan-500/45 hover:to-sky-500/45 border border-cyan-400/50 text-white font-outfit font-bold text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-[0_4px_15px_rgba(6,182,212,0.2)]"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500/40 via-sky-500/35 to-violet-500/35 hover:from-cyan-500/60 hover:to-sky-500/60 border border-cyan-300/60 text-white font-outfit font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_18px_rgba(0,229,255,0.3)] backdrop-blur-md"
               >
-                <Calendar className="w-3.5 h-3.5 text-cyan-300" />
+                <Calendar className="w-4 h-4 text-cyan-200" />
                 <span>Add to Google Calendar</span>
-                <ExternalLink className="w-3 h-3 opacity-80" />
+                <ExternalLink className="w-3.5 h-3.5 opacity-90" />
               </a>
 
               <button
@@ -68,7 +68,7 @@ export default function EventDetails() {
                   soundController.playClick();
                   downloadIcsFile();
                 }}
-                className="w-full py-1.5 px-3 rounded-xl bg-black/35 hover:bg-white/15 border border-white/15 text-slate-200 font-outfit font-medium text-xs flex items-center justify-center gap-2 transition-all hover:text-white"
+                className="w-full py-2 px-4 rounded-xl bg-white/[0.08] hover:bg-white/[0.18] border border-white/25 text-white font-outfit font-bold text-xs flex items-center justify-center gap-2 transition-all backdrop-blur-md"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Download Apple / Outlook (.ics)</span>
@@ -76,100 +76,100 @@ export default function EventDetails() {
             </div>
           </div>
 
-          {/* Card 2: Venue & Map Guide */}
-          <div id="venue" className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex flex-col justify-between bg-obsidian-900/40 backdrop-blur-md border border-white/15 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group">
+          {/* Card 2: Venue & Map Guide (Translucent Glass Card) */}
+          <div id="venue" className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between translucent-glass-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group">
             <div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/25 border border-cyan-500/50 flex items-center justify-center text-cyan-300 mb-3 shadow-[0_0_18px_rgba(6,182,212,0.3)]">
-                <MapPin className="w-5 h-5" />
+              <div className="w-11 h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3.5 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
+                <MapPin className="w-5 h-5 text-cyan-300" />
               </div>
 
-              <span className="text-xs font-outfit text-cyan-300 font-extrabold tracking-widest uppercase drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">LOCATION &amp; BLUEPRINT</span>
-              <h3 className="font-outfit font-bold text-2xl sm:text-3xl text-white tracking-tight mt-1 mb-1 drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
+              <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">LOCATION &amp; BLUEPRINT</span>
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-1.5 drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
                 Grand Aurora Arena
               </h3>
-              <p className="text-xs text-slate-200 font-outfit font-medium mb-2.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-semibold mb-3 drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
                 Tech Campus Main Quadrangle &amp; Open Air Amphitheatre.
               </p>
 
-              {/* Stylized Interactive Map Container */}
-              <div className="relative rounded-2xl overflow-hidden border border-cyan-500/35 bg-black/35 backdrop-blur-md h-16 mb-2.5 flex items-center justify-between px-3 group shadow-inner">
+              {/* Stylized Interactive Map Container (Frosted Glass) */}
+              <div className="relative rounded-2xl overflow-hidden border border-cyan-400/50 bg-white/[0.08] backdrop-blur-md h-16 mb-3 flex items-center justify-between px-3.5 group shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]">
                 {/* Radar Grid Lines */}
-                <div className="absolute inset-0 cyber-grid opacity-20" />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 cyber-grid opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-950/30 via-transparent to-transparent pointer-events-none" />
 
                 {/* Pulsing Target Dot */}
-                <div className="relative z-10 flex items-center gap-2.5">
+                <div className="relative z-10 flex items-center gap-3">
                   <div className="relative flex items-center justify-center">
-                    <span className="absolute w-5 h-5 rounded-full bg-cyan-400/40 animate-ping" />
-                    <div className="w-7 h-7 rounded-full bg-cyan-500/30 border-2 border-cyan-400 flex items-center justify-center text-cyan-300 shadow-[0_0_14px_rgba(6,182,212,0.7)]">
+                    <span className="absolute w-5 h-5 rounded-full bg-cyan-400/50 animate-ping" />
+                    <div className="w-7 h-7 rounded-full bg-cyan-500/40 border-2 border-cyan-300 flex items-center justify-center text-cyan-200 shadow-[0_0_14px_rgba(6,182,212,0.8)]">
                       <MapPin className="w-3.5 h-3.5 animate-bounce" />
                     </div>
                   </div>
                   <div>
-                    <span className="text-[11px] font-outfit font-bold text-white tracking-wider block drop-shadow-sm">
-                      AURORA ARENA • SECTOR 4
+                    <span className="text-xs font-outfit font-black text-white tracking-wider block drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">
+                       AURORA ARENA • SECTOR 4
                     </span>
-                    <span className="text-[9px] text-cyan-300 font-mono font-semibold">
+                    <span className="text-[10px] text-cyan-300 font-mono font-bold tracking-wide drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
                       28.5355° N, 77.3910° E
                     </span>
                   </div>
                 </div>
 
                 {/* Compass marker */}
-                <div className="relative z-10 flex items-center gap-1 text-[9px] font-mono text-slate-200 bg-black/70 px-2 py-0.5 rounded border border-white/15">
-                  <Compass className="w-3 h-3 text-cyan-400" />
+                <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-mono text-cyan-200 bg-white/[0.12] px-2.5 py-1 rounded-lg border border-white/25 backdrop-blur-md font-bold shadow-sm">
+                  <Compass className="w-3.5 h-3.5 text-cyan-400" />
                   <span>NORTH GATE</span>
                 </div>
               </div>
 
               {/* Navigation Pointers */}
-              <div className="grid grid-cols-2 gap-2 text-[11px]">
-                <div className="flex items-center gap-1.5 text-slate-200 bg-black/35 backdrop-blur-md p-1.5 rounded-lg border border-white/15 font-outfit font-medium">
-                  <Navigation className="w-3 h-3 text-cyan-400 shrink-0" />
+              <div className="grid grid-cols-2 gap-2.5 text-xs">
+                <div className="flex items-center gap-2 text-white bg-white/[0.08] backdrop-blur-md p-2 rounded-xl border border-white/20 font-outfit font-bold shadow-sm">
+                  <Navigation className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                   <span className="truncate">Metro Line 3</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-slate-200 bg-black/35 backdrop-blur-md p-1.5 rounded-lg border border-white/15 font-outfit font-medium">
-                  <Info className="w-3 h-3 text-cyan-400 shrink-0" />
+                <div className="flex items-center gap-2 text-white bg-white/[0.08] backdrop-blur-md p-2 rounded-xl border border-white/20 font-outfit font-bold shadow-sm">
+                  <Info className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                   <span className="truncate">Gate 2 Drop</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-auto pt-3 border-t border-white/15">
+            <div className="mt-auto pt-3.5 border-t border-white/20">
               <a
                 href="https://maps.google.com/?q=Tech+Campus+Grand+Arena"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => soundController.playClick()}
-                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-cyan-500/30 via-sky-500/25 to-violet-500/25 hover:from-cyan-500/45 hover:to-violet-500/40 border border-cyan-400/50 text-white font-outfit font-bold text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-[0_4px_15px_rgba(6,182,212,0.2)]"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500/40 via-sky-500/35 to-violet-500/35 hover:from-cyan-500/60 hover:to-violet-500/60 border border-cyan-300/60 text-white font-outfit font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_18px_rgba(0,229,255,0.3)] backdrop-blur-md"
               >
-                <Navigation className="w-3.5 h-3.5 text-cyan-300" />
+                <Navigation className="w-4 h-4 text-cyan-200" />
                 <span>Open in Google Maps Navigation</span>
-                <ExternalLink className="w-3 h-3 opacity-80" />
+                <ExternalLink className="w-3.5 h-3.5 opacity-90" />
               </a>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Box 2: Dedicated Dress Costume Box with Boys & Girls Photo Space */}
-      <div id="dress-code" className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 border border-white/20 bg-obsidian-950/70 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_30px_rgba(6,182,212,0.12)] hover:border-cyan-400/40 relative overflow-hidden transition-all duration-300">
+      {/* Box 2: Dedicated Dress Costume Box (Translucent Glass Screen) */}
+      <div id="dress-code" className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300">
         {/* Ambient atmospheric glows */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-80 h-80 bg-cyan-400/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-violet-500/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10">
           {/* Header row */}
           <div className="pb-5 border-b border-white/15 mb-5">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-xs font-outfit font-bold uppercase mb-2">
-                <Shirt className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-400/20 border border-cyan-400/50 text-cyan-200 text-xs font-outfit font-extrabold uppercase mb-2.5 shadow-[0_0_12px_rgba(0,229,255,0.25)] backdrop-blur-md">
+                <Shirt className="w-4 h-4 text-cyan-300" />
                 <span>OFFICIAL ATTIRE CODE</span>
               </div>
-              <h3 className="font-outfit font-bold text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
                 Cyber Glam &amp; Ethereal Neon
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300 font-outfit mt-1 max-w-xl">
+              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-medium mt-1 max-w-xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
                 Futuristic, stylish, and comfortable to dance. Think sleek streetwear infused with luminous accents.
               </p>
             </div>
@@ -178,92 +178,92 @@ export default function EventDetails() {
           {/* Costume Photo Space for Boys and Girls */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-outfit text-cyan-300 tracking-wider uppercase font-bold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
+              <span className="text-xs font-outfit text-cyan-300 tracking-wider uppercase font-black flex items-center gap-2 drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                 COSTUME INSPIRATION LOOKBOOK
               </span>
-              <span className="text-[11px] font-outfit text-slate-300">
+              <span className="text-xs font-outfit text-slate-200 font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                 Recommended Styling for Fresher Night
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
               
-              {/* Boys Costume Card */}
-              <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 bg-obsidian-900/60 backdrop-blur-md border border-white/15 hover:border-sky-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
+              {/* Boys Costume Card (Translucent Glass Card) */}
+              <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-outfit font-bold text-white tracking-wider flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
+                  <div className="flex items-center justify-between mb-3.5">
+                    <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)]" />
                       BOYS' ATTIRE LOOKBOOK
                     </span>
-                    <span className="text-[10px] font-outfit bg-sky-500/20 text-sky-300 px-2.5 py-1 rounded-full border border-sky-500/40 font-bold uppercase tracking-wider">
+                    <span className="text-[10px] font-outfit bg-sky-500/25 text-sky-200 px-3 py-1 rounded-full border border-sky-400/50 font-black uppercase tracking-wider backdrop-blur-md">
                       FORMAL TUXEDO &amp; SUIT
                     </span>
                   </div>
 
                   {/* Photo Space */}
-                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/15 group-hover:border-sky-400/50 transition-all bg-black/50 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
                     <img
                       src="/costume-boys.jpg"
                       alt="Boys Formal Tuxedo and Suit Attire"
                       className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-medium px-3 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg">
+                      <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0 shadow-[0_0_6px_#38bdf8]" />
                       <span className="truncate sm:whitespace-normal">Tailored black tuxedo with satin lapels &amp; crisp bowtie</span>
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed mb-3">
+                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-medium leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                     Sharp black tuxedo or tailored blazer, crisp white collared dress shirt, classic bowtie or silk necktie, and polished formal shoes.
                   </p>
                 </div>
 
-                <div className="pt-2.5 border-t border-white/10 flex flex-wrap gap-2">
-                  <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#BlackTie</span>
-                  <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#TailoredSuit</span>
-                  <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#FormalAttire</span>
+                <div className="pt-3 border-t border-white/15 flex flex-wrap gap-2">
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#BlackTie</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#TailoredSuit</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#FormalAttire</span>
                 </div>
               </div>
 
-              {/* Girls Costume Card */}
-              <div className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 bg-obsidian-900/60 backdrop-blur-md border border-white/15 hover:border-cyan-400/50 shadow-xl transition-all duration-300 group flex flex-col justify-between">
+              {/* Girls Costume Card (Translucent Glass Card) */}
+              <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-outfit font-bold text-white tracking-wider flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
+                  <div className="flex items-center justify-between mb-3.5">
+                    <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                       GIRLS' ATTIRE LOOKBOOK
                     </span>
-                    <span className="text-[10px] font-outfit bg-cyan-500/20 text-cyan-300 px-2.5 py-1 rounded-full border border-cyan-500/40 font-bold uppercase tracking-wider">
+                    <span className="text-[10px] font-outfit bg-cyan-500/25 text-cyan-200 px-3 py-1 rounded-full border border-cyan-400/50 font-black uppercase tracking-wider backdrop-blur-md">
                       ETHEREAL GLAM
                     </span>
                   </div>
 
                   {/* Photo Space */}
-                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/15 group-hover:border-cyan-400/50 transition-all bg-black/50 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <img
                       src="/costume-girls.jpg"
                       alt="Girls Cyber Costume Style"
                       className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-medium px-3 py-1.5 rounded-xl bg-black/65 backdrop-blur-md border border-white/15 flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg">
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 shadow-[0_0_6px_#00e5ff]" />
                       <span className="truncate sm:whitespace-normal">Iridescent party dress with cyan glow &amp; UV glitter</span>
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed mb-3">
+                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-medium leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                     Shimmering metallic or holographic fabrics accented with electric cyan and ultraviolet jewelry, plus UV face art.
                   </p>
                 </div>
 
-                <div className="pt-2.5 border-t border-white/10 flex flex-wrap gap-2">
-                  <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#Iridescent</span>
-                  <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#HolographicGlow</span>
-                  <span className="text-[11px] font-outfit font-semibold px-2.5 py-1 rounded-lg bg-white/5 text-slate-300 border border-white/10">#UVFacePaint</span>
+                <div className="pt-3 border-t border-white/15 flex flex-wrap gap-2">
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#Iridescent</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#HolographicGlow</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#UVFacePaint</span>
                 </div>
               </div>
 

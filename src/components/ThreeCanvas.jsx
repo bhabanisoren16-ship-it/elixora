@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from 'three';
 import { soundController } from '../utils/audio';
-import { Disc3, Music2, Plane, Zap, Radio, Volume2 } from 'lucide-react';
+import { Disc3, Music2, Plane, Zap, Radio } from 'lucide-react';
 
 export default function ThreeCanvas() {
   const mountRef = useRef(null);
   const [viewMode, setViewMode] = useState('festival'); // 'festival' | 'dj' | 'sky'
   const [isScratching, setIsScratching] = useState(false);
-  const [isAudioActive, setIsAudioActive] = useState(false);
   const [isAutoLightning, setIsAutoLightning] = useState(true);
   const [isStriking, setIsStriking] = useState(false);
 
@@ -270,37 +269,8 @@ export default function ThreeCanvas() {
     let pulseScale = 1;
     let pulseActive = false;
 
-    // Scratch Web Audio Synthesizer
-    const playScratchFX = () => {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        const filter = ctx.createBiquadFilter();
-
-        osc.type = 'sawtooth';
-        const startFreq = 220 + Math.random() * 450;
-        const endFreq = 90 + Math.random() * 180;
-        osc.frequency.setValueAtTime(startFreq, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(endFreq, ctx.currentTime + 0.14);
-
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(800, ctx.currentTime);
-        filter.Q.value = 3;
-
-        gain.gain.setValueAtTime(0.2, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start();
-        osc.stop(ctx.currentTime + 0.16);
-      } catch (e) {}
-    };
+    // Scratch FX (Audio disabled per user request)
+    const playScratchFX = () => {};
 
     let scratchVelocity = 0;
     const triggerScratch = () => {
@@ -734,10 +704,7 @@ export default function ThreeCanvas() {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Audio status check
-    const audioInterval = setInterval(() => {
-      setIsAudioActive(!!soundController.isPlaying);
-    }, 400);
+
 
     // Auto-Lightning Timer (Periodic strikes every 4-7 seconds)
     let nextAutoLightningTime = 3.5;
@@ -929,7 +896,6 @@ export default function ThreeCanvas() {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
-      clearInterval(audioInterval);
       cancelAnimationFrame(animationFrameId);
 
       // Clean up Three.js resources
@@ -1015,7 +981,7 @@ export default function ThreeCanvas() {
           
           {/* Status Indicator */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-[11px] font-mono font-semibold tracking-wider text-slate-300 border-r border-white/10">
-            <span className={`w-2 h-2 rounded-full ${isStriking ? 'bg-cyan-300 animate-ping' : isAudioActive ? 'bg-cyber-cyan animate-ping' : 'bg-cyber-violet animate-pulse'}`} />
+            <span className={`w-2 h-2 rounded-full ${isStriking ? 'bg-cyan-300 animate-ping' : 'bg-cyber-cyan animate-pulse'}`} />
             <span>FESTIVAL 3D:</span>
           </div>
 

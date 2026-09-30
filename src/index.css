@@ -101,6 +101,53 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+/* Translucent Cyber Glass Screen (Zero Opaque Flat Black - Deep Luminous Frosted Glass with Maximum Text Contrast) */
+.translucent-glass-screen {
+  background: linear-gradient(145deg, rgba(10, 15, 36, 0.72) 0%, rgba(5, 8, 22, 0.80) 100%);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 
+    0 16px 48px 0 rgba(0, 0, 0, 0.45),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.35),
+    0 0 35px 0 rgba(0, 229, 255, 0.16);
+}
+
+.translucent-glass-card {
+  background: linear-gradient(145deg, rgba(18, 26, 56, 0.60) 0%, rgba(9, 13, 32, 0.70) 100%);
+  backdrop-filter: blur(20px) saturate(175%);
+  -webkit-backdrop-filter: blur(20px) saturate(175%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 8px 24px 0 rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.22);
+}
+
+/* Ensure Every Letter is 100% Crisp & Visible on Translucent Screens */
+.translucent-glass-screen h1,
+.translucent-glass-screen h2,
+.translucent-glass-screen h3,
+.translucent-glass-screen h4,
+.translucent-glass-screen h5,
+.translucent-glass-screen h6,
+.translucent-glass-screen p,
+.translucent-glass-screen span,
+.translucent-glass-screen a,
+.translucent-glass-screen button,
+.translucent-glass-screen label,
+.translucent-glass-card h1,
+.translucent-glass-card h2,
+.translucent-glass-card h3,
+.translucent-glass-card h4,
+.translucent-glass-card p,
+.translucent-glass-card span,
+.translucent-glass-card a,
+.translucent-glass-card button {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 2px 6px rgba(0, 0, 0, 0.85);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .glass-card-glow {
   background: rgba(10, 12, 22, 0.2);
   border: 1px solid rgba(245, 158, 11, 0.35);
