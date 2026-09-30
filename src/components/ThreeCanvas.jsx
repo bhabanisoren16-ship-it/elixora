@@ -81,59 +81,6 @@ export default function ThreeCanvas() {
     const lightningGroup = new THREE.Group();
     worldGroup.add(lightningGroup);
 
-    // =============================================================
-    // 2. TEXTURED MUSIC FESTIVAL BACKDROP & LIGHTNING FLASH QUAD
-    // =============================================================
-    const textureLoader = new THREE.TextureLoader();
-    let bgMesh = null;
-    let bgGeo = null;
-    let bgMat = null;
-    let flashMesh = null;
-    let flashGeo = null;
-    let flashMat = null;
-
-    textureLoader.load('/music-fest-bg.jpg', (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.generateMipmaps = true;
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-
-      const imgAspect = texture.image.width / texture.image.height;
-      const dist = 25;
-      const vFov = (camera.fov * Math.PI) / 180;
-      const visibleHeight = 2 * Math.tan(vFov / 2) * dist;
-      const visibleWidth = visibleHeight * (width / height);
-
-      let planeW = visibleWidth * 1.15;
-      let planeH = planeW / imgAspect;
-      if (planeH < visibleHeight * 1.15) {
-        planeH = visibleHeight * 1.15;
-        planeW = planeH * imgAspect;
-      }
-
-      bgGeo = new THREE.PlaneGeometry(planeW, planeH, 16, 16);
-      bgMat = new THREE.MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        opacity: 0.98,
-      });
-
-      bgMesh = new THREE.Mesh(bgGeo, bgMat);
-      bgMesh.position.set(0, 0.5, -10);
-      worldGroup.add(bgMesh);
-
-      // Atmospheric Strobe / Lightning Flash Plane over the Festival Arena
-      flashGeo = new THREE.PlaneGeometry(planeW * 1.05, planeH * 1.05);
-      flashMat = new THREE.MeshBasicMaterial({
-        color: 0x93c5fd, // Electric ice-blue
-        transparent: true,
-        opacity: 0,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-      });
-      flashMesh = new THREE.Mesh(flashGeo, flashMat);
-      flashMesh.position.set(0, 0.5, -9.92);
-      worldGroup.add(flashMesh);
-    });
 
     // Particle Texture Generator
     const createSparkTexture = () => {

@@ -44,7 +44,7 @@ export default function HeroSection({ onGrabPassClick }) {
         {/* Top Tagline Pill */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian-950/80 border border-amber-500/50 text-amber-300 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-1.5 sm:mb-2 shadow-lg backdrop-blur-md">
           <Sparkles className="w-3 h-3 text-amber-400 animate-spin-slow" />
-          <span>Welcome Class of 26</span>
+          <span>Welcome Biotechnology Freshers '26</span>
           <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
         </div>
 
@@ -65,8 +65,8 @@ export default function HeroSection({ onGrabPassClick }) {
           {/* Subtext */}
           <div className="flex items-center justify-center gap-3 mt-1.5 sm:mt-2 mb-1 sm:mb-2">
             <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-r from-transparent to-cyan-400" />
-            <p className="font-outfit text-xs sm:text-sm tracking-[0.25em] text-cyan-300 font-extrabold uppercase drop-shadow-[0_0_12px_rgba(6,182,212,0.9)]">
-              FRESHERS '26
+            <p className="font-outfit text-xs sm:text-sm md:text-base tracking-[0.25em] text-cyan-300 font-extrabold uppercase drop-shadow-[0_0_12px_rgba(6,182,212,0.9)]">
+              BIOTECHNOLOGY FRESHERS '26
             </p>
             <span className="h-[1.5px] w-10 sm:w-16 bg-gradient-to-l from-transparent to-cyan-400" />
           </div>

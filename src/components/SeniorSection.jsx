@@ -71,26 +71,90 @@ const REGISTERED_SENIORS = {
 
 const SENIOR_TICKET_PRICE = 499;
 
+// Helper: Check and restore active senior verification session across refreshes
+function getStoredSeniorSession() {
+  try {
+    if (typeof window === 'undefined') return { unlocked: false, open: false, roll: '', form: {} };
+    const savedRoll = (sessionStorage.getItem('elixora_senior_roll') || localStorage.getItem('elixora_senior_roll') || '').trim().toUpperCase();
+    const wasPortalOpen = 
+      sessionStorage.getItem('elixora_senior_portal_open') === 'true' || 
+      localStorage.getItem('elixora_senior_portal_open') === 'true' || 
+      (typeof window !== 'undefined' && window.location.hash === '#senior-portal');
+
+    if (savedRoll && REGISTERED_SENIORS[savedRoll]) {
+      let savedFields = {};
+      try {
+        const raw = sessionStorage.getItem('elixora_senior_form');
+        if (raw) savedFields = JSON.parse(raw);
+      } catch (e) {}
+
+      return {
+        unlocked: true,
+        open: wasPortalOpen,
+        roll: savedRoll,
+        form: savedFields
+      };
+    }
+  } catch (e) {
+    console.warn('Error reading senior session storage:', e);
+  }
+  return { unlocked: false, open: false, roll: '', form: {} };
+}
+
 export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
+  const initialSession = useRef(getStoredSeniorSession());
+
   // Authentication Gate State
-  const [accessRegNo, setAccessRegNo] = useState('');
+  const [accessRegNo, setAccessRegNo] = useState(() => initialSession.current.roll || '');
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [isPortalOpen, setIsPortalOpen] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(() => initialSession.current.unlocked);
+  const [isPortalOpen, setIsPortalOpen] = useState(() => initialSession.current.open);
   const [accessError, setAccessError] = useState('');
-  const [verifiedSeniorProfile, setVerifiedSeniorProfile] = useState(null);
+  const [verifiedSeniorProfile, setVerifiedSeniorProfile] = useState(() => {
+    const roll = initialSession.current.roll;
+    if (roll && REGISTERED_SENIORS[roll]) {
+      const found = REGISTERED_SENIORS[roll];
+      return {
+        name: found.name,
+        branch: found.branch || 'Biotechnology',
+        batch: found.batch || "Batch of '25 • Senior",
+        role: 'Senior VIP Pass (Full Access + Red Carpet)',
+        phone: '',
+        email: ''
+      };
+    }
+    return null;
+  });
 
   // Senior Form State
-  const [formData, setFormData] = useState({
-    fullName: '',
-    rollNo: '',
-    branch: 'Biotechnology',
-    batch: "Batch of '25 • Senior",
-    role: 'Senior VIP Pass (Full Access + Red Carpet)',
-    phone: '',
-    email: '',
-    seniorQuote: '',
-    utrNumber: '',
+  const [formData, setFormData] = useState(() => {
+    const roll = initialSession.current.roll;
+    if (roll && REGISTERED_SENIORS[roll]) {
+      const found = REGISTERED_SENIORS[roll];
+      const form = initialSession.current.form || {};
+      return {
+        fullName: found.name,
+        rollNo: roll,
+        branch: found.branch || 'Biotechnology',
+        batch: form.batch || found.batch || "Batch of '25 • Senior",
+        role: 'Senior VIP Pass (Full Access + Red Carpet)',
+        phone: form.phone || '',
+        email: '',
+        seniorQuote: form.seniorQuote || '',
+        utrNumber: form.utrNumber || '',
+      };
+    }
+    return {
+      fullName: '',
+      rollNo: '',
+      branch: 'Biotechnology',
+      batch: "Batch of '25 • Senior",
+      role: 'Senior VIP Pass (Full Access + Red Carpet)',
+      phone: '',
+      email: '',
+      seniorQuote: '',
+      utrNumber: '',
+    };
   });
 
   // UI state
@@ -110,30 +174,48 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     "Student Council Senior Executive"
   ];
 
-  // Strictly reset & ensure portal is locked on page load / refresh
-  useEffect(() => {
-    try {
-      sessionStorage.removeItem('elixora_senior_roll');
-    } catch (e) {
-      console.warn('Session storage clear error:', e);
-    }
-    setIsUnlocked(false);
-    setIsPortalOpen(false);
-    setVerifiedSeniorProfile(null);
-  }, []);
-
-  // Notify parent and body class when Senior Portal modal is open
+  // Synchronize Senior Portal session state and URL hash across refresh
   useEffect(() => {
     onPortalToggle?.(isPortalOpen);
     if (isPortalOpen) {
       document.body.classList.add('senior-portal-open');
+      try {
+        sessionStorage.setItem('elixora_senior_portal_open', 'true');
+        localStorage.setItem('elixora_senior_portal_open', 'true');
+      } catch (e) {}
+      if (window.location.hash !== '#senior-portal') {
+        history.replaceState(null, '', window.location.pathname + window.location.search + '#senior-portal');
+      }
     } else {
       document.body.classList.remove('senior-portal-open');
+      try {
+        sessionStorage.setItem('elixora_senior_portal_open', 'false');
+        localStorage.setItem('elixora_senior_portal_open', 'false');
+      } catch (e) {}
+      if (window.location.hash === '#senior-portal') {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
     }
     return () => {
       document.body.classList.remove('senior-portal-open');
     };
   }, [isPortalOpen, onPortalToggle]);
+
+  // Persist form inputs so user data is never lost on refresh
+  useEffect(() => {
+    if (isUnlocked && formData.rollNo) {
+      try {
+        sessionStorage.setItem('elixora_senior_roll', formData.rollNo);
+        localStorage.setItem('elixora_senior_roll', formData.rollNo);
+        sessionStorage.setItem('elixora_senior_form', JSON.stringify({
+          phone: formData.phone,
+          seniorQuote: formData.seniorQuote,
+          utrNumber: formData.utrNumber,
+          batch: formData.batch
+        }));
+      } catch (e) {}
+    }
+  }, [isUnlocked, formData.rollNo, formData.phone, formData.seniorQuote, formData.utrNumber, formData.batch]);
 
   // Helper: Verify Senior Registration Number strictly against the authorized roster
   const handleVerifyAccess = (e) => {
@@ -187,6 +269,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       setIsUnlocked(true);
       setIsPortalOpen(true);
+
+      try {
+        sessionStorage.setItem('elixora_senior_roll', cleaned);
+        sessionStorage.setItem('elixora_senior_portal_open', 'true');
+        localStorage.setItem('elixora_senior_roll', cleaned);
+        localStorage.setItem('elixora_senior_portal_open', 'true');
+      } catch (err) {}
     }, 450);
   };
 
@@ -212,6 +301,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setErrors({});
     try {
       sessionStorage.removeItem('elixora_senior_roll');
+      sessionStorage.removeItem('elixora_senior_portal_open');
+      sessionStorage.removeItem('elixora_senior_form');
+      localStorage.removeItem('elixora_senior_roll');
+      localStorage.removeItem('elixora_senior_portal_open');
+      if (typeof window !== 'undefined' && window.location.hash === '#senior-portal') {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
     } catch (err) {}
   };
 
@@ -585,7 +681,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       {/* ========================================================================= */}
       {isPortalOpen && isUnlocked && formData.rollNo && REGISTERED_SENIORS[formData.rollNo] && typeof document !== 'undefined' && createPortal(
         <div 
-          className="fixed inset-0 z-[100] w-full h-full bg-obsidian-950 text-slate-100 flex flex-col overflow-y-auto overscroll-contain animate-in fade-in duration-300"
+          className="fixed inset-0 z-[100] w-full h-full bg-obsidian-950 text-slate-100 flex flex-col overflow-y-auto overscroll-contain scroll-smooth senior-portal-scroll animate-in fade-in duration-300"
         >
           {/* Fullscreen Backdrop Poster Background with Ambient Cyber Lighting */}
           <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
@@ -680,26 +776,26 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           </nav>
 
           {/* Minimalist 3-Column Sideways Dashboard Layout */}
-          <main className="flex-1 w-full py-6 sm:py-8 px-4 sm:px-6 lg:px-8 flex justify-center relative z-10">
-            <form onSubmit={handleSubmit} className="w-full max-w-7xl pb-12">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 xl:gap-6 items-stretch">
+          <main className="w-full shrink-0 min-h-[calc(100vh+320px)] pt-8 sm:pt-12 pb-32 sm:pb-44 px-4 sm:px-6 lg:px-8 flex justify-center items-start relative z-10">
+            <form onSubmit={handleSubmit} className="w-full max-w-7xl">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-7 items-stretch">
                 
                 {/* ================================================================= */}
                 {/* BOX 1: SENIOR PERSONAL DETAILS */}
                 {/* ================================================================= */}
-                <div id="senior-box-1" className="flex flex-col justify-between scroll-mt-4 bg-obsidian-950/85 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-amber-400/30 transition-all">
+                <div id="senior-box-1" className="flex flex-col justify-between scroll-mt-6 bg-obsidian-950/85 backdrop-blur-xl p-6 sm:p-7 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-amber-400/30 transition-all">
                   <div>
-                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+                    <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
                       <h4 className="font-outfit font-bold text-base sm:text-lg text-white flex items-center gap-2">
                         <User className="w-4 h-4 text-amber-400" />
                         <span>Senior Personal Details</span>
                       </h4>
-                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30 font-bold">
+                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
                         STEP 1
                       </span>
                     </div>
 
-                    <div className="space-y-3.5">
+                    <div className="space-y-4">
                       {/* Senior Full Name */}
                       <div>
                         <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
@@ -712,11 +808,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             value={formData.fullName}
                             onChange={handleInputChange}
                             placeholder="e.g. Aarav Sharma"
-                            className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border ${
+                            className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
                               errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                             } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
                           />
-                          <User className="absolute right-3 top-3 w-4 h-4 text-slate-500 pointer-events-none" />
+                          <User className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                         </div>
                         {errors.fullName && <p className="text-rose-400 text-[11px] mt-1 font-outfit">{errors.fullName}</p>}
                       </div>
@@ -733,9 +829,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             value={formData.rollNo}
                             readOnly
                             disabled
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed select-none"
+                            className="w-full px-4 py-3 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-mono text-sm uppercase cursor-not-allowed select-none"
                           />
-                          <CheckCircle2 className="absolute right-3 top-3 w-4 h-4 text-emerald-400" />
+                          <CheckCircle2 className="absolute right-3.5 top-3.5 w-4 h-4 text-emerald-400" />
                         </div>
                       </div>
 
@@ -751,9 +847,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             value={formData.branch || 'Biotechnology'}
                             readOnly
                             disabled
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-outfit text-sm cursor-not-allowed select-none"
+                            className="w-full px-4 py-3 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-outfit text-sm cursor-not-allowed select-none"
                           />
-                          <CheckCircle2 className="absolute right-3 top-3 w-4 h-4 text-emerald-400" />
+                          <CheckCircle2 className="absolute right-3.5 top-3.5 w-4 h-4 text-emerald-400" />
                         </div>
                       </div>
 
@@ -766,7 +862,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                           name="batch"
                           value={formData.batch}
                           onChange={handleInputChange}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all cursor-pointer"
+                          className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all cursor-pointer"
                         >
                           {seniorBatches.map((b) => (
                             <option key={b} value={b} className="bg-obsidian-950 text-white">
@@ -788,11 +884,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             value={formData.phone}
                             onChange={handleInputChange}
                             placeholder="10-digit number"
-                            className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border ${
+                            className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
                               errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                             } text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
                           />
-                          <Phone className="absolute right-3 top-3 w-4 h-4 text-slate-500 pointer-events-none" />
+                          <Phone className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                         </div>
                         {errors.phone && <p className="text-rose-400 text-[11px] mt-1 font-outfit">{errors.phone}</p>}
                       </div>
@@ -809,9 +905,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             value={formData.seniorQuote}
                             onChange={handleInputChange}
                             placeholder="e.g. Cherish every single moment!"
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
+                            className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all"
                           />
-                          <Quote className="absolute right-3 top-3 w-4 h-4 text-slate-500 pointer-events-none" />
+                          <Quote className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                         </div>
                       </div>
                     </div>
@@ -827,22 +923,23 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
 
                 {/* ================================================================= */}
+                {/* ================================================================= */}
                 {/* BOX 2: PAY ON GIVEN BARCODE */}
                 {/* ================================================================= */}
-                <div id="senior-box-2" className="flex flex-col justify-between scroll-mt-4 bg-obsidian-950/85 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-amber-400/30 transition-all">
+                <div id="senior-box-2" className="flex flex-col justify-between scroll-mt-6 bg-obsidian-950/85 backdrop-blur-xl p-6 sm:p-7 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-amber-400/30 transition-all">
                   <div>
-                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+                    <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
                       <h4 className="font-outfit font-bold text-base sm:text-lg text-white flex items-center gap-2">
                         <CreditCard className="w-4 h-4 text-amber-400" />
                         <span>Pay on Barcode</span>
                       </h4>
-                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30 font-bold">
+                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
                         STEP 2
                       </span>
                     </div>
 
                     {/* Amount & Privilege Tag + Copy UPI Bar */}
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 mb-4">
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 mb-4">
                       <div>
                         <span className="text-[9px] font-mono text-slate-400 uppercase block tracking-wider">VIP PASS FEE</span>
                         <div className="flex items-baseline gap-2 mt-0.5">
@@ -854,7 +951,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       <button
                         type="button"
                         onClick={() => copyToClipboard(EVENT_DETAILS.upiId)}
-                        className="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-outfit text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-outfit text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
                         title="Copy UPI ID"
                       >
                         {copiedUpi ? (
@@ -872,8 +969,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Given Barcode (QR Code) Canvas Container */}
-                    <div className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 text-center">
-                      <div className="p-2 bg-white rounded-2xl shadow-xl relative inline-block">
+                    <div className="flex flex-col items-center justify-center p-4 rounded-2xl bg-white/[0.04] border border-white/10 text-center">
+                      <div className="p-2.5 bg-white rounded-2xl shadow-xl relative inline-block">
                         <canvas ref={qrCanvasRef} className="rounded-lg max-w-full block" />
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                           <div className="w-7 h-7 rounded-lg bg-obsidian-950 border border-amber-400 flex items-center justify-center shadow-lg">
@@ -881,7 +978,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                           </div>
                         </div>
                       </div>
-                      <p className="mt-2 text-xs font-semibold text-white">
+                      <p className="mt-2.5 text-xs font-semibold text-white">
                         Scan with GPay, PhonePe, Paytm, or BHIM
                       </p>
                       <div className="text-[11px] font-mono text-slate-400 mt-1">
@@ -900,19 +997,19 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 {/* ================================================================= */}
                 {/* BOX 3: ATTACH PAYMENT PROOF & MINT PASS */}
                 {/* ================================================================= */}
-                <div id="senior-box-3" className="flex flex-col justify-between scroll-mt-4 bg-obsidian-950/85 backdrop-blur-xl p-5 sm:p-6 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-amber-400/30 transition-all">
+                <div id="senior-box-3" className="flex flex-col justify-between scroll-mt-6 bg-obsidian-950/85 backdrop-blur-xl p-6 sm:p-7 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-amber-400/30 transition-all">
                   <div>
-                    <div className="flex items-center justify-between pb-3.5 border-b border-white/10 mb-4">
+                    <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
                       <h4 className="font-outfit font-bold text-base sm:text-lg text-white flex items-center gap-2">
                         <Upload className="w-4 h-4 text-amber-400" />
                         <span>Proof &amp; Mint Pass</span>
                       </h4>
-                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/30 font-bold">
+                      <span className="text-[10px] font-mono text-amber-300 bg-amber-500/15 px-2.5 py-0.5 rounded border border-amber-500/30 font-bold">
                         STEP 3
                       </span>
                     </div>
 
-                    <div className="space-y-3.5">
+                    <div className="space-y-4">
                       {/* Screenshot File Upload */}
                       <div>
                         <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
@@ -920,7 +1017,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </label>
                         
                         {!screenshotPreview ? (
-                          <label className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed ${
+                          <label className={`flex flex-col items-center justify-center p-5 rounded-xl border-2 border-dashed ${
                             errors.screenshot ? 'border-rose-500 bg-rose-500/5' : 'border-white/20 hover:border-amber-400/60 bg-white/5 hover:bg-white/10'
                           } cursor-pointer transition-all text-center group`}>
                             <div className="w-10 h-10 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300 mb-1.5 group-hover:scale-110 transition-transform">
@@ -940,7 +1037,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             />
                           </label>
                         ) : (
-                          <div className="p-2.5 rounded-xl bg-obsidian-900 border border-emerald-500/40 relative">
+                          <div className="p-3 rounded-xl bg-obsidian-900 border border-emerald-500/40 relative">
                             <div className="flex items-center gap-2.5">
                               <img
                                 src={screenshotPreview}
@@ -982,7 +1079,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                           onChange={handleInputChange}
                           placeholder="e.g. 427819234812"
                           maxLength={18}
-                          className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border ${
+                          className={`w-full px-4 py-3 rounded-xl bg-obsidian-900 border ${
                             errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                           } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-400 transition-all`}
                         />
@@ -992,11 +1089,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   </div>
 
                   {/* Mint Pass CTA & Security */}
-                  <div className="mt-4 pt-3 border-t border-white/10 space-y-2">
+                  <div className="mt-5 pt-4 border-t border-white/10 space-y-2.5">
                     <button
                       type="submit"
                       disabled={isMintingPass}
-                      className={`w-full py-3.5 rounded-2xl font-outfit font-extrabold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 border transition-all duration-300 ${
+                      className={`w-full py-4 rounded-2xl font-outfit font-extrabold text-xs sm:text-sm tracking-wide flex items-center justify-center gap-2 border transition-all duration-300 ${
                         isMintingPass
                           ? 'bg-amber-500/30 border-amber-500/50 text-slate-300 cursor-wait'
                           : 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 hover:shadow-[0_0_25px_rgba(251,191,36,0.7)] hover:scale-[1.02] active:scale-95 border-amber-300/50 cursor-pointer'

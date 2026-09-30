@@ -42,7 +42,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
               </span>
             </div>
             <p className="text-[10px] text-slate-400 font-outfit tracking-widest hidden sm:block uppercase">
-              Freshers' Festival
+              Biotechnology Freshers '26
             </p>
           </div>
         </a>

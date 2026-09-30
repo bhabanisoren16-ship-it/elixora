@@ -540,3 +540,28 @@ body.senior-portal-open header,
 body.senior-portal-open nav {
   display: none !important;
 }
+
+/* 9. Sleek Subtle Scrollbar for Senior VIP Portal Modal */
+.senior-portal-scroll {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(245, 158, 11, 0.4) transparent !important;
+}
+
+.senior-portal-scroll::-webkit-scrollbar {
+  display: block !important;
+  width: 6px !important;
+}
+
+.senior-portal-scroll::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.senior-portal-scroll::-webkit-scrollbar-thumb {
+  background: rgba(245, 158, 11, 0.35) !important;
+  border-radius: 9999px !important;
+}
+
+.senior-portal-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.7) !important;
+}
+

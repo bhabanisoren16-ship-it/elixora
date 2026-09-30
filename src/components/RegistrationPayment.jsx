@@ -169,7 +169,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
       <div className="text-center mb-14">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/50 text-cyber-cyan text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
           <Sparkles className="w-3.5 h-3.5 text-cyber-cyan" />
-          <span>PORTAL GATEWAY</span>
+          <span>PORTAL GATEWAY • BIOTECHNOLOGY FRESHERS '26</span>
         </div>
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Registration &amp; Pass Checkout
