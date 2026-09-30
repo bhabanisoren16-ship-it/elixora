@@ -18,8 +18,7 @@ import {
   Mail, 
   FileText,
   Clock,
-  Loader2,
-  Sparkles
+  Loader2
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
@@ -183,8 +182,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
         
         {/* LEFT COLUMN: Student Details Form (50% Width) */}
         <div className="rounded-2xl p-5 sm:p-6 border border-white/20 bg-obsidian-950/50 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_30px_rgba(6,182,212,0.1)] h-full flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-white/10">
               <div>
                 <span className="text-xs font-outfit font-extrabold text-cyan-300 uppercase tracking-wider">STEP 1 OF 2</span>
                 <h3 className="font-outfit font-bold text-2xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Student Details</h3>
@@ -278,28 +276,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 </div>
               </div>
             </form>
-          </div>
-
-          {/* Bottom Security & VIP Pass Credentials Info mirroring right card */}
-          <div className="pt-3.5 mt-4 border-t border-white/10 space-y-2.5">
-            <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center shrink-0 text-cyan-300">
-                <Sparkles className="w-4 h-4 text-cyan-300" />
-              </div>
-              <div className="text-left flex-1 min-w-0">
-                <p className="text-xs font-outfit font-bold text-white tracking-wide uppercase">
-                  VIP Pass Credentials
-                </p>
-                <p className="text-[11px] text-slate-300 truncate">
-                  Details are encrypted & minted on your 3D Pass
-                </p>
-              </div>
-            </div>
-            <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-cyber-cyan" />
-              <span>Official Student Council Verified • Single Entry Access</span>
-            </p>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: Dynamic UPI Payment Gateway (50% Width) */}
