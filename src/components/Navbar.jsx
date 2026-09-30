@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Sparkles, Ticket, Compass, Calendar, Palette, GraduationCap } from 'lucide-react';
+import { Volume2, VolumeX, Sparkles, Ticket, Compass, Calendar, Palette, GraduationCap, Home } from 'lucide-react';
 import { soundController } from '../utils/audio';
 
 export default function Navbar({ onOpenPass, hasGeneratedPass }) {
@@ -11,8 +11,21 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
     soundController.playClick();
   };
 
+  const handleNavLinkClick = (e, href) => {
+    soundController.playClick();
+    if (href === '#hero') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.location.hash) {
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch (err) {}
+      }
+    }
+  };
+
   const navLinks = [
-    { name: 'Overview', href: '#hero', icon: Sparkles },
+    { name: 'Home', href: '#hero', icon: Home },
     { name: 'Event Details', href: '#details', icon: Calendar },
     { name: 'Dress Code', href: '#dress-code', icon: Palette },
     { name: 'Venue & Guide', href: '#venue', icon: Compass },
@@ -56,7 +69,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
               <a
                 key={link.name}
                 href={link.href}
-                onClick={() => soundController.playClick()}
+                onClick={(e) => handleNavLinkClick(e, link.href)}
                 className={`px-3 py-1.5 rounded-lg text-xs lg:text-sm font-medium transition-all flex items-center gap-1.5 ${
                   isSenior
                     ? 'text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 border border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]'
@@ -134,7 +147,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
               <a
                 key={link.name}
                 href={link.href}
-                onClick={() => soundController.playClick()}
+                onClick={(e) => handleNavLinkClick(e, link.href)}
                 className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
                   isSenior
                     ? 'text-amber-300 bg-amber-500/15 border border-amber-500/40 shadow-[0_0_8px_rgba(245,158,11,0.25)] font-semibold'

@@ -6,6 +6,7 @@ import EventDetails from './components/EventDetails';
 import LineupSection from './components/LineupSection';
 import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
+import FloatingHomeButton from './components/FloatingHomeButton';
 import { soundController } from './utils/audio';
 import { Sparkles, Shield } from 'lucide-react';
 
@@ -72,6 +73,9 @@ export default function App() {
           />
         </Suspense>
       )}
+
+      {/* 5. Quick Floating Back-to-Home Action */}
+      <FloatingHomeButton />
 
     </div>
   );

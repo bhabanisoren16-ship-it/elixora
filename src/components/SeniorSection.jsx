@@ -16,6 +16,8 @@ import {
   Check, 
   Upload, 
   ArrowRight, 
+  ArrowLeft,
+  Home,
   Loader2, 
   User, 
   Hash, 
@@ -305,8 +307,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       sessionStorage.removeItem('elixora_senior_form');
       localStorage.removeItem('elixora_senior_roll');
       localStorage.removeItem('elixora_senior_portal_open');
-      if (typeof window !== 'undefined' && window.location.hash === '#senior-portal') {
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+      if (typeof window !== 'undefined') {
+        if (window.location.hash) {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (err) {}
   };
@@ -729,15 +734,15 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               </div>
             </div>
 
-            {/* Close Button */}
+            {/* Quick Back to Home Button */}
             <button
               type="button"
               onClick={handleClosePortal}
-              className="px-3 py-2 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-slate-300 hover:text-rose-300 flex items-center gap-1.5 transition-colors cursor-pointer text-xs font-outfit font-medium"
-              title="Close & Lock Portal (Esc)"
+              className="px-3.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/25 to-amber-500/20 hover:from-amber-500/40 hover:to-orange-500/40 border border-amber-400/50 hover:border-amber-300 text-amber-200 hover:text-white flex items-center gap-2 transition-all cursor-pointer text-xs sm:text-sm font-outfit font-bold shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:scale-105 active:scale-95"
+              title="Return to Festival Home Page"
             >
-              <X className="w-4 h-4" />
-              <span className="hidden sm:inline">Close &amp; Lock</span>
+              <ArrowLeft className="w-4 h-4 text-amber-300" />
+              <span>Back to Home</span>
             </button>
           </header>
 
@@ -1129,15 +1134,29 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     <button
                       type="button"
                       onClick={handleClosePortal}
-                      className="w-full py-2 text-center text-xs text-slate-400 hover:text-rose-300 font-outfit transition-colors cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-center text-xs sm:text-sm text-slate-300 hover:text-white border border-white/10 hover:border-amber-400/40 font-outfit font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
                     >
-                      ← Exit &amp; Lock Senior Portal
+                      <ArrowLeft className="w-4 h-4 text-amber-400" />
+                      <span>Back to Festival Home Page</span>
                     </button>
                   </div>
                 </div>
 
               </div>
             </form>
+
+            {/* Floating Back to Home in Senior Portal */}
+            <div className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 pointer-events-auto">
+              <button
+                type="button"
+                onClick={handleClosePortal}
+                className="group flex items-center gap-2 px-4 py-2.5 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-amber-400/60 hover:border-amber-300 text-amber-200 hover:text-white shadow-[0_10px_30px_rgba(0,0,0,0.9),0_0_20px_rgba(245,158,11,0.4)] backdrop-blur-xl text-xs font-outfit font-extrabold tracking-wide transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                title="Return to Festival Home Page"
+              >
+                <ArrowLeft className="w-4 h-4 text-amber-300 group-hover:-translate-x-0.5 transition-transform" />
+                <span>Home Page</span>
+              </button>
+            </div>
           </main>
         </div>,
         document.body
