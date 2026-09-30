@@ -1130,15 +1130,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       <ShieldCheck className="w-3 h-3 text-emerald-400" />
                       <span>Official Student Council Verified • Instant Pass Generation</span>
                     </p>
-
-                    <button
-                      type="button"
-                      onClick={handleClosePortal}
-                      className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-center text-xs sm:text-sm text-slate-300 hover:text-white border border-white/10 hover:border-amber-400/40 font-outfit font-semibold transition-all cursor-pointer flex items-center justify-center gap-2"
-                    >
-                      <ArrowLeft className="w-4 h-4 text-amber-400" />
-                      <span>Back to Festival Home Page</span>
-                    </button>
                   </div>
                 </div>
 
