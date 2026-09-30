@@ -6,10 +6,10 @@ import { soundController } from '../utils/audio';
 export default function EventDetails() {
 
   return (
-    <section id="details" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
+    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
       
       {/* Section Header */}
-      <div className="text-center mb-14">
+      <div className="text-center mb-6 sm:mb-8">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Event Details &amp; Blueprint
         </h2>

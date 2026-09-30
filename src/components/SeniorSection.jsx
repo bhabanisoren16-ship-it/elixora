@@ -517,10 +517,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   };
 
   return (
-    <section id="seniors" className="relative py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
+    <section id="seniors" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
       
       {/* Section Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-amber-300 text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_20px_rgba(245,158,11,0.25)]">
           <Crown className="w-3.5 h-3.5 text-amber-400" />
           <span>SENIOR VIP &amp; COUNCIL PORTAL</span>

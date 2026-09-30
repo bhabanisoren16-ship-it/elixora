@@ -3,9 +3,9 @@ import { Crown, Trophy, Award, Star } from 'lucide-react';
 
 export default function LineupSection() {
   return (
-    <section id="contest" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10">
+    <section id="contest" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10">
       {/* Section Header */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
           <Crown className="w-3.5 h-3.5 text-amber-400" />
           <span>FLAGSHIP CONTEST</span>

@@ -163,10 +163,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
   };
 
   return (
-    <section id="register" className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
+    <section id="register" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
       
       {/* Header */}
-      <div className="text-center mb-14">
+      <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/50 text-cyber-cyan text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
           <Sparkles className="w-3.5 h-3.5 text-cyber-cyan" />
           <span>PORTAL GATEWAY • BIOTECHNOLOGY FRESHERS '26</span>
