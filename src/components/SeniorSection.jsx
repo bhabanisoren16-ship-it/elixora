@@ -535,7 +535,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       {/* STATE 1: LOCKED GATEWAY (ENTER REGISTRATION NUMBER) */}
       {!isUnlocked ? (
-        <div className="max-w-2xl mx-auto rounded-3xl p-6 sm:p-10 border border-amber-500/35 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(245,158,11,0.15)] relative overflow-hidden transition-all duration-300">
+        <div className="max-w-4xl mx-auto rounded-2xl p-6 sm:p-8 lg:p-9 border border-amber-500/35 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(245,158,11,0.15)] relative overflow-hidden transition-all duration-300">
           
           {/* Subtle Background Poster Artwork */}
           <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
@@ -547,82 +547,88 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           <div className="absolute -top-24 -right-24 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-cyber-gold/15 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 text-center">
+          <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
             
-            {/* Lock Hologram Icon */}
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-600 p-[2px] mx-auto mb-5 shadow-[0_0_25px_rgba(251,191,36,0.5)]">
-              <div className="w-full h-full bg-obsidian-950 rounded-[14px] flex items-center justify-center text-amber-300">
-                <Lock className="w-8 h-8 animate-pulse text-amber-400" />
-              </div>
-            </div>
-
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-outfit font-bold uppercase mb-2">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>AUTHENTICATION GATEWAY</span>
-            </div>
-
-            <h3 className="font-outfit font-bold text-2xl sm:text-3xl text-white tracking-tight mb-2">
-              Restricted Senior Access
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-300 font-outfit max-w-md mx-auto mb-6">
-              Senior portal can be accessed through matched registration number only. Enter your official college registration number to verify against the council roster and unlock portal.
-            </p>
-
-            {/* Input Form */}
-            <form onSubmit={handleVerifyAccess} className="space-y-4 max-w-md mx-auto">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-400">
-                  <Hash className="w-4 h-4" />
+            {/* Left Column: Lock Badge, Title & Context */}
+            <div className="md:col-span-6 text-center md:text-left">
+              <div className="flex flex-col md:flex-row items-center md:items-center gap-3 mb-3 justify-center md:justify-start">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-600 p-[2px] shadow-[0_0_20px_rgba(251,191,36,0.4)] shrink-0">
+                  <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-amber-300">
+                    <Lock className="w-6 h-6 animate-pulse text-amber-400" />
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  value={accessRegNo}
-                  onChange={(e) => {
-                    setAccessRegNo(e.target.value);
-                    if (accessError) setAccessError('');
-                  }}
-                  placeholder="Enter Senior Registration No."
-                  className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-black/50 border border-white/20 text-white placeholder-slate-500 text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
-                />
+
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-outfit font-bold uppercase">
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <span>AUTHENTICATION GATEWAY</span>
+                </div>
               </div>
 
-              {/* Error Message */}
-              {accessError && (
-                <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-outfit flex items-start gap-2 text-left">
-                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
-                  <span>{accessError}</span>
-                </div>
-              )}
+              <h3 className="font-outfit font-bold text-2xl sm:text-3xl text-white tracking-tight mb-2">
+                Restricted Senior Access
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed">
+                Senior portal can be accessed through matched registration number only. Enter your official college registration number to verify against the council roster and unlock portal.
+              </p>
+            </div>
 
-              {/* Verify CTA */}
-              <button
-                type="submit"
-                disabled={isVerifyingAccess}
-                className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 font-outfit font-extrabold text-sm tracking-wide shadow-[0_0_20px_rgba(251,191,36,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                {isVerifyingAccess ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>CHECKING SENIOR ROSTER...</span>
-                  </>
-                ) : (
-                  <>
-                    <KeyRound className="w-4 h-4" />
-                    <span>VERIFY &amp; UNLOCK SENIOR PORTAL</span>
-                  </>
+            {/* Right Column: Input Box & Verification Action */}
+            <div className="md:col-span-6 w-full">
+              <form onSubmit={handleVerifyAccess} className="space-y-3.5 w-full bg-black/35 p-4 sm:p-6 rounded-xl border border-white/10 backdrop-blur-md">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-amber-400">
+                    <Hash className="w-4 h-4" />
+                  </div>
+                  <input
+                    type="text"
+                    value={accessRegNo}
+                    onChange={(e) => {
+                      setAccessRegNo(e.target.value);
+                      if (accessError) setAccessError('');
+                    }}
+                    placeholder="ENTER SENIOR REGISTRATION NO."
+                    className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-black/60 border border-white/20 text-white placeholder-slate-500 text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all"
+                  />
+                </div>
+
+                {/* Error Message */}
+                {accessError && (
+                  <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-outfit flex items-start gap-2 text-left">
+                    <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+                    <span>{accessError}</span>
+                  </div>
                 )}
-              </button>
-            </form>
 
-            <p className="text-[11px] text-slate-400 font-outfit mt-4">
-              * Senior portal is strictly gated. Only pre-registered seniors (Batch '25 Biotechnology) with matching registration numbers can enter.
-            </p>
+                {/* Verify CTA */}
+                <button
+                  type="submit"
+                  disabled={isVerifyingAccess}
+                  className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-obsidian-950 font-outfit font-extrabold text-sm tracking-wide shadow-[0_0_20px_rgba(251,191,36,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {isVerifyingAccess ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>CHECKING SENIOR ROSTER...</span>
+                    </>
+                  ) : (
+                    <>
+                      <KeyRound className="w-4 h-4" />
+                      <span>VERIFY &amp; UNLOCK SENIOR PORTAL</span>
+                    </>
+                  )}
+                </button>
+
+                <p className="text-[11px] text-slate-400 font-outfit text-center">
+                  * Senior portal is strictly gated. Only pre-registered seniors (Batch '25 Biotechnology) with matching registration numbers can enter.
+                </p>
+              </form>
+            </div>
 
           </div>
         </div>
       ) : (
         /* STATE 2: UNLOCKED SENIOR ACCESS CARD (CLICK TO OPEN DEDICATED PORTAL) */
-        <div className="max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 border border-emerald-500/40 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(16,185,129,0.15)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
+        <div className="max-w-4xl mx-auto rounded-2xl p-6 sm:p-8 border border-emerald-500/40 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(16,185,129,0.15)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-500">
           
           {/* Subtle Background Poster Artwork */}
           <div className="absolute inset-0 pointer-events-none opacity-25" aria-hidden="true">
