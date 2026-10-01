@@ -15,7 +15,9 @@ import {
   Printer, 
   Clock, 
   Hash, 
-  FileCheck 
+  FileCheck,
+  ArrowLeft,
+  Home
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
@@ -205,7 +207,23 @@ export default function HolographicTicketModal({ passData, onClose }) {
         <div className="w-[600px] h-[600px] bg-gradient-to-tr from-cyber-violet/20 via-cyber-cyan/20 to-sky-400/20 rounded-full blur-[120px] pointer-events-none" />
       </div>
 
-      <div className="relative w-full max-w-4xl mx-auto my-auto z-10 flex flex-col items-center">
+      {/* Floating Top-Left Back Button */}
+      <div className="fixed top-4 left-4 sm:top-6 sm:left-6 z-[120]">
+        <button
+          type="button"
+          onClick={() => {
+            soundController.playClick();
+            onClose();
+          }}
+          className="group flex items-center gap-2 px-3.5 py-2 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-white/20 hover:border-cyan-400/60 shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(6,182,212,0.2)] backdrop-blur-xl text-slate-200 hover:text-white text-xs font-outfit font-bold transition-all cursor-pointer hover:scale-105 active:scale-95"
+          title="Back to Festival Home"
+        >
+          <ArrowLeft className="w-4 h-4 text-cyan-400 group-hover:-translate-x-0.5 transition-transform" />
+          <span>Back to Home</span>
+        </button>
+      </div>
+
+      <div className="relative w-full max-w-4xl mx-auto my-auto z-10 flex flex-col items-center pt-10 sm:pt-4">
         
         {/* Top Floating Modal Bar */}
         <div className="w-full flex items-center justify-between mb-4 px-2">
@@ -216,16 +234,29 @@ export default function HolographicTicketModal({ passData, onClose }) {
             </span>
           </div>
 
-          <button
-            onClick={() => {
-              soundController.playClick();
-              onClose();
-            }}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors"
-            title="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                soundController.playClick();
+                onClose();
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-slate-300 hover:text-white text-xs font-outfit font-semibold transition-all cursor-pointer"
+              title="Back to Festival Home"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 text-cyan-300" />
+              <span>Back</span>
+            </button>
+            <button
+              onClick={() => {
+                soundController.playClick();
+                onClose();
+              }}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
+              title="Close pass modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Personalized Welcome Header */}
@@ -529,10 +560,10 @@ export default function HolographicTicketModal({ passData, onClose }) {
         </div>
 
         {/* Secondary Sharing Actions */}
-        <div className="mt-3 flex items-center gap-3">
+        <div className="mt-3 flex items-center gap-3 w-full max-w-md justify-center">
           <button
             onClick={shareOnWhatsApp}
-            className="py-2 px-3.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-400 text-xs font-medium flex items-center gap-1.5 transition-colors"
+            className="flex-1 py-2 px-3.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-400 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
             <Share2 className="w-3.5 h-3.5" />
             <span>Share on WhatsApp</span>
@@ -540,10 +571,25 @@ export default function HolographicTicketModal({ passData, onClose }) {
 
           <button
             onClick={handlePrint}
-            className="py-2 px-3.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-medium flex items-center gap-1.5 transition-colors"
+            className="flex-1 py-2 px-3.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
             <Printer className="w-3.5 h-3.5" />
             <span>Print Pass / PDF</span>
+          </button>
+        </div>
+
+        {/* Back Option below actions */}
+        <div className="mt-4 w-full max-w-md">
+          <button
+            type="button"
+            onClick={() => {
+              soundController.playClick();
+              onClose();
+            }}
+            className="group w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-cyan-400/50 text-slate-300 hover:text-white font-outfit font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg hover:scale-[1.01] active:scale-95"
+          >
+            <ArrowLeft className="w-4 h-4 text-cyan-400 group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Festival Home</span>
           </button>
         </div>
 
