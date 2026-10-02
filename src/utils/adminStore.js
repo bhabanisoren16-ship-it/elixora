@@ -226,7 +226,7 @@ const DEFAULT_SETTINGS = {
   broadcastMessage: '✨ Gates Open at 6:00 PM • Dress Code: Cyber Glam & Neon Ethereal • Keep Pass QR Ready at Gate 2',
   broadcastActive: false,
   sheetsWebhookUrl: '', // Google Apps Script Web App Webhook URL for Live Excel / Google Sheets
-  sheetsSpreadsheetUrl: '', // Direct link to view the online spreadsheet
+  sheetsSpreadsheetUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_SPREADSHEET_URL) || 'https://docs.google.com/spreadsheets/d/1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ/edit?hl=en-GB&gid=0#gid=0',
 };
 
 // Safe storage utilities
@@ -467,7 +467,13 @@ export const adminStore = {
   // 5. Settings & Config
   getSettings() {
     this.init();
-    return safeGet(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS);
+    const stored = safeGet(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS) || {};
+    return {
+      ...DEFAULT_SETTINGS,
+      ...stored,
+      sheetsSpreadsheetUrl: stored.sheetsSpreadsheetUrl || DEFAULT_SETTINGS.sheetsSpreadsheetUrl,
+      sheetsWebhookUrl: stored.sheetsWebhookUrl || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_WEBHOOK_URL) || DEFAULT_SETTINGS.sheetsWebhookUrl,
+    };
   },
 
   saveSettings(newSettings) {

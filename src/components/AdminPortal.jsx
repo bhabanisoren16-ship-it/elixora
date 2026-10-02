@@ -2088,23 +2088,23 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
               <div className="space-y-3 text-slate-300">
                 <div className="flex gap-2">
                   <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">1</span>
-                  <span>Open <a href="https://sheets.new" target="_blank" rel="noreferrer" className="text-cyan-400 underline font-bold">sheets.new</a> in your browser to create a new blank Google Sheet.</span>
+                  <span>Open <a href="https://docs.google.com/spreadsheets/d/1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ/edit?hl=en-GB&gid=0#gid=0" target="_blank" rel="noreferrer" className="text-cyan-400 underline font-bold">your ELIXORA Google Sheet</a> in your browser.</span>
                 </div>
 
                 <div className="flex gap-2">
                   <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">2</span>
-                  <span>In top menu, click <strong>Extensions</strong> → <strong>Apps Script</strong>.</span>
+                  <span>In the top menu, click <strong>Extensions</strong> → <strong>Apps Script</strong>.</span>
                 </div>
 
                 <div className="flex gap-2">
                   <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">3</span>
-                  <span>Delete any existing code in the script editor and paste this code:</span>
+                  <span>Delete any existing code in the editor, and paste this script:</span>
                 </div>
 
                 <div className="relative">
                   <pre className="p-3.5 rounded-xl bg-black/70 border border-white/10 font-mono text-[11px] text-cyan-200 overflow-x-auto select-all">
 {`function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var sheet = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ").getActiveSheet();
   
   // Create headers on first submission if sheet is empty
   if (sheet.getLastRow() === 0) {
@@ -2147,7 +2147,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                   <button
                     type="button"
                     onClick={() => {
-                      navigator.clipboard.writeText(`function doPost(e) {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  if (sheet.getLastRow() === 0) {\n    sheet.appendRow([\n      "Payment Time / Date",\n      "Name of Student",\n      "Registration Number",\n      "Category",\n      "Amount Paid (INR)",\n      "Phone Number",\n      "Refreshment Preference",\n      "UPI UTR / Ref Number",\n      "Ticket ID",\n      "Verification Status",\n      "Gate Check-In",\n      "Senior Quote / Notes"\n    ]);\n  }\n  var data = JSON.parse(e.postData.contents);\n  sheet.appendRow([\n    data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),\n    data.fullName,\n    data.rollNo,\n    data.category,\n    data.ticketPrice,\n    data.phone,\n    data.diet || "Veg",\n    data.utrNumber,\n    data.ticketId,\n    data.status,\n    data.gateCheckIn,\n    data.seniorQuote || ""\n  ]);\n  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))\n    .setMimeType(ContentService.MimeType.JSON);\n}`);
+                      navigator.clipboard.writeText(`function doPost(e) {\n  var sheet = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ").getActiveSheet();\n  if (sheet.getLastRow() === 0) {\n    sheet.appendRow([\n      "Payment Time / Date",\n      "Name of Student",\n      "Registration Number",\n      "Category",\n      "Amount Paid (INR)",\n      "Phone Number",\n      "Refreshment Preference",\n      "UPI UTR / Ref Number",\n      "Ticket ID",\n      "Verification Status",\n      "Gate Check-In",\n      "Senior Quote / Notes"\n    ]);\n  }\n  var data = JSON.parse(e.postData.contents);\n  sheet.appendRow([\n    data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),\n    data.fullName,\n    data.rollNo,\n    data.category,\n    data.ticketPrice,\n    data.phone,\n    data.diet || "Veg",\n    data.utrNumber,\n    data.ticketId,\n    data.status,\n    data.gateCheckIn,\n    data.seniorQuote || ""\n  ]);\n  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))\n    .setMimeType(ContentService.MimeType.JSON);\n}`);
                       notifySuccess('Google Apps Script copied to clipboard!');
                     }}
                     className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
