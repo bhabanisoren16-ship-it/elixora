@@ -2102,53 +2102,100 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 </div>
 
                 <div className="relative">
-                  <pre className="p-3.5 rounded-xl bg-black/70 border border-white/10 font-mono text-[11px] text-cyan-200 overflow-x-auto select-all">
-{`function doPost(e) {
-  var sheet = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ").getActiveSheet();
+                  <pre className="p-3.5 rounded-xl bg-black/70 border border-white/10 font-mono text-[11px] text-cyan-200 overflow-x-auto select-all max-h-72">
+{`function getOrCreateSheet() {
+  var ss;
+  try {
+    ss = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ");
+  } catch (e) {
+    ss = SpreadsheetApp.getActiveSpreadsheet();
+  }
+  return ss.getActiveSheet();
+}
+
+function setupProperTable(sheet) {
+  var headers = [
+    "Payment Time / Date",
+    "Name of Student",
+    "Registration / Roll Number",
+    "Pass Category",
+    "Amount Paid (INR)",
+    "Phone Number",
+    "Refreshment Preference",
+    "UPI UTR / Ref Number",
+    "Ticket ID",
+    "Verification Status",
+    "Gate Check-In",
+    "Senior Quote / Notes"
+  ];
   
-  // Create headers on first submission if sheet is empty
   if (sheet.getLastRow() === 0) {
-    sheet.appendRow([
-      "Payment Time / Date",
-      "Name of Student",
-      "Registration Number",
-      "Category",
-      "Amount Paid (INR)",
-      "Phone Number",
-      "Refreshment Preference",
-      "UPI UTR / Ref Number",
-      "Ticket ID",
-      "Verification Status",
-      "Gate Check-In",
-      "Senior Quote / Notes"
-    ]);
+    sheet.appendRow(headers);
+  } else {
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
   }
   
-  var data = JSON.parse(e.postData.contents);
-  sheet.appendRow([
-    data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),
-    data.fullName,
-    data.rollNo,
-    data.category,
-    data.ticketPrice,
-    data.phone,
-    data.diet || "Veg",
-    data.utrNumber,
-    data.ticketId,
-    data.status,
-    data.gateCheckIn,
-    data.seniorQuote || ""
-  ]);
+  // Format Header Row (Executive Navy + Cyan + Bold + 38px height)
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setBackground("#0F172A");
+  headerRange.setFontColor("#38BDF8");
+  headerRange.setFontWeight("bold");
+  headerRange.setFontSize(11);
+  headerRange.setHorizontalAlignment("center");
+  sheet.setRowHeight(1, 38);
+  sheet.setFrozenRows(1);
   
-  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
-    .setMimeType(ContentService.MimeType.JSON);
+  // Format Currency column (Column E)
+  sheet.getRange("E2:E").setNumberFormat("₹#,##0");
+}
+
+function initialSetup() {
+  var sheet = getOrCreateSheet();
+  setupProperTable(sheet);
+}
+
+function doPost(e) {
+  try {
+    var sheet = getOrCreateSheet();
+    if (sheet.getLastRow() === 0) {
+      setupProperTable(sheet);
+    }
+    
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),
+      data.fullName || "",
+      data.rollNo || "",
+      data.category || "Pass",
+      data.ticketPrice || 0,
+      data.phone || "",
+      data.diet || "Veg",
+      data.utrNumber || "N/A",
+      data.ticketId || "",
+      data.status || "VERIFIED",
+      data.gateCheckIn || "NO",
+      data.seniorQuote || ""
+    ]);
+    
+    var lastRow = sheet.getLastRow();
+    var rowBg = (lastRow % 2 === 0) ? "#F8FAFC" : "#FFFFFF";
+    var dataRange = sheet.getRange(lastRow, 1, 1, 12);
+    dataRange.setBackground(rowBg);
+    dataRange.setFontSize(10);
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }`}
                   </pre>
                   <button
                     type="button"
                     onClick={() => {
-                      navigator.clipboard.writeText(`function doPost(e) {\n  var sheet = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ").getActiveSheet();\n  if (sheet.getLastRow() === 0) {\n    sheet.appendRow([\n      "Payment Time / Date",\n      "Name of Student",\n      "Registration Number",\n      "Category",\n      "Amount Paid (INR)",\n      "Phone Number",\n      "Refreshment Preference",\n      "UPI UTR / Ref Number",\n      "Ticket ID",\n      "Verification Status",\n      "Gate Check-In",\n      "Senior Quote / Notes"\n    ]);\n  }\n  var data = JSON.parse(e.postData.contents);\n  sheet.appendRow([\n    data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),\n    data.fullName,\n    data.rollNo,\n    data.category,\n    data.ticketPrice,\n    data.phone,\n    data.diet || "Veg",\n    data.utrNumber,\n    data.ticketId,\n    data.status,\n    data.gateCheckIn,\n    data.seniorQuote || ""\n  ]);\n  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))\n    .setMimeType(ContentService.MimeType.JSON);\n}`);
-                      notifySuccess('Google Apps Script copied to clipboard!');
+                      navigator.clipboard.writeText(`function getOrCreateSheet() {\n  var ss;\n  try {\n    ss = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ");\n  } catch (e) {\n    ss = SpreadsheetApp.getActiveSpreadsheet();\n  }\n  return ss.getActiveSheet();\n}\n\nfunction setupProperTable(sheet) {\n  var headers = [\n    "Payment Time / Date",\n    "Name of Student",\n    "Registration / Roll Number",\n    "Pass Category",\n    "Amount Paid (INR)",\n    "Phone Number",\n    "Refreshment Preference",\n    "UPI UTR / Ref Number",\n    "Ticket ID",\n    "Verification Status",\n    "Gate Check-In",\n    "Senior Quote / Notes"\n  ];\n  if (sheet.getLastRow() === 0) {\n    sheet.appendRow(headers);\n  } else {\n    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);\n  }\n  var headerRange = sheet.getRange(1, 1, 1, headers.length);\n  headerRange.setBackground("#0F172A");\n  headerRange.setFontColor("#38BDF8");\n  headerRange.setFontWeight("bold");\n  headerRange.setFontSize(11);\n  headerRange.setHorizontalAlignment("center");\n  sheet.setRowHeight(1, 38);\n  sheet.setFrozenRows(1);\n  sheet.getRange("E2:E").setNumberFormat("₹#,##0");\n}\n\nfunction initialSetup() {\n  var sheet = getOrCreateSheet();\n  setupProperTable(sheet);\n}\n\nfunction doPost(e) {\n  try {\n    var sheet = getOrCreateSheet();\n    if (sheet.getLastRow() === 0) {\n      setupProperTable(sheet);\n    }\n    var data = JSON.parse(e.postData.contents);\n    sheet.appendRow([\n      data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),\n      data.fullName || "",\n      data.rollNo || "",\n      data.category || "Pass",\n      data.ticketPrice || 0,\n      data.phone || "",\n      data.diet || "Veg",\n      data.utrNumber || "N/A",\n      data.ticketId || "",\n      data.status || "VERIFIED",\n      data.gateCheckIn || "NO",\n      data.seniorQuote || ""\n    ]);\n    var lastRow = sheet.getLastRow();\n    var rowBg = (lastRow % 2 === 0) ? "#F8FAFC" : "#FFFFFF";\n    var dataRange = sheet.getRange(lastRow, 1, 1, 12);\n    dataRange.setBackground(rowBg);\n    dataRange.setFontSize(10);\n    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))\n      .setMimeType(ContentService.MimeType.JSON);\n  } catch (err) {\n    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))\n      .setMimeType(ContentService.MimeType.JSON);\n  }\n}`);
+                      notifySuccess('Enhanced Google Apps Script copied to clipboard!');
                     }}
                     className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
                   >
