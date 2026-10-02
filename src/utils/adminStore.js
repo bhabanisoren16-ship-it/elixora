@@ -224,7 +224,9 @@ const DEFAULT_SETTINGS = {
   venue: 'Grand Aurora Ballroom & Open Air Arena, Tech Campus',
   gateStatus: 'ACTIVE',
   broadcastMessage: '✨ Gates Open at 6:00 PM • Dress Code: Cyber Glam & Neon Ethereal • Keep Pass QR Ready at Gate 2',
-  broadcastActive: true,
+  broadcastActive: false,
+  sheetsWebhookUrl: '', // Google Apps Script Web App Webhook URL for Live Excel / Google Sheets
+  sheetsSpreadsheetUrl: '', // Direct link to view the online spreadsheet
 };
 
 // Safe storage utilities
@@ -313,6 +315,7 @@ export const adminStore = {
     }
 
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+    this.syncToOnlineSheet(record);
     return record;
   },
 
@@ -514,7 +517,52 @@ export const adminStore = {
     } catch (e) {}
   },
 
-  // 7. CSV Export
+  // 7. Real-Time Online Google Sheets / Excel Cloud Sync
+  async syncToOnlineSheet(record) {
+    const settings = this.getSettings();
+    const webhook = settings.sheetsWebhookUrl || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_WEBHOOK_URL) || '';
+    if (!webhook) return false;
+
+    try {
+      const payload = {
+        paymentTime: record.issuedAt || new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        fullName: record.fullName || '',
+        rollNo: record.rollNo || '',
+        category: record.isSenior ? 'Senior VIP' : 'VIP Fresher',
+        ticketPrice: record.ticketPrice || (record.isSenior ? 499 : 399),
+        phone: record.phone || '',
+        diet: record.diet || 'Veg',
+        utrNumber: record.utrNumber || '',
+        ticketId: record.ticketId || '',
+        status: record.status || 'VERIFIED',
+        gateCheckIn: record.checkedIn ? 'YES' : 'NO',
+        seniorQuote: record.seniorQuote || '',
+      };
+
+      await fetch(webhook, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      return true;
+    } catch (err) {
+      console.warn('Google Sheets / Excel sync error:', err);
+      return false;
+    }
+  },
+
+  async syncAllToOnlineSheet() {
+    const list = this.getRegistrations();
+    let count = 0;
+    for (const item of list) {
+      const ok = await this.syncToOnlineSheet(item);
+      if (ok) count++;
+    }
+    return count;
+  },
+
+  // 8. Excel & CSV Export (Exact requested columns)
   exportToCSV() {
     const list = this.getRegistrations();
     if (list.length === 0) {
@@ -523,38 +571,34 @@ export const adminStore = {
     }
 
     const headers = [
+      'Payment Time / Date',
+      'Name of the Student',
+      'Registration / Roll Number',
+      'Pass Category',
+      'Amount Paid (INR)',
+      'Phone Number',
+      'Refreshment Preference',
+      'UPI UTR / Transaction ID',
       'Ticket ID',
-      'Full Name',
-      'Roll Number',
-      'Category',
-      'Batch / Branch',
-      'Phone',
-      'Email',
-      'Diet',
-      'UTR Number',
-      'Ticket Price (INR)',
-      'Status',
-      'Gate Check-In',
-      'Check-in Time',
-      'Issued At',
-      'Senior Quote / Note'
+      'Verification Status',
+      'Gate Check-In Status',
+      'Gate Check-In Time',
+      'Senior Quote / Advice'
     ];
 
     const rows = list.map((item) => [
-      item.ticketId || '',
+      `"${item.issuedAt || item.createdAt || 'N/A'}"`,
       `"${(item.fullName || '').replace(/"/g, '""')}"`,
-      item.rollNo || '',
+      `"${item.rollNo || ''}"`,
       item.isSenior ? 'Senior VIP' : 'VIP Fresher',
-      `"${(item.batch || item.branch || '').replace(/"/g, '""')}"`,
-      item.phone || '',
-      item.email || '',
+      item.ticketPrice || (item.isSenior ? 499 : 399),
+      `"${item.phone || ''}"`,
       item.diet || 'Veg',
       `"${item.utrNumber || ''}"`,
-      item.ticketPrice || (item.isSenior ? 499 : 399),
+      item.ticketId || '',
       item.status || 'VERIFIED',
       item.checkedIn ? 'YES' : 'NO',
       item.checkedInAt || 'N/A',
-      `"${item.issuedAt || ''}"`,
       `"${(item.seniorQuote || '').replace(/"/g, '""')}"`
     ]);
 
@@ -564,14 +608,14 @@ export const adminStore = {
     const link = document.createElement('a');
     link.href = url;
     const dateStr = new Date().toISOString().slice(0, 10);
-    link.setAttribute('download', `ELIXORA_2.0_Manifest_${dateStr}.csv`);
+    link.setAttribute('download', `ELIXORA_2.0_Attendees_Payment_Manifest_${dateStr}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   },
 
-  // 8. Reset to default demo data
+  // 9. Reset to default demo data
   resetToDefaults() {
     safeSet(STORAGE_KEYS.REGISTRATIONS, INITIAL_SAMPLE_REGISTRATIONS);
     safeSet(STORAGE_KEYS.ROSTER, DEFAULT_SENIOR_ROSTER);

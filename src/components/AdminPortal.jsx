@@ -110,7 +110,13 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
   // Broadcast settings draft
   const [broadcastDraft, setBroadcastDraft] = useState(settings.broadcastMessage || '');
-  const [broadcastActiveDraft, setBroadcastActiveDraft] = useState(settings.broadcastActive ?? true);
+  const [broadcastActiveDraft, setBroadcastActiveDraft] = useState(settings.broadcastActive ?? false);
+
+  // Google Sheets & Excel Online Sync State
+  const [sheetsWebhookDraft, setSheetsWebhookDraft] = useState(settings.sheetsWebhookUrl || '');
+  const [sheetsSpreadsheetDraft, setSheetsSpreadsheetDraft] = useState(settings.sheetsSpreadsheetUrl || '');
+  const [isSyncingSheets, setIsSyncingSheets] = useState(false);
+  const [showScriptModal, setShowScriptModal] = useState(false);
 
   // Sync with storage changes and tick clock
   useEffect(() => {
@@ -121,7 +127,10 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     const handleStorageUpdate = () => {
       setRegistrations(adminStore.getRegistrations());
       setRoster(adminStore.getSeniorRoster());
-      setSettings(adminStore.getSettings());
+      const newSettings = adminStore.getSettings();
+      setSettings(newSettings);
+      setSheetsWebhookDraft(newSettings.sheetsWebhookUrl || '');
+      setSheetsSpreadsheetDraft(newSettings.sheetsSpreadsheetUrl || '');
       setStats(adminStore.getStats());
     };
 
@@ -317,6 +326,27 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     });
     setSettings(adminStore.getSettings());
     notifySuccess('Website broadcast banner updated live!');
+  };
+
+  // Save Google Sheets & Excel Online configuration
+  const handleSaveSheetsConfig = () => {
+    adminStore.saveSettings({
+      sheetsWebhookUrl: sheetsWebhookDraft.trim(),
+      sheetsSpreadsheetUrl: sheetsSpreadsheetDraft.trim(),
+    });
+    setSettings(adminStore.getSettings());
+    notifySuccess('Google Sheets & Excel sync configuration saved!');
+  };
+
+  const handleSyncAllToSheets = async () => {
+    if (!sheetsWebhookDraft.trim()) {
+      alert('Please enter your Google Apps Script Webhook URL first.');
+      return;
+    }
+    setIsSyncingSheets(true);
+    const count = await adminStore.syncAllToOnlineSheet();
+    setIsSyncingSheets(false);
+    notifySuccess(`Sync signal sent! Processed ${count} attendee registrations to online sheet.`);
   };
 
   // Reset to initial demo data
@@ -1524,6 +1554,99 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                     </div>
                   </div>
 
+                  {/* Live Google Sheets & Excel Cloud Integration */}
+                  <div className="p-5 rounded-2xl bg-obsidian-950/70 border border-emerald-500/40 shadow-[0_0_25px_rgba(16,185,129,0.1)]">
+                    <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                      <div>
+                        <h3 className="font-outfit font-bold text-base text-white flex items-center gap-2">
+                          <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
+                          <span>Google Sheets &amp; Excel Online Real-Time Sync</span>
+                        </h3>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          Stores: Payment Time, Full Name, Registration No, Category, Amount Paid, Phone Number, Refreshment Preference (Veg/Non-Veg), UTR No, Ticket ID.
+                        </p>
+                      </div>
+
+                      {settings.sheetsSpreadsheetUrl && (
+                        <a
+                          href={settings.sheetsSpreadsheetUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)] shrink-0"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Open Live Sheet</span>
+                        </a>
+                      )}
+                    </div>
+
+                    <div className="space-y-4 text-xs">
+                      <div>
+                        <label className="block text-slate-300 font-semibold mb-1">
+                          Viewable Spreadsheet Link (Google Sheets or OneDrive Excel)
+                        </label>
+                        <input
+                          type="url"
+                          value={sheetsSpreadsheetDraft}
+                          onChange={(e) => setSheetsSpreadsheetDraft(e.target.value)}
+                          placeholder="https://docs.google.com/spreadsheets/d/your-sheet-id/edit"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-emerald-400"
+                        />
+                        <span className="text-[10px] text-slate-500 mt-1 block">
+                          Paste your online Google Sheets or Excel Online link here to easily view payments in 1 click.
+                        </span>
+                      </div>
+
+                      <div>
+                        <label className="block text-slate-300 font-semibold mb-1">
+                          Google Apps Script Webhook URL (For Automatic Real-Time Row Appending)
+                        </label>
+                        <input
+                          type="url"
+                          value={sheetsWebhookDraft}
+                          onChange={(e) => setSheetsWebhookDraft(e.target.value)}
+                          placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/10 text-white text-xs font-mono focus:outline-none focus:border-emerald-400"
+                        />
+                        <span className="text-[10px] text-slate-500 mt-1 block">
+                          Every new ticket generated from the Fresher or Senior checkout will automatically POST to this webhook URL.
+                        </span>
+                      </div>
+
+                      <div className="pt-2 flex items-center justify-between flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setShowScriptModal(true)}
+                          className="text-cyan-400 hover:text-cyan-300 underline font-semibold flex items-center gap-1 cursor-pointer"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>How to set up Google Sheets Webhook in 2 minutes (Click for Code)</span>
+                        </button>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={handleSyncAllToSheets}
+                            disabled={isSyncingSheets || !sheetsWebhookDraft}
+                            className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40"
+                            title="Sends all current attendee records to your online sheet"
+                          >
+                            <RefreshCw className={`w-3.5 h-3.5 text-cyan-400 ${isSyncingSheets ? 'animate-spin' : ''}`} />
+                            <span>{isSyncingSheets ? 'Syncing...' : 'Sync All Records Now'}</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={handleSaveSheetsConfig}
+                            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-obsidian-950 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                          >
+                            Save Sheet Settings
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Financial & Ticket Config */}
                   <div className="p-5 rounded-2xl bg-obsidian-950/70 border border-white/10">
                     <h3 className="font-outfit font-bold text-base text-white mb-1 flex items-center gap-2">
@@ -1930,6 +2053,134 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 className="px-4 py-1.5 rounded-xl bg-rose-500 hover:bg-rose-400 text-white font-bold cursor-pointer"
               >
                 Confirm Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* MODAL 5: GOOGLE APPS SCRIPT WEBHOOK SETUP GUIDE */}
+      {/* ===================================================================== */}
+      {showScriptModal && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-2xl bg-obsidian-900 border border-emerald-500/50 rounded-2xl shadow-2xl p-5 sm:p-6 text-slate-100 flex flex-col max-h-[92vh]">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-outfit font-bold text-base text-white">
+                  Google Sheets &amp; Excel Live Webhook Setup Guide
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowScriptModal(false)}
+                className="p-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto py-4 space-y-4 text-xs font-outfit">
+              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
+                ✨ <strong>Zero server required!</strong> Every ticket payment will be appended as a new row in your Google Sheet in real-time. You can view or download it as an Excel (.xlsx) file at any moment.
+              </div>
+
+              <div className="space-y-3 text-slate-300">
+                <div className="flex gap-2">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">1</span>
+                  <span>Open <a href="https://sheets.new" target="_blank" rel="noreferrer" className="text-cyan-400 underline font-bold">sheets.new</a> in your browser to create a new blank Google Sheet.</span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">2</span>
+                  <span>In top menu, click <strong>Extensions</strong> → <strong>Apps Script</strong>.</span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">3</span>
+                  <span>Delete any existing code in the script editor and paste this code:</span>
+                </div>
+
+                <div className="relative">
+                  <pre className="p-3.5 rounded-xl bg-black/70 border border-white/10 font-mono text-[11px] text-cyan-200 overflow-x-auto select-all">
+{`function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  // Create headers on first submission if sheet is empty
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow([
+      "Payment Time / Date",
+      "Name of Student",
+      "Registration Number",
+      "Category",
+      "Amount Paid (INR)",
+      "Phone Number",
+      "Refreshment Preference",
+      "UPI UTR / Ref Number",
+      "Ticket ID",
+      "Verification Status",
+      "Gate Check-In",
+      "Senior Quote / Notes"
+    ]);
+  }
+  
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),
+    data.fullName,
+    data.rollNo,
+    data.category,
+    data.ticketPrice,
+    data.phone,
+    data.diet || "Veg",
+    data.utrNumber,
+    data.ticketId,
+    data.status,
+    data.gateCheckIn,
+    data.seniorQuote || ""
+  ]);
+  
+  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}`}
+                  </pre>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`function doPost(e) {\n  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();\n  if (sheet.getLastRow() === 0) {\n    sheet.appendRow([\n      "Payment Time / Date",\n      "Name of Student",\n      "Registration Number",\n      "Category",\n      "Amount Paid (INR)",\n      "Phone Number",\n      "Refreshment Preference",\n      "UPI UTR / Ref Number",\n      "Ticket ID",\n      "Verification Status",\n      "Gate Check-In",\n      "Senior Quote / Notes"\n    ]);\n  }\n  var data = JSON.parse(e.postData.contents);\n  sheet.appendRow([\n    data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),\n    data.fullName,\n    data.rollNo,\n    data.category,\n    data.ticketPrice,\n    data.phone,\n    data.diet || "Veg",\n    data.utrNumber,\n    data.ticketId,\n    data.status,\n    data.gateCheckIn,\n    data.seniorQuote || ""\n  ]);\n  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))\n    .setMimeType(ContentService.MimeType.JSON);\n}`);
+                      notifySuccess('Google Apps Script copied to clipboard!');
+                    }}
+                    className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
+                  >
+                    <Copy className="w-3 h-3" />
+                    <span>Copy Script</span>
+                  </button>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">4</span>
+                  <span>Click <strong>Deploy</strong> (top right) → <strong>New deployment</strong> → Select <strong>Web app</strong>.</span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">5</span>
+                  <span>Set <strong>Who has access</strong> to <strong>"Anyone"</strong> (crucial so the website can post data), then click <strong>Deploy</strong>.</span>
+                </div>
+
+                <div className="flex gap-2">
+                  <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold text-[11px] shrink-0">6</span>
+                  <span>Copy the generated <strong>Web app URL</strong> (starts with <code>https://script.google.com/macros/s/...</code>) and paste it into the <strong>Google Apps Script Webhook URL</strong> box in settings!</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-white/10 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowScriptModal(false)}
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 text-white font-bold text-xs"
+              >
+                Done
               </button>
             </div>
           </div>

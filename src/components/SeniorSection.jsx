@@ -99,6 +99,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     role: 'Senior VIP Pass (Full Access + Red Carpet)',
     phone: '',
     email: '',
+    diet: 'Veg',
     seniorQuote: '',
     utrNumber: '',
   });
@@ -245,6 +246,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       role: 'Senior VIP Pass (Full Access + Red Carpet)',
       phone: '',
       email: '',
+      diet: 'Veg',
       seniorQuote: '',
       utrNumber: '',
     });
@@ -463,6 +465,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         seniorQuote: formData.seniorQuote || 'Welcome Freshers to the Legacy of Elixora!',
         phone: formData.phone,
         email: formData.email,
+        diet: formData.diet || 'Veg',
         utrNumber: formData.utrNumber.trim(),
         isSenior: true,
         ticketPrice: SENIOR_TICKET_PRICE,
@@ -470,6 +473,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         tier: 'SENIOR VIP COUNCIL ACCESS',
         entryGate: 'Gate 1 (Presidential Arch)',
         tableZone: 'VIP Lounge',
+        issuedAt: new Date().toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
         generatedAt: new Date().toISOString(),
       };
 
@@ -865,6 +875,50 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                           <Phone className="absolute right-3.5 top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                         </div>
                         {errors.phone && <p className="text-rose-400 text-[11px] mt-1 font-outfit">{errors.phone}</p>}
+                      </div>
+
+                      {/* Refreshment Preference (Veg / Non-Veg) */}
+                      <div>
+                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
+                          Refreshment Preference <span className="text-cyan-400">*</span>
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          <label
+                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${
+                              formData.diet === 'Veg'
+                                ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300 font-bold shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                                : 'bg-obsidian-900 border-white/15 text-slate-300 hover:border-white/30'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="diet"
+                              value="Veg"
+                              checked={formData.diet === 'Veg'}
+                              onChange={handleInputChange}
+                              className="hidden"
+                            />
+                            <span>🟢 Pure Veg</span>
+                          </label>
+
+                          <label
+                            className={`flex items-center justify-center gap-2 p-3 rounded-xl border cursor-pointer transition-all ${
+                              formData.diet === 'Non-Veg'
+                                ? 'bg-rose-500/20 border-rose-500/60 text-rose-300 font-bold shadow-[0_0_12px_rgba(244,63,94,0.2)]'
+                                : 'bg-obsidian-900 border-white/15 text-slate-300 hover:border-white/30'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="diet"
+                              value="Non-Veg"
+                              checked={formData.diet === 'Non-Veg'}
+                              onChange={handleInputChange}
+                              className="hidden"
+                            />
+                            <span>🔴 Non-Veg</span>
+                          </label>
+                        </div>
                       </div>
 
                       {/* Senior Advice / Wisdom Quote */}
