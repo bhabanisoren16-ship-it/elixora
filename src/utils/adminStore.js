@@ -225,7 +225,7 @@ const DEFAULT_SETTINGS = {
   gateStatus: 'ACTIVE',
   broadcastMessage: '✨ Gates Open at 6:00 PM • Dress Code: Cyber Glam & Neon Ethereal • Keep Pass QR Ready at Gate 2',
   broadcastActive: false,
-  sheetsWebhookUrl: '', // Google Apps Script Web App Webhook URL for Live Excel / Google Sheets
+  sheetsWebhookUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_WEBHOOK_URL) || 'https://script.google.com/macros/s/AKfycbxOLPdN4zOgfweS5W9HUsmmVatNIUp6D72YSW23YD_fW0doyUwKGBlOvSOhkgWPtZGc6g/exec',
   sheetsSpreadsheetUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_SPREADSHEET_URL) || 'https://docs.google.com/spreadsheets/d/1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ/edit?hl=en-GB&gid=0#gid=0',
 };
 
