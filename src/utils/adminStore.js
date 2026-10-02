@@ -1,7 +1,7 @@
 // Central Store & State Manager for ELIXORA 2.0 Admin Portal
 import { EVENT_DETAILS } from './calendar';
 
-// Initial official registered seniors roster
+// Initial official registered seniors roster (Verified from official college roster)
 export const DEFAULT_SENIOR_ROSTER = {
   '25110039': { name: 'Anandita Mohanty', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
   '25110040': { name: 'Ankita Priyadarshini', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
@@ -23,20 +23,26 @@ export const DEFAULT_SENIOR_ROSTER = {
   '25110056': { name: 'Lipsita Dash', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
   '25110057': { name: 'Lokesh Kumar Nayak', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
   '25110058': { name: 'Mahek Habib', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110059': { name: 'Minati Soren', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110060': { name: 'Omm Prakash Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110061': { name: 'Piyush Kumar Dash', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110062': { name: 'Prachiranjan Biswal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110063': { name: 'Prateek Kumar Mallick', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110064': { name: 'Pratik Priyadarshan Nayak', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110065': { name: 'Priyambada Acharya', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110066': { name: 'Ritesh Seth', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110067': { name: 'Rohan Kumar Rana', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110068': { name: 'Rohan Pradhan', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110069': { name: 'Rohit Kumar Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110070': { name: 'Ruturaj Singh', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110071': { name: 'Sahil Agrawal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
-  '25110072': { name: 'Sambit Kumar Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" }
+  '25110059': { name: 'Manas Pritam Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110060': { name: 'Manoswani Lenka', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110061': { name: 'Nirup Sundar Muduli', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110062': { name: 'Paurnamashi Samal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110063': { name: 'Prateek Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110064': { name: 'Priyadarshani Malik', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110065': { name: 'S Saiman Satyajit', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110066': { name: 'S Shubhashree Swain', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110067': { name: 'Sai Sourav Khandual', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110068': { name: 'Samikshya Padhy', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110069': { name: 'Sangram Kumar Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110070': { name: 'Shradhashine Parida', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110071': { name: 'Soumyajeet Panda', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110072': { name: 'Soyal Parija', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110073': { name: 'Swagat Panda', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110074': { name: 'Swatiprava Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110075': { name: 'Turvi Bhuyan', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110076': { name: 'Bhaswati Mishra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110077': { name: 'Prabhuprasad Jena', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '24110033': { name: 'Subrat Dhal', branch: 'Biotechnology', batch: "Batch of '24 • Senior" }
 };
 
 // Seed sample registrations to make the portal rich and testable immediately
@@ -202,10 +208,10 @@ const INITIAL_SAMPLE_REGISTRATIONS = [
 ];
 
 const STORAGE_KEYS = {
-  REGISTRATIONS: 'elixora_registrations_v2',
-  ROSTER: 'elixora_senior_roster_v2',
-  SETTINGS: 'elixora_admin_settings_v2',
-  AUTH: 'elixora_admin_auth_v2',
+  REGISTRATIONS: 'elixora_registrations_v3',
+  ROSTER: 'elixora_senior_roster_v3',
+  SETTINGS: 'elixora_admin_settings_v3',
+  AUTH: 'elixora_admin_auth_v3',
 };
 
 const DEFAULT_SETTINGS = {
