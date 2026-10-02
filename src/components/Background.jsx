@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { soundController } from '../utils/audio';
-import desktopBg from '../assets/desktop-background.jpg';
+import desktopBg from '../assets/desktop-background.jpg'; // Widescreen 16:9 desktop atmosphere
 import mobileBg from '../assets/party-background.jpg';
 
 // High-Voltage Fractal Branching Generator for Concert Strobe & Lightning Lasers
