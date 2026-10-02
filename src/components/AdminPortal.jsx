@@ -2152,6 +2152,11 @@ function initialSetup() {
   setupProperTable(sheet);
 }
 
+function doGet(e) {
+  return ContentService.createTextOutput("ELIXORA Live Sync Active!")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
 function doPost(e) {
   try {
     var sheet = getOrCreateSheet();
@@ -2159,7 +2164,17 @@ function doPost(e) {
       setupProperTable(sheet);
     }
     
-    var data = JSON.parse(e.postData.contents);
+    var data = {};
+    if (e && e.postData && e.postData.contents) {
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (parseErr) {
+        data = e.parameter || {};
+      }
+    } else if (e && e.parameter) {
+      data = e.parameter;
+    }
+
     sheet.appendRow([
       data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),
       data.fullName || "",
@@ -2192,7 +2207,7 @@ function doPost(e) {
                   <button
                     type="button"
                     onClick={() => {
-                      navigator.clipboard.writeText(`function getOrCreateSheet() {\n  var ss;\n  try {\n    ss = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ");\n  } catch (e) {\n    ss = SpreadsheetApp.getActiveSpreadsheet();\n  }\n  return ss.getActiveSheet();\n}\n\nfunction setupProperTable(sheet) {\n  var headers = [\n    "Payment Time / Date",\n    "Name of Student",\n    "Registration / Roll Number",\n    "Pass Category",\n    "Amount Paid (INR)",\n    "Phone Number",\n    "Refreshment Preference",\n    "UPI UTR / Ref Number",\n    "Ticket ID",\n    "Verification Status",\n    "Gate Check-In",\n    "Senior Quote / Notes"\n  ];\n  if (sheet.getLastRow() === 0) {\n    sheet.appendRow(headers);\n  } else {\n    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);\n  }\n  var headerRange = sheet.getRange(1, 1, 1, headers.length);\n  headerRange.setBackground("#0F172A");\n  headerRange.setFontColor("#38BDF8");\n  headerRange.setFontWeight("bold");\n  headerRange.setFontSize(11);\n  headerRange.setHorizontalAlignment("center");\n  sheet.setRowHeight(1, 38);\n  sheet.setFrozenRows(1);\n  sheet.getRange("E2:E").setNumberFormat("₹#,##0");\n}\n\nfunction initialSetup() {\n  var sheet = getOrCreateSheet();\n  setupProperTable(sheet);\n}\n\nfunction doPost(e) {\n  try {\n    var sheet = getOrCreateSheet();\n    if (sheet.getLastRow() === 0) {\n      setupProperTable(sheet);\n    }\n    var data = JSON.parse(e.postData.contents);\n    sheet.appendRow([\n      data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),\n      data.fullName || "",\n      data.rollNo || "",\n      data.category || "Pass",\n      data.ticketPrice || 0,\n      data.phone || "",\n      data.diet || "Veg",\n      data.utrNumber || "N/A",\n      data.ticketId || "",\n      data.status || "VERIFIED",\n      data.gateCheckIn || "NO",\n      data.seniorQuote || ""\n    ]);\n    var lastRow = sheet.getLastRow();\n    var rowBg = (lastRow % 2 === 0) ? "#F8FAFC" : "#FFFFFF";\n    var dataRange = sheet.getRange(lastRow, 1, 1, 12);\n    dataRange.setBackground(rowBg);\n    dataRange.setFontSize(10);\n    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))\n      .setMimeType(ContentService.MimeType.JSON);\n  } catch (err) {\n    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))\n      .setMimeType(ContentService.MimeType.JSON);\n  }\n}`);
+                      navigator.clipboard.writeText(`function getOrCreateSheet() {\n  var ss;\n  try {\n    ss = SpreadsheetApp.openById("1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ");\n  } catch (e) {\n    ss = SpreadsheetApp.getActiveSpreadsheet();\n  }\n  return ss.getActiveSheet();\n}\n\nfunction setupProperTable(sheet) {\n  var headers = [\n    "Payment Time / Date",\n    "Name of Student",\n    "Registration / Roll Number",\n    "Pass Category",\n    "Amount Paid (INR)",\n    "Phone Number",\n    "Refreshment Preference",\n    "UPI UTR / Ref Number",\n    "Ticket ID",\n    "Verification Status",\n    "Gate Check-In",\n    "Senior Quote / Notes"\n  ];\n  if (sheet.getLastRow() === 0) {\n    sheet.appendRow(headers);\n  } else {\n    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);\n  }\n  var headerRange = sheet.getRange(1, 1, 1, headers.length);\n  headerRange.setBackground("#0F172A");\n  headerRange.setFontColor("#38BDF8");\n  headerRange.setFontWeight("bold");\n  headerRange.setFontSize(11);\n  headerRange.setHorizontalAlignment("center");\n  sheet.setRowHeight(1, 38);\n  sheet.setFrozenRows(1);\n  sheet.getRange("E2:E").setNumberFormat("₹#,##0");\n}\n\nfunction initialSetup() {\n  var sheet = getOrCreateSheet();\n  setupProperTable(sheet);\n}\n\nfunction doGet(e) {\n  return ContentService.createTextOutput("ELIXORA Live Sync Active!").setMimeType(ContentService.MimeType.TEXT);\n}\n\nfunction doPost(e) {\n  try {\n    var sheet = getOrCreateSheet();\n    if (sheet.getLastRow() === 0) {\n      setupProperTable(sheet);\n    }\n    var data = {};\n    if (e && e.postData && e.postData.contents) {\n      try { data = JSON.parse(e.postData.contents); } catch (err) { data = e.parameter || {}; }\n    } else if (e && e.parameter) {\n      data = e.parameter;\n    }\n    sheet.appendRow([\n      data.paymentTime || new Date().toLocaleString("en-IN", {timeZone: "Asia/Kolkata"}),\n      data.fullName || "",\n      data.rollNo || "",\n      data.category || "Pass",\n      data.ticketPrice || 0,\n      data.phone || "",\n      data.diet || "Veg",\n      data.utrNumber || "N/A",\n      data.ticketId || "",\n      data.status || "VERIFIED",\n      data.gateCheckIn || "NO",\n      data.seniorQuote || ""\n    ]);\n    var lastRow = sheet.getLastRow();\n    var rowBg = (lastRow % 2 === 0) ? "#F8FAFC" : "#FFFFFF";\n    var dataRange = sheet.getRange(lastRow, 1, 1, 12);\n    dataRange.setBackground(rowBg);\n    dataRange.setFontSize(10);\n    return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);\n  } catch (err) {\n    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() })).setMimeType(ContentService.MimeType.JSON);\n  }\n}`);
                       notifySuccess('Enhanced Google Apps Script copied to clipboard!');
                     }}
                     className="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer"

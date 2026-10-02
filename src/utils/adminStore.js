@@ -386,15 +386,17 @@ export const adminStore = {
         seniorQuote: record.seniorQuote || '',
       };
 
+      console.log('🔄 [ELIXORA Live Sync] Sending attendee to Google Sheets:', payload.fullName, payload.rollNo);
       await fetch(webhook, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
+      console.log('✅ [ELIXORA Live Sync] Sync signal delivered to webhook.');
       return true;
     } catch (err) {
-      console.warn('Google Sheets / Excel sync error:', err);
+      console.warn('⚠️ [ELIXORA Live Sync] Sync failed:', err);
       return false;
     }
   },
