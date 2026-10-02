@@ -9,7 +9,7 @@ import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
 import { soundController } from './utils/audio';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
-import { Shield, Megaphone } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { adminStore } from './utils/adminStore';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
@@ -30,10 +30,6 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminRoute);
-  const [broadcast, setBroadcast] = useState(() => {
-    const s = adminStore.getSettings();
-    return { active: s.broadcastActive, message: s.broadcastMessage };
-  });
 
   // Initialize high-performance buttery smooth scrolling (Lenis)
   useEffect(() => {
@@ -67,21 +63,14 @@ export default function App() {
       }
     };
 
-    const handleAdminStorageUpdate = () => {
-      const s = adminStore.getSettings();
-      setBroadcast({ active: s.broadcastActive, message: s.broadcastMessage });
-    };
-
     window.addEventListener('hashchange', handleRouteChange);
     window.addEventListener('popstate', handleRouteChange);
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('elixora_admin_update', handleAdminStorageUpdate);
 
     return () => {
       window.removeEventListener('hashchange', handleRouteChange);
       window.removeEventListener('popstate', handleRouteChange);
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('elixora_admin_update', handleAdminStorageUpdate);
     };
   }, []);
 
@@ -135,28 +124,7 @@ export default function App() {
   return (
     <div className="relative min-h-screen bg-obsidian-950 text-slate-100 selection:bg-cyber-violet selection:text-white">
       
-      {/* Live Organizer Broadcast Marquee Banner (Configurable in Admin Portal) */}
-      {broadcast?.active && broadcast?.message && (
-        <aside 
-          aria-label="Live event announcement"
-          className="relative z-50 bg-gradient-to-r from-obsidian-950 via-cyan-950/70 to-obsidian-950 border-b border-cyan-500/40 text-cyan-200 px-3 py-1.5 text-xs font-mono flex items-center justify-between gap-2 shadow-[0_0_15px_rgba(6,182,212,0.2)]"
-        >
-          <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-3 overflow-hidden">
-            <div className="flex items-center gap-2 overflow-hidden">
-              <Megaphone className="w-3.5 h-3.5 text-cyan-400 animate-pulse shrink-0" />
-              <span className="text-[11px] sm:text-xs truncate font-medium text-cyan-100">
-                {broadcast.message}
-              </span>
-            </div>
-            <button
-              onClick={() => setIsAdminOpen(true)}
-              className="text-[10px] text-cyan-400 hover:text-white underline shrink-0 cursor-pointer hidden sm:block"
-            >
-              Nexus Control
-            </button>
-          </div>
-        </aside>
-      )}
+
 
       {/* 1. Fullscreen Poster Background with 2D Lightning & No 3D Effect */}
       <Background />
