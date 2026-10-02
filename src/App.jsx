@@ -133,7 +133,6 @@ export default function App() {
       <Navbar
         onOpenPass={() => setIsModalOpen(true)}
         hasGeneratedPass={!!passData}
-        onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
       {/* 3. Main Content Flow */}

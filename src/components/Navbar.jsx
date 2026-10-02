@@ -1,8 +1,8 @@
 import React from 'react';
-import { Ticket, Compass, Calendar, Palette, GraduationCap, Home, ShieldCheck } from 'lucide-react';
+import { Ticket, Compass, Calendar, Palette, GraduationCap, Home } from 'lucide-react';
 import { scrollToTarget } from '../utils/smoothScroll';
 
-export default function Navbar({ onOpenPass, hasGeneratedPass, onOpenAdmin }) {
+export default function Navbar({ onOpenPass, hasGeneratedPass }) {
 
   const handleNavLinkClick = (e, href) => {
     e.preventDefault();
@@ -97,30 +97,18 @@ export default function Navbar({ onOpenPass, hasGeneratedPass, onOpenAdmin }) {
             </span>
           )}
 
-          {/* Admin & Grab Pass Action Buttons */}
-          <div className="flex items-center gap-1.5 ml-auto">
-            <button
-              type="button"
-              onClick={() => onOpenAdmin?.()}
-              className="px-2.5 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer"
-              title="Admin Portal & Operations Nexus"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Admin</span>
-            </button>
-
-            <a
-              href="#register"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToTarget('#register');
-              }}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-[11px] font-bold hover:shadow-neon-violet transition-all flex items-center gap-1.5 border border-white/20"
-            >
-              <Ticket className="w-3.5 h-3.5 text-cyan-200" />
-              <span>Grab Pass</span>
-            </a>
-          </div>
+          {/* Grab Pass CTA */}
+          <a
+            href="#register"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToTarget('#register');
+            }}
+            className="ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-[11px] font-bold hover:shadow-neon-violet transition-all flex items-center gap-1.5 border border-white/20"
+          >
+            <Ticket className="w-3.5 h-3.5 text-cyan-200" />
+            <span>Grab Pass</span>
+          </a>
         </div>
 
         {/* Mobile Navigation Links Row (Directly visible at Top View in Mobile) */}
@@ -150,18 +138,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass, onOpenAdmin }) {
         </nav>
 
         {/* Desktop Right Action Buttons */}
-        <div className="hidden md:flex items-center gap-2 sm:gap-2.5 ml-auto">
-          {/* Admin Portal Button */}
-          <button
-            type="button"
-            onClick={() => onOpenAdmin?.()}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 hover:text-white text-xs font-outfit font-semibold transition-all shadow-[0_0_10px_rgba(6,182,212,0.15)] hover:scale-105 cursor-pointer"
-            title="Admin Portal & Operations Nexus"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Admin Portal</span>
-          </button>
-
+        <div className="hidden md:flex items-center gap-2 sm:gap-3 ml-auto">
           {/* Quick View Pass Button (If pass generated) */}
           {hasGeneratedPass && (
             <button
