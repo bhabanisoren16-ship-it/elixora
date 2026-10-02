@@ -4,9 +4,14 @@ import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/c
 import { soundController } from '../utils/audio';
 
 export default function EventDetails() {
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+    e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+  };
 
   return (
-    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
+    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">
@@ -18,17 +23,34 @@ export default function EventDetails() {
         </p>
       </div>
 
-      {/* Box 1: Schedule & Venue Blueprint (Translucent Glass Screen) */}
-      <div className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-8">
-        {/* Subtle ambient light glows shimmering behind the frosted glass */}
-        <div className="absolute -top-24 -left-24 w-80 h-80 bg-cyan-400/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-violet-500/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Box 1: Schedule & Venue Blueprint (Translucent Glass Screen with Light Spotlight) */}
+      <div 
+        onMouseMove={handleMouseMove}
+        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-8"
+      >
+        {/* Interactive pointer light overlay & illuminated border */}
+        <div className="light-spotlight-overlay" />
+        <div className="light-spotlight-border" />
+        <div className="card-top-light-beam" />
+        <div className="light-glint-sweep" />
+
+        {/* Ambient breathing aurora light beacons behind frosted glass */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-cyan-400/20 rounded-full blur-[100px] pointer-events-none aurora-light-beacon" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none aurora-light-beacon" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-amber-400/10 rounded-full blur-[90px] pointer-events-none aurora-light-beacon" />
 
         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           
           {/* Card 1: Date & Time + Calendar Sync (Translucent Glass Card) */}
-          <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between translucent-glass-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group">
-            <div>
+          <div 
+            onMouseMove={handleMouseMove}
+            className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group relative overflow-hidden"
+          >
+            <div className="light-spotlight-overlay" />
+            <div className="light-spotlight-border" />
+            <div className="card-top-light-beam" />
+
+            <div className="relative z-10">
               <div className="w-11 h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3.5 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
                 <Calendar className="w-5 h-5 text-cyan-300" />
               </div>
@@ -50,7 +72,7 @@ export default function EventDetails() {
             </div>
 
             {/* Calendar Sync Actions */}
-            <div className="mt-auto pt-3.5 border-t border-white/20 space-y-2">
+            <div className="relative z-10 mt-auto pt-3.5 border-t border-white/20 space-y-2">
               <a
                 href={getGoogleCalendarUrl()}
                 target="_blank"
@@ -77,8 +99,16 @@ export default function EventDetails() {
           </div>
 
           {/* Card 2: Venue & Map Guide (Translucent Glass Card) */}
-          <div id="venue" className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between translucent-glass-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group">
-            <div>
+          <div 
+            id="venue" 
+            onMouseMove={handleMouseMove}
+            className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 flex flex-col justify-between translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group scroll-mt-24 sm:scroll-mt-28 relative overflow-hidden"
+          >
+            <div className="light-spotlight-overlay" />
+            <div className="light-spotlight-border" />
+            <div className="card-top-light-beam" />
+
+            <div className="relative z-10">
               <div className="w-11 h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3.5 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
                 <MapPin className="w-5 h-5 text-cyan-300" />
               </div>
@@ -152,11 +182,22 @@ export default function EventDetails() {
         </div>
       </div>
 
-      {/* Box 2: Dedicated Dress Costume Box (Translucent Glass Screen) */}
-      <div id="dress-code" className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300">
-        {/* Ambient atmospheric glows */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 bg-cyan-400/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-violet-500/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Box 2: Dedicated Dress Costume Box (Translucent Glass Screen with Light Spotlight) */}
+      <div 
+        id="dress-code" 
+        onMouseMove={handleMouseMove}
+        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-mt-24 sm:scroll-mt-28"
+      >
+        {/* Interactive pointer light overlay & illuminated border */}
+        <div className="light-spotlight-overlay" />
+        <div className="light-spotlight-border" />
+        <div className="card-top-light-beam" />
+        <div className="light-glint-sweep" />
+
+        {/* Ambient breathing aurora atmospheric glows */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-cyan-400/25 rounded-full blur-[100px] pointer-events-none aurora-light-beacon" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-violet-500/25 rounded-full blur-[100px] pointer-events-none aurora-light-beacon" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-80 h-80 bg-amber-500/12 rounded-full blur-[90px] pointer-events-none aurora-light-beacon" />
 
         <div className="relative z-10">
           {/* Header row */}
@@ -166,7 +207,7 @@ export default function EventDetails() {
                 <Shirt className="w-4 h-4 text-cyan-300" />
                 <span>OFFICIAL ATTIRE CODE</span>
               </div>
-              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)] neon-glow-cyan">
                 Cyber Glam &amp; Ethereal Neon
               </h3>
               <p className="text-xs sm:text-sm text-slate-100 font-outfit font-medium mt-1 max-w-xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
@@ -190,8 +231,15 @@ export default function EventDetails() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
               
               {/* Boys Costume Card (Translucent Glass Card) */}
-              <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between">
-                <div>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card light-spotlight-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden"
+              >
+                <div className="light-spotlight-overlay" />
+                <div className="light-spotlight-border" />
+                <div className="card-top-light-beam" />
+
+                <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3.5">
                     <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)]" />
@@ -202,15 +250,16 @@ export default function EventDetails() {
                     </span>
                   </div>
 
-                  {/* Photo Space */}
+                  {/* Photo Space with Neon Rim Backlight */}
                   <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
+                    <div className="lookbook-backlight" />
                     <img
                       src="/costume-boys.jpg"
                       alt="Boys Formal Tuxedo and Suit Attire"
-                      className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg z-20">
                       <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0 shadow-[0_0_6px_#38bdf8]" />
                       <span className="truncate sm:whitespace-normal">Tailored black tuxedo with satin lapels &amp; crisp bowtie</span>
                     </div>
@@ -221,7 +270,7 @@ export default function EventDetails() {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-white/15 flex flex-wrap gap-2">
+                <div className="relative z-10 pt-3 border-t border-white/15 flex flex-wrap gap-2">
                   <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#BlackTie</span>
                   <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#TailoredSuit</span>
                   <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#FormalAttire</span>
@@ -229,8 +278,15 @@ export default function EventDetails() {
               </div>
 
               {/* Girls Costume Card (Translucent Glass Card) */}
-              <div className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between">
-                <div>
+              <div 
+                onMouseMove={handleMouseMove}
+                className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden"
+              >
+                <div className="light-spotlight-overlay" />
+                <div className="light-spotlight-border" />
+                <div className="card-top-light-beam" />
+
+                <div className="relative z-10">
                   <div className="flex items-center justify-between mb-3.5">
                     <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
@@ -241,15 +297,16 @@ export default function EventDetails() {
                     </span>
                   </div>
 
-                  {/* Photo Space */}
+                  {/* Photo Space with Neon Rim Backlight */}
                   <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
+                    <div className="lookbook-backlight" />
                     <img
                       src="/costume-girls.jpg"
                       alt="Girls Cyber Costume Style"
-                      className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10" />
+                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg z-20">
                       <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 shadow-[0_0_6px_#00e5ff]" />
                       <span className="truncate sm:whitespace-normal">Iridescent party dress with cyan glow &amp; UV glitter</span>
                     </div>
@@ -260,7 +317,7 @@ export default function EventDetails() {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-white/15 flex flex-wrap gap-2">
+                <div className="relative z-10 pt-3 border-t border-white/15 flex flex-wrap gap-2">
                   <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#Iridescent</span>
                   <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#HolographicGlow</span>
                   <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#UVFacePaint</span>

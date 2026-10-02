@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
+import { adminStore } from '../utils/adminStore';
 
 // Official authorized roster of registered seniors
 const REGISTERED_SENIORS = {
@@ -446,7 +447,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       const ticketId = `ELX-SR-${Math.floor(100000 + Math.random() * 900000)}`;
 
-      onPassGenerated?.({
+      const seniorPass = {
         ticketId,
         fullName: formData.fullName,
         rollNo: cleanRoll,
@@ -459,13 +460,20 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         utrNumber: formData.utrNumber.trim(),
         isSenior: true,
         ticketPrice: SENIOR_TICKET_PRICE,
+        screenshot: screenshotPreview,
+        tier: 'SENIOR VIP COUNCIL ACCESS',
+        entryGate: 'Gate 1 (Presidential Arch)',
+        tableZone: 'VIP Lounge',
         generatedAt: new Date().toISOString(),
-      });
+      };
+
+      adminStore.addRegistration(seniorPass);
+      onPassGenerated?.(seniorPass);
     }, 3600);
   };
 
   return (
-    <section id="seniors" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
+    <section id="seniors" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">
@@ -640,6 +648,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       {/* ========================================================================= */}
       {isPortalOpen && isUnlocked && formData.rollNo && REGISTERED_SENIORS[formData.rollNo] && typeof document !== 'undefined' && createPortal(
         <div 
+          data-lenis-prevent
           className="fixed inset-0 z-[100] w-full h-full bg-obsidian-950 text-slate-100 flex flex-col overflow-y-auto overscroll-contain scroll-smooth senior-portal-scroll animate-in fade-in duration-300"
         >
           {/* Fullscreen Backdrop Poster Background with Ambient Cyber Lighting */}

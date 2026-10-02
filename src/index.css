@@ -22,7 +22,56 @@
   color-scheme: dark;
 }
 
-/* Hide Scrollbar */
+/* Modern Smooth Scrolling & Responsive Fixed Header Clearance */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem; /* Extra clearance for 2-row mobile fixed header */
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 5.5rem; /* Standard clearance for single-row desktop header */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  overflow-x: clip;
+  min-height: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Lenis Smooth Scroll Framework Integration */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Hide Scrollbar while preserving smooth scrolling */
 ::-webkit-scrollbar {
   display: none;
   width: 0px;
@@ -33,19 +82,6 @@
 html, body, * {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-}
-
-/* Modern overflow clipping that avoids breaking position: fixed on mobile Safari & Chrome */
-html {
-  overflow-x: clip;
-  -webkit-text-size-adjust: 100%;
-  overscroll-behavior-y: none;
-}
-
-body {
-  overflow-x: clip;
-  min-height: 100%;
-  overscroll-behavior-y: none;
 }
 
 /* Ensure background picture is 100% frozen and does NOT move while scrolling in mobile view */
@@ -215,10 +251,174 @@ body {
   pointer-events: none;
 }
 
-@keyframes borderRotate {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Dynamic Light Effects & Interactive Spotlight System */
+.light-spotlight-card {
+  position: relative;
+  --mouse-x: -500px;
+  --mouse-y: -500px;
+}
+
+.light-spotlight-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    650px circle at var(--mouse-x) var(--mouse-y),
+    rgba(6, 182, 212, 0.16) 0%,
+    rgba(168, 85, 247, 0.08) 35%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+}
+
+.light-spotlight-card:hover .light-spotlight-overlay {
+  opacity: 1;
+}
+
+.light-spotlight-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  background: radial-gradient(
+    380px circle at var(--mouse-x) var(--mouse-y),
+    rgba(0, 242, 254, 0.85) 0%,
+    rgba(168, 85, 247, 0.6) 30%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.light-spotlight-card:hover .light-spotlight-border {
+  opacity: 1;
+}
+
+.card-top-light-beam {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.85) 30%, rgba(217, 70, 239, 0.85) 70%, transparent);
+  filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.9));
+  pointer-events: none;
+  animation: lightBeamPulse 4s ease-in-out infinite alternate;
+  z-index: 3;
+}
+
+@keyframes lightBeamPulse {
+  0% {
+    opacity: 0.35;
+    transform: scaleX(0.85);
+    filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.6));
+  }
+  50% {
+    opacity: 0.85;
+    transform: scaleX(1.05);
+    filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.95)) drop-shadow(0 0 18px rgba(217, 70, 239, 0.6));
+  }
+  100% {
+    opacity: 0.45;
+    transform: scaleX(0.95);
+    filter: drop-shadow(0 0 6px rgba(217, 70, 239, 0.7));
+  }
+}
+
+.light-glint-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.light-glint-sweep::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 40%,
+    rgba(6, 182, 212, 0.22) 50%,
+    rgba(217, 70, 239, 0.15) 60%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  animation: glintTravel 7s ease-in-out infinite;
+}
+
+@keyframes glintTravel {
+  0%, 20% {
+    left: -100%;
+  }
+  50%, 100% {
+    left: 200%;
+  }
+}
+
+.aurora-light-beacon {
+  animation: auroraBreathe 7s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes auroraBreathe {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.22) translate3d(15px, -10px, 0);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(0.92) translate3d(-10px, 12px, 0);
+    opacity: 0.55;
+  }
+}
+
+.neon-glow-cyan {
+  text-shadow: 
+    0 0 8px rgba(6, 182, 212, 0.8),
+    0 0 20px rgba(6, 182, 212, 0.5),
+    0 0 35px rgba(56, 189, 248, 0.35);
+}
+
+.neon-glow-violet {
+  text-shadow: 
+    0 0 8px rgba(217, 70, 239, 0.8),
+    0 0 20px rgba(168, 85, 247, 0.5),
+    0 0 35px rgba(236, 72, 153, 0.35);
+}
+
+.lookbook-backlight {
+  position: absolute;
+  inset: -3px;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.5), rgba(168, 85, 247, 0.5));
+  filter: blur(14px);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.group:hover .lookbook-backlight {
+  opacity: 0.85;
+  transform: scale(1.02);
 }
 
 /* Cyber Grid Background lines */

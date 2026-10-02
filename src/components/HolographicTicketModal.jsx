@@ -200,7 +200,10 @@ export default function HolographicTicketModal({ passData, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] overflow-y-auto bg-obsidian-950/90 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
+    <div 
+      data-lenis-prevent
+      className="fixed inset-0 z-[100] overflow-y-auto bg-obsidian-950/90 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 animate-fadeIn"
+    >
       
       {/* Background ambient neon pulse */}
       <div className="fixed inset-0 pointer-events-none flex items-center justify-center">

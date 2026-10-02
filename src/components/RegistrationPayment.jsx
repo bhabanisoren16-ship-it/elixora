@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
+import { adminStore } from '../utils/adminStore';
 
 export default function RegistrationPayment({ onPassGenerated }) {
   // Form State
@@ -155,14 +156,20 @@ export default function RegistrationPayment({ onPassGenerated }) {
         entryGate: 'Gate 2 (Aurora North Arch)',
         tableZone: 'Arena Floor A-14',
         screenshot: screenshotPreview,
+        isSenior: false,
+        ticketPrice: EVENT_DETAILS.ticketPrice || 399,
+        branch: 'Biotechnology',
+        batch: "Batch of '26 • Fresher",
+        role: 'VIP Fresher Attendee',
       };
 
+      adminStore.addRegistration(generatedPass);
       onPassGenerated(generatedPass);
     }, 2800);
   };
 
   return (
-    <section id="register" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
+    <section id="register" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8">

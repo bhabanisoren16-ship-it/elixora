@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Clock } from 'lucide-react';
 import { soundController } from '../utils/audio';
+import { scrollToTarget } from '../utils/smoothScroll';
 
 export default function HeroSection({ onGrabPassClick }) {
 
@@ -136,7 +137,11 @@ export default function HeroSection({ onGrabPassClick }) {
 
           <a
             href="#details"
-            onClick={() => soundController.playClick()}
+            onClick={(e) => {
+              e.preventDefault();
+              soundController.playClick();
+              scrollToTarget('#details');
+            }}
             className="w-full sm:w-auto px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-obsidian-900/80 border border-white/20 text-slate-200 font-outfit font-semibold text-xs sm:text-sm hover:bg-white/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all flex items-center justify-center gap-2 backdrop-blur-md"
           >
             <span>Explore Event Guide</span>

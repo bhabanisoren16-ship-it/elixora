@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUp, Home } from 'lucide-react';
 import { soundController } from '../utils/audio';
+import { scrollToTarget } from '../utils/smoothScroll';
 
 export default function FloatingHomeButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -21,10 +22,7 @@ export default function FloatingHomeButton() {
 
   const scrollToHome = () => {
     soundController.playClick?.();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    scrollToTarget(0);
     // Clear URL hash to keep URL clean
     if (window.location.hash) {
       try {
