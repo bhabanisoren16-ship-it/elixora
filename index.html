@@ -9,6 +9,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Unbounded:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Guarantee website always opens at the top Home Page and does not restore scroll to senior portal
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      try {
+        localStorage.removeItem('elixora_senior_portal_open');
+        sessionStorage.removeItem('elixora_senior_portal_open');
+        localStorage.removeItem('elixora_senior_roll');
+        sessionStorage.removeItem('elixora_senior_roll');
+      } catch (e) {}
+      if (window.location.hash === '#senior-portal' || window.location.hash === '#seniors') {
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch (e) {}
+      }
+      window.scrollTo(0, 0);
+    </script>
   </head>
   <body class="bg-obsidian-950 text-slate-100 font-outfit selection:bg-cyber-violet selection:text-white">
     <div id="root"></div>

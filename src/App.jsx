@@ -1,4 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import Background from './components/Background';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
@@ -16,6 +16,25 @@ export default function App() {
   const [passData, setPassData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(false);
+
+  // Guarantee that loading the website always opens the main page by default
+  useEffect(() => {
+    try {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      localStorage.removeItem('elixora_senior_portal_open');
+      sessionStorage.removeItem('elixora_senior_portal_open');
+      localStorage.removeItem('elixora_senior_roll');
+      sessionStorage.removeItem('elixora_senior_roll');
+      if (typeof window !== 'undefined') {
+        if (window.location.hash === '#senior-portal' || window.location.hash === '#seniors') {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      }
+    } catch (e) {}
+  }, []);
 
   const handlePassGenerated = (generatedPass) => {
     setPassData(generatedPass);

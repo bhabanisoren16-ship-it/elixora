@@ -74,90 +74,26 @@ const REGISTERED_SENIORS = {
 
 const SENIOR_TICKET_PRICE = 499;
 
-// Helper: Check and restore active senior verification session across refreshes
-function getStoredSeniorSession() {
-  try {
-    if (typeof window === 'undefined') return { unlocked: false, open: false, roll: '', form: {} };
-    const savedRoll = (sessionStorage.getItem('elixora_senior_roll') || localStorage.getItem('elixora_senior_roll') || '').trim().toUpperCase();
-    const wasPortalOpen = 
-      sessionStorage.getItem('elixora_senior_portal_open') === 'true' || 
-      localStorage.getItem('elixora_senior_portal_open') === 'true' || 
-      (typeof window !== 'undefined' && window.location.hash === '#senior-portal');
-
-    if (savedRoll && REGISTERED_SENIORS[savedRoll]) {
-      let savedFields = {};
-      try {
-        const raw = sessionStorage.getItem('elixora_senior_form');
-        if (raw) savedFields = JSON.parse(raw);
-      } catch (e) {}
-
-      return {
-        unlocked: true,
-        open: wasPortalOpen,
-        roll: savedRoll,
-        form: savedFields
-      };
-    }
-  } catch (e) {
-    console.warn('Error reading senior session storage:', e);
-  }
-  return { unlocked: false, open: false, roll: '', form: {} };
-}
-
 export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
-  const initialSession = useRef(getStoredSeniorSession());
-
-  // Authentication Gate State
-  const [accessRegNo, setAccessRegNo] = useState(() => initialSession.current.roll || '');
+  // Authentication Gate State - Always starts locked and closed by default when opening website
+  const [accessRegNo, setAccessRegNo] = useState('');
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(() => initialSession.current.unlocked);
-  const [isPortalOpen, setIsPortalOpen] = useState(() => initialSession.current.open);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
   const [accessError, setAccessError] = useState('');
-  const [verifiedSeniorProfile, setVerifiedSeniorProfile] = useState(() => {
-    const roll = initialSession.current.roll;
-    if (roll && REGISTERED_SENIORS[roll]) {
-      const found = REGISTERED_SENIORS[roll];
-      return {
-        name: found.name,
-        branch: found.branch || 'Biotechnology',
-        batch: found.batch || "Batch of '25 • Senior",
-        role: 'Senior VIP Pass (Full Access + Red Carpet)',
-        phone: '',
-        email: ''
-      };
-    }
-    return null;
-  });
+  const [verifiedSeniorProfile, setVerifiedSeniorProfile] = useState(null);
 
   // Senior Form State
-  const [formData, setFormData] = useState(() => {
-    const roll = initialSession.current.roll;
-    if (roll && REGISTERED_SENIORS[roll]) {
-      const found = REGISTERED_SENIORS[roll];
-      const form = initialSession.current.form || {};
-      return {
-        fullName: found.name,
-        rollNo: roll,
-        branch: found.branch || 'Biotechnology',
-        batch: form.batch || found.batch || "Batch of '25 • Senior",
-        role: 'Senior VIP Pass (Full Access + Red Carpet)',
-        phone: form.phone || '',
-        email: '',
-        seniorQuote: form.seniorQuote || '',
-        utrNumber: form.utrNumber || '',
-      };
-    }
-    return {
-      fullName: '',
-      rollNo: '',
-      branch: 'Biotechnology',
-      batch: "Batch of '25 • Senior",
-      role: 'Senior VIP Pass (Full Access + Red Carpet)',
-      phone: '',
-      email: '',
-      seniorQuote: '',
-      utrNumber: '',
-    };
+  const [formData, setFormData] = useState({
+    fullName: '',
+    rollNo: '',
+    branch: 'Biotechnology',
+    batch: "Batch of '25 • Senior",
+    role: 'Senior VIP Pass (Full Access + Red Carpet)',
+    phone: '',
+    email: '',
+    seniorQuote: '',
+    utrNumber: '',
   });
 
   // UI state
@@ -177,26 +113,36 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     "Student Council Senior Executive"
   ];
 
-  // Synchronize Senior Portal session state and URL hash across refresh
+  // Guarantee portal always starts completely closed and locked on mount
+  useEffect(() => {
+    setIsPortalOpen(false);
+    setIsUnlocked(false);
+    try {
+      localStorage.removeItem('elixora_senior_portal_open');
+      sessionStorage.removeItem('elixora_senior_portal_open');
+      localStorage.removeItem('elixora_senior_roll');
+      sessionStorage.removeItem('elixora_senior_roll');
+      localStorage.removeItem('elixora_senior_form');
+      sessionStorage.removeItem('elixora_senior_form');
+    } catch (e) {}
+  }, []);
+
+  // Synchronize Senior Portal modal state and URL hash
   useEffect(() => {
     onPortalToggle?.(isPortalOpen);
     if (isPortalOpen) {
       document.body.classList.add('senior-portal-open');
-      try {
-        sessionStorage.setItem('elixora_senior_portal_open', 'true');
-        localStorage.setItem('elixora_senior_portal_open', 'true');
-      } catch (e) {}
       if (window.location.hash !== '#senior-portal') {
-        history.replaceState(null, '', window.location.pathname + window.location.search + '#senior-portal');
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search + '#senior-portal');
+        } catch (e) {}
       }
     } else {
       document.body.classList.remove('senior-portal-open');
-      try {
-        sessionStorage.setItem('elixora_senior_portal_open', 'false');
-        localStorage.setItem('elixora_senior_portal_open', 'false');
-      } catch (e) {}
       if (window.location.hash === '#senior-portal') {
-        history.replaceState(null, '', window.location.pathname + window.location.search);
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch (e) {}
       }
     }
     return () => {
@@ -204,12 +150,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     };
   }, [isPortalOpen, onPortalToggle]);
 
-  // Persist form inputs so user data is never lost on refresh
+  // Persist form inputs in sessionStorage during current active session
   useEffect(() => {
     if (isUnlocked && formData.rollNo) {
       try {
         sessionStorage.setItem('elixora_senior_roll', formData.rollNo);
-        localStorage.setItem('elixora_senior_roll', formData.rollNo);
         sessionStorage.setItem('elixora_senior_form', JSON.stringify({
           phone: formData.phone,
           seniorQuote: formData.seniorQuote,
@@ -275,9 +220,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       try {
         sessionStorage.setItem('elixora_senior_roll', cleaned);
-        sessionStorage.setItem('elixora_senior_portal_open', 'true');
-        localStorage.setItem('elixora_senior_roll', cleaned);
-        localStorage.setItem('elixora_senior_portal_open', 'true');
       } catch (err) {}
     }, 450);
   };
@@ -309,7 +251,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       localStorage.removeItem('elixora_senior_roll');
       localStorage.removeItem('elixora_senior_portal_open');
       if (typeof window !== 'undefined') {
-        if (window.location.hash) {
+        if (window.location.hash === '#senior-portal' || window.location.hash) {
           history.replaceState(null, '', window.location.pathname + window.location.search);
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
