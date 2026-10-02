@@ -450,13 +450,22 @@ export default function Background() {
         }}
         aria-hidden="true"
       >
-        {/* Desktop Screen (≥ md): Native 16:9 Widescreen Concert Atmosphere (Proper Edge-to-Edge Fit) */}
+        {/* Desktop Screen (≥ md): Native 16:9 Widescreen Concert Atmosphere (Perfect Edge-to-Edge Fit) */}
         <img
           src={desktopBg}
           alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="hidden md:block w-full h-full object-cover object-[center_35%] filter brightness-[1.04] contrast-[1.06] saturate-[1.10] animate-subtle-breathe"
+          className="hidden md:block w-full h-full object-cover object-center filter brightness-[1.03] contrast-[1.05]"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center center',
+          }}
         />
 
         {/* Mobile Screen (< md): Native Portrait Fullscreen Cover with Organic Breathing */}
@@ -501,7 +510,7 @@ export default function Background() {
         />
 
         {/* Subtle Dark Vignette for Text Readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/40 via-transparent to-obsidian-950/85 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/40 via-transparent to-obsidian-950/85 md:to-obsidian-950/45 pointer-events-none" />
       </div>
 
       {/* 2. Fullscreen Canvas: Dynamic Stage Spotlights, Lasers & Festival Light Motes */}
