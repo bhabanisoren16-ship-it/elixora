@@ -349,15 +349,13 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     notifySuccess(`Sync signal sent! Processed ${count} attendee registrations to online sheet.`);
   };
 
-  // Reset to initial demo data
+  // Reset all attendee and transaction data
   const handleResetData = () => {
-    if (window.confirm('Reset all attendees, tickets and settings back to initial demo seeds? Any new registrations will be reset.')) {
-      adminStore.resetToDefaults();
-      setRegistrations(adminStore.getRegistrations());
-      setRoster(adminStore.getSeniorRoster());
-      setSettings(adminStore.getSettings());
+    if (window.confirm('⚠️ Are you sure you want to RESET ALL REGISTRATION DATA? All attendee tickets, check-in statuses, and revenue records will be wiped back to 0.')) {
+      adminStore.clearAllRegistrations();
+      setRegistrations([]);
       setStats(adminStore.getStats());
-      notifySuccess('Reset to default initial demo dataset completed.');
+      notifySuccess('All attendee data and revenue records have been wiped clean (0 registrations). Ready for live launch!');
     }
   };
 
@@ -1745,7 +1743,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                         onClick={handleResetData}
                         className="px-4 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 text-rose-300 text-xs font-bold transition-all cursor-pointer"
                       >
-                        Reset Demo Data to Defaults
+                        Wipe All Attendee Data (Reset to 0)
                       </button>
                     </div>
                   </div>
