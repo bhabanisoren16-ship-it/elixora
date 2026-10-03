@@ -207,7 +207,7 @@ export default function EventDetails() {
                 <Shirt className="w-4 h-4 text-cyan-300" />
                 <span>OFFICIAL ATTIRE CODE</span>
               </div>
-              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight neon-glow-cyan">
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
                 Cyber Glam &amp; Ethereal Neon
               </h3>
               <p className="text-xs sm:text-sm text-white font-outfit font-bold mt-1 max-w-xl subheading-readable">

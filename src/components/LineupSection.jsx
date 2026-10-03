@@ -46,7 +46,7 @@ export default function LineupSection() {
                 <Crown className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight neon-glow-cyan">
+                <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
                   Mr. &amp; Ms. Fresher 2026
                 </h3>
                 <p className="text-xs sm:text-sm text-white mt-1 font-outfit font-bold subheading-readable">
