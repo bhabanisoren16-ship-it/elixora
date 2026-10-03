@@ -14,11 +14,12 @@ export default function EventDetails() {
     <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Section Header */}
-      <div className="text-center mb-6 sm:mb-8">
-        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+      <div className="text-center mb-6 sm:mb-8 relative">
+        <div className="absolute inset-0 max-w-3xl mx-auto bg-obsidian-950/70 blur-2xl rounded-full pointer-events-none -z-10" aria-hidden="true" />
+        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
           Event Details &amp; Blueprint
         </h2>
-        <p className="mt-2 text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold">
+        <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
           All you need to navigate the biggest night of your college journey. Sync to your calendar and plan your style.
         </p>
       </div>
@@ -117,7 +118,7 @@ export default function EventDetails() {
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-1.5 drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
                 Grand Aurora Arena
               </h3>
-              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold mb-3 drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
+              <p className="text-xs sm:text-sm text-white font-outfit font-bold mb-3 subheading-readable">
                 Tech Campus Main Quadrangle &amp; Open Air Amphitheatre.
               </p>
 
@@ -210,7 +211,7 @@ export default function EventDetails() {
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)] neon-glow-cyan">
                 Cyber Glam &amp; Ethereal Neon
               </h3>
-              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold mt-1 max-w-xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+              <p className="text-xs sm:text-sm text-white font-outfit font-bold mt-1 max-w-xl subheading-readable">
                 Futuristic, stylish, and comfortable to dance. Think sleek streetwear infused with luminous accents.
               </p>
             </div>
@@ -223,7 +224,7 @@ export default function EventDetails() {
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                 COSTUME INSPIRATION LOOKBOOK
               </span>
-              <span className="text-xs font-outfit text-slate-100 font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+              <span className="text-xs font-outfit text-white font-bold subheading-readable">
                 Recommended Styling for Fresher Night
               </span>
             </div>
@@ -265,7 +266,7 @@ export default function EventDetails() {
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed mb-3.5 subheading-readable">
                     Sharp black tuxedo or tailored blazer, crisp white collared dress shirt, classic bowtie or silk necktie, and polished formal shoes.
                   </p>
                 </div>
@@ -312,7 +313,7 @@ export default function EventDetails() {
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed mb-3.5 subheading-readable">
                     Shimmering metallic or holographic fabrics accented with electric cyan and ultraviolet jewelry, plus UV face art.
                   </p>
                 </div>

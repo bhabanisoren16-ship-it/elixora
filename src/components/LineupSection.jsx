@@ -11,15 +11,16 @@ export default function LineupSection() {
   return (
     <section id="contest" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       {/* Section Header */}
-      <div className="text-center mb-6 sm:mb-8">
+      <div className="text-center mb-6 sm:mb-8 relative">
+        <div className="absolute inset-0 max-w-3xl mx-auto bg-obsidian-950/70 blur-2xl rounded-full pointer-events-none -z-10" aria-hidden="true" />
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
           <Crown className="w-3.5 h-3.5 text-cyan-400" />
           <span>FLAGSHIP CONTEST</span>
         </div>
-        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
           Mr. &amp; Ms. Fresher 2026
         </h2>
-        <p className="mt-2 text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold">
+        <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
           The ultimate spotlight of ELIXORA 2.0—crowning the most charismatic and talented newcomers of the batch.
         </p>
       </div>
@@ -49,7 +50,7 @@ export default function LineupSection() {
                 <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)] neon-glow-cyan">
                   Mr. &amp; Ms. Fresher 2026
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-100 mt-1 font-outfit font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
+                <p className="text-xs sm:text-sm text-white mt-1 font-outfit font-bold subheading-readable">
                   Crowning the most charismatic newcomers of the batch with exclusive tech trophies &amp; gifts.
                 </p>
               </div>
@@ -83,7 +84,7 @@ export default function LineupSection() {
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-sky-300 transition-colors tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                   The Charisma &amp; Presence Title
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-100 leading-relaxed mb-4 font-outfit font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                <p className="text-xs sm:text-sm text-white leading-relaxed mb-4 font-outfit font-bold subheading-readable">
                   Recognizing confidence, wit, stage presence, and signature style on the runway.
                 </p>
                 <div className="flex flex-wrap gap-2.5 pt-3.5 border-t border-white/15 text-xs font-outfit font-bold text-white">
@@ -115,7 +116,7 @@ export default function LineupSection() {
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-purple-300 transition-colors tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                   The Elegance &amp; Talent Title
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-100 leading-relaxed mb-4 font-outfit font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                <p className="text-xs sm:text-sm text-white leading-relaxed mb-4 font-outfit font-bold subheading-readable">
                   Honoring poise, dynamic persona, expressive intellect, and evening glamour.
                 </p>
               <div className="flex flex-wrap gap-2.5 pt-3.5 border-t border-white/15 text-xs font-outfit font-bold text-white">

@@ -869,3 +869,14 @@ body.senior-portal-open nav {
   background: rgba(245, 158, 11, 0.7) !important;
 }
 
+/* 10. Crystal-Clear Legibility for Subheadings & Subtitles against Dynamic Stage Background */
+.subheading-readable {
+  color: #f8fafc !important;
+  font-weight: 700 !important;
+  text-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.98),
+    0 4px 20px rgba(0, 0, 0, 0.95),
+    0 0 3px rgba(0, 0, 0, 1) !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.95));
+}
+

@@ -177,17 +177,17 @@ export default function RegistrationPayment({ onPassGenerated }) {
     <section id="register" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Header */}
-      <div className="text-center mb-6 sm:mb-8">
+      <div className="text-center mb-6 sm:mb-8 relative">
+        <div className="absolute inset-0 max-w-3xl mx-auto bg-obsidian-950/70 blur-2xl rounded-full pointer-events-none -z-10" aria-hidden="true" />
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/50 text-cyber-cyan text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
           <span>PORTAL GATEWAY • BIOTECHNOLOGY FRESHERS '26</span>
         </div>
-        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
           Registration &amp; Pass Checkout
         </h2>
-        <p className="mt-2 text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold">
+        <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
           Fill your student details, complete payment via dynamic UPI QR, and your personalized 3D VIP pass will be rendered instantly.
         </p>
-
       </div>
 
       {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER */}
