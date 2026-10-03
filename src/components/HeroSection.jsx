@@ -42,9 +42,8 @@ export default function HeroSection({ onGrabPassClick }) {
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
         
-        {/* Top Tagline Pill (Zero Black - Translucent Cyan Glass) */}
         <div className="inline-flex items-center justify-center px-4 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/40 text-cyan-200 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-1.5 sm:mb-2 shadow-[0_0_15px_rgba(0,229,255,0.25)] backdrop-blur-md">
-          <span className="drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">Welcome Biotechnology Freshers '26</span>
+          <span>Welcome Biotechnology Freshers '26</span>
         </div>
 
         {/* Title Container with Exact Official Logo Graphic */}
@@ -75,19 +74,19 @@ export default function HeroSection({ onGrabPassClick }) {
             <h2 className="font-outfit text-xs sm:text-sm md:text-base tracking-[0.20em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2">
               <span 
                 className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300"
-                style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.9)) drop-shadow(0 0 14px rgba(0,229,255,0.9))' }}
+                style={{ filter: 'drop-shadow(0 0 14px rgba(0,229,255,0.9))' }}
               >
                 BIOTECHNOLOGY
               </span>
               <span 
                 className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-purple-300"
-                style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.9)) drop-shadow(0 0 14px rgba(217,70,239,0.9))' }}
+                style={{ filter: 'drop-shadow(0 0 14px rgba(217,70,239,0.9))' }}
               >
                 FRESHERS
               </span>
               <span 
                 className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400"
-                style={{ filter: 'drop-shadow(0 2px 5px rgba(0,0,0,0.9)) drop-shadow(0 0 14px rgba(251,191,36,0.95))' }}
+                style={{ filter: 'drop-shadow(0 0 14px rgba(251,191,36,0.95))' }}
               >
                 '26
               </span>

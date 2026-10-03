@@ -14,9 +14,8 @@ export default function EventDetails() {
     <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Section Header */}
-      <div className="text-center mb-6 sm:mb-8 relative">
-        <div className="absolute inset-0 max-w-3xl mx-auto bg-obsidian-950/70 blur-2xl rounded-full pointer-events-none -z-10" aria-hidden="true" />
-        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Event Details &amp; Blueprint
         </h2>
         <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
@@ -56,8 +55,8 @@ export default function EventDetails() {
                 <Calendar className="w-5 h-5 text-cyan-300" />
               </div>
 
-              <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">WHEN TO ARRIVE</span>
-              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-3 drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
+              <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase">WHEN TO ARRIVE</span>
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-3">
                 {EVENT_DETAILS.humanDate}
               </h3>
 
@@ -66,7 +65,7 @@ export default function EventDetails() {
                   <Clock className="w-4 h-4 text-cyan-400 shrink-0" />
                   <div>
                     <div className="text-xs text-cyan-200 font-outfit font-bold tracking-wide">Entry &amp; Red Carpet</div>
-                    <div className="text-sm sm:text-base font-outfit font-black text-white drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">06:30 PM - 07:45 PM</div>
+                    <div className="text-sm sm:text-base font-outfit font-black text-white">06:30 PM - 07:45 PM</div>
                   </div>
                 </div>
               </div>
@@ -114,8 +113,8 @@ export default function EventDetails() {
                 <MapPin className="w-5 h-5 text-cyan-300" />
               </div>
 
-              <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">LOCATION &amp; BLUEPRINT</span>
-              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-1.5 drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
+              <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase">LOCATION &amp; BLUEPRINT</span>
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-1.5">
                 Grand Aurora Arena
               </h3>
               <p className="text-xs sm:text-sm text-white font-outfit font-bold mb-3 subheading-readable">
@@ -137,10 +136,10 @@ export default function EventDetails() {
                     </div>
                   </div>
                   <div>
-                    <span className="text-xs font-outfit font-black text-white tracking-wider block drop-shadow-[0_1px_4px_rgba(0,0,0,1)]">
+                    <span className="text-xs font-outfit font-black text-white tracking-wider block">
                        AURORA ARENA • SECTOR 4
                     </span>
-                    <span className="text-[10px] text-cyan-300 font-mono font-bold tracking-wide drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
+                    <span className="text-[10px] text-cyan-300 font-mono font-bold tracking-wide">
                       28.5355° N, 77.3910° E
                     </span>
                   </div>
@@ -208,7 +207,7 @@ export default function EventDetails() {
                 <Shirt className="w-4 h-4 text-cyan-300" />
                 <span>OFFICIAL ATTIRE CODE</span>
               </div>
-              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)] neon-glow-cyan">
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight neon-glow-cyan">
                 Cyber Glam &amp; Ethereal Neon
               </h3>
               <p className="text-xs sm:text-sm text-white font-outfit font-bold mt-1 max-w-xl subheading-readable">
@@ -220,7 +219,7 @@ export default function EventDetails() {
           {/* Costume Photo Space for Boys and Girls */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <span className="text-xs font-outfit text-cyan-300 tracking-wider uppercase font-black flex items-center gap-2 drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">
+              <span className="text-xs font-outfit text-cyan-300 tracking-wider uppercase font-black flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                 COSTUME INSPIRATION LOOKBOOK
               </span>

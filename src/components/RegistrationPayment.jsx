@@ -177,12 +177,11 @@ export default function RegistrationPayment({ onPassGenerated }) {
     <section id="register" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Header */}
-      <div className="text-center mb-6 sm:mb-8 relative">
-        <div className="absolute inset-0 max-w-3xl mx-auto bg-obsidian-950/70 blur-2xl rounded-full pointer-events-none -z-10" aria-hidden="true" />
+      <div className="text-center mb-6 sm:mb-8">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyber-cyan/20 border border-cyber-cyan/50 text-cyber-cyan text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
           <span>PORTAL GATEWAY • BIOTECHNOLOGY FRESHERS '26</span>
         </div>
-        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
+        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Registration &amp; Pass Checkout
         </h2>
         <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
@@ -212,7 +211,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </div>
                   <div>
                     <span className="text-[11px] font-outfit font-extrabold text-cyan-300 uppercase tracking-wider block leading-tight">STEP 1 OF 2</span>
-                    <h3 className="font-outfit font-extrabold text-xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Student Details</h3>
+                    <h3 className="font-outfit font-extrabold text-xl text-white tracking-tight">Student Details</h3>
                   </div>
                 </div>
                 <span className="text-[10px] font-mono font-bold text-cyan-300 bg-cyan-500/15 border border-cyan-400/30 px-2 py-0.5 rounded">
@@ -326,7 +325,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </div>
                   <div>
                     <span className="text-[11px] font-outfit font-extrabold text-cyan-300 uppercase tracking-wider block leading-tight">STEP 2 OF 2</span>
-                    <h3 className="font-outfit font-extrabold text-xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">UPI Payment</h3>
+                    <h3 className="font-outfit font-extrabold text-xl text-white tracking-tight">UPI Payment</h3>
                   </div>
                 </div>
                 <span className="text-[10px] font-mono font-bold text-purple-300 bg-purple-500/15 border border-purple-400/30 px-2 py-0.5 rounded">

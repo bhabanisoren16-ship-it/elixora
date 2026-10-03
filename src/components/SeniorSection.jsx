@@ -492,9 +492,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     <section id="seniors" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Section Header */}
-      <div className="text-center mb-6 sm:mb-8 relative">
-        <div className="absolute inset-0 max-w-3xl mx-auto bg-obsidian-950/70 blur-2xl rounded-full pointer-events-none -z-10" aria-hidden="true" />
-        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight drop-shadow-[0_2px_15px_rgba(0,0,0,0.9)]">
+      <div className="text-center mb-6 sm:mb-8">
+        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
         <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
