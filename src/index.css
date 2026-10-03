@@ -22,7 +22,7 @@
   color-scheme: dark;
 }
 
-/* Modern Hardware-Accelerated Native Scrolling (Instant wheel response, zero latency) */
+/* Modern Hardware-Accelerated Smooth Scrolling */
 html {
   scroll-padding-top: 6.5rem; /* Extra clearance for 2-row mobile fixed header */
   overflow-x: clip;
@@ -33,6 +33,25 @@ html {
   html {
     scroll-padding-top: 5.5rem; /* Standard clearance for single-row desktop header */
   }
+}
+
+/* Lenis Smooth Inertia Integration */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis,
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip !important;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }
 
 body {
