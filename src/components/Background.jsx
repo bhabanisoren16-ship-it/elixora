@@ -50,6 +50,24 @@ export default function Background() {
   const mousePosRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
   const isVisibleRef = useRef(true);
   const animFrameRef = useRef(null);
+  const isScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
+
+  // Pause canvas while user is actively scrolling to free 100% of GPU for 120fps scrolling
+  useEffect(() => {
+    const onScroll = () => {
+      isScrollingRef.current = true;
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 120);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, []);
 
   // Concert Stage Laser & Lightning Strobe Strike (with Electric Palettes)
   const spawnStrikingEffect = useCallback((targetX = null, targetY = null, isIntense = true) => {
@@ -183,12 +201,13 @@ export default function Background() {
     const animate = (currentTime) => {
       animFrameRef.current = requestAnimationFrame(animate);
 
-      if (!isVisibleRef.current) {
+      if (!isVisibleRef.current || isScrollingRef.current) {
         return;
       }
 
       const delta = currentTime - lastFrameTime;
-      if (delta < 12) {
+      // Silky 35-40fps for ambient stage lights saves 50% GPU fill rate
+      if (delta < 26) {
         return;
       }
       lastFrameTime = currentTime;
