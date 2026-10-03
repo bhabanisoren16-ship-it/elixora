@@ -2,6 +2,7 @@ import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 
 let lenisInstance = null;
+let rafId = null;
 
 /**
  * Initialize Lenis smooth scroll with optimal settings for performance and aesthetics
@@ -9,37 +10,36 @@ let lenisInstance = null;
 export function initSmoothScroll(options = {}) {
   if (typeof window === 'undefined') return null;
 
-  // Destroy any existing instance
-  if (lenisInstance) {
-    lenisInstance.destroy();
-    lenisInstance = null;
-  }
+  // Destroy any existing instance & animation loop
+  destroySmoothScroll();
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isMobile = window.innerWidth < 768;
 
   const lenis = new Lenis({
-    autoRaf: true,
     duration: prefersReducedMotion ? 0 : 1.2,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious exponential deceleration curve
     orientation: 'vertical',
     gestureOrientation: 'vertical',
     smoothWheel: !prefersReducedMotion,
     wheelMultiplier: 1.0,
-    // Enable buttery smooth touch momentum scrolling in mobile view
-    syncTouch: !prefersReducedMotion,
-    syncTouchLerp: 0.09,
-    touchInertiaExponent: 1.6,
-    touchMultiplier: 1.8,
-    anchors: {
-      offset: isMobile ? -100 : -85,
-      duration: prefersReducedMotion ? 0 : 1.2,
-    },
+    touchMultiplier: 1.2,
+    infinite: false,
+    autoRaf: false, // We drive raf via explicit RAF loop for 100% reliability
     ...options,
   });
 
   lenisInstance = lenis;
   window.__lenis = lenis;
+
+  // Dedicated RAF animation loop for high refresh rate displays (60Hz / 120Hz / 144Hz)
+  function raf(time) {
+    if (lenisInstance) {
+      lenisInstance.raf(time);
+    }
+    rafId = requestAnimationFrame(raf);
+  }
+
+  rafId = requestAnimationFrame(raf);
 
   return lenis;
 }
@@ -101,6 +101,10 @@ export function resumeSmoothScroll() {
  * Clean up Lenis instance
  */
 export function destroySmoothScroll() {
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
   if (lenisInstance) {
     lenisInstance.destroy();
     lenisInstance = null;

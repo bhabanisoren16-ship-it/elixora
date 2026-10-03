@@ -24,22 +24,14 @@
 
 /* Modern Smooth Scrolling & Responsive Fixed Header Clearance */
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 6.5rem; /* Extra clearance for 2-row mobile fixed header */
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
-  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 768px) {
   html {
     scroll-padding-top: 5.5rem; /* Standard clearance for single-row desktop header */
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
   }
 }
 
