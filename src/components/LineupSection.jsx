@@ -19,7 +19,7 @@ export default function LineupSection() {
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Mr. &amp; Ms. Fresher 2026
         </h2>
-        <p className="mt-2 text-slate-300 max-w-2xl mx-auto text-sm sm:text-base font-outfit">
+        <p className="mt-2 text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold">
           The ultimate spotlight of ELIXORA 2.0—crowning the most charismatic and talented newcomers of the batch.
         </p>
       </div>
@@ -49,7 +49,7 @@ export default function LineupSection() {
                 <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)] neon-glow-cyan">
                   Mr. &amp; Ms. Fresher 2026
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-100 mt-1 font-outfit font-semibold drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
+                <p className="text-xs sm:text-sm text-slate-100 mt-1 font-outfit font-bold drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
                   Crowning the most charismatic newcomers of the batch with exclusive tech trophies &amp; gifts.
                 </p>
               </div>
@@ -83,7 +83,7 @@ export default function LineupSection() {
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-sky-300 transition-colors tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                   The Charisma &amp; Presence Title
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-100 leading-relaxed mb-4 font-outfit font-medium drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                <p className="text-xs sm:text-sm text-slate-100 leading-relaxed mb-4 font-outfit font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                   Recognizing confidence, wit, stage presence, and signature style on the runway.
                 </p>
                 <div className="flex flex-wrap gap-2.5 pt-3.5 border-t border-white/15 text-xs font-outfit font-bold text-white">
@@ -115,9 +115,9 @@ export default function LineupSection() {
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-purple-300 transition-colors tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,1)]">
                   The Elegance &amp; Talent Title
                 </h4>
-              <p className="text-xs sm:text-sm text-slate-100 leading-relaxed mb-4 font-outfit font-medium drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
-                Honoring poise, dynamic persona, expressive intellect, and evening glamour.
-              </p>
+                <p className="text-xs sm:text-sm text-slate-100 leading-relaxed mb-4 font-outfit font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                  Honoring poise, dynamic persona, expressive intellect, and evening glamour.
+                </p>
               <div className="flex flex-wrap gap-2.5 pt-3.5 border-t border-white/15 text-xs font-outfit font-bold text-white">
                 <span className="flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-purple-400" /> Neon Tiara &amp; Sash</span>
                 <span className="flex items-center gap-1.5"><Award className="w-3.5 h-3.5 text-purple-400" /> Tech Trophy</span>

@@ -184,7 +184,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Registration &amp; Pass Checkout
         </h2>
-        <p className="mt-2 text-slate-300 max-w-2xl mx-auto text-sm sm:text-base font-outfit">
+        <p className="mt-2 text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold">
           Fill your student details, complete payment via dynamic UPI QR, and your personalized 3D VIP pass will be rendered instantly.
         </p>
 
@@ -212,7 +212,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </div>
                   <div>
                     <span className="text-[11px] font-outfit font-extrabold text-cyan-300 uppercase tracking-wider block leading-tight">STEP 1 OF 2</span>
-                    <h3 className="font-outfit font-bold text-xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Student Details</h3>
+                    <h3 className="font-outfit font-extrabold text-xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">Student Details</h3>
                   </div>
                 </div>
                 <span className="text-[10px] font-mono font-bold text-cyan-300 bg-cyan-500/15 border border-cyan-400/30 px-2 py-0.5 rounded">
@@ -326,7 +326,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </div>
                   <div>
                     <span className="text-[11px] font-outfit font-extrabold text-cyan-300 uppercase tracking-wider block leading-tight">STEP 2 OF 2</span>
-                    <h3 className="font-outfit font-bold text-xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">UPI Payment</h3>
+                    <h3 className="font-outfit font-extrabold text-xl text-white tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">UPI Payment</h3>
                   </div>
                 </div>
                 <span className="text-[10px] font-mono font-bold text-purple-300 bg-purple-500/15 border border-purple-400/30 px-2 py-0.5 rounded">

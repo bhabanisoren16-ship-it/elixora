@@ -18,7 +18,7 @@ export default function EventDetails() {
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Event Details &amp; Blueprint
         </h2>
-        <p className="mt-2 text-slate-300 max-w-2xl mx-auto text-sm sm:text-base font-outfit">
+        <p className="mt-2 text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold">
           All you need to navigate the biggest night of your college journey. Sync to your calendar and plan your style.
         </p>
       </div>
@@ -117,7 +117,7 @@ export default function EventDetails() {
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mt-1.5 mb-1.5 drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
                 Grand Aurora Arena
               </h3>
-              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-semibold mb-3 drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
+              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold mb-3 drop-shadow-[0_1px_4px_rgba(0,0,0,0.95)]">
                 Tech Campus Main Quadrangle &amp; Open Air Amphitheatre.
               </p>
 
@@ -210,7 +210,7 @@ export default function EventDetails() {
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,1)] neon-glow-cyan">
                 Cyber Glam &amp; Ethereal Neon
               </h3>
-              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-medium mt-1 max-w-xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold mt-1 max-w-xl drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
                 Futuristic, stylish, and comfortable to dance. Think sleek streetwear infused with luminous accents.
               </p>
             </div>
@@ -223,7 +223,7 @@ export default function EventDetails() {
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                 COSTUME INSPIRATION LOOKBOOK
               </span>
-              <span className="text-xs font-outfit text-slate-200 font-semibold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+              <span className="text-xs font-outfit text-slate-100 font-bold drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                 Recommended Styling for Fresher Night
               </span>
             </div>
@@ -265,7 +265,7 @@ export default function EventDetails() {
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-medium leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                     Sharp black tuxedo or tailored blazer, crisp white collared dress shirt, classic bowtie or silk necktie, and polished formal shoes.
                   </p>
                 </div>
@@ -312,7 +312,7 @@ export default function EventDetails() {
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-medium leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                  <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold leading-relaxed mb-3.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
                     Shimmering metallic or holographic fabrics accented with electric cyan and ultraviolet jewelry, plus UV face art.
                   </p>
                 </div>

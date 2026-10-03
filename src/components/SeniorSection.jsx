@@ -496,7 +496,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
-        <p className="mt-2 text-slate-300 max-w-2xl mx-auto text-sm sm:text-base font-outfit">
+        <p className="mt-2 text-slate-200 max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold">
           Exclusively reserved for college seniors and council leaders. Verification of registered registration number is mandatory to unlock access.
         </p>
       </div>
@@ -535,10 +535,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
               </div>
 
-              <h3 className="font-outfit font-bold text-2xl sm:text-3xl text-white tracking-tight mb-2">
+              <h3 className="font-outfit font-extrabold text-2xl sm:text-3xl text-white tracking-tight mb-2">
                 Restricted Senior Access
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300 font-outfit leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold leading-relaxed">
                 Senior portal can be accessed through matched registration number only. Enter your official college registration number to verify against the council roster and unlock portal.
               </p>
             </div>
@@ -697,7 +697,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     VERIFIED: {formData.rollNo}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 font-outfit">
+                <p className="text-xs text-slate-300 font-outfit font-bold">
                   Fill Senior Details, Pay on Barcode, and Attach Payment Proof
                 </p>
               </div>
@@ -766,7 +766,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <div id="senior-box-1" className="flex flex-col justify-between scroll-mt-6 bg-obsidian-950/85 backdrop-blur-xl p-6 sm:p-7 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-cyan-400/30 transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
-                      <h4 className="font-outfit font-bold text-base sm:text-lg text-white flex items-center gap-2">
+                      <h4 className="font-outfit font-extrabold text-base sm:text-lg text-white flex items-center gap-2">
                         <User className="w-4 h-4 text-cyan-400" />
                         <span>Senior Personal Details</span>
                       </h4>
@@ -952,7 +952,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <div id="senior-box-2" className="flex flex-col justify-between scroll-mt-6 bg-obsidian-950/85 backdrop-blur-xl p-6 sm:p-7 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-cyan-400/30 transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
-                      <h4 className="font-outfit font-bold text-base sm:text-lg text-white flex items-center gap-2">
+                      <h4 className="font-outfit font-extrabold text-base sm:text-lg text-white flex items-center gap-2">
                         <CreditCard className="w-4 h-4 text-cyan-400" />
                         <span>Pay on Barcode</span>
                       </h4>
@@ -1023,7 +1023,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <div id="senior-box-3" className="flex flex-col justify-between scroll-mt-6 bg-obsidian-950/85 backdrop-blur-xl p-6 sm:p-7 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-cyan-400/30 transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
-                      <h4 className="font-outfit font-bold text-base sm:text-lg text-white flex items-center gap-2">
+                      <h4 className="font-outfit font-extrabold text-base sm:text-lg text-white flex items-center gap-2">
                         <Upload className="w-4 h-4 text-cyan-400" />
                         <span>Proof &amp; Mint Pass</span>
                       </h4>
