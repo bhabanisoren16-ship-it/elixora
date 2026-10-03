@@ -377,10 +377,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
               {/* Form fields: UTR & Screenshot */}
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1 flex items-center justify-between">
-                    <span>
-                      UPI Reference / UTR Number (12 Digits) <span className="text-rose-400 font-bold">* (Compulsory)</span>
-                    </span>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                    UPI Reference / UTR Number (12 Digits) <span className="text-cyber-cyan">*</span>
                   </label>
                   <input
                     type="text"
@@ -396,15 +394,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   {errors.utrNumber && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1 font-mono"><AlertCircle className="w-3 h-3 shrink-0"/>{errors.utrNumber}</p>}
                 </div>
 
-                {/* Payment Screenshot Upload - COMPULSORY */}
+                {/* Payment Screenshot Upload */}
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1 flex items-center justify-between">
-                    <span>
-                      Payment Screenshot <span className="text-rose-400 font-bold">* (Compulsory)</span>
-                    </span>
-                    <span className="text-[10px] text-cyan-300/80 font-normal lowercase tracking-normal">
-                      required for verification
-                    </span>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
+                    Payment Screenshot <span className="text-cyber-cyan">*</span>
                   </label>
                   <div className="relative">
                     <label className={`flex items-center justify-center gap-3 w-full py-2.5 px-4 rounded-xl border border-dashed transition-all cursor-pointer ${
@@ -455,12 +448,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
 
             {/* CTA & Council Verified Note */}
             <div className="mt-3.5 space-y-2">
-              {(errors.utrNumber || errors.screenshot) && (
-                <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 font-outfit animate-pulse">
-                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                  <span>Both <strong>UPI UTR Number</strong> and <strong>Payment Screenshot</strong> are strictly compulsory to generate your pass.</span>
-                </div>
-              )}
               <button
                 type="submit"
                 disabled={isVerifying}

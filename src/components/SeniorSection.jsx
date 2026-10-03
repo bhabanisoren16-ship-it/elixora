@@ -1039,9 +1039,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     <div className="space-y-4">
                       {/* Screenshot File Upload */}
                       <div>
-                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1 flex items-center justify-between">
-                          <span>Payment Screenshot / Receipt <span className="text-rose-400 font-bold">* (Compulsory)</span></span>
-                          <span className="text-[10px] text-cyan-300/80 font-normal lowercase tracking-normal">required for verification</span>
+                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
+                          Payment Screenshot / Receipt <span className="text-cyan-400">*</span>
                         </label>
                         
                         {!screenshotPreview ? (
@@ -1097,8 +1096,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
                       {/* 12-Digit UTR */}
                       <div>
-                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1 flex items-center justify-between">
-                          <span>12-Digit UPI Transaction UTR <span className="text-rose-400 font-bold">* (Compulsory)</span></span>
+                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
+                          12-Digit UPI Transaction UTR <span className="text-cyan-400">*</span>
                         </label>
                         <input
                           type="text"
@@ -1118,12 +1117,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
                   {/* Mint Pass CTA & Security */}
                   <div className="mt-5 pt-4 border-t border-white/10 space-y-2.5">
-                    {(errors.utrNumber || errors.screenshot) && (
-                      <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 font-outfit animate-pulse">
-                        <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                        <span>Both <strong>UPI UTR Number</strong> and <strong>Payment Screenshot</strong> are strictly compulsory to generate your pass.</span>
-                      </div>
-                    )}
                     <button
                       type="submit"
                       disabled={isMintingPass}
