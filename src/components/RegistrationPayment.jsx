@@ -92,6 +92,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setScreenshotPreview(reader.result);
+        setErrors((prev) => ({ ...prev, screenshot: null }));
       };
       reader.readAsDataURL(file);
     }
@@ -108,9 +109,12 @@ export default function RegistrationPayment({ onPassGenerated }) {
       newErrors.phone = 'Enter a valid 10-digit mobile number';
     }
     if (!formData.utrNumber.trim()) {
-      newErrors.utrNumber = 'Transaction ID / UTR is required';
-    } else if (formData.utrNumber.trim().length < 6) {
-      newErrors.utrNumber = 'Enter a valid 12-digit UPI UTR / Ref ID';
+      newErrors.utrNumber = 'UPI Reference / UTR Number is compulsory to proceed';
+    } else if (formData.utrNumber.trim().length < 8) {
+      newErrors.utrNumber = 'Please enter a valid 12-digit UPI UTR / Ref Number';
+    }
+    if (!screenshotPreview) {
+      newErrors.screenshot = 'Payment screenshot is compulsory to proceed. Please upload receipt proof.';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -119,7 +123,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      soundController.playClick();
+      if (soundController.playError) soundController.playError();
+      else soundController.playClick();
       return;
     }
 
@@ -372,8 +377,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
               {/* Form fields: UTR & Screenshot */}
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                    UPI Reference / UTR Number (12 Digits) <span className="text-cyber-cyan">*</span>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1 flex items-center justify-between">
+                    <span>
+                      UPI Reference / UTR Number (12 Digits) <span className="text-rose-400 font-bold">* (Compulsory)</span>
+                    </span>
                   </label>
                   <input
                     type="text"
@@ -386,19 +393,30 @@ export default function RegistrationPayment({ onPassGenerated }) {
                       errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                     } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
                   />
-                  {errors.utrNumber && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.utrNumber}</p>}
+                  {errors.utrNumber && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1 font-mono"><AlertCircle className="w-3 h-3 shrink-0"/>{errors.utrNumber}</p>}
                 </div>
 
-                {/* Payment Screenshot Upload */}
+                {/* Payment Screenshot Upload - COMPULSORY */}
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                    Payment Screenshot (Optional / Instant Verification)
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1 flex items-center justify-between">
+                    <span>
+                      Payment Screenshot <span className="text-rose-400 font-bold">* (Compulsory)</span>
+                    </span>
+                    <span className="text-[10px] text-cyan-300/80 font-normal lowercase tracking-normal">
+                      required for verification
+                    </span>
                   </label>
                   <div className="relative">
-                    <label className="flex items-center justify-center gap-3 w-full py-2 px-4 rounded-xl border border-dashed border-white/20 hover:border-cyber-cyan/60 bg-white/5 hover:bg-white/10 cursor-pointer transition-all">
-                      <Upload className="w-4 h-4 text-cyber-cyan" />
-                      <span className="text-xs text-slate-300 truncate">
-                        {screenshotPreview ? 'Screenshot Attached ✓' : 'Upload Receipt / Slip'}
+                    <label className={`flex items-center justify-center gap-3 w-full py-2.5 px-4 rounded-xl border border-dashed transition-all cursor-pointer ${
+                      errors.screenshot
+                        ? 'border-rose-500 bg-rose-500/10'
+                        : screenshotPreview
+                        ? 'border-emerald-500/60 bg-emerald-500/10'
+                        : 'border-white/20 hover:border-cyber-cyan/60 bg-white/5 hover:bg-white/10'
+                    }`}>
+                      <Upload className={`w-4 h-4 ${screenshotPreview ? 'text-emerald-400' : errors.screenshot ? 'text-rose-400' : 'text-cyber-cyan'}`} />
+                      <span className={`text-xs truncate ${screenshotPreview ? 'text-emerald-300 font-semibold' : 'text-slate-300'}`}>
+                        {screenshotPreview ? 'Screenshot Attached ✓ (Click to change)' : 'Upload Receipt / Slip *'}
                       </span>
                       <input
                         type="file"
@@ -408,12 +426,27 @@ export default function RegistrationPayment({ onPassGenerated }) {
                       />
                     </label>
                   </div>
+                  {errors.screenshot && (
+                    <p className="mt-1 text-xs text-rose-400 flex items-center gap-1 font-mono">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{errors.screenshot}</span>
+                    </p>
+                  )}
                   {screenshotPreview && (
-                    <div className="mt-1.5 flex items-center gap-2 p-1.5 rounded-xl bg-white/5 border border-white/10">
-                      <img src={screenshotPreview} alt="Screenshot slip" className="w-7 h-7 rounded object-cover" />
-                      <span className="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Receipt ready for verification
-                      </span>
+                    <div className="mt-1.5 flex items-center justify-between p-1.5 px-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <img src={screenshotPreview} alt="Screenshot slip" className="w-7 h-7 rounded object-cover border border-emerald-500/40 shrink-0" />
+                        <span className="text-[11px] text-emerald-400 font-mono flex items-center gap-1 truncate">
+                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Receipt attached &amp; ready
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setScreenshotPreview(null)}
+                        className="text-[10px] text-slate-400 hover:text-rose-400 font-mono shrink-0 ml-2 underline cursor-pointer"
+                      >
+                        Remove
+                      </button>
                     </div>
                   )}
                 </div>
@@ -422,6 +455,12 @@ export default function RegistrationPayment({ onPassGenerated }) {
 
             {/* CTA & Council Verified Note */}
             <div className="mt-3.5 space-y-2">
+              {(errors.utrNumber || errors.screenshot) && (
+                <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 font-outfit animate-pulse">
+                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <span>Both <strong>UPI UTR Number</strong> and <strong>Payment Screenshot</strong> are strictly compulsory to generate your pass.</span>
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={isVerifying}
