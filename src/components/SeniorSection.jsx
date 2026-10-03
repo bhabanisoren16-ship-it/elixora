@@ -493,10 +493,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-300 text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_20px_rgba(6,182,212,0.25)]">
-          <Crown className="w-3.5 h-3.5 text-cyan-400" />
-          <span>SENIOR VIP &amp; COUNCIL PORTAL</span>
-        </div>
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
