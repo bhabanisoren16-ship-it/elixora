@@ -35,19 +35,19 @@ export default function FloatingHomeButton() {
 
   return (
     <aside
-      className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-40 pointer-events-auto animate-in fade-in slide-in-from-bottom-3 duration-300"
+      className="fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-40 pointer-events-auto animate-in fade-in slide-in-from-bottom-3 duration-300"
       aria-label="Back to top and home page"
     >
       <button
         type="button"
         onClick={scrollToHome}
-        className="group flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-obsidian-950/85 hover:bg-obsidian-900 border border-white/20 hover:border-cyan-400/60 shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(6,182,212,0.25)] hover:shadow-neon-cyan backdrop-blur-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer text-slate-200 hover:text-white"
+        className="group flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2.5 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-white/20 hover:border-cyan-400/60 shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(6,182,212,0.25)] hover:shadow-neon-cyan backdrop-blur-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer text-slate-200 hover:text-white"
         title="Quick jump to Home Page (Top)"
       >
-        <div className="w-6 h-6 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 group-hover:bg-cyan-500/30 transition-colors">
-          <ArrowUp className="w-3.5 h-3.5 text-cyan-300 group-hover:-translate-y-0.5 transition-transform" />
+        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 group-hover:bg-cyan-500/30 transition-colors">
+          <ArrowUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-300 group-hover:-translate-y-0.5 transition-transform" />
         </div>
-        <span className="text-xs font-outfit font-extrabold tracking-wide uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-sky-300">
+        <span className="text-[11px] sm:text-xs font-outfit font-extrabold tracking-wide uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-sky-300">
           Home
         </span>
       </button>

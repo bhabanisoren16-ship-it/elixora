@@ -22,15 +22,15 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
   };
 
   const navLinks = [
-    { name: 'Home', href: '#hero', icon: Home },
-    { name: 'Event Details', href: '#details', icon: Calendar },
-    { name: 'Dress Code', href: '#dress-code', icon: Palette },
-    { name: 'Venue & Guide', href: '#venue', icon: Compass },
-    { name: 'Seniors', href: '#seniors', icon: GraduationCap },
+    { name: 'Home', shortName: 'Home', href: '#hero', icon: Home },
+    { name: 'Event Details', shortName: 'Details', href: '#details', icon: Calendar },
+    { name: 'Dress Code', shortName: 'Attire', href: '#dress-code', icon: Palette },
+    { name: 'Venue & Guide', shortName: 'Venue', href: '#venue', icon: Compass },
+    { name: 'Seniors', shortName: 'Seniors', href: '#seniors', icon: GraduationCap },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-8 py-2.5 sm:py-3">
+    <header className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-8 py-2 sm:py-3">
       <div className="max-w-7xl mx-auto rounded-2xl glass-panel bg-obsidian-950/85 border border-white/10 shadow-2xl backdrop-blur-xl px-3 sm:px-6 py-2 sm:py-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
         
         {/* Brand Logo (Hidden per user request) */}
@@ -111,10 +111,10 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
           </a>
         </div>
 
-        {/* Mobile Navigation Links Row (Directly visible at Top View in Mobile) */}
+        {/* Mobile Navigation Links Row (All 5 Links Fit Comfortably across Screens) */}
         <nav 
           data-lenis-prevent
-          className="flex md:hidden items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-0.5 scroll-smooth"
+          className="flex md:hidden items-center justify-between gap-1 overflow-x-auto no-scrollbar py-0.5 px-0.5 scroll-smooth"
         >
           {navLinks.map((link) => {
             const Icon = link.icon;
@@ -124,14 +124,14 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavLinkClick(e, link.href)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap ${
+                className={`px-1.5 min-[370px]:px-2 py-1 rounded-lg text-[10.5px] min-[370px]:text-[11px] font-medium transition-all flex items-center gap-1 shrink-0 whitespace-nowrap ${
                   isSenior
                     ? 'text-cyan-300 bg-cyan-500/15 border border-cyan-400/40 shadow-[0_0_8px_rgba(6,182,212,0.25)] font-semibold'
                     : 'text-slate-300 hover:text-white bg-white/5 border border-white/10 active:bg-white/15'
                 }`}
               >
                 <Icon className={`w-3 h-3 ${isSenior ? 'text-cyan-400' : 'text-cyber-cyan'}`} />
-                <span>{link.name}</span>
+                <span>{link.shortName || link.name}</span>
               </a>
             );
           })}

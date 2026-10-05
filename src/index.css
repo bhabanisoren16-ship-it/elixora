@@ -873,3 +873,12 @@ body.senior-portal-open nav {
   font-weight: 700 !important;
 }
 
+/* 11. Touch Device & Mobile Optimization */
+@media (hover: none) and (pointer: coarse) {
+  /* Prevent sticky hover mask artifacts and layer masking bugs on mobile WebKit/Blink */
+  .light-spotlight-overlay,
+  .light-spotlight-border {
+    display: none !important;
+  }
+}
+
