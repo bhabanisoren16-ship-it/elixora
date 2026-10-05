@@ -22,14 +22,13 @@ export function initSmoothScroll(options = {}) {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const lenis = new Lenis({
-    duration: prefersReducedMotion ? 0 : 1.15,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious exponential deceleration curve
-    orientation: 'vertical',
-    gestureOrientation: 'vertical',
-    smoothWheel: !prefersReducedMotion,
-    wheelMultiplier: 1.15, // Effortless and responsive: light flick moves easily without sluggish fatigue
+    lerp: prefersReducedMotion ? 1 : 0.09, // Silky smooth exponential damping physics
+    wheelMultiplier: 1.0, // Natural 1:1 wheel response
     touchMultiplier: 1.5,
-    syncTouch: false, // Preserves 120Hz/60Hz native mobile compositor touch gestures
+    smoothWheel: !prefersReducedMotion,
+    syncTouch: false, // Preserves native 120Hz/60Hz mobile compositor touch gestures
+    autoRaf: true, // Native synchronized requestAnimationFrame loop
+    anchors: true, // Automatically intercepts in-page #anchor clicks
     infinite: false,
     autoResize: true,
     ...options,
@@ -38,15 +37,16 @@ export function initSmoothScroll(options = {}) {
   lenisInstance = lenis;
   window.__lenis = lenis;
 
-  // Ultra-smooth RAF animation loop for high refresh displays (60Hz / 120Hz / 144Hz / 240Hz)
-  function raf(time) {
-    if (lenisInstance) {
-      lenisInstance.raf(time);
-      rafId = requestAnimationFrame(raf);
+  // Fallback RAF loop in case autoRaf isn't supported or active
+  if (!lenis.options?.autoRaf) {
+    function raf(time) {
+      if (lenisInstance) {
+        lenisInstance.raf(time);
+        rafId = requestAnimationFrame(raf);
+      }
     }
+    rafId = requestAnimationFrame(raf);
   }
-
-  rafId = requestAnimationFrame(raf);
 
   return lenis;
 }
@@ -58,17 +58,16 @@ export function scrollToTarget(target, customOptions = {}) {
   if (typeof window === 'undefined') return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isMobile = window.innerWidth < 768;
-  const defaultOffset = isMobile ? -95 : -80;
-  const offset = customOptions.offset !== undefined ? customOptions.offset : defaultOffset;
+
+  const defaultScrollOptions = {
+    duration: prefersReducedMotion ? 0 : 1.15,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious exponential deceleration curve
+    ...customOptions,
+  };
 
   if (target === 0 || target === 'top' || target === '#hero') {
     if (lenisInstance) {
-      lenisInstance.scrollTo(0, {
-        duration: prefersReducedMotion ? 0 : 1.15,
-        offset: 0,
-        ...customOptions,
-      });
+      lenisInstance.scrollTo(0, defaultScrollOptions);
     } else {
       window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     }
@@ -86,29 +85,20 @@ export function scrollToTarget(target, customOptions = {}) {
     element = target;
   } else if (typeof target === 'number') {
     if (lenisInstance) {
-      lenisInstance.scrollTo(Math.max(0, target + offset), {
-        duration: prefersReducedMotion ? 0 : 1.15,
-        ...customOptions,
-      });
+      lenisInstance.scrollTo(Math.max(0, target), defaultScrollOptions);
     } else {
-      window.scrollTo({ top: Math.max(0, target + offset), behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+      window.scrollTo({ top: Math.max(0, target), behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     }
     return;
   }
 
   if (element) {
     if (lenisInstance) {
-      // Lenis automatically factors in scroll-padding-top on html, but if customOptions has explicit offset, pass it
-      lenisInstance.scrollTo(element, {
-        duration: prefersReducedMotion ? 0 : 1.15,
-        ...customOptions,
-      });
+      lenisInstance.scrollTo(element, defaultScrollOptions);
     } else {
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-      const offsetPosition = Math.max(0, elementPosition + offset);
-      window.scrollTo({
-        top: offsetPosition,
+      element.scrollIntoView({
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start',
       });
     }
   }

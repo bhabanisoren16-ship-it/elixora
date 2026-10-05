@@ -24,6 +24,7 @@
 
 /* Modern Hardware-Accelerated Smooth Scrolling */
 html {
+  scroll-behavior: smooth;
   scroll-padding-top: 6.5rem; /* Extra clearance for 2-row mobile fixed header */
   overflow-x: clip;
   -webkit-text-size-adjust: 100%;
@@ -57,6 +58,7 @@ html.lenis.lenis-smooth {
 body {
   overflow-x: clip;
   min-height: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Hide Scrollbar while preserving smooth scrolling */

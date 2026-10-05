@@ -34,6 +34,7 @@ import {
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
+import { scrollToTarget } from '../utils/smoothScroll';
 
 // Official authorized roster of registered seniors (Verified from official college roster)
 const REGISTERED_SENIORS = {
@@ -263,7 +264,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         if (window.location.hash === '#senior-portal' || window.location.hash) {
           history.replaceState(null, '', window.location.pathname + window.location.search);
         }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollToTarget(0);
       }
     } catch (err) {}
   };
@@ -335,10 +336,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
   const scrollToBox = (boxId) => {
     soundController.playClick?.();
-    const el = document.getElementById(boxId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    scrollToTarget('#' + boxId);
   };
 
   const handleInputChange = (e) => {
