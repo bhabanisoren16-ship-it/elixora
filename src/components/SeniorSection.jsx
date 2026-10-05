@@ -80,7 +80,7 @@ const REGISTERED_SENIORS = {
   '24110033': { name: 'Subrat Dhal', branch: 'Biotechnology', batch: "Batch of '24 • Senior" }
 };
 
-const SENIOR_TICKET_PRICE = 499;
+const SENIOR_TICKET_PRICE = EVENT_DETAILS.seniorTicketPrice || 600;
 
 export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   // Authentication Gate State - Always starts locked and closed by default when opening website
@@ -494,7 +494,15 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
-        <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
+        <div className="inline-flex items-center justify-center gap-2 mt-2 px-3.5 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+          <span className="text-xs font-mono text-cyan-300 font-bold uppercase tracking-wider">VIP PASS FEE:</span>
+          <span className="font-outfit font-extrabold text-lg text-white">₹{SENIOR_TICKET_PRICE}</span>
+          <span className="text-xs text-slate-400 line-through">₹999</span>
+          <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            SENIOR PRIVILEGE
+          </span>
+        </div>
+        <p className="mt-2.5 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
           Exclusively reserved for college seniors and council leaders. Verification of registered registration number is mandatory to unlock access.
         </p>
       </div>
@@ -536,6 +544,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               <h3 className="font-outfit font-extrabold text-2xl sm:text-3xl text-white tracking-tight mb-2">
                 Restricted Senior Access
               </h3>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-400/30 mb-2">
+                <span className="text-[11px] font-mono text-cyan-300 uppercase font-bold">Pass Fee:</span>
+                <span className="font-outfit font-extrabold text-base text-white">₹{SENIOR_TICKET_PRICE}</span>
+                <span className="text-xs text-slate-400 line-through">₹999</span>
+              </div>
               <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed subheading-readable">
                 Senior portal can be accessed through matched registration number only. Enter your official college registration number to verify against the council roster and unlock portal.
               </p>
@@ -621,6 +634,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <h3 className="font-outfit font-extrabold text-2xl text-white">
                   Senior Portal Unlocked
                 </h3>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-xs font-mono text-cyan-300 font-bold uppercase">Pass Fee:</span>
+                  <span className="font-outfit font-extrabold text-white text-sm">₹{SENIOR_TICKET_PRICE}</span>
+                  <span className="text-[11px] text-slate-400 line-through">₹999</span>
+                </div>
                 <p className="text-xs text-slate-300 font-mono mt-0.5">
                   Registration ID: <span className="text-cyan-300 font-bold">{formData.rollNo}</span> • <span className="text-emerald-300">{formData.fullName}</span>
                 </p>

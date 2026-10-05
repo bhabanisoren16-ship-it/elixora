@@ -54,7 +54,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   const [isVerifyingAuth, setIsVerifyingAuth] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
-  // Active Tab: 'overview' | 'registrations' | 'gate' | 'roster' | 'settings'
+  // Active Tab: 'overview' | 'registrations' | 'roster' | 'settings'
   const [activeTab, setActiveTab] = useState('overview');
 
   // Live Data State
@@ -82,10 +82,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   const [copiedId, setCopiedId] = useState(null);
   const [actionSuccessMsg, setActionSuccessMsg] = useState('');
 
-  // Gate Scanner state
-  const [gateInput, setGateInput] = useState('');
-  const [gateResult, setGateResult] = useState(null);
-  const [gateRecentEntries, setGateRecentEntries] = useState([]);
 
   // New Pass Manual Form
   const [manualPass, setManualPass] = useState({
@@ -235,35 +231,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     }
   };
 
-  // Gate Check-in verification
-  const handleGateScan = (e) => {
-    e?.preventDefault();
-    if (!gateInput.trim()) return;
-
-    const result = adminStore.verifyTicket(gateInput);
-    setGateResult(result);
-
-    if (result.found && result.isValid && !result.alreadyCheckedIn) {
-      // Auto check in
-      const updated = adminStore.toggleCheckIn(result.ticket.ticketId, 'Gate 2 (Main)');
-      setRegistrations(adminStore.getRegistrations());
-      setGateRecentEntries((prev) => [
-        {
-          ticketId: result.ticket.ticketId,
-          name: result.ticket.fullName,
-          time: new Date().toLocaleTimeString('en-IN', { hour12: true }),
-          isSenior: result.ticket.isSenior,
-          rollNo: result.ticket.rollNo
-        },
-        ...prev.slice(0, 7)
-      ]);
-      soundController.playSuccess?.();
-    } else if (result.alreadyCheckedIn) {
-      soundController.playError?.();
-    } else {
-      soundController.playError?.();
-    }
-  };
 
   // Add Manual Pass
   const handleCreateManualPass = (e) => {
@@ -275,7 +242,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
     const newPass = adminStore.addRegistration({
       ...manualPass,
-      ticketPrice: manualPass.isSenior ? 499 : 399,
+      ticketPrice: manualPass.isSenior ? 600 : 399,
       tier: manualPass.isSenior ? 'SENIOR VIP COUNCIL ACCESS' : 'VIP FRESHER ACCESS',
       entryGate: manualPass.isSenior ? 'Gate 1 (Presidential Arch)' : 'Gate 2 (Aurora North Arch)',
       tableZone: manualPass.isSenior ? 'VIP Lounge' : 'Arena Floor',
@@ -630,7 +597,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
               {[
                 { id: 'overview', label: 'Overview & Stats', icon: Users, badge: null },
                 { id: 'registrations', label: 'Registrations', icon: Ticket, badge: registrations.length },
-                { id: 'gate', label: 'Gate Fast Check-In', icon: QrCode, badge: `${stats.checkedIn}/${stats.total}` },
                 { id: 'roster', label: 'Senior VIP Roster', icon: GraduationCap, badge: Object.keys(roster).length },
                 { id: 'settings', label: 'Broadcast & Config', icon: Settings, badge: null },
               ].map((tab) => {
@@ -774,12 +740,12 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <button
-                            onClick={() => setActiveTab('gate')}
+                            onClick={() => setIsAddPassOpen(true)}
                             className="p-3.5 rounded-xl bg-gradient-to-br from-cyan-500/15 to-transparent border border-cyan-400/30 hover:border-cyan-400 text-left transition-all group cursor-pointer"
                           >
-                            <QrCode className="w-5 h-5 text-cyan-400 mb-2 group-hover:scale-110 transition-transform" />
-                            <div className="font-bold text-sm text-white font-outfit">Gate Scanner</div>
-                            <div className="text-[11px] text-slate-400 mt-0.5">Live check-in &amp; ticket validator</div>
+                            <UserPlus className="w-5 h-5 text-cyan-400 mb-2 group-hover:scale-110 transition-transform" />
+                            <div className="font-bold text-sm text-white font-outfit">Issue Manual Pass</div>
+                            <div className="text-[11px] text-slate-400 mt-0.5">Direct entry bypass</div>
                           </button>
 
                           <button
@@ -1157,7 +1123,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                 {/* 4. Payment Info */}
                                 <td className="py-3 px-3.5">
                                   <div className="font-bold text-white text-xs">
-                                    ₹{item.ticketPrice || (item.isSenior ? 499 : 399)}
+                                    ₹{item.ticketPrice || (item.isSenior ? 600 : 399)}
                                   </div>
                                   <div className="flex items-center gap-1 text-[11px] font-mono text-slate-300 mt-0.5">
                                     <span>UTR:</span>
@@ -1287,144 +1253,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
               )}
 
               {/* ================================================================= */}
-              {/* TAB 3: FAST GATE QR & TICKET SCANNER */}
-              {/* ================================================================= */}
-              {activeTab === 'gate' && (
-                <div className="space-y-6 max-w-4xl mx-auto">
-                  <div className="text-center">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-bold uppercase mb-2">
-                      <QrCode className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>GATE OPERATIONS KIOSK • LIVE VERIFICATION</span>
-                    </div>
-                    <h2 className="font-outfit font-extrabold text-2xl sm:text-3xl text-white">
-                      Fast Entry Gate Scanner
-                    </h2>
-                    <p className="text-slate-400 text-xs sm:text-sm mt-1">
-                      Scan QR code or enter Ticket ID / Roll Number to instantly grant entry and prevent duplicates.
-                    </p>
-                  </div>
-
-                  {/* Scanner Simulation Card */}
-                  <div className="p-6 rounded-3xl bg-obsidian-950/80 border border-cyan-500/30 relative overflow-hidden shadow-2xl">
-                    
-                    {/* Simulated Laser Line Scanner Frame */}
-                    <div className="relative mx-auto w-48 h-48 sm:w-56 sm:h-56 rounded-2xl border-2 border-dashed border-cyan-400/60 p-3 mb-6 flex flex-col items-center justify-center bg-obsidian-900/60">
-                      {/* Laser Line Animation */}
-                      <div className="absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#00f2fe] animate-[floatSlow_3s_ease-in-out_infinite]" />
-                      <QrCode className="w-24 h-24 text-cyan-400/40" />
-                      <span className="text-[10px] font-mono text-cyan-300/80 uppercase mt-2">
-                        Target Ticket QR
-                      </span>
-                    </div>
-
-                    {/* Fast Search Input Form */}
-                    <form onSubmit={handleGateScan} className="flex gap-2 max-w-md mx-auto">
-                      <input
-                        type="text"
-                        value={gateInput}
-                        onChange={(e) => setGateInput(e.target.value)}
-                        placeholder="e.g. ELX-26-8812 or 25110046"
-                        className="flex-1 px-4 py-3 rounded-xl bg-obsidian-900 border border-cyan-500/40 text-white font-mono text-center text-sm focus:outline-none focus:border-cyan-400"
-                        autoFocus
-                      />
-                      <button
-                        type="submit"
-                        className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-400 hover:to-sky-500 text-white font-bold text-xs uppercase tracking-wider shadow-neon-cyan transition-all cursor-pointer"
-                      >
-                        Verify
-                      </button>
-                    </form>
-
-                    {/* Instant Result Box */}
-                    {gateResult && (
-                      <div className="mt-6 max-w-md mx-auto animate-in zoom-in-95 duration-200">
-                        {gateResult.found ? (
-                          <div className={`p-4 rounded-2xl border ${
-                            gateResult.alreadyCheckedIn
-                              ? 'bg-amber-500/15 border-amber-500/50 text-amber-200'
-                              : gateResult.isValid
-                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-200'
-                              : 'bg-rose-500/15 border-rose-500/50 text-rose-200'
-                          }`}>
-                            <div className="flex items-center gap-3">
-                              {gateResult.alreadyCheckedIn ? (
-                                <AlertTriangle className="w-8 h-8 text-amber-400 shrink-0" />
-                              ) : gateResult.isValid ? (
-                                <CheckCircle2 className="w-8 h-8 text-emerald-400 shrink-0" />
-                              ) : (
-                                <XCircle className="w-8 h-8 text-rose-400 shrink-0" />
-                              )}
-                              <div>
-                                <div className="font-extrabold text-base text-white">
-                                  {gateResult.alreadyCheckedIn
-                                    ? 'ALREADY SCANNED AT GATE'
-                                    : gateResult.isValid
-                                    ? 'ACCESS GRANTED • VALID VIP PASS'
-                                    : 'UNAUTHORIZED / UNVERIFIED'}
-                                </div>
-                                <div className="text-xs font-semibold mt-0.5">
-                                  {gateResult.ticket.fullName} ({gateResult.ticket.rollNo})
-                                </div>
-                                <div className="text-[11px] font-mono opacity-80 mt-1">
-                                  Gate: {gateResult.ticket.entryGate || 'Gate 2 (North Arch)'} • Zone: {gateResult.ticket.tableZone || 'Floor'}
-                                </div>
-                                {gateResult.alreadyCheckedIn && (
-                                  <div className="text-[10px] text-amber-300 font-bold mt-1">
-                                    ⚠️ Checked in at {gateResult.ticket.checkedInAt || 'Earlier'}. Duplicate entry rejected!
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/50 text-rose-200 flex items-center gap-3">
-                            <XCircle className="w-8 h-8 text-rose-400 shrink-0" />
-                            <div>
-                              <div className="font-bold text-white text-sm">NO TICKET FOUND</div>
-                              <div className="text-xs text-rose-300">
-                                Identifier "{gateResult.query}" not recognized in guest ledger.
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Live Stream of Gate Check-Ins */}
-                  <div className="p-5 rounded-2xl bg-obsidian-950/60 border border-white/10">
-                    <h3 className="font-outfit font-bold text-sm text-white mb-3 flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-emerald-400" />
-                      Live Gate Entry Stream
-                    </h3>
-
-                    {gateRecentEntries.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic">No entries logged this session yet. Scan tickets above.</p>
-                    ) : (
-                      <div className="space-y-2">
-                        {gateRecentEntries.map((entry, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 text-xs">
-                            <div className="flex items-center gap-2.5">
-                              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                              <span className="font-bold text-white">{entry.name}</span>
-                              <span className="font-mono text-cyan-300">({entry.rollNo})</span>
-                              {entry.isSenior && (
-                                <span className="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">
-                                  SENIOR
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-[11px] font-mono text-slate-400">{entry.time}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* ================================================================= */}
-              {/* TAB 4: OFFICIAL SENIOR VIP ROSTER */}
+              {/* TAB 3: OFFICIAL SENIOR VIP ROSTER */}
               {/* ================================================================= */}
               {activeTab === 'roster' && (
                 <div className="space-y-4">
@@ -1905,7 +1734,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                   className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
                 >
                   <option value="FRESHER">VIP Fresher (₹399)</option>
-                  <option value="SENIOR">Senior VIP Pass (₹499)</option>
+                  <option value="SENIOR">Senior VIP Pass (₹600)</option>
                 </select>
               </div>
 

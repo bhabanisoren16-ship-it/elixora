@@ -59,7 +59,7 @@ const DEFAULT_SETTINGS = {
   adminPin: 'ELIXORA2026',
   backupPin: 'ADMIN@ELX26',
   fresherPrice: 399,
-  seniorPrice: 499,
+  seniorPrice: 600,
   upiId: EVENT_DETAILS.upiId || 'elixora2026@okhdfcbank',
   payeeName: 'ELIXORA FRESHERS 2026',
   venue: 'Grand Aurora Ballroom & Open Air Arena, Tech Campus',
@@ -135,7 +135,7 @@ export const adminStore = {
       diet: pass.diet || 'Veg',
       utrNumber: pass.utrNumber || '',
       isSenior: Boolean(pass.isSenior),
-      ticketPrice: pass.ticketPrice || (pass.isSenior ? 499 : 399),
+      ticketPrice: pass.ticketPrice || (pass.isSenior ? 600 : 399),
       tier: pass.tier || (pass.isSenior ? 'SENIOR VIP COUNCIL ACCESS' : 'VIP FRESHER ACCESS'),
       entryGate: pass.entryGate || (pass.isSenior ? 'Gate 1 (Presidential Arch)' : 'Gate 2 (Aurora North Arch)'),
       tableZone: pass.tableZone || (pass.isSenior ? 'VIP Lounge' : 'Arena Floor'),
@@ -213,32 +213,6 @@ export const adminStore = {
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
   },
 
-  // 2. Gate Verification Query
-  verifyTicket(query) {
-    const list = this.getRegistrations();
-    if (!query) return null;
-    const q = query.trim().toUpperCase();
-
-    const match = list.find((item) => {
-      return (
-        (item.ticketId && item.ticketId.toUpperCase() === q) ||
-        (item.rollNo && item.rollNo.toUpperCase() === q) ||
-        (item.phone && item.phone.includes(q)) ||
-        (item.utrNumber && item.utrNumber.toUpperCase() === q)
-      );
-    });
-
-    if (!match) return { found: false, query };
-
-    return {
-      found: true,
-      ticket: match,
-      isValid: match.status === 'VERIFIED',
-      isPending: match.status === 'PENDING',
-      isRejected: match.status === 'REJECTED',
-      alreadyCheckedIn: Boolean(match.checkedIn),
-    };
-  },
 
   // 3. Analytics / Statistics
   getStats() {
@@ -256,11 +230,11 @@ export const adminStore = {
     // Calculate revenue from verified registrations
     const totalRevenue = list
       .filter((r) => r.status === 'VERIFIED')
-      .reduce((sum, r) => sum + (Number(r.ticketPrice) || (r.isSenior ? 499 : 399)), 0);
+      .reduce((sum, r) => sum + (Number(r.ticketPrice) || (r.isSenior ? 600 : 399)), 0);
 
     const pendingRevenue = list
       .filter((r) => r.status === 'PENDING')
-      .reduce((sum, r) => sum + (Number(r.ticketPrice) || (r.isSenior ? 499 : 399)), 0);
+      .reduce((sum, r) => sum + (Number(r.ticketPrice) || (r.isSenior ? 600 : 399)), 0);
 
     return {
       total,
@@ -309,9 +283,11 @@ export const adminStore = {
   getSettings() {
     this.init();
     const stored = safeGet(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS) || {};
+    const seniorPrice = (!stored.seniorPrice || stored.seniorPrice === 499) ? 600 : stored.seniorPrice;
     return {
       ...DEFAULT_SETTINGS,
       ...stored,
+      seniorPrice,
       sheetsSpreadsheetUrl: stored.sheetsSpreadsheetUrl || DEFAULT_SETTINGS.sheetsSpreadsheetUrl,
       sheetsWebhookUrl: stored.sheetsWebhookUrl || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_WEBHOOK_URL) || DEFAULT_SETTINGS.sheetsWebhookUrl,
     };
@@ -376,7 +352,7 @@ export const adminStore = {
         fullName: record.fullName || '',
         rollNo: record.rollNo || '',
         category: record.isSenior ? 'Senior VIP' : 'VIP Fresher',
-        ticketPrice: record.ticketPrice || (record.isSenior ? 499 : 399),
+        ticketPrice: record.ticketPrice || (record.isSenior ? 600 : 399),
         phone: record.phone || '',
         diet: record.diet || 'Veg',
         utrNumber: record.utrNumber || '',
@@ -440,7 +416,7 @@ export const adminStore = {
       `"${(item.fullName || '').replace(/"/g, '""')}"`,
       `"${item.rollNo || ''}"`,
       item.isSenior ? 'Senior VIP' : 'VIP Fresher',
-      item.ticketPrice || (item.isSenior ? 499 : 399),
+      item.ticketPrice || (item.isSenior ? 600 : 399),
       `"${item.phone || ''}"`,
       item.diet || 'Veg',
       `"${item.utrNumber || ''}"`,

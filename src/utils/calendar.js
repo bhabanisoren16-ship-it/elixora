@@ -8,6 +8,7 @@ export const EVENT_DETAILS = {
   humanDate: "Saturday, October 24, 2026",
   humanTime: "6:30 PM onwards",
   ticketPrice: 399,
+  seniorTicketPrice: 600,
   upiId: "elixora2026@okhdfcbank",
   organizer: "Student Council & Cultural Directorate"
 };
