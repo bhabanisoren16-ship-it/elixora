@@ -497,7 +497,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         <div className="inline-flex items-center justify-center gap-2 mt-2 px-3.5 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
           <span className="text-xs font-mono text-cyan-300 font-bold uppercase tracking-wider">VIP PASS FEE:</span>
           <span className="font-outfit font-extrabold text-lg text-white">₹{SENIOR_TICKET_PRICE}</span>
-          <span className="text-xs text-slate-400 line-through">₹999</span>
           <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
             SENIOR PRIVILEGE
           </span>
@@ -547,7 +546,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-400/30 mb-2">
                 <span className="text-[11px] font-mono text-cyan-300 uppercase font-bold">Pass Fee:</span>
                 <span className="font-outfit font-extrabold text-base text-white">₹{SENIOR_TICKET_PRICE}</span>
-                <span className="text-xs text-slate-400 line-through">₹999</span>
               </div>
               <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed subheading-readable">
                 Senior portal can be accessed through matched registration number only. Enter your official college registration number to verify against the council roster and unlock portal.
@@ -637,7 +635,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-xs font-mono text-cyan-300 font-bold uppercase">Pass Fee:</span>
                   <span className="font-outfit font-extrabold text-white text-sm">₹{SENIOR_TICKET_PRICE}</span>
-                  <span className="text-[11px] text-slate-400 line-through">₹999</span>
                 </div>
                 <p className="text-xs text-slate-300 font-mono mt-0.5">
                   Registration ID: <span className="text-cyan-300 font-bold">{formData.rollNo}</span> • <span className="text-emerald-300">{formData.fullName}</span>
@@ -983,7 +980,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         <span className="text-[9px] font-mono text-slate-400 uppercase block tracking-wider">VIP PASS FEE</span>
                         <div className="flex items-baseline gap-2 mt-0.5">
                           <span className="font-outfit font-extrabold text-2xl text-white">₹{SENIOR_TICKET_PRICE}</span>
-                          <span className="text-xs text-slate-400 line-through">₹999</span>
                         </div>
                       </div>
 
