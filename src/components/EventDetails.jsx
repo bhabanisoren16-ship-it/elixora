@@ -245,15 +245,9 @@ export default function EventDetails() {
               </h3>
 
               {/* Informative Subtext */}
-              <p className="text-xs sm:text-sm text-cyan-100/90 font-outfit font-semibold max-w-xs sm:max-w-md mx-auto leading-relaxed mb-3 sm:mb-5">
+              <p className="text-xs sm:text-sm text-cyan-100/90 font-outfit font-semibold max-w-xs sm:max-w-md mx-auto leading-relaxed">
                 {teaserMessage}
               </p>
-
-              {/* Status Pill */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white/[0.08] border border-white/20 text-white font-outfit font-bold text-[11px] sm:text-xs shadow-glass backdrop-blur-md">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-spin-slow" />
-                <span className="text-cyan-200">{teaserPill}</span>
-              </div>
             </div>
           </div>
         )}
