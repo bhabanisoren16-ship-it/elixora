@@ -31,7 +31,9 @@ function checkIsSeniorPortalRoute() {
     return (
       window.location.hash === '#senior-portal' ||
       sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
-      Boolean(sessionStorage.getItem('elixora_senior_roll'))
+      localStorage.getItem('elixora_senior_portal_open') === 'true' ||
+      Boolean(sessionStorage.getItem('elixora_senior_roll')) ||
+      Boolean(localStorage.getItem('elixora_senior_roll'))
     );
   } catch (e) {
     return false;
@@ -61,11 +63,14 @@ export default function App() {
     }
   }, [isModalOpen, isSeniorPortalOpen, isAdminOpen]);
 
-  // Synchronize Admin Portal URL hash and keyboard shortcut (Ctrl+Shift+A)
+  // Synchronize URL hash for Admin Portal and Senior VIP Portal
   useEffect(() => {
     const handleRouteChange = () => {
       if (checkIsAdminRoute()) {
         setIsAdminOpen(true);
+      }
+      if (checkIsSeniorPortalRoute()) {
+        setIsSeniorPortalOpen(true);
       }
     };
 
@@ -110,17 +115,13 @@ export default function App() {
       const isSeniorPortalActive = checkIsSeniorPortalRoute();
       if (isSeniorPortalActive) {
         setIsSeniorPortalOpen(true);
-        // Keep senior portal open on refresh - do not scroll to top or clear storage!
+        // User refreshed while inside Senior Portal - stay inside portal, do not reset!
         return;
       }
 
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
-      localStorage.removeItem('elixora_senior_portal_open');
-      sessionStorage.removeItem('elixora_senior_portal_open');
-      localStorage.removeItem('elixora_senior_roll');
-      sessionStorage.removeItem('elixora_senior_roll');
       if (typeof window !== 'undefined') {
         if (window.location.hash === '#seniors') {
           history.replaceState(null, '', window.location.pathname + window.location.search);

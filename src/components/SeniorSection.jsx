@@ -88,15 +88,41 @@ function getInitialSeniorState() {
   }
   try {
     const isHash = window.location.hash === '#senior-portal';
-    const storedRoll = (sessionStorage.getItem('elixora_senior_roll') || localStorage.getItem('elixora_senior_roll') || '').trim().toUpperCase();
-    const storedOpen = sessionStorage.getItem('elixora_senior_portal_open') === 'true' || isHash;
+    const storedRoll = (
+      sessionStorage.getItem('elixora_senior_roll') ||
+      localStorage.getItem('elixora_senior_roll') ||
+      ''
+    ).trim().toUpperCase();
 
-    if (storedRoll && REGISTERED_SENIORS[storedRoll]) {
-      const found = REGISTERED_SENIORS[storedRoll];
+    const storedOpen = (
+      sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
+      localStorage.getItem('elixora_senior_portal_open') === 'true' ||
+      isHash
+    );
+
+    const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
+    const found = (storedRoll && (REGISTERED_SENIORS[storedRoll] || dynamicRoster[storedRoll])) || null;
+
+    if (storedRoll && found) {
       const profile = {
         name: found.name,
         branch: found.branch || 'Biotechnology',
         batch: found.batch || "Batch of '25 • Senior",
+        role: 'Senior VIP Pass (Full Access + Red Carpet)',
+        phone: '',
+        email: ''
+      };
+      return {
+        isUnlocked: true,
+        isPortalOpen: storedOpen,
+        rollNo: storedRoll,
+        profile
+      };
+    } else if (storedRoll) {
+      const profile = {
+        name: 'Senior Student',
+        branch: 'Biotechnology',
+        batch: "Batch of '25 • Senior",
         role: 'Senior VIP Pass (Full Access + Red Carpet)',
         phone: '',
         email: ''
@@ -136,7 +162,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       utrNumber: '',
     };
     try {
-      const saved = sessionStorage.getItem('elixora_senior_form');
+      const saved = sessionStorage.getItem('elixora_senior_form') || localStorage.getItem('elixora_senior_form');
       if (saved) {
         const parsed = JSON.parse(saved);
         return { ...base, ...parsed };
@@ -169,8 +195,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       document.body.classList.add('senior-portal-open');
       try {
         sessionStorage.setItem('elixora_senior_portal_open', 'true');
+        localStorage.setItem('elixora_senior_portal_open', 'true');
         if (formData.rollNo) {
           sessionStorage.setItem('elixora_senior_roll', formData.rollNo);
+          localStorage.setItem('elixora_senior_roll', formData.rollNo);
         }
       } catch (e) {}
       if (window.location.hash !== '#senior-portal') {
@@ -182,6 +210,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       document.body.classList.remove('senior-portal-open');
       try {
         sessionStorage.removeItem('elixora_senior_portal_open');
+        localStorage.removeItem('elixora_senior_portal_open');
       } catch (e) {}
       if (window.location.hash === '#senior-portal') {
         try {
@@ -194,20 +223,45 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     };
   }, [isPortalOpen, onPortalToggle, formData.rollNo]);
 
-  // Persist form inputs in sessionStorage during current active session
+  // Listen for hashchange to open portal if URL contains #senior-portal
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#senior-portal') {
+        const storedRoll = (
+          sessionStorage.getItem('elixora_senior_roll') ||
+          localStorage.getItem('elixora_senior_roll') ||
+          formData.rollNo ||
+          ''
+        ).trim().toUpperCase();
+
+        if (storedRoll) {
+          setIsUnlocked(true);
+          setIsPortalOpen(true);
+        }
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [formData.rollNo]);
+
+  // Persist form inputs in both sessionStorage and localStorage during active session
   useEffect(() => {
     if (isUnlocked && formData.rollNo) {
       try {
         sessionStorage.setItem('elixora_senior_roll', formData.rollNo);
-        sessionStorage.setItem('elixora_senior_form', JSON.stringify({
+        localStorage.setItem('elixora_senior_roll', formData.rollNo);
+        const formPayload = JSON.stringify({
           phone: formData.phone,
           seniorQuote: formData.seniorQuote,
           utrNumber: formData.utrNumber,
-          batch: formData.batch
-        }));
+          batch: formData.batch,
+          diet: formData.diet,
+        });
+        sessionStorage.setItem('elixora_senior_form', formPayload);
+        localStorage.setItem('elixora_senior_form', formPayload);
       } catch (e) {}
     }
-  }, [isUnlocked, formData.rollNo, formData.phone, formData.seniorQuote, formData.utrNumber, formData.batch]);
+  }, [isUnlocked, formData.rollNo, formData.phone, formData.seniorQuote, formData.utrNumber, formData.batch, formData.diet]);
 
   // Helper: Verify Senior Registration Number strictly against the authorized roster
   const handleVerifyAccess = (e) => {
@@ -227,8 +281,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setTimeout(() => {
       setIsVerifyingAccess(false);
 
-      // STRICT CHECK: Only match with the registered registration numbers provided
-      const found = REGISTERED_SENIORS[cleaned];
+      // STRICT CHECK: Match with registered registration numbers (static or admin roster)
+      const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
+      const found = REGISTERED_SENIORS[cleaned] || dynamicRoster[cleaned];
 
       if (!found) {
         soundController.playError?.();
@@ -264,7 +319,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       try {
         sessionStorage.setItem('elixora_senior_roll', cleaned);
+        localStorage.setItem('elixora_senior_roll', cleaned);
         sessionStorage.setItem('elixora_senior_portal_open', 'true');
+        localStorage.setItem('elixora_senior_portal_open', 'true');
       } catch (err) {}
     }, 450);
   };
@@ -274,6 +331,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setIsPortalOpen(false);
     try {
       sessionStorage.removeItem('elixora_senior_portal_open');
+      localStorage.removeItem('elixora_senior_portal_open');
       if (typeof window !== 'undefined') {
         if (window.location.hash === '#senior-portal') {
           history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -310,6 +368,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       sessionStorage.removeItem('elixora_senior_form');
       localStorage.removeItem('elixora_senior_roll');
       localStorage.removeItem('elixora_senior_portal_open');
+      localStorage.removeItem('elixora_senior_form');
       if (typeof window !== 'undefined') {
         if (window.location.hash === '#senior-portal' || window.location.hash) {
           history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -431,7 +490,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
     // 1. Strict Gate Check: Registration number MUST match an authorized senior on the official list
     const cleanRoll = (formData.rollNo || '').trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    if (!cleanRoll || !REGISTERED_SENIORS[cleanRoll]) {
+    const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
+    if (!cleanRoll || (!REGISTERED_SENIORS[cleanRoll] && !dynamicRoster[cleanRoll])) {
       newErrors.rollNo = 'Access Denied: Senior portal can be accessed through matched registration number only.';
     }
 
@@ -464,7 +524,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
     // Security Gate: Ensure only matched registration number can submit
     const cleanRoll = (formData.rollNo || '').trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    if (!cleanRoll || !REGISTERED_SENIORS[cleanRoll]) {
+    const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
+    if (!cleanRoll || (!REGISTERED_SENIORS[cleanRoll] && !dynamicRoster[cleanRoll])) {
       soundController.playError?.();
       setAccessError('Access Denied: Senior portal can be accessed through matched registration number only.');
       handleClosePortal();
@@ -702,8 +763,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       {/* ========================================================================= */}
       {/* DEDICATED SENIOR VIP PORTAL MODAL (DETAILS + BARCODE PAYMENT + PROOF ATTACH) */}
       {/* ========================================================================= */}
-      {isPortalOpen && isUnlocked && formData.rollNo && REGISTERED_SENIORS[formData.rollNo] && typeof document !== 'undefined' && createPortal(
+      {isPortalOpen && isUnlocked && Boolean(formData.rollNo) && typeof document !== 'undefined' && createPortal(
         <div 
+          id="senior-portal"
           data-lenis-prevent
           className="fixed inset-0 z-[100] w-full h-full bg-obsidian-950 text-slate-100 flex flex-col overflow-y-auto overscroll-contain scroll-smooth senior-portal-scroll animate-in fade-in duration-300"
         >

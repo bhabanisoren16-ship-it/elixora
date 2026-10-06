@@ -10,22 +10,38 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Unbounded:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
-      // Guarantee website always opens at the top Home Page and does not restore scroll to senior portal
+      // Handle scroll restoration and refresh routing safely
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
-      try {
-        localStorage.removeItem('elixora_senior_portal_open');
-        sessionStorage.removeItem('elixora_senior_portal_open');
-        localStorage.removeItem('elixora_senior_roll');
-        sessionStorage.removeItem('elixora_senior_roll');
-      } catch (e) {}
-      if (window.location.hash === '#senior-portal' || window.location.hash === '#seniors') {
+      (function() {
+        var isSenior = false;
         try {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
+          isSenior = (
+            window.location.hash === '#senior-portal' ||
+            sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
+            localStorage.getItem('elixora_senior_portal_open') === 'true' ||
+            Boolean(sessionStorage.getItem('elixora_senior_roll')) ||
+            Boolean(localStorage.getItem('elixora_senior_roll'))
+          );
         } catch (e) {}
-      }
-      window.scrollTo(0, 0);
+
+        var isAdmin = (
+          window.location.hash === '#admin' ||
+          window.location.pathname === '/admin' ||
+          window.location.search.indexOf('admin') !== -1
+        );
+
+        // Only default-scroll to top if NOT refreshing inside Senior Portal or Admin Portal
+        if (!isSenior && !isAdmin) {
+          if (window.location.hash === '#seniors') {
+            try {
+              history.replaceState(null, '', window.location.pathname + window.location.search);
+            } catch (e) {}
+          }
+          window.scrollTo(0, 0);
+        }
+      })();
     </script>
   </head>
   <body class="bg-obsidian-950 text-slate-100 font-outfit selection:bg-cyber-violet selection:text-white">
