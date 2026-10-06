@@ -57,7 +57,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
       qrCanvasRef.current,
       upiString,
       {
-        width: 165,
+        width: 150,
         margin: 1,
         color: {
           dark: '#0f172a',
@@ -173,7 +173,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
   };
 
   return (
-    <section id="register" className="relative py-8 sm:py-12 px-3 sm:px-5 lg:px-6 max-w-[92rem] 2xl:max-w-[98rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
+    <section id="register" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8">
@@ -188,8 +188,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
         </p>
       </div>
 
-      {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER */}
-      <div className="w-full max-w-[86rem] xl:max-w-[90rem] 2xl:max-w-[94rem] mx-auto rounded-3xl p-5 sm:p-7 lg:p-8 lg:px-10 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden">
+      {/* UNIFIED CARD CONTAINER - EXACT SAME SIZE AS SENIOR REGISTRATION PASS (max-w-4xl rounded-2xl) */}
+      <div className="max-w-4xl mx-auto rounded-2xl p-6 sm:p-8 lg:p-9 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden transition-all duration-300">
         
         {/* Subtle Ambient Glow Blobs inside the card */}
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyber-cyan/15 rounded-full blur-3xl pointer-events-none" />
@@ -200,7 +200,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
           {/* ========================================= */}
           {/* LEFT COLUMN: STEP 1 - Student Details */}
           {/* ========================================= */}
-          <div className="flex flex-col justify-between lg:border-r lg:border-white/10 lg:pr-8 xl:pr-10">
+          <div className="flex flex-col justify-between lg:border-r lg:border-white/10 lg:pr-8">
             <div>
               {/* Step 1 Header */}
               <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/10">
@@ -219,88 +219,86 @@ export default function RegistrationPayment({ onPassGenerated }) {
               </div>
 
               <div className="space-y-3.5">
-                {/* Row 1: Full Name & Roll / Student ID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
-                      Full Name <span className="text-cyber-cyan">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleInputChange}
-                        placeholder="e.g. Aarav Sharma"
-                        className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900/90 border ${
-                          errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                        } text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                      />
-                    </div>
-                    {errors.fullName && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.fullName}</p>}
+                {/* Full Name */}
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
+                    Full Name <span className="text-cyber-cyan">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      placeholder="e.g. Aarav Sharma"
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900/90 border ${
+                        errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                      } text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                    />
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
-                      Roll / Student ID <span className="text-cyber-cyan">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="rollNo"
-                        value={formData.rollNo}
-                        onChange={handleInputChange}
-                        placeholder="e.g. 26CS084"
-                        className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900/90 border ${
-                          errors.rollNo ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                        } text-white placeholder-slate-500 text-sm uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                      />
-                    </div>
-                    {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
-                  </div>
+                  {errors.fullName && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.fullName}</p>}
                 </div>
 
-                {/* Row 2: Contact Number & Refreshment Preference */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
-                      Contact Number (WhatsApp) <span className="text-cyber-cyan">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="10-digit mobile"
-                        className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900/90 border ${
-                          errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
-                        } text-white placeholder-slate-500 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
-                      />
-                    </div>
-                    {errors.phone && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
+                {/* Roll / Student ID */}
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
+                    Roll / Student ID <span className="text-cyber-cyan">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="rollNo"
+                      value={formData.rollNo}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 26CS084"
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900/90 border ${
+                        errors.rollNo ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                      } text-white placeholder-slate-500 text-sm uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                    />
                   </div>
+                  {errors.rollNo && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.rollNo}</p>}
+                </div>
 
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
-                      Refreshment Preference
-                    </label>
-                    <div className="flex gap-2">
-                      {['Veg', 'Non-Veg', 'Jain/Vegan'].map((item) => (
-                        <button
-                          type="button"
-                          key={item}
-                          onClick={() => setFormData({ ...formData, diet: item })}
-                          className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
-                            formData.diet === item
-                              ? 'bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)]'
-                              : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          {item}
-                        </button>
-                      ))}
-                    </div>
+                {/* Contact Number */}
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
+                    Contact Number (WhatsApp) <span className="text-cyber-cyan">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="10-digit mobile"
+                      className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900/90 border ${
+                        errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
+                      } text-white placeholder-slate-500 text-sm font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
+                    />
+                  </div>
+                  {errors.phone && <p className="mt-1 text-xs text-rose-400 flex items-center gap-1"><AlertCircle className="w-3 h-3"/>{errors.phone}</p>}
+                </div>
+
+                {/* Refreshment Preference */}
+                <div>
+                  <label className="block text-xs font-mono uppercase tracking-wider text-slate-200 mb-1">
+                    Refreshment Preference
+                  </label>
+                  <div className="flex gap-2">
+                    {['Veg', 'Non-Veg', 'Jain/Vegan'].map((item) => (
+                      <button
+                        type="button"
+                        key={item}
+                        onClick={() => setFormData({ ...formData, diet: item })}
+                        className={`flex-1 py-2.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                          formData.diet === item
+                            ? 'bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan font-bold shadow-[0_0_12px_rgba(6,182,212,0.3)]'
+                            : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -365,11 +363,11 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 </div>
               </div>
 
-              {/* Form fields: UTR & Screenshot paired in 2 columns on sm+ */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-3.5">
+              {/* Form fields: UTR & Screenshot */}
+              <div className="space-y-3">
                 <div>
                   <label className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-1">
-                    UPI Reference / UTR (12 Digits) <span className="text-cyber-cyan">*</span>
+                    UPI Reference / UTR Number (12 Digits) <span className="text-cyber-cyan">*</span>
                   </label>
                   <input
                     type="text"
@@ -378,7 +376,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                     onChange={handleInputChange}
                     placeholder="e.g. 427189035124"
                     maxLength={18}
-                    className={`w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900/90 border ${
+                    className={`w-full px-4 py-2.5 rounded-xl bg-obsidian-900/90 border ${
                       errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                     } text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
                   />
@@ -400,7 +398,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                     }`}>
                       <Upload className={`w-4 h-4 ${screenshotPreview ? 'text-emerald-400' : errors.screenshot ? 'text-rose-400' : 'text-cyber-cyan'} shrink-0`} />
                       <span className={`text-xs truncate ${screenshotPreview ? 'text-emerald-300 font-semibold' : 'text-slate-300'}`}>
-                        {screenshotPreview ? 'Slip Attached ✓' : 'Upload Receipt *'}
+                        {screenshotPreview ? 'Screenshot Attached ✓ (Click to change)' : 'Upload Receipt / Slip *'}
                       </span>
                       <input
                         type="file"
@@ -421,7 +419,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                       <div className="flex items-center gap-2 min-w-0">
                         <img src={screenshotPreview} alt="Screenshot slip" className="w-6 h-6 rounded object-cover border border-emerald-500/40 shrink-0" />
                         <span className="text-[11px] text-emerald-400 font-mono flex items-center gap-1 truncate">
-                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Slip attached
+                          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Receipt attached
                         </span>
                       </div>
                       <button
@@ -438,7 +436,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
             </div>
 
             {/* CTA & Council Verified Note */}
-            <div className="mt-2 space-y-2">
+            <div className="mt-3.5 space-y-2">
               <button
                 type="submit"
                 disabled={isVerifying}
