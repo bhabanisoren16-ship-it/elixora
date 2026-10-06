@@ -943,13 +943,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       </div>
                     </div>
                   </div>
-
-                  <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-cyan-300/80 font-mono">
-                    <span className="flex items-center gap-1.5">
-                      <span>Biotechnology</span>
-                    </span>
-                    <span className="text-slate-400">VIP Red Carpet Pass</span>
-                  </div>
                 </div>
 
                 {/* ================================================================= */}
@@ -1138,10 +1131,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </>
                       )}
                     </button>
-                    <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1 font-mono">
-                      <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                      <span>Official Student Council Verified • Instant Pass Generation</span>
-                    </p>
                   </div>
                 </div>
 
