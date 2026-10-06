@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { 
-  ShieldCheck, 
   CreditCard, 
   QrCode, 
   Copy, 
@@ -305,11 +304,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
               </div>
             </div>
 
-            {/* Bottom Security Note */}
-            <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-[11px] text-slate-400">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyber-cyan shrink-0" />
-              <span>Pass details will be encrypted & minted with your Roll No.</span>
-            </div>
           </div>
 
           {/* ========================================= */}
@@ -469,10 +463,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 )}
               </button>
 
-              <p className="text-[10px] text-slate-400 text-center flex items-center justify-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-cyber-cyan" />
-                <span>Official Student Council Verified • Instant Ticket Download</span>
-              </p>
             </div>
           </div>
 
