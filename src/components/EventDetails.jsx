@@ -322,7 +322,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-boys.jpg"
@@ -335,10 +335,6 @@ export default function EventDetails() {
                       <span className="truncate sm:whitespace-normal">Tailored black tuxedos, classic suits, blazers, or Indo-Western</span>
                     </div>
                   </div>
-
-                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed subheading-readable">
-                    Sharp two-piece or three-piece suits, formal blazers with crisp shirts, classic black-tie tuxedos, or regal Indo-Western Jodhpuris paired with formal shoes.
-                  </p>
                 </div>
               </div>
 
@@ -363,7 +359,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full mb-3.5 border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-52 sm:h-60 w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-girls.jpg"
@@ -376,10 +372,6 @@ export default function EventDetails() {
                       <span className="truncate sm:whitespace-normal">Chic evening gowns, cocktail dresses, or designer sarees &amp; lehengas</span>
                     </div>
                   </div>
-
-                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed subheading-readable">
-                    Floor-length evening gowns, stylish western dresses, or graceful modern sarees and Indo-Western fusion wear accented with elegant jewelry and glam highlights.
-                  </p>
                 </div>
               </div>
 
