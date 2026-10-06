@@ -336,16 +336,9 @@ export default function EventDetails() {
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed mb-3.5 subheading-readable">
+                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed subheading-readable">
                     Sharp two-piece or three-piece suits, formal blazers with crisp shirts, classic black-tie tuxedos, or regal Indo-Western Jodhpuris paired with formal shoes.
                   </p>
-                </div>
-
-                <div className="relative z-10 pt-3 border-t border-white/15 flex flex-wrap gap-2">
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#FormalSuits</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#IndoWestern</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#TailoredBlazer</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#BlackTie</span>
                 </div>
               </div>
 
@@ -384,16 +377,9 @@ export default function EventDetails() {
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed mb-3.5 subheading-readable">
+                  <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed subheading-readable">
                     Floor-length evening gowns, stylish western dresses, or graceful modern sarees and Indo-Western fusion wear accented with elegant jewelry and glam highlights.
                   </p>
-                </div>
-
-                <div className="relative z-10 pt-3 border-t border-white/15 flex flex-wrap gap-2">
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#EveningGowns</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#IndoWestern</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#DesignerSaree</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#PartyGlam</span>
                 </div>
               </div>
 
