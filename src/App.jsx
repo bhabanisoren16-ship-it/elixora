@@ -25,10 +25,23 @@ function checkIsAdminRoute() {
   );
 }
 
+function checkIsSeniorPortalRoute() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return (
+      window.location.hash === '#senior-portal' ||
+      sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
+      Boolean(sessionStorage.getItem('elixora_senior_roll'))
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
 export default function App() {
   const [passData, setPassData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(false);
+  const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(checkIsSeniorPortalRoute);
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminRoute);
 
   // Initialize high-performance buttery smooth scrolling (Lenis)
@@ -91,9 +104,16 @@ export default function App() {
     }
   }, [isAdminOpen]);
 
-  // Guarantee that loading the website always opens the main page by default
+  // Handle page load: preserve senior portal on refresh if active, otherwise default to main page
   useEffect(() => {
     try {
+      const isSeniorPortalActive = checkIsSeniorPortalRoute();
+      if (isSeniorPortalActive) {
+        setIsSeniorPortalOpen(true);
+        // Keep senior portal open on refresh - do not scroll to top or clear storage!
+        return;
+      }
+
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
@@ -102,10 +122,10 @@ export default function App() {
       localStorage.removeItem('elixora_senior_roll');
       sessionStorage.removeItem('elixora_senior_roll');
       if (typeof window !== 'undefined') {
-        if (window.location.hash === '#senior-portal' || window.location.hash === '#seniors') {
+        if (window.location.hash === '#seniors') {
           history.replaceState(null, '', window.location.pathname + window.location.search);
         }
-        if (window.location.hash !== '#admin') {
+        if (window.location.hash !== '#admin' && !window.location.hash.includes('senior')) {
           window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         }
       }
