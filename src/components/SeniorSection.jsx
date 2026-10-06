@@ -1010,16 +1010,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       <p className="mt-2.5 text-xs font-semibold text-white">
                         Scan with GPay, PhonePe, Paytm, or BHIM
                       </p>
-                      <div className="text-[11px] font-mono text-slate-400 mt-1">
-                        <span className="text-cyan-400/90 font-medium">Ref: ELX26-SR-{formData.rollNo}</span>
+                      <div className="text-[11px] font-mono text-slate-400 mt-1.5">
+                        <span>UPI ID: <strong className="text-slate-200">{EVENT_DETAILS.upiId}</strong></span>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-white/10 text-center">
-                    <p className="text-[11px] font-mono text-slate-400">
-                      UPI ID: <strong className="text-slate-200">{EVENT_DETAILS.upiId}</strong>
-                    </p>
                   </div>
                 </div>
 
