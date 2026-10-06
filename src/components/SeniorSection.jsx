@@ -813,43 +813,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </div>
                       </div>
 
-                      {/* Department / Branch */}
-                      <div>
-                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
-                          Department / Branch <span className="text-emerald-400 font-bold">✓ (Biotechnology)</span>
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="text"
-                            name="branch"
-                            value={formData.branch || 'Biotechnology'}
-                            readOnly
-                            disabled
-                            className="w-full px-4 py-3 rounded-xl bg-black/60 border border-emerald-500/50 text-emerald-300 font-outfit text-sm cursor-not-allowed select-none"
-                          />
-                          <CheckCircle2 className="absolute right-3.5 top-3.5 w-4 h-4 text-emerald-400" />
-                        </div>
-                      </div>
-
-                      {/* Senior Batch */}
-                      <div>
-                        <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
-                          Senior Batch / Year
-                        </label>
-                        <select
-                          name="batch"
-                          value={formData.batch}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all cursor-pointer"
-                        >
-                          {seniorBatches.map((b) => (
-                            <option key={b} value={b} className="bg-obsidian-950 text-white">
-                              {b}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
                       {/* WhatsApp Contact */}
                       <div>
                         <label className="block text-[11px] font-outfit font-bold uppercase tracking-wider text-slate-300 mb-1">
