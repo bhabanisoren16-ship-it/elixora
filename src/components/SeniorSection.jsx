@@ -586,10 +586,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </>
                   )}
                 </button>
-
-                <p className="text-[11px] text-slate-400 font-outfit text-center">
-                  * Senior portal is strictly gated. Only pre-registered seniors (Batch '25 Biotechnology) with matching registration numbers can enter.
-                </p>
               </form>
             </div>
 
