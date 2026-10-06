@@ -349,10 +349,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 <div className="flex-1 w-full text-center sm:text-left">
                   <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
                     <span className="font-outfit font-extrabold text-2xl text-white">₹{EVENT_DETAILS.ticketPrice}</span>
-                    <span className="text-xs text-slate-400 line-through">₹799</span>
-                    <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                      50% OFF
-                    </span>
                   </div>
                   <p className="text-[11px] text-slate-300 font-medium flex items-center justify-center sm:justify-start gap-1 mb-2">
                     <Smartphone className="w-3 h-3 text-cyber-cyan shrink-0" />
