@@ -290,7 +290,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         qrCanvasRef.current,
         upiString,
         {
-          width: 150,
+          width: 165,
           margin: 1,
           color: {
             dark: '#0f172a',

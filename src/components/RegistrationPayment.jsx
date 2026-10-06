@@ -57,7 +57,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
       qrCanvasRef.current,
       upiString,
       {
-        width: 125,
+        width: 165,
         margin: 1,
         color: {
           dark: '#0f172a',
@@ -330,13 +330,13 @@ export default function RegistrationPayment({ onPassGenerated }) {
               </div>
 
               {/* Compact Payment Info: QR Code + Price & UPI ID */}
-              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3.5 flex flex-col sm:flex-row items-center gap-3.5">
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-white/5 border border-white/10 mb-3.5 flex flex-col sm:flex-row items-center gap-3.5">
                 {/* QR Code Canvas */}
-                <div className="p-2 bg-white rounded-xl shadow-xl shrink-0 relative">
-                  <canvas ref={qrCanvasRef} className="rounded-lg block" />
+                <div className="p-2 sm:p-2.5 bg-white rounded-2xl shadow-xl shrink-0 relative transition-transform hover:scale-[1.02]">
+                  <canvas ref={qrCanvasRef} className="rounded-xl block" />
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-6 h-6 rounded-lg bg-obsidian-950 border border-cyber-cyan flex items-center justify-center shadow-lg">
-                      <QrCode className="w-3.5 h-3.5 text-cyber-cyan" />
+                    <div className="w-7 h-7 rounded-lg bg-obsidian-950 border border-cyber-cyan flex items-center justify-center shadow-lg">
+                      <QrCode className="w-4 h-4 text-cyber-cyan" />
                     </div>
                   </div>
                 </div>
