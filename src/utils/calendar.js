@@ -1,7 +1,7 @@
 // Calendar export helper for Google Calendar and Apple / Outlook .ics
 export const EVENT_DETAILS = {
   title: "ELIXORA 2.0 - The Official College Freshers' Night",
-  description: "Step into the Nexus of Euphoria! Dress Code: Cyber Glam & Ethereal Neon. Bring your VIP Holographic Pass & College ID.",
+  description: "Step into the Nexus of Euphoria! Dress Code: Formal & Indo-Western Fusion. Bring your VIP Holographic Pass & College ID.",
   location: "Grand Aurora Ballroom & Open Air Arena, Tech Campus",
   startDate: "20261024T183000",
   endDate: "20261024T235900",

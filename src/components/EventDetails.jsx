@@ -285,10 +285,10 @@ export default function EventDetails() {
                 <span>OFFICIAL ATTIRE CODE</span>
               </div>
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
-                Cyber Glam &amp; Ethereal Neon
+                Formal &amp; Indo-Western Fusion
               </h3>
               <p className="text-xs sm:text-sm text-white font-outfit font-bold mt-1 max-w-xl subheading-readable">
-                Futuristic, stylish, and comfortable to dance. Think sleek streetwear infused with luminous accents.
+                Dress to impress in sharp western formals, tailored suits, or elegant Indo-Western and ethnic attire infused with radiant celebratory glam.
               </p>
             </div>
           </div>
@@ -298,7 +298,7 @@ export default function EventDetails() {
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-outfit text-cyan-300 tracking-wider uppercase font-black flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
-                COSTUME INSPIRATION LOOKBOOK
+                ATTIRE INSPIRATION LOOKBOOK
               </span>
               <span className="text-xs font-outfit text-white font-bold subheading-readable">
                 Recommended Styling for Fresher Night
@@ -323,7 +323,7 @@ export default function EventDetails() {
                       BOYS' ATTIRE LOOKBOOK
                     </span>
                     <span className="text-[10px] font-outfit bg-sky-500/25 text-sky-200 px-3 py-1 rounded-full border border-sky-400/50 font-black uppercase tracking-wider backdrop-blur-md">
-                      FORMAL TUXEDO &amp; SUIT
+                      FORMAL SUITS &amp; INDO-WESTERN
                     </span>
                   </div>
 
@@ -338,19 +338,20 @@ export default function EventDetails() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10" />
                     <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg z-20">
                       <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0 shadow-[0_0_6px_#38bdf8]" />
-                      <span className="truncate sm:whitespace-normal">Tailored black tuxedo with satin lapels &amp; crisp bowtie</span>
+                      <span className="truncate sm:whitespace-normal">Tailored black tuxedos, classic suits, blazers, or Indo-Western</span>
                     </div>
                   </div>
 
                   <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed mb-3.5 subheading-readable">
-                    Sharp black tuxedo or tailored blazer, crisp white collared dress shirt, classic bowtie or silk necktie, and polished formal shoes.
+                    Sharp two-piece or three-piece suits, formal blazers with crisp shirts, classic black-tie tuxedos, or regal Indo-Western Jodhpuris paired with formal shoes.
                   </p>
                 </div>
 
                 <div className="relative z-10 pt-3 border-t border-white/15 flex flex-wrap gap-2">
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#FormalSuits</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#IndoWestern</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#TailoredBlazer</span>
                   <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#BlackTie</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#TailoredSuit</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#FormalAttire</span>
                 </div>
               </div>
 
@@ -370,7 +371,7 @@ export default function EventDetails() {
                       GIRLS' ATTIRE LOOKBOOK
                     </span>
                     <span className="text-[10px] font-outfit bg-cyan-500/25 text-cyan-200 px-3 py-1 rounded-full border border-cyan-400/50 font-black uppercase tracking-wider backdrop-blur-md">
-                      ETHEREAL GLAM
+                      ELEGANT GOWNS &amp; ETHNIC GLAM
                     </span>
                   </div>
 
@@ -385,19 +386,20 @@ export default function EventDetails() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10" />
                     <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg z-20">
                       <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 shadow-[0_0_6px_#00e5ff]" />
-                      <span className="truncate sm:whitespace-normal">Iridescent party dress with cyan glow &amp; UV glitter</span>
+                      <span className="truncate sm:whitespace-normal">Chic evening gowns, cocktail dresses, or designer sarees &amp; lehengas</span>
                     </div>
                   </div>
 
                   <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed mb-3.5 subheading-readable">
-                    Shimmering metallic or holographic fabrics accented with electric cyan and ultraviolet jewelry, plus UV face art.
+                    Floor-length evening gowns, stylish western dresses, or graceful modern sarees and Indo-Western fusion wear accented with elegant jewelry and glam highlights.
                   </p>
                 </div>
 
                 <div className="relative z-10 pt-3 border-t border-white/15 flex flex-wrap gap-2">
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#Iridescent</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#HolographicGlow</span>
-                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#UVFacePaint</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#EveningGowns</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#IndoWestern</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#DesignerSaree</span>
+                  <span className="text-xs font-outfit font-bold px-3 py-1 rounded-lg bg-white/[0.08] text-white border border-white/20 backdrop-blur-sm shadow-sm">#PartyGlam</span>
                 </div>
               </div>
 
