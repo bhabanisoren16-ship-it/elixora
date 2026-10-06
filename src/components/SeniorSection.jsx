@@ -536,10 +536,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               <h3 className="font-outfit font-extrabold text-2xl sm:text-3xl text-white tracking-tight mb-2">
                 Restricted Senior Access
               </h3>
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-400/30 mb-2">
-                <span className="text-[11px] font-mono text-cyan-300 uppercase font-bold">Pass Fee:</span>
-                <span className="font-outfit font-extrabold text-base text-white">₹{SENIOR_TICKET_PRICE}</span>
-              </div>
               <p className="text-xs sm:text-sm text-white font-outfit font-bold leading-relaxed subheading-readable">
                 Senior portal can be accessed through matched registration number only. Enter your official college registration number to verify against the council roster and unlock portal.
               </p>
