@@ -494,13 +494,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
-        <div className="inline-flex items-center justify-center gap-2 mt-2 px-3.5 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-          <span className="text-xs font-mono text-cyan-300 font-bold uppercase tracking-wider">VIP PASS FEE:</span>
-          <span className="font-outfit font-extrabold text-lg text-white">₹{SENIOR_TICKET_PRICE}</span>
-          <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-            SENIOR PRIVILEGE
-          </span>
-        </div>
         <p className="mt-2.5 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
           Exclusively reserved for college seniors and council leaders. Verification of registered registration number is mandatory to unlock access.
         </p>
