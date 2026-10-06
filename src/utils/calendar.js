@@ -13,19 +13,21 @@ export const EVENT_DETAILS = {
   organizer: "Student Council & Cultural Directorate"
 };
 
-export function getGoogleCalendarUrl() {
+export function getGoogleCalendarUrl(customDetails = null) {
+  const details = { ...EVENT_DETAILS, ...(customDetails || {}) };
   const base = "https://calendar.google.com/calendar/render?action=TEMPLATE";
   const params = new URLSearchParams({
-    text: EVENT_DETAILS.title,
-    dates: `${EVENT_DETAILS.startDate}/${EVENT_DETAILS.endDate}`,
-    details: `${EVENT_DETAILS.description}\n\nVenue: ${EVENT_DETAILS.location}`,
-    location: EVENT_DETAILS.location,
-    add: "elixora2026@okhdfcbank"
+    text: details.title || EVENT_DETAILS.title,
+    dates: `${details.startDate || EVENT_DETAILS.startDate}/${details.endDate || EVENT_DETAILS.endDate}`,
+    details: `${details.description || EVENT_DETAILS.description}\n\nVenue: ${details.location || EVENT_DETAILS.location}`,
+    location: details.location || EVENT_DETAILS.location,
+    add: details.upiId || "elixora2026@okhdfcbank"
   });
   return `${base}&${params.toString()}`;
 }
 
-export function downloadIcsFile() {
+export function downloadIcsFile(customDetails = null) {
+  const details = { ...EVENT_DETAILS, ...(customDetails || {}) };
   const icsData = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
@@ -33,11 +35,11 @@ export function downloadIcsFile() {
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
-    `SUMMARY:${EVENT_DETAILS.title}`,
-    `DESCRIPTION:${EVENT_DETAILS.description}`,
-    `LOCATION:${EVENT_DETAILS.location}`,
-    `DTSTART:${EVENT_DETAILS.startDate}`,
-    `DTEND:${EVENT_DETAILS.endDate}`,
+    `SUMMARY:${details.title || EVENT_DETAILS.title}`,
+    `DESCRIPTION:${details.description || EVENT_DETAILS.description}`,
+    `LOCATION:${details.location || EVENT_DETAILS.location}`,
+    `DTSTART:${details.startDate || EVENT_DETAILS.startDate}`,
+    `DTEND:${details.endDate || EVENT_DETAILS.endDate}`,
     "STATUS:CONFIRMED",
     "END:VEVENT",
     "END:VCALENDAR"

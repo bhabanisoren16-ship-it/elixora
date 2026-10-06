@@ -1,16 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info, Sparkles } from 'lucide-react';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
-
-// Set to true once the official date and venue are ready to be unveiled publicly
-const IS_DATE_VENUE_ANNOUNCED = false;
+import { adminStore } from '../utils/adminStore';
 
 export default function EventDetails() {
+  const [settings, setSettings] = useState(() => adminStore.getSettings());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setSettings(adminStore.getSettings());
+    };
+    window.addEventListener('elixora_admin_update', handleUpdate);
+    return () => window.removeEventListener('elixora_admin_update', handleUpdate);
+  }, []);
+
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
     e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+  };
+
+  // Schedule & Venue active values from adminStore with fallbacks
+  const isDateVenueAnnounced = Boolean(settings.isDateVenueAnnounced);
+  const humanDate = settings.eventHumanDate || EVENT_DETAILS.humanDate;
+  const timeRange = settings.eventTimeRange || '06:30 PM - 07:45 PM';
+  const timingLabel = settings.eventTimingLabel || 'Entry & Red Carpet';
+  const venueTitle = settings.venueTitle || 'Grand Aurora Arena';
+  const venueSubtitle = settings.venueSubtitle || 'Tech Campus Main Quadrangle & Open Air Amphitheatre.';
+  const venueSectorTag = settings.venueSectorTag || 'AURORA ARENA • SECTOR 4';
+  const venueCoordinates = settings.venueCoordinates || '28.5355° N, 77.3910° E';
+  const venueGateTag = settings.venueGateTag || 'NORTH GATE';
+  const transitPoint1 = settings.transitPoint1 || 'Metro Line 3';
+  const transitPoint2 = settings.transitPoint2 || 'Gate 2 Drop';
+  const venueMapsUrl = settings.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena';
+
+  // Teaser copy for announcement lock
+  const teaserBadge = settings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE';
+  const teaserTitle = settings.teaserTitle || 'Yet to be announced';
+  const teaserMessage = settings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.';
+  const teaserPill = settings.teaserPill || 'Dropping Soon • Keep An Eye Out';
+
+  // Overrides for calendar helpers
+  const calendarPayload = {
+    location: `${venueTitle}, ${venueSubtitle}`,
+    humanDate: humanDate,
   };
 
   return (
@@ -42,9 +76,9 @@ export default function EventDetails() {
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] pointer-events-none aurora-light-beacon" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-amber-400/10 rounded-full blur-[90px] pointer-events-none aurora-light-beacon" />
 
-        {/* Existing Content Grid (Kept completely intact underneath, blurred as frosted teaser) */}
+        {/* Existing Content Grid (Kept completely intact underneath, blurred as frosted teaser when locked) */}
         <div className={`relative z-10 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 ${
-          !IS_DATE_VENUE_ANNOUNCED ? 'filter blur-[7px] sm:blur-[8px] opacity-75 select-none pointer-events-none transition-all max-h-[380px] xs:max-h-[420px] md:max-h-none overflow-hidden' : ''
+          !isDateVenueAnnounced ? 'filter blur-[7px] sm:blur-[8px] opacity-75 select-none pointer-events-none transition-all max-h-[380px] xs:max-h-[420px] md:max-h-none overflow-hidden' : ''
         }`}>
           
           {/* Card 1: Date & Time + Calendar Sync (Translucent Glass Card) */}
@@ -65,15 +99,15 @@ export default function EventDetails() {
                 WHEN TO ARRIVE
               </span>
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mb-2.5">
-                {EVENT_DETAILS.humanDate}
+                {humanDate}
               </h3>
 
               <div className="space-y-2 mb-3.5">
                 <div className="flex items-center gap-3 p-2.5 sm:p-3 rounded-xl bg-white/[0.08] backdrop-blur-md border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                   <Clock className="w-4 h-4 text-cyan-400 shrink-0" />
                   <div>
-                    <div className="text-xs text-cyan-200 font-outfit font-bold tracking-wide">Entry &amp; Red Carpet</div>
-                    <div className="text-sm sm:text-base font-outfit font-black text-white">06:30 PM - 07:45 PM</div>
+                    <div className="text-xs text-cyan-200 font-outfit font-bold tracking-wide">{timingLabel}</div>
+                    <div className="text-sm sm:text-base font-outfit font-black text-white">{timeRange}</div>
                   </div>
                 </div>
               </div>
@@ -82,7 +116,7 @@ export default function EventDetails() {
             {/* Calendar Sync Actions */}
             <div className="relative z-10 mt-auto pt-3.5 border-t border-white/20 space-y-2">
               <a
-                href={getGoogleCalendarUrl()}
+                href={getGoogleCalendarUrl(calendarPayload)}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => soundController.playClick()}
@@ -96,7 +130,7 @@ export default function EventDetails() {
               <button
                 onClick={() => {
                   soundController.playClick();
-                  downloadIcsFile();
+                  downloadIcsFile(calendarPayload);
                 }}
                 className="w-full py-2 px-4 rounded-xl bg-white/[0.08] hover:bg-white/[0.18] border border-white/25 text-white font-outfit font-bold text-xs flex items-center justify-center gap-2 transition-all backdrop-blur-md"
               >
@@ -125,10 +159,10 @@ export default function EventDetails() {
                 LOCATION &amp; BLUEPRINT
               </span>
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mb-1.5 leading-snug">
-                Grand Aurora Arena
+                {venueTitle}
               </h3>
               <p className="text-xs sm:text-sm text-slate-100 font-outfit font-bold mb-3.5 subheading-readable leading-relaxed">
-                Tech Campus Main Quadrangle &amp; Open Air Amphitheatre.
+                {venueSubtitle}
               </p>
 
               {/* Stylized Interactive Map Container (Frosted Glass with Responsive Flexible Height) */}
@@ -147,10 +181,10 @@ export default function EventDetails() {
                   </div>
                   <div className="min-w-0">
                     <span className="text-xs sm:text-sm font-outfit font-black text-white tracking-wider block leading-tight">
-                       AURORA ARENA • SECTOR 4
+                       {venueSectorTag}
                     </span>
                     <span className="text-[10px] sm:text-xs text-cyan-300 font-mono font-bold tracking-wide block mt-0.5 leading-tight">
-                      28.5355° N, 77.3910° E
+                      {venueCoordinates}
                     </span>
                   </div>
                 </div>
@@ -158,7 +192,7 @@ export default function EventDetails() {
                 {/* Compass marker */}
                 <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-mono text-cyan-200 bg-white/[0.12] px-2 sm:px-2.5 py-1 rounded-lg border border-white/25 backdrop-blur-md font-bold shadow-sm shrink-0 whitespace-nowrap">
                   <Compass className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>NORTH GATE</span>
+                  <span>{venueGateTag}</span>
                 </div>
               </div>
 
@@ -166,18 +200,18 @@ export default function EventDetails() {
               <div className="grid grid-cols-2 gap-2 sm:gap-2.5 text-xs">
                 <div className="flex items-center gap-2 text-white bg-white/[0.08] backdrop-blur-md p-2 rounded-xl border border-white/20 font-outfit font-bold shadow-sm">
                   <Navigation className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">Metro Line 3</span>
+                  <span className="truncate">{transitPoint1}</span>
                 </div>
                 <div className="flex items-center gap-2 text-white bg-white/[0.08] backdrop-blur-md p-2 rounded-xl border border-white/20 font-outfit font-bold shadow-sm">
                   <Info className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">Gate 2 Drop</span>
+                  <span className="truncate">{transitPoint2}</span>
                 </div>
               </div>
             </div>
 
             <div className="mt-auto pt-3.5 border-t border-white/20">
               <a
-                href="https://maps.google.com/?q=Tech+Campus+Grand+Arena"
+                href={venueMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => soundController.playClick()}
@@ -192,7 +226,7 @@ export default function EventDetails() {
         </div>
 
         {/* Blur Screen Overlay: "Yet to be announced" */}
-        {!IS_DATE_VENUE_ANNOUNCED && (
+        {!isDateVenueAnnounced && (
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-4 sm:p-8 text-center backdrop-blur-md bg-gradient-to-b from-obsidian-950/65 via-obsidian-950/55 to-obsidian-950/70 rounded-3xl sm:rounded-[2rem] border border-cyan-400/35 shadow-[inset_0_0_50px_rgba(6,182,212,0.12)]">
             {/* Ambient neon pulse behind the card */}
             <div className="absolute w-64 h-64 sm:w-96 sm:h-96 bg-cyan-400/20 rounded-full blur-[80px] pointer-events-none animate-pulse" />
@@ -202,23 +236,23 @@ export default function EventDetails() {
               {/* Glowing Status Badge */}
               <div className="inline-flex items-center gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-[10px] sm:text-xs font-outfit font-black uppercase tracking-widest mb-2.5 sm:mb-3.5 shadow-[0_0_20px_rgba(0,229,255,0.4)] backdrop-blur-xl">
                 <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-400 animate-ping" />
-                <span>OFFICIAL SCHEDULE &amp; VENUE</span>
+                <span>{teaserBadge}</span>
               </div>
 
               {/* Overwrite Headline */}
               <h3 className="font-outfit font-black text-2xl xs:text-3xl sm:text-5xl text-white tracking-tight mb-2 sm:mb-2.5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
-                Yet to be announced
+                {teaserTitle}
               </h3>
 
               {/* Informative Subtext */}
               <p className="text-xs sm:text-sm text-cyan-100/90 font-outfit font-semibold max-w-xs sm:max-w-md mx-auto leading-relaxed mb-3 sm:mb-5">
-                The official event date, red carpet timings, and secret venue coordinates will be revealed soon.
+                {teaserMessage}
               </p>
 
               {/* Status Pill */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-white/[0.08] border border-white/20 text-white font-outfit font-bold text-[11px] sm:text-xs shadow-glass backdrop-blur-md">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-300 animate-spin-slow" />
-                <span className="text-cyan-200">Dropping Soon • Keep An Eye Out</span>
+                <span className="text-cyan-200">{teaserPill}</span>
               </div>
             </div>
           </div>

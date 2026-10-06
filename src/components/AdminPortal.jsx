@@ -41,7 +41,13 @@ import {
   FileText,
   UserPlus,
   Send,
-  Zap
+  Zap,
+  Calendar,
+  MapPin,
+  Compass,
+  Navigation,
+  EyeOff,
+  Save
 } from 'lucide-react';
 import { adminStore } from '../utils/adminStore';
 import { soundController } from '../utils/audio';
@@ -108,6 +114,28 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   const [broadcastDraft, setBroadcastDraft] = useState(settings.broadcastMessage || '');
   const [broadcastActiveDraft, setBroadcastActiveDraft] = useState(settings.broadcastActive ?? false);
 
+  // Official Schedule & Venue Management Draft
+  const [scheduleDraft, setScheduleDraft] = useState({
+    isDateVenueAnnounced: settings.isDateVenueAnnounced ?? false,
+    eventHumanDate: settings.eventHumanDate || 'Saturday, October 24, 2026',
+    eventDateIso: settings.eventDateIso || '2026-10-24T18:30:00+05:30',
+    eventTimeRange: settings.eventTimeRange || '06:30 PM - 07:45 PM',
+    eventTimingLabel: settings.eventTimingLabel || 'Entry & Red Carpet',
+    venueTitle: settings.venueTitle || 'Grand Aurora Arena',
+    venueSubtitle: settings.venueSubtitle || 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
+    venueSectorTag: settings.venueSectorTag || 'AURORA ARENA • SECTOR 4',
+    venueCoordinates: settings.venueCoordinates || '28.5355° N, 77.3910° E',
+    venueGateTag: settings.venueGateTag || 'NORTH GATE',
+    transitPoint1: settings.transitPoint1 || 'Metro Line 3',
+    transitPoint2: settings.transitPoint2 || 'Gate 2 Drop',
+    venueMapsUrl: settings.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
+    teaserBadge: settings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
+    teaserTitle: settings.teaserTitle || 'Yet to be announced',
+    teaserMessage: settings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+    teaserPill: settings.teaserPill || 'Dropping Soon • Keep An Eye Out',
+  });
+  const [schedulePreviewTab, setSchedulePreviewTab] = useState('auto'); // 'auto' | 'unlocked' | 'locked'
+
   // Google Sheets & Excel Online Sync State
   const [sheetsWebhookDraft, setSheetsWebhookDraft] = useState(settings.sheetsWebhookUrl || '');
   const [sheetsSpreadsheetDraft, setSheetsSpreadsheetDraft] = useState(settings.sheetsSpreadsheetUrl || '');
@@ -127,6 +155,25 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
       setSettings(newSettings);
       setSheetsWebhookDraft(newSettings.sheetsWebhookUrl || '');
       setSheetsSpreadsheetDraft(newSettings.sheetsSpreadsheetUrl || '');
+      setScheduleDraft({
+        isDateVenueAnnounced: newSettings.isDateVenueAnnounced ?? false,
+        eventHumanDate: newSettings.eventHumanDate || 'Saturday, October 24, 2026',
+        eventDateIso: newSettings.eventDateIso || '2026-10-24T18:30:00+05:30',
+        eventTimeRange: newSettings.eventTimeRange || '06:30 PM - 07:45 PM',
+        eventTimingLabel: newSettings.eventTimingLabel || 'Entry & Red Carpet',
+        venueTitle: newSettings.venueTitle || 'Grand Aurora Arena',
+        venueSubtitle: newSettings.venueSubtitle || 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
+        venueSectorTag: newSettings.venueSectorTag || 'AURORA ARENA • SECTOR 4',
+        venueCoordinates: newSettings.venueCoordinates || '28.5355° N, 77.3910° E',
+        venueGateTag: newSettings.venueGateTag || 'NORTH GATE',
+        transitPoint1: newSettings.transitPoint1 || 'Metro Line 3',
+        transitPoint2: newSettings.transitPoint2 || 'Gate 2 Drop',
+        venueMapsUrl: newSettings.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
+        teaserBadge: newSettings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
+        teaserTitle: newSettings.teaserTitle || 'Yet to be announced',
+        teaserMessage: newSettings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+        teaserPill: newSettings.teaserPill || 'Dropping Soon • Keep An Eye Out',
+      });
       setStats(adminStore.getStats());
     };
 
@@ -293,6 +340,58 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     });
     setSettings(adminStore.getSettings());
     notifySuccess('Website broadcast banner updated live!');
+  };
+
+  // Official Schedule & Venue Handlers
+  const handleToggleScheduleAnnounced = () => {
+    const nextState = !settings.isDateVenueAnnounced;
+    adminStore.saveSettings({ isDateVenueAnnounced: nextState });
+    const newSettings = adminStore.getSettings();
+    setSettings(newSettings);
+    setScheduleDraft((prev) => ({ ...prev, isDateVenueAnnounced: nextState }));
+    if (nextState) {
+      soundController.playSuccess?.();
+      notifySuccess('🎉 Official Schedule & Venue UNLOCKED! Date, timings, venue and maps are now publicly visible.');
+    } else {
+      soundController.playClick?.();
+      notifySuccess('🔒 Schedule & Venue LOCKED! Public view is now masked with "Yet to be announced" teaser.');
+    }
+  };
+
+  const handleSaveScheduleDraft = (e) => {
+    e?.preventDefault();
+    adminStore.saveSettings(scheduleDraft);
+    setSettings(adminStore.getSettings());
+    soundController.playSuccess?.();
+    notifySuccess('✅ Schedule, date, venue & teaser details updated live!');
+  };
+
+  const handleResetScheduleToDefaults = () => {
+    if (window.confirm('Reset all schedule, date, timings and venue fields back to official defaults?')) {
+      const defaults = {
+        isDateVenueAnnounced: false,
+        eventHumanDate: 'Saturday, October 24, 2026',
+        eventDateIso: '2026-10-24T18:30:00+05:30',
+        eventTimeRange: '06:30 PM - 07:45 PM',
+        eventTimingLabel: 'Entry & Red Carpet',
+        venueTitle: 'Grand Aurora Arena',
+        venueSubtitle: 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
+        venueSectorTag: 'AURORA ARENA • SECTOR 4',
+        venueCoordinates: '28.5355° N, 77.3910° E',
+        venueGateTag: 'NORTH GATE',
+        transitPoint1: 'Metro Line 3',
+        transitPoint2: 'Gate 2 Drop',
+        venueMapsUrl: 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
+        teaserBadge: 'OFFICIAL SCHEDULE & VENUE',
+        teaserTitle: 'Yet to be announced',
+        teaserMessage: 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+        teaserPill: 'Dropping Soon • Keep An Eye Out',
+      };
+      adminStore.saveSettings(defaults);
+      setSettings(adminStore.getSettings());
+      setScheduleDraft(defaults);
+      notifySuccess('Schedule and venue reset to defaults.');
+    }
   };
 
   // Save Google Sheets & Excel Online configuration
@@ -598,6 +697,13 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 { id: 'overview', label: 'Overview & Stats', icon: Users, badge: null },
                 { id: 'registrations', label: 'Registrations', icon: Ticket, badge: registrations.length },
                 { id: 'roster', label: 'Senior VIP Roster', icon: GraduationCap, badge: Object.keys(roster).length },
+                { 
+                  id: 'schedule', 
+                  label: 'Schedule & Venue', 
+                  icon: Calendar, 
+                  badge: settings.isDateVenueAnnounced ? 'UNLOCKED' : 'LOCKED',
+                  isUnlocked: Boolean(settings.isDateVenueAnnounced)
+                },
                 { id: 'settings', label: 'Broadcast & Config', icon: Settings, badge: null },
               ].map((tab) => {
                 const Icon = tab.icon;
@@ -618,8 +724,14 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                     <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-slate-400'}`} />
                     <span>{tab.label}</span>
                     {tab.badge !== null && (
-                      <span className={`px-1.5 py-0.2 rounded-md text-[10px] font-mono ${
-                        isActive ? 'bg-cyan-400 text-obsidian-950 font-bold' : 'bg-white/10 text-slate-300'
+                      <span className={`px-1.5 py-0.5 rounded-md text-[10px] font-mono font-bold ${
+                        tab.id === 'schedule'
+                          ? tab.isUnlocked
+                            ? 'bg-emerald-400 text-obsidian-950 shadow-[0_0_8px_rgba(52,211,153,0.5)]'
+                            : 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
+                          : isActive
+                            ? 'bg-cyan-400 text-obsidian-950 font-bold'
+                            : 'bg-white/10 text-slate-300'
                       }`}>
                         {tab.badge}
                       </span>
@@ -738,7 +850,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                             Fast Access
                           </span>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                           <button
                             onClick={() => setIsAddPassOpen(true)}
                             className="p-3.5 rounded-xl bg-gradient-to-br from-cyan-500/15 to-transparent border border-cyan-400/30 hover:border-cyan-400 text-left transition-all group cursor-pointer"
@@ -766,7 +878,37 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                           >
                             <GraduationCap className="w-5 h-5 text-purple-400 mb-2 group-hover:scale-110 transition-transform" />
                             <div className="font-bold text-sm text-white font-outfit">Senior Roster</div>
-                            <div className="text-[11px] text-slate-400 mt-0.5">34 authorized VIP senior slots</div>
+                            <div className="text-[11px] text-slate-400 mt-0.5">Authorized VIP senior slots</div>
+                          </button>
+
+                          {/* Quick Schedule & Venue Unlock / Lock Toggle */}
+                          <button
+                            onClick={handleToggleScheduleAnnounced}
+                            className={`p-3.5 rounded-xl border text-left transition-all group cursor-pointer ${
+                              settings.isDateVenueAnnounced
+                                ? 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent border-emerald-400/40 hover:border-emerald-300 shadow-[0_0_16px_rgba(16,185,129,0.2)]'
+                                : 'bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-transparent border-amber-400/40 hover:border-amber-300 shadow-[0_0_16px_rgba(245,158,11,0.2)]'
+                            }`}
+                            title="Toggle public release of Date, Time and Venue"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              {settings.isDateVenueAnnounced ? (
+                                <Unlock className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                              ) : (
+                                <Lock className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+                              )}
+                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-wider uppercase ${
+                                settings.isDateVenueAnnounced 
+                                  ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/40' 
+                                  : 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
+                              }`}>
+                                {settings.isDateVenueAnnounced ? 'UNLOCKED' : 'LOCKED'}
+                              </span>
+                            </div>
+                            <div className="font-bold text-sm text-white font-outfit">Schedule &amp; Venue</div>
+                            <div className="text-[11px] text-slate-300 mt-0.5">
+                              {settings.isDateVenueAnnounced ? 'Public view active • Click to lock' : 'Teaser active • Click to unlock'}
+                            </div>
                           </button>
                         </div>
                       </div>
@@ -785,6 +927,30 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                           className="text-xs text-cyan-300 hover:text-white font-semibold underline shrink-0 cursor-pointer"
                         >
                           Edit
+                        </button>
+                      </div>
+
+                      {/* Live Schedule & Venue Status Ribbon */}
+                      <div className="mt-2.5 p-3.5 rounded-xl bg-obsidian-900/70 border border-white/10 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 overflow-hidden">
+                          <Calendar className={`w-4 h-4 shrink-0 ${settings.isDateVenueAnnounced ? 'text-emerald-400' : 'text-amber-400'}`} />
+                          <div className="text-xs text-slate-200 truncate">
+                            <span className="font-bold text-white mr-2">SCHEDULE &amp; VENUE STATUS:</span>
+                            {settings.isDateVenueAnnounced ? (
+                              <span className="text-emerald-300 font-medium">Publicly Unlocked • {settings.eventHumanDate || 'Sat, Oct 24'} • {settings.venueTitle || 'Grand Aurora Arena'}</span>
+                            ) : (
+                              <span className="text-amber-300 font-medium">Locked Behind Teaser Screen ("Yet to be announced")</span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setActiveTab('schedule');
+                            soundController.playClick?.();
+                          }}
+                          className="text-xs text-cyan-300 hover:text-white font-semibold underline shrink-0 cursor-pointer"
+                        >
+                          Manage Blueprint
                         </button>
                       </div>
                     </div>
@@ -1327,6 +1493,540 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* ================================================================= */}
+              {/* TAB 4: OFFICIAL SCHEDULE & VENUE COMMAND NEXUS */}
+              {/* ================================================================= */}
+              {activeTab === 'schedule' && (
+                <div className="space-y-6 max-w-5xl mx-auto">
+                  
+                  {/* Master Unlock / Lock Status Hero Card */}
+                  <div className={`p-5 sm:p-6 rounded-2xl border transition-all relative overflow-hidden ${
+                    settings.isDateVenueAnnounced
+                      ? 'bg-gradient-to-r from-emerald-950/50 via-obsidian-950/80 to-teal-950/50 border-emerald-500/50 shadow-[0_0_40px_rgba(16,185,129,0.18)]'
+                      : 'bg-gradient-to-r from-amber-950/50 via-obsidian-950/80 to-cyan-950/50 border-amber-500/50 shadow-[0_0_40px_rgba(245,158,11,0.18)]'
+                  }`}>
+                    {/* Ambient Glow */}
+                    <div className={`absolute -right-20 -top-20 w-60 h-60 rounded-full blur-[90px] pointer-events-none opacity-40 ${
+                      settings.isDateVenueAnnounced ? 'bg-emerald-400' : 'bg-amber-400'
+                    }`} />
+
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                      <div className="space-y-2 max-w-2xl">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider ${
+                            settings.isDateVenueAnnounced
+                              ? 'bg-emerald-500/20 border border-emerald-400/50 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.4)]'
+                              : 'bg-amber-500/20 border border-amber-400/50 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.4)]'
+                          }`}>
+                            <span className={`w-2 h-2 rounded-full ${
+                              settings.isDateVenueAnnounced ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'
+                            }`} />
+                            {settings.isDateVenueAnnounced ? 'PUBLIC VIEW: UNLOCKED & LIVE' : 'PUBLIC VIEW: LOCKED BEHIND TEASER'}
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-mono">
+                            Controlled via Admin Portal
+                          </span>
+                        </div>
+
+                        <h2 className="font-outfit font-extrabold text-xl sm:text-2xl text-white tracking-tight">
+                          {settings.isDateVenueAnnounced
+                            ? 'Official Schedule & Venue is Publicly Unlocked'
+                            : 'Official Schedule & Venue is Concealed (Teaser Active)'}
+                        </h2>
+
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-outfit">
+                          {settings.isDateVenueAnnounced
+                            ? 'Attendees can view the real event date, red carpet timings, Grand Aurora Arena coordinates, map navigation, and can sync to their calendars.'
+                            : 'Visitors see the frosted glass teaser ("Yet to be announced"). Date, times, and venue coordinates are hidden until you unlock them here.'}
+                        </p>
+                      </div>
+
+                      {/* Main Action Toggle Button */}
+                      <button
+                        type="button"
+                        onClick={handleToggleScheduleAnnounced}
+                        className={`px-5 py-3 rounded-xl font-outfit font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all shadow-lg shrink-0 cursor-pointer ${
+                          settings.isDateVenueAnnounced
+                            ? 'bg-amber-500 hover:bg-amber-400 text-obsidian-950 hover:scale-[1.02] shadow-[0_0_20px_rgba(245,158,11,0.35)]'
+                            : 'bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-obsidian-950 hover:scale-[1.02] shadow-[0_0_25px_rgba(16,185,129,0.45)]'
+                        }`}
+                      >
+                        {settings.isDateVenueAnnounced ? (
+                          <>
+                            <Lock className="w-4 h-4 text-obsidian-950" />
+                            <span>Lock Behind Teaser ("Yet to be announced")</span>
+                          </>
+                        ) : (
+                          <>
+                            <Unlock className="w-4 h-4 text-obsidian-950" />
+                            <span>Unlock &amp; Announce Date &amp; Venue to Public</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Form for Configuring Date, Time, Venue & Teaser */}
+                  <form onSubmit={handleSaveScheduleDraft} className="space-y-6">
+                    
+                    {/* SECTION 1: Date & Time Schedule Blueprint */}
+                    <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/70 border border-white/10 space-y-4">
+                      <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300">
+                            <Calendar className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="font-outfit font-bold text-base text-white">Event Date &amp; Timing Schedule</h3>
+                            <p className="text-xs text-slate-400">Configure public date, doors-open time, and countdown timer synchronization.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        {/* Event Human Date */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Human-Readable Event Date *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={scheduleDraft.eventHumanDate}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, eventHumanDate: e.target.value })}
+                            placeholder="e.g. Saturday, October 24, 2026"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs font-semibold focus:outline-none focus:border-cyan-400"
+                          />
+                          <span className="text-[10px] text-slate-500 mt-1 block">
+                            Displayed prominently as the main event date header.
+                          </span>
+                        </div>
+
+                        {/* ISO Timestamp for Countdown & Calendar */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Event Target Timestamp (ISO Date &amp; Time) *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={scheduleDraft.eventDateIso}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, eventDateIso: e.target.value })}
+                            placeholder="e.g. 2026-10-24T18:30:00+05:30"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-cyan-300 text-xs font-mono focus:outline-none focus:border-cyan-400"
+                          />
+                          <span className="text-[10px] text-slate-500 mt-1 block">
+                            Powers the Hero Section real-time countdown clock and calendar event start.
+                          </span>
+                        </div>
+
+                        {/* Timing Label */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Entry Schedule Tag / Label
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.eventTimingLabel}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, eventTimingLabel: e.target.value })}
+                            placeholder="e.g. Entry & Red Carpet"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-cyan-400"
+                          />
+                        </div>
+
+                        {/* Time Range */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Event Time Range *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={scheduleDraft.eventTimeRange}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, eventTimeRange: e.target.value })}
+                            placeholder="e.g. 06:30 PM - 07:45 PM"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs font-semibold focus:outline-none focus:border-cyan-400"
+                          />
+                          <span className="text-[10px] text-slate-500 mt-1 block">
+                            Entry window for pass holders and red carpet arrivals.
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 2: Venue, Radar Blueprint & Navigation */}
+                    <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/70 border border-white/10 space-y-4">
+                      <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-violet-500/20 border border-violet-400/40 flex items-center justify-center text-violet-300">
+                            <MapPin className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="font-outfit font-bold text-base text-white">Venue Location, Arena &amp; Navigation</h3>
+                            <p className="text-xs text-slate-400">Configure venue title, quadrangle address, coordinates, and navigation pointers.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        {/* Venue Title */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Venue Arena Title *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={scheduleDraft.venueTitle}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, venueTitle: e.target.value })}
+                            placeholder="e.g. Grand Aurora Arena"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs font-bold focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+
+                        {/* Venue Subtitle / Campus Address */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Campus &amp; Location Address Subtitle *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={scheduleDraft.venueSubtitle}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, venueSubtitle: e.target.value })}
+                            placeholder="e.g. Tech Campus Main Quadrangle & Open Air Amphitheatre."
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+
+                        {/* Sector Tag */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Radar Sector Tag
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.venueSectorTag}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, venueSectorTag: e.target.value })}
+                            placeholder="e.g. AURORA ARENA • SECTOR 4"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs font-mono focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+
+                        {/* Coordinates */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            GPS Target Coordinates
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.venueCoordinates}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, venueCoordinates: e.target.value })}
+                            placeholder="e.g. 28.5355° N, 77.3910° E"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-cyan-300 text-xs font-mono focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+
+                        {/* Compass Marker */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Compass Heading / Entry Gate
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.venueGateTag}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, venueGateTag: e.target.value })}
+                            placeholder="e.g. NORTH GATE"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs font-mono focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+
+                        {/* Transit 1 */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Transit Guide 1
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.transitPoint1}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, transitPoint1: e.target.value })}
+                            placeholder="e.g. Metro Line 3"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+
+                        {/* Transit 2 */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Transit Guide 2
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.transitPoint2}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, transitPoint2: e.target.value })}
+                            placeholder="e.g. Gate 2 Drop"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+
+                        {/* Maps URL */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Google Maps Navigation URL
+                          </label>
+                          <input
+                            type="url"
+                            value={scheduleDraft.venueMapsUrl}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, venueMapsUrl: e.target.value })}
+                            placeholder="https://maps.google.com/?q=..."
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-cyan-300 text-xs font-mono focus:outline-none focus:border-violet-400"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 3: Teaser Screen Customization (When Locked) */}
+                    <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/70 border border-white/10 space-y-4">
+                      <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
+                            <Sparkles className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h3 className="font-outfit font-bold text-base text-white">Locked Teaser Screen Customization</h3>
+                            <p className="text-xs text-slate-400">Controls what attendees see when the schedule is in locked/confidential mode.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        {/* Teaser Badge */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Teaser Top Badge Text
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.teaserBadge}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, teaserBadge: e.target.value })}
+                            placeholder="OFFICIAL SCHEDULE & VENUE"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+
+                        {/* Teaser Headline */}
+                        <div>
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Teaser Main Headline *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={scheduleDraft.teaserTitle}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, teaserTitle: e.target.value })}
+                            placeholder="Yet to be announced"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs font-bold focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+
+                        {/* Teaser Subtext */}
+                        <div className="md:col-span-2">
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Teaser Informational Subtext
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={scheduleDraft.teaserMessage}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, teaserMessage: e.target.value })}
+                            placeholder="The official event date, red carpet timings, and secret venue coordinates will be revealed soon."
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+
+                        {/* Teaser Status Pill */}
+                        <div className="md:col-span-2">
+                          <label className="block text-slate-300 font-semibold mb-1">
+                            Teaser Footer Pill Text
+                          </label>
+                          <input
+                            type="text"
+                            value={scheduleDraft.teaserPill}
+                            onChange={(e) => setScheduleDraft({ ...scheduleDraft, teaserPill: e.target.value })}
+                            placeholder="Dropping Soon • Keep An Eye Out"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Bar: Save & Reset */}
+                    <div className="flex items-center justify-between flex-wrap gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={handleResetScheduleToDefaults}
+                        className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10 text-xs font-semibold transition-all cursor-pointer"
+                      >
+                        Reset to Official Defaults
+                      </button>
+
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="submit"
+                          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-obsidian-950 font-outfit font-extrabold text-xs sm:text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(6,182,212,0.35)] cursor-pointer flex items-center gap-2"
+                        >
+                          <Save className="w-4 h-4" />
+                          <span>Save Schedule &amp; Venue Settings</span>
+                        </button>
+                      </div>
+                    </div>
+
+                  </form>
+
+                  {/* SECTION 4: Live Website Blueprint Preview (WYSIWYG) */}
+                  <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/80 border border-cyan-500/30 space-y-4">
+                    <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-white/10">
+                      <div>
+                        <h3 className="font-outfit font-bold text-base text-white flex items-center gap-2">
+                          <Eye className="w-4 h-4 text-cyan-400" />
+                          Live Website Interactive Preview
+                        </h3>
+                        <p className="text-xs text-slate-400">
+                          Accurate simulation of how attendees see this section on the public website.
+                        </p>
+                      </div>
+
+                      {/* Preview Mode Switcher */}
+                      <div className="flex items-center gap-1 p-1 bg-obsidian-900 rounded-xl border border-white/10 text-xs font-mono">
+                        <button
+                          type="button"
+                          onClick={() => setSchedulePreviewTab('auto')}
+                          className={`px-2.5 py-1 rounded-lg transition-all ${
+                            schedulePreviewTab === 'auto'
+                              ? 'bg-cyan-500 text-obsidian-950 font-bold'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          Current Live Mode ({settings.isDateVenueAnnounced ? 'Unlocked' : 'Locked'})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSchedulePreviewTab('unlocked')}
+                          className={`px-2.5 py-1 rounded-lg transition-all ${
+                            schedulePreviewTab === 'unlocked'
+                              ? 'bg-emerald-500 text-obsidian-950 font-bold'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          Preview Unlocked View
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSchedulePreviewTab('locked')}
+                          className={`px-2.5 py-1 rounded-lg transition-all ${
+                            schedulePreviewTab === 'locked'
+                              ? 'bg-amber-500 text-obsidian-950 font-bold'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          Preview Locked Teaser
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Interactive Preview Container */}
+                    {(() => {
+                      const isSimulatedLocked =
+                        schedulePreviewTab === 'locked'
+                          ? true
+                          : schedulePreviewTab === 'unlocked'
+                          ? false
+                          : !settings.isDateVenueAnnounced;
+
+                      return (
+                        <div className="relative rounded-2xl p-4 sm:p-6 bg-obsidian-900/90 border border-white/15 overflow-hidden">
+                          {/* Cards underneath */}
+                          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${
+                            isSimulatedLocked ? 'filter blur-[7px] opacity-70 pointer-events-none select-none max-h-[280px] overflow-hidden' : ''
+                          }`}>
+                            {/* Date Card Preview */}
+                            <div className="p-4 rounded-xl bg-white/[0.05] border border-cyan-400/30 flex flex-col justify-between">
+                              <div>
+                                <div className="w-8 h-8 rounded-lg bg-cyan-400/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 mb-2">
+                                  <Calendar className="w-4 h-4" />
+                                </div>
+                                <span className="text-[10px] text-cyan-300 font-mono font-bold uppercase tracking-wider block">WHEN TO ARRIVE</span>
+                                <h4 className="font-outfit font-black text-lg text-white mt-0.5 mb-2">{scheduleDraft.eventHumanDate}</h4>
+                                <div className="p-2.5 rounded-lg bg-white/[0.08] border border-white/10 flex items-center gap-2 text-xs">
+                                  <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                                  <div>
+                                    <div className="text-[10px] text-cyan-200">{scheduleDraft.eventTimingLabel}</div>
+                                    <div className="font-bold text-white text-xs">{scheduleDraft.eventTimeRange}</div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mt-4 pt-3 border-t border-white/10 space-y-1.5 text-xs">
+                                <div className="py-1.5 px-3 rounded-lg bg-cyan-500/30 border border-cyan-400/40 text-center text-cyan-200 font-bold text-[11px]">
+                                  + Add to Google Calendar
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Venue Card Preview */}
+                            <div className="p-4 rounded-xl bg-white/[0.05] border border-cyan-400/30 flex flex-col justify-between">
+                              <div>
+                                <div className="w-8 h-8 rounded-lg bg-cyan-400/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 mb-2">
+                                  <MapPin className="w-4 h-4" />
+                                </div>
+                                <span className="text-[10px] text-cyan-300 font-mono font-bold uppercase tracking-wider block">LOCATION &amp; BLUEPRINT</span>
+                                <h4 className="font-outfit font-black text-lg text-white mt-0.5 leading-tight">{scheduleDraft.venueTitle}</h4>
+                                <p className="text-xs text-slate-300 mt-1 mb-2">{scheduleDraft.venueSubtitle}</p>
+                                
+                                <div className="p-2.5 rounded-lg bg-white/[0.08] border border-white/10 flex items-center justify-between text-xs font-mono">
+                                  <div>
+                                    <div className="text-white font-bold text-[11px]">{scheduleDraft.venueSectorTag}</div>
+                                    <div className="text-cyan-300 text-[10px]">{scheduleDraft.venueCoordinates}</div>
+                                  </div>
+                                  <div className="px-2 py-0.5 rounded bg-white/10 text-cyan-200 text-[10px]">
+                                    {scheduleDraft.venueGateTag}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="mt-4 pt-3 border-t border-white/10 text-xs">
+                                <div className="py-1.5 px-3 rounded-lg bg-white/10 border border-white/15 text-center text-slate-200 font-bold text-[11px]">
+                                  Open in Google Maps Navigation
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Teaser Overlay Preview when locked */}
+                          {isSimulatedLocked && (
+                            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center backdrop-blur-md bg-obsidian-950/75 border border-cyan-400/35 rounded-2xl">
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/50 text-cyan-300 text-[10px] font-outfit font-black uppercase tracking-wider mb-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                                <span>{scheduleDraft.teaserBadge}</span>
+                              </div>
+                              <h4 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight mb-1.5">
+                                {scheduleDraft.teaserTitle}
+                              </h4>
+                              <p className="text-xs text-cyan-100/90 font-outfit max-w-sm mx-auto leading-relaxed mb-3">
+                                {scheduleDraft.teaserMessage}
+                              </p>
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/[0.08] border border-white/20 text-white font-outfit font-bold text-[11px]">
+                                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                                <span className="text-cyan-200">{scheduleDraft.teaserPill}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+
+                  </div>
+
                 </div>
               )}
 

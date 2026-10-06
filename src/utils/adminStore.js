@@ -68,6 +68,25 @@ const DEFAULT_SETTINGS = {
   broadcastActive: false,
   sheetsWebhookUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_WEBHOOK_URL) || 'https://script.google.com/macros/s/AKfycbxOLPdN4zOgfweS5W9HUsmmVatNIUp6D72YSW23YD_fW0doyUwKGBlOvSOhkgWPtZGc6g/exec',
   sheetsSpreadsheetUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SHEETS_SPREADSHEET_URL) || 'https://docs.google.com/spreadsheets/d/1K5EIJ0YWwLzctCVlQHbAu212kaiYvKIOB53HMm6RKLQ/edit?hl=en-GB&gid=0#gid=0',
+
+  // Official Schedule & Venue Public Blueprint Controls
+  isDateVenueAnnounced: false, // false = locked behind "Yet to be announced" teaser, true = unlocked
+  eventHumanDate: 'Saturday, October 24, 2026',
+  eventDateIso: '2026-10-24T18:30:00+05:30',
+  eventTimeRange: '06:30 PM - 07:45 PM',
+  eventTimingLabel: 'Entry & Red Carpet',
+  venueTitle: 'Grand Aurora Arena',
+  venueSubtitle: 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
+  venueSectorTag: 'AURORA ARENA • SECTOR 4',
+  venueCoordinates: '28.5355° N, 77.3910° E',
+  venueGateTag: 'NORTH GATE',
+  transitPoint1: 'Metro Line 3',
+  transitPoint2: 'Gate 2 Drop',
+  venueMapsUrl: 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
+  teaserBadge: 'OFFICIAL SCHEDULE & VENUE',
+  teaserTitle: 'Yet to be announced',
+  teaserMessage: 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+  teaserPill: 'Dropping Soon • Keep An Eye Out',
 };
 
 // Safe storage utilities
@@ -298,6 +317,13 @@ export const adminStore = {
     const updated = { ...current, ...newSettings };
     safeSet(STORAGE_KEYS.SETTINGS, updated);
     return updated;
+  },
+
+  toggleDateVenueAnnounced() {
+    const current = this.getSettings();
+    const nextState = !current.isDateVenueAnnounced;
+    this.saveSettings({ isDateVenueAnnounced: nextState });
+    return nextState;
   },
 
   // 6. Authentication

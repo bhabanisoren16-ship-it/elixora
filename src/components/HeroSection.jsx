@@ -2,11 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight, Clock } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrollToTarget } from '../utils/smoothScroll';
+import { adminStore } from '../utils/adminStore';
 
 export default function HeroSection({ onGrabPassClick }) {
+  const [settings, setSettings] = useState(() => adminStore.getSettings());
 
-  // Event target: October 24, 2026, 18:30:00 IST
-  const targetDate = new Date('2026-10-24T18:30:00+05:30').getTime();
+  useEffect(() => {
+    const handleUpdate = () => {
+      setSettings(adminStore.getSettings());
+    };
+    window.addEventListener('elixora_admin_update', handleUpdate);
+    return () => window.removeEventListener('elixora_admin_update', handleUpdate);
+  }, []);
+
+  // Event target: dynamically synced with Admin Portal settings
+  const targetDate = new Date(settings.eventDateIso || '2026-10-24T18:30:00+05:30').getTime();
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
