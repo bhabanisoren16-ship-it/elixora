@@ -555,7 +555,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       setAccessRegNo(e.target.value);
                       if (accessError) setAccessError('');
                     }}
-                    placeholder="ENTER SENIOR REGISTRATION NO."
+                    placeholder="ENTER PASS"
                     className="w-full pl-10 pr-4 py-3.5 rounded-xl bg-black/60 border border-white/20 text-white placeholder-slate-500 text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"
                   />
                 </div>
