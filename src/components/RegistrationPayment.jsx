@@ -189,18 +189,18 @@ export default function RegistrationPayment({ onPassGenerated }) {
       </div>
 
       {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER */}
-      <div className="max-w-5xl mx-auto rounded-3xl p-5 sm:p-8 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden">
+      <div className="max-w-6xl xl:max-w-7xl mx-auto rounded-3xl p-5 sm:p-8 lg:p-9 lg:px-10 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden">
         
         {/* Subtle Ambient Glow Blobs inside the card */}
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyber-cyan/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
 
-        <form onSubmit={handleSubmit} noValidate className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+        <form onSubmit={handleSubmit} noValidate className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
           
           {/* ========================================= */}
           {/* LEFT COLUMN: STEP 1 - Student Details (5 of 12 cols on desktop) */}
           {/* ========================================= */}
-          <div className="lg:col-span-5 flex flex-col justify-between lg:border-r lg:border-white/10 lg:pr-8">
+          <div className="lg:col-span-5 flex flex-col justify-between lg:border-r lg:border-white/10 lg:pr-10">
             <div>
               {/* Step 1 Header */}
               <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-white/10">
