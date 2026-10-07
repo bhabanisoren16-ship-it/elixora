@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info, Sparkles } from 'lucide-react';
+import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -253,16 +253,11 @@ export default function EventDetails() {
         )}
       </div>
 
-      {/* Gap Divider: FOR JUNIORS ONLY */}
-      <div className="flex items-center justify-center gap-3 sm:gap-5 my-6 sm:my-8 relative z-10 select-none py-1">
-        <span className="h-0.5 flex-1 max-w-[100px] xs:max-w-[160px] sm:max-w-[240px] bg-gradient-to-r from-transparent via-cyan-400/50 to-cyan-300 shadow-[0_0_12px_rgba(0,229,255,0.8)]" />
-        <div className="inline-flex items-center gap-2.5 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full bg-cyan-500/20 border-2 border-cyan-400/60 text-cyan-200 text-xs sm:text-sm font-outfit font-black tracking-widest uppercase shadow-[0_0_25px_rgba(6,182,212,0.5),inset_0_0_12px_rgba(6,182,212,0.2)] backdrop-blur-2xl">
-          <Sparkles className="w-4 h-4 text-cyan-300 animate-pulse" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-sky-300 drop-shadow-[0_0_10px_rgba(0,229,255,0.6)]">
-            FOR JUNIORS ONLY
-          </span>
-        </div>
-        <span className="h-0.5 flex-1 max-w-[100px] xs:max-w-[160px] sm:max-w-[240px] bg-gradient-to-l from-transparent via-cyan-400/50 to-cyan-300 shadow-[0_0_12px_rgba(0,229,255,0.8)]" />
+      {/* Gap Header: FOR JUNIORS ONLY */}
+      <div className="text-center my-8 sm:my-12 relative z-10">
+        <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+          FOR JUNIORS ONLY
+        </h2>
       </div>
 
       {/* Box 2: Dedicated Dress Costume Box (Translucent Glass Screen with Light Spotlight) */}
