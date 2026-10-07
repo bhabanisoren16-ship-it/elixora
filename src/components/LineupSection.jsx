@@ -1,5 +1,5 @@
 import React from 'react';
-import { Crown, Trophy, Award, Star } from 'lucide-react';
+import { Crown, Trophy } from 'lucide-react';
 
 export default function LineupSection() {
   const handleMouseMove = (e) => {
@@ -76,13 +76,9 @@ export default function LineupSection() {
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-sky-300 transition-colors tracking-tight">
                   The Charisma &amp; Presence Title
                 </h4>
-                <p className="text-xs sm:text-sm text-white leading-relaxed mb-4 font-outfit font-bold subheading-readable">
+                <p className="text-xs sm:text-sm text-white leading-relaxed font-outfit font-bold subheading-readable">
                   Recognizing confidence, wit, stage presence, and signature style on the runway.
                 </p>
-                <div className="flex flex-wrap gap-2.5 pt-3.5 border-t border-white/15 text-xs font-outfit font-bold text-white">
-                  <span className="flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-sky-400" /> Cyan Sash</span>
-                  <span className="flex items-center gap-1.5"><Award className="w-3.5 h-3.5 text-sky-400" /> Tech Trophy</span>
-                </div>
               </div>
             </div>
 
@@ -108,13 +104,9 @@ export default function LineupSection() {
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-purple-300 transition-colors tracking-tight">
                   The Elegance &amp; Talent Title
                 </h4>
-                <p className="text-xs sm:text-sm text-white leading-relaxed mb-4 font-outfit font-bold subheading-readable">
+                <p className="text-xs sm:text-sm text-white leading-relaxed font-outfit font-bold subheading-readable">
                   Honoring poise, dynamic persona, expressive intellect, and evening glamour.
                 </p>
-              <div className="flex flex-wrap gap-2.5 pt-3.5 border-t border-white/15 text-xs font-outfit font-bold text-white">
-                <span className="flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-purple-400" /> Neon Tiara &amp; Sash</span>
-                <span className="flex items-center gap-1.5"><Award className="w-3.5 h-3.5 text-purple-400" /> Tech Trophy</span>
-              </div>
             </div>
           </div>
         </div>
