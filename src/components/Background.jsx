@@ -231,16 +231,16 @@ export default function Background() {
 
         const beamConfigs = isDesktop
           ? [
-              { originFrac: 0.18, targetFrac: 0.28, speed: 0.0006, width: 90, color: 'rgba(56, 189, 248, 0.14)', phase: 0 },
-              { originFrac: 0.35, targetFrac: 0.42, speed: 0.0008, width: 75, color: 'rgba(0, 229, 255, 0.18)', phase: 1.2 },
-              { originFrac: 0.65, targetFrac: 0.58, speed: 0.0007, width: 80, color: 'rgba(0, 229, 255, 0.18)', phase: 2.5 },
-              { originFrac: 0.82, targetFrac: 0.72, speed: 0.0005, width: 95, color: 'rgba(56, 189, 248, 0.14)', phase: 3.8 },
-              { originFrac: 0.50, targetFrac: 0.50, speed: 0.0010, width: 110, color: 'rgba(192, 132, 252, 0.11)', phase: 4.5 },
+              { originFrac: 0.15, targetFrac: 0.35, speed: 0.0007, width: 140, color: 'rgba(0, 229, 255, 0.32)', phase: 0 },
+              { originFrac: 0.30, targetFrac: 0.52, speed: 0.0009, width: 125, color: 'rgba(56, 189, 248, 0.28)', phase: 1.2 },
+              { originFrac: 0.70, targetFrac: 0.45, speed: 0.0008, width: 135, color: 'rgba(0, 229, 255, 0.30)', phase: 2.5 },
+              { originFrac: 0.85, targetFrac: 0.62, speed: 0.0006, width: 150, color: 'rgba(192, 132, 252, 0.26)', phase: 3.8 },
+              { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: 160, color: 'rgba(56, 189, 248, 0.25)', phase: 4.5 },
             ]
           : [
-              { originFrac: 0.25, targetFrac: 0.35, speed: 0.0008, width: 55, color: 'rgba(0, 229, 255, 0.16)', phase: 0 },
-              { originFrac: 0.75, targetFrac: 0.65, speed: 0.0007, width: 60, color: 'rgba(56, 189, 248, 0.16)', phase: 2.0 },
-              { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: 70, color: 'rgba(192, 132, 252, 0.12)', phase: 4.0 },
+              { originFrac: 0.18, targetFrac: 0.42, speed: 0.0008, width: 95, color: 'rgba(0, 229, 255, 0.34)', phase: 0 },
+              { originFrac: 0.82, targetFrac: 0.55, speed: 0.0007, width: 105, color: 'rgba(56, 189, 248, 0.32)', phase: 2.0 },
+              { originFrac: 0.45, targetFrac: 0.68, speed: 0.0010, width: 110, color: 'rgba(192, 132, 252, 0.26)', phase: 4.0 },
             ];
 
         for (let i = 0; i < beamConfigs.length; i++) {
@@ -252,18 +252,28 @@ export default function Background() {
           const bottomY = h * 0.95;
 
           const grad = ctx.createLinearGradient(topX, topY, bottomX, bottomY);
-          grad.addColorStop(0, 'rgba(255, 255, 255, 0.32)');
-          grad.addColorStop(0.25, b.color);
-          grad.addColorStop(0.75, b.color.replace(/0\.\d+\)/, '0.07)'));
+          grad.addColorStop(0, 'rgba(255, 255, 255, 0.75)');
+          grad.addColorStop(0.18, b.color);
+          grad.addColorStop(0.65, b.color.replace(/0\.\d+\)/, '0.12)'));
           grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
           ctx.beginPath();
-          ctx.moveTo(topX - 6, topY);
-          ctx.lineTo(topX + 6, topY);
+          ctx.moveTo(topX - 8, topY);
+          ctx.lineTo(topX + 8, topY);
           ctx.lineTo(bottomX + b.width, bottomY);
           ctx.lineTo(bottomX - b.width, bottomY);
           ctx.closePath();
           ctx.fillStyle = grad;
+          ctx.fill();
+
+          // Glowing lens flare spotlight fixture head
+          const flareGrad = ctx.createRadialGradient(topX, topY, 0, topX, topY, 18);
+          flareGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+          flareGrad.addColorStop(0.35, 'rgba(0, 229, 255, 0.85)');
+          flareGrad.addColorStop(1, 'rgba(0, 229, 255, 0)');
+          ctx.beginPath();
+          ctx.arc(topX, topY, 18, 0, Math.PI * 2);
+          ctx.fillStyle = flareGrad;
           ctx.fill();
         }
 
@@ -510,9 +520,7 @@ export default function Background() {
         <div 
           className="absolute top-[28%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] sm:w-[950px] sm:h-[480px] bg-gradient-to-tr from-cyan-500/25 via-purple-600/20 to-sky-400/25 rounded-full blur-[90px] sm:blur-[130px] pointer-events-none animate-stage-pulse" 
           aria-hidden="true"
-        />
-
-        {/* Sweeping Stage Laser Beams (CSS Accent Layers) */}
+        />        {/* Sweeping Stage Laser Beams (CSS Accent Layers) */}
         <div 
           className="absolute top-0 left-1/3 w-[2px] h-[85vh] bg-gradient-to-b from-white via-cyan-400 to-transparent blur-[0.5px] pointer-events-none animate-laser-left shadow-[0_0_12px_#00e5ff]"
           aria-hidden="true"
@@ -522,14 +530,91 @@ export default function Background() {
           aria-hidden="true"
         />
 
+        {/* === CONCERT STAGE VOLUMETRIC SPOTLIGHTS (Matching Live Stage Reference) === */}
+        {/* 1. Primary Spotlight Cone: Upper-Left Truss -> Center-Right Stage */}
+        <div 
+          className="absolute -top-6 left-[8%] sm:left-[16%] w-[150px] sm:w-[280px] h-[95vh] pointer-events-none animate-spotlight-left"
+          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          aria-hidden="true"
+        >
+          {/* Projector Head Lens Flare Bulb */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white shadow-[0_0_35px_12px_rgba(0,229,255,0.95),0_0_70px_24px_rgba(56,189,248,0.7)] animate-spotlight-flare" />
+          {/* Volumetric Light Shaft Cone */}
+          <div 
+            className="w-full h-full opacity-90"
+            style={{
+              clipPath: 'polygon(48% 0%, 52% 0%, 100% 100%, 0% 100%)',
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(0,229,255,0.7) 18%, rgba(56,189,248,0.4) 55%, rgba(0,229,255,0.1) 85%, transparent 100%)',
+              filter: 'blur(3px)',
+            }}
+          />
+        </div>
+
+        {/* 2. Piercing Right Spotlight Cone: Upper-Right Truss -> Center-Left Stage */}
+        <div 
+          className="absolute -top-6 right-[6%] sm:right-[14%] w-[130px] sm:w-[260px] h-[92vh] pointer-events-none animate-spotlight-right"
+          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          aria-hidden="true"
+        >
+          {/* Projector Head Lens Flare Bulb */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-white shadow-[0_0_30px_10px_rgba(0,229,255,0.95),0_0_65px_20px_rgba(14,165,233,0.75)] animate-spotlight-flare" />
+          {/* Volumetric Light Shaft Cone */}
+          <div 
+            className="w-full h-full opacity-85"
+            style={{
+              clipPath: 'polygon(48% 0%, 52% 0%, 100% 100%, 0% 100%)',
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.92) 0%, rgba(0,229,255,0.65) 20%, rgba(14,165,233,0.38) 60%, rgba(0,229,255,0.08) 88%, transparent 100%)',
+              filter: 'blur(3px)',
+            }}
+          />
+        </div>
+
+        {/* 3. Mid-Stage Floating Projector Fixture (Matches Center Spotlight in Reference Photo) */}
+        <div 
+          className="absolute top-[22%] sm:top-[26%] left-[24%] sm:left-[34%] w-[110px] sm:w-[220px] h-[75vh] pointer-events-none animate-spotlight-mid"
+          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          aria-hidden="true"
+        >
+          {/* Mid-stage Projector Bulb Flare */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-white shadow-[0_0_28px_10px_rgba(0,229,255,0.95),0_0_60px_20px_rgba(56,189,248,0.8)] animate-spotlight-flare" />
+          {/* Angled Volumetric Light Cone */}
+          <div 
+            className="w-full h-full opacity-80"
+            style={{
+              clipPath: 'polygon(48% 0%, 52% 0%, 100% 100%, 0% 100%)',
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(0,229,255,0.6) 22%, rgba(56,189,248,0.35) 60%, transparent 100%)',
+              filter: 'blur(2.5px)',
+            }}
+          />
+        </div>
+
+        {/* 4. Diagonal Crossing Violet/Cyan Spotlight */}
+        <div 
+          className="absolute top-[18%] sm:top-[20%] right-[16%] sm:right-[24%] w-[100px] sm:w-[200px] h-[78vh] pointer-events-none animate-spotlight-left"
+          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          aria-hidden="true"
+        >
+          {/* Projector Bulb Flare */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-white shadow-[0_0_28px_10px_rgba(192,132,252,0.9),0_0_58px_18px_rgba(147,51,234,0.7)] animate-spotlight-flare" />
+          {/* Violet/Cyan High-angle Light Cone */}
+          <div 
+            className="w-full h-full opacity-75"
+            style={{
+              clipPath: 'polygon(48% 0%, 52% 0%, 100% 100%, 0% 100%)',
+              background: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(192,132,252,0.55) 20%, rgba(0,229,255,0.32) 55%, transparent 100%)',
+              filter: 'blur(2.5px)',
+            }}
+          />
+        </div>
+
         {/* Soft Ambient Concert Atmosphere Haze */}
         <div 
-          className="absolute top-[12%] inset-x-0 h-[45%] bg-gradient-to-b from-cyan-500/10 via-purple-500/10 to-transparent blur-3xl pointer-events-none animate-stage-haze"
+          className="absolute top-[12%] inset-x-0 h-[45%] bg-gradient-to-b from-cyan-500/15 via-purple-500/12 to-transparent blur-3xl pointer-events-none animate-stage-haze" 
           aria-hidden="true"
         />
 
         {/* Subtle Dark Vignette for Text Readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/40 via-transparent to-obsidian-950/85 md:to-obsidian-950/45 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/30 via-transparent to-obsidian-950/65 md:to-obsidian-950/40 pointer-events-none" />
       </div>
 
       {/* 2. Fullscreen Canvas: Dynamic Stage Spotlights, Lasers & Festival Light Motes */}
