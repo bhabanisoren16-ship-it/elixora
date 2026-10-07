@@ -12,10 +12,6 @@ export default function LineupSection() {
     <section id="contest" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-xs font-outfit font-bold uppercase mb-3 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-          <Crown className="w-3.5 h-3.5 text-cyan-400" />
-          <span>FLAGSHIP CONTEST</span>
-        </div>
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Mr. &amp; Ms. Fresher 2026
         </h2>
@@ -54,9 +50,6 @@ export default function LineupSection() {
                 </p>
               </div>
             </div>
-            <span className="text-xs font-outfit font-black tracking-wider px-4 py-1.5 rounded-full bg-cyan-400/20 border border-cyan-400/50 text-cyan-200 shadow-sm shrink-0 uppercase backdrop-blur-md">
-              CONTEST
-            </span>
           </div>
 
           {/* Dual Category Cards: Mr. Fresher & Ms. Fresher */}

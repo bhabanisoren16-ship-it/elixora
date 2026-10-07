@@ -40,6 +40,7 @@ html {
 html.lenis,
 html.lenis body {
   height: auto;
+  min-height: 100%;
 }
 
 html.lenis,
@@ -47,11 +48,17 @@ html.lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
 
+html.lenis {
+  overscroll-behavior-y: none;
+}
+
 .lenis.lenis-stopped {
   overflow: clip !important;
 }
 
-.lenis [data-lenis-prevent] {
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-touch],
+.lenis [data-lenis-prevent-wheel] {
   overscroll-behavior: contain;
 }
 
@@ -59,6 +66,7 @@ body {
   overflow-x: clip;
   min-height: 100%;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 /* Hide Scrollbar while preserving smooth scrolling */

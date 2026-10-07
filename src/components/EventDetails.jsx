@@ -48,7 +48,7 @@ export default function EventDetails() {
   };
 
   return (
-    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-6 sm:scroll-mt-8">
+    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">
@@ -144,7 +144,7 @@ export default function EventDetails() {
           <div 
             id="venue" 
             onMouseMove={handleMouseMove}
-            className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 flex flex-col justify-between translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group scroll-mt-6 sm:scroll-mt-8 relative overflow-hidden"
+            className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 flex flex-col justify-between translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group scroll-mt-20 sm:scroll-mt-24 relative overflow-hidden"
           >
             <div className="light-spotlight-overlay" />
             <div className="light-spotlight-border" />
@@ -257,7 +257,7 @@ export default function EventDetails() {
       <div 
         id="dress-code" 
         onMouseMove={handleMouseMove}
-        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-mt-6 sm:scroll-mt-8"
+        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-mt-20 sm:scroll-mt-24"
       >
         {/* Interactive pointer light overlay & illuminated border */}
         <div className="light-spotlight-overlay" />

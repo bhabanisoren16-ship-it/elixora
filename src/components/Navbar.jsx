@@ -1,11 +1,13 @@
 import React from 'react';
 import { Ticket, Compass, Calendar, Palette, GraduationCap, Home } from 'lucide-react';
 import { scrollToTarget } from '../utils/smoothScroll';
+import { soundController } from '../utils/audio';
 
 export default function Navbar({ onOpenPass, hasGeneratedPass }) {
 
   const handleNavLinkClick = (e, href) => {
     e.preventDefault();
+    soundController.playClick?.();
     if (href === '#hero') {
       scrollToTarget(0);
       if (window.location.hash) {
@@ -102,6 +104,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
             href="#register"
             onClick={(e) => {
               e.preventDefault();
+              soundController.playClick?.();
               scrollToTarget('#register');
             }}
             className="ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-[11px] font-bold hover:shadow-neon-violet transition-all flex items-center gap-1.5 border border-white/20"
@@ -155,6 +158,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
             href="#register"
             onClick={(e) => {
               e.preventDefault();
+              soundController.playClick?.();
               scrollToTarget('#register');
             }}
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-xs sm:text-sm font-semibold hover:shadow-neon-violet hover:scale-[1.02] transition-all flex items-center gap-1.5 border border-white/20"
