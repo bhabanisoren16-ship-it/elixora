@@ -63,7 +63,7 @@ export default function EventDetails() {
       {/* Box 1: Schedule & Venue Blueprint (Translucent Glass Screen with Light Spotlight) */}
       <div 
         onMouseMove={handleMouseMove}
-        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-6 sm:mb-8"
+        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-8 sm:mb-12"
       >
         {/* Interactive pointer light overlay & illuminated border */}
         <div className="light-spotlight-overlay" />
@@ -254,7 +254,7 @@ export default function EventDetails() {
       </div>
 
       {/* Gap Header: FOR JUNIORS ONLY */}
-      <div className="text-center mt-3 sm:mt-4 mb-2 sm:mb-2.5 relative z-10">
+      <div className="text-center pt-8 sm:pt-14 pb-2 sm:pb-3 relative z-10">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           FOR JUNIORS ONLY
         </h2>
