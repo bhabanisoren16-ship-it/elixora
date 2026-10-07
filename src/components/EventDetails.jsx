@@ -253,10 +253,10 @@ export default function EventDetails() {
         )}
       </div>
 
-      {/* Gap Header: FOR JUNIORS ONLY */}
+      {/* Gap Header: For Juniors Only */}
       <div className="text-center pt-12 sm:pt-24 pb-3 sm:pb-4 relative z-10">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
-          FOR JUNIORS ONLY
+          For Juniors Only
         </h2>
       </div>
 
