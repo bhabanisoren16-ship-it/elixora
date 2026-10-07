@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Clock } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { adminStore } from '../utils/adminStore';

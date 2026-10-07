@@ -9,13 +9,7 @@ import {
   X, 
   CheckCircle2, 
   ShieldCheck, 
-  Calendar, 
-  MapPin, 
-  Shirt, 
   Printer, 
-  Clock, 
-  Hash, 
-  FileCheck,
   ArrowLeft,
   Home
 } from 'lucide-react';

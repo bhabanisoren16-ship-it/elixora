@@ -11,12 +11,7 @@ import {
   ArrowRight, 
   Smartphone, 
   User, 
-  Hash, 
-  GraduationCap, 
   Phone, 
-  Mail, 
-  FileText,
-  Clock,
   Loader2
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';

@@ -7,10 +7,7 @@ import LineupSection from './components/LineupSection';
 import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
-import { soundController } from './utils/audio';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
-import { Shield } from 'lucide-react';
-import { adminStore } from './utils/adminStore';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
 const AdminPortal = lazy(() => import('./components/AdminPortal'));

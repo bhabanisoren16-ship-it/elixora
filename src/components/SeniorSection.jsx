@@ -6,9 +6,7 @@ import desktopBg from '../assets/desktop-background.jpg';
 import { 
   KeyRound, 
   Lock, 
-  Unlock, 
   ShieldCheck, 
-  GraduationCap, 
   Crown, 
   CheckCircle2, 
   AlertTriangle, 
@@ -18,17 +16,12 @@ import {
   Upload, 
   ArrowRight, 
   ArrowLeft,
-  Home,
   Loader2, 
   User, 
   Hash, 
   Phone, 
-  Mail, 
-  FileText, 
   Quote,
   X,
-  ExternalLink,
-  Image as ImageIcon,
   CheckCheck
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
@@ -145,7 +138,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   const [isUnlocked, setIsUnlocked] = useState(initialSeniorState.isUnlocked);
   const [isPortalOpen, setIsPortalOpen] = useState(initialSeniorState.isPortalOpen);
   const [accessError, setAccessError] = useState('');
-  const [verifiedSeniorProfile, setVerifiedSeniorProfile] = useState(initialSeniorState.profile);
 
   // Senior Form State
   const [formData, setFormData] = useState(() => {
@@ -181,12 +173,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
   const qrCanvasRef = useRef(null);
 
-  const seniorBatches = [
-    "Batch of '25 • Senior",
-    "Batch of '24 • Senior",
-    "Batch of '23 • Senior",
-    "Student Council Senior Executive"
-  ];
 
   // Synchronize Senior Portal modal state, session persistence, and URL hash
   useEffect(() => {
@@ -304,7 +290,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         email: ''
       };
 
-      setVerifiedSeniorProfile(profile);
       setFormData((prev) => ({
         ...prev,
         rollNo: cleaned,
@@ -346,7 +331,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setIsPortalOpen(false);
     setIsUnlocked(false);
     setAccessRegNo('');
-    setVerifiedSeniorProfile(null);
     setFormData({
       fullName: '',
       rollNo: '',

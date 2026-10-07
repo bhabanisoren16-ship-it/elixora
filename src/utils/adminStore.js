@@ -110,6 +110,110 @@ function safeSet(key, val) {
   }
 }
 
+// Real-time backend synchronization manager
+let isRealtimeStarted = false;
+let sseConnection = null;
+
+async function fetchRegistrationsFromBackend() {
+  if (typeof window === 'undefined') return;
+  try {
+    const res = await fetch('/api/registrations');
+    if (!res.ok) return;
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data)) {
+      const serverList = json.data;
+      const localList = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+
+      // Reconcile: preserve any local registrations not yet uploaded to server
+      const serverIds = new Set(serverList.map((r) => r.ticketId));
+      const localUnsynced = localList.filter((r) => r.ticketId && !serverIds.has(r.ticketId));
+
+      // Push unsynced local items to server in background
+      for (const item of localUnsynced) {
+        sendRegistrationToBackend(item).catch(() => {});
+      }
+
+      const merged = [...localUnsynced, ...serverList];
+      safeSet(STORAGE_KEYS.REGISTRATIONS, merged);
+    }
+  } catch (err) {
+    // Graceful offline fallback
+  }
+}
+
+async function sendRegistrationToBackend(record) {
+  if (typeof window === 'undefined') return null;
+  try {
+    const res = await fetch('/api/registrations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(record),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      return json.data;
+    }
+  } catch (err) {
+    console.warn('[ELIXORA Real-Time] Backend sync offline, stored locally:', err.message);
+  }
+  return null;
+}
+
+function startRealTimeSync() {
+  if (isRealtimeStarted || typeof window === 'undefined') return;
+  isRealtimeStarted = true;
+
+  // 1. Initial backend sync
+  fetchRegistrationsFromBackend();
+
+  // 2. Connect to Server-Sent Events (SSE) for 0ms real-time push
+  try {
+    if (typeof EventSource !== 'undefined') {
+      sseConnection = new EventSource('/api/events');
+
+      sseConnection.addEventListener('new_registration', (e) => {
+        try {
+          const newRecord = JSON.parse(e.data);
+          const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+          const exists = current.some((r) => r.ticketId === newRecord.ticketId || (newRecord.rollNo && r.rollNo === newRecord.rollNo));
+          if (!exists) {
+            safeSet(STORAGE_KEYS.REGISTRATIONS, [newRecord, ...current]);
+          }
+        } catch (err) {}
+      });
+
+      sseConnection.addEventListener('update_registration', (e) => {
+        try {
+          const updatedRecord = JSON.parse(e.data);
+          const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+          const updated = current.map((r) => (r.ticketId === updatedRecord.ticketId ? updatedRecord : r));
+          safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+        } catch (err) {}
+      });
+
+      sseConnection.addEventListener('delete_registration', (e) => {
+        try {
+          const { ticketId } = JSON.parse(e.data);
+          const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+          const updated = current.filter((r) => r.ticketId !== ticketId);
+          safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+        } catch (err) {}
+      });
+
+      sseConnection.onerror = () => {
+        // SSE auto-reconnects natively; polling ensures reliable backup
+      };
+    }
+  } catch (err) {
+    console.warn('[ELIXORA Real-Time] SSE not supported, using periodic polling:', err);
+  }
+
+  // 3. Fallback periodic sync every 8 seconds
+  setInterval(() => {
+    fetchRegistrationsFromBackend();
+  }, 8000);
+}
+
 export const adminStore = {
   // Initialize storage with defaults if not present
   init() {
@@ -122,6 +226,7 @@ export const adminStore = {
     if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
       safeSet(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS);
     }
+    startRealTimeSync();
   },
 
   // 1. Registrations
@@ -176,6 +281,14 @@ export const adminStore = {
 
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
     this.syncToOnlineSheet(record);
+
+    // Save to real-time backend database immediately!
+    sendRegistrationToBackend(record).then((saved) => {
+      if (saved && saved.screenshot && saved.screenshot !== record.screenshot) {
+        this.updateRegistration(record.ticketId, { screenshot: saved.screenshot });
+      }
+    });
+
     return record;
   },
 
@@ -188,6 +301,13 @@ export const adminStore = {
       return item;
     });
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+
+    // Sync update to backend
+    fetch(`/api/registrations/${ticketId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    }).catch(() => {});
   },
 
   approveRegistration(ticketId) {
@@ -230,6 +350,11 @@ export const adminStore = {
     const list = this.getRegistrations();
     const updated = list.filter((item) => item.ticketId !== ticketId);
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+
+    // Sync delete to backend
+    fetch(`/api/registrations/${ticketId}`, {
+      method: 'DELETE',
+    }).catch(() => {});
   },
 
 
