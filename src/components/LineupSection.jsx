@@ -36,19 +36,14 @@ export default function LineupSection() {
 
         <div className="relative z-10">
           {/* Top Header Row of the Card */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10 mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500/30 to-sky-500/30 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.3)] shrink-0">
-                <Crown className="w-7 h-7" />
-              </div>
-              <div>
-                <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
-                  Mr. &amp; Ms. Fresher 2026
-                </h3>
-                <p className="text-xs sm:text-sm text-white mt-1 font-outfit font-bold subheading-readable">
-                  Crowning the most charismatic newcomers of the batch with exclusive tech trophies &amp; gifts.
-                </p>
-              </div>
+          <div className="pb-6 border-b border-white/10 mb-8">
+            <div>
+              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
+                Mr. &amp; Ms. Fresher 2026
+              </h3>
+              <p className="text-xs sm:text-sm text-white mt-1 font-outfit font-bold subheading-readable">
+                Crowning the most charismatic newcomers of the batch with exclusive tech trophies &amp; gifts.
+              </p>
             </div>
           </div>
 
