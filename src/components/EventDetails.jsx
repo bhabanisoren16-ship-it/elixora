@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
+import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info, Sparkles } from 'lucide-react';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -63,7 +63,7 @@ export default function EventDetails() {
       {/* Box 1: Schedule & Venue Blueprint (Translucent Glass Screen with Light Spotlight) */}
       <div 
         onMouseMove={handleMouseMove}
-        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-8"
+        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-3 sm:mb-4"
       >
         {/* Interactive pointer light overlay & illuminated border */}
         <div className="light-spotlight-overlay" />
@@ -251,6 +251,16 @@ export default function EventDetails() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Gap Divider: FOR JUNIORS ONLY */}
+      <div className="flex items-center justify-center gap-3 sm:gap-4 my-3 sm:my-5 relative z-10 select-none">
+        <span className="h-px flex-1 max-w-[80px] xs:max-w-[120px] sm:max-w-[180px] bg-gradient-to-r from-transparent via-cyan-400/40 to-cyan-400/80 shadow-[0_0_8px_rgba(0,229,255,0.6)]" />
+        <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-[10.5px] sm:text-xs font-outfit font-black tracking-widest uppercase shadow-[0_0_18px_rgba(6,182,212,0.35)] backdrop-blur-xl">
+          <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+          <span>FOR JUNIORS ONLY</span>
+        </div>
+        <span className="h-px flex-1 max-w-[80px] xs:max-w-[120px] sm:max-w-[180px] bg-gradient-to-l from-transparent via-cyan-400/40 to-cyan-400/80 shadow-[0_0_8px_rgba(0,229,255,0.6)]" />
       </div>
 
       {/* Box 2: Dedicated Dress Costume Box (Translucent Glass Screen with Light Spotlight) */}
