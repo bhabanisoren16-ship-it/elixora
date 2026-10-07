@@ -238,14 +238,13 @@ export default function Background() {
               { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: 160, color: 'rgba(56, 189, 248, 0.25)', phase: 4.5 },
             ]
           : [
-              { originFrac: 0.18, targetFrac: 0.42, speed: 0.0008, width: 95, color: 'rgba(0, 229, 255, 0.34)', phase: 0 },
-              { originFrac: 0.82, targetFrac: 0.55, speed: 0.0007, width: 105, color: 'rgba(56, 189, 248, 0.32)', phase: 2.0 },
-              { originFrac: 0.45, targetFrac: 0.68, speed: 0.0010, width: 110, color: 'rgba(192, 132, 252, 0.26)', phase: 4.0 },
+              { originFrac: 0.22, targetFrac: 0.36, speed: 0.0007, width: 70, color: 'rgba(0, 229, 255, 0.26)', phase: 0 },
+              { originFrac: 0.78, targetFrac: 0.64, speed: 0.0006, width: 75, color: 'rgba(56, 189, 248, 0.26)', phase: 2.0 },
             ];
 
         for (let i = 0; i < beamConfigs.length; i++) {
           const b = beamConfigs[i];
-          const sweep = Math.sin(now * b.speed + b.phase) * (isDesktop ? 80 : 40);
+          const sweep = Math.sin(now * b.speed + b.phase) * (isDesktop ? 80 : 30);
           const topX = w * b.originFrac + parallaxX * 0.4;
           const topY = 0;
           const bottomX = w * b.targetFrac + sweep + parallaxX;
@@ -254,7 +253,7 @@ export default function Background() {
           const grad = ctx.createLinearGradient(topX, topY, bottomX, bottomY);
           grad.addColorStop(0, 'rgba(255, 255, 255, 0.75)');
           grad.addColorStop(0.18, b.color);
-          grad.addColorStop(0.65, b.color.replace(/0\.\d+\)/, '0.12)'));
+          grad.addColorStop(0.65, b.color.replace(/0\.\d+\)/, '0.10)'));
           grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
           ctx.beginPath();
@@ -267,12 +266,13 @@ export default function Background() {
           ctx.fill();
 
           // Glowing lens flare spotlight fixture head
-          const flareGrad = ctx.createRadialGradient(topX, topY, 0, topX, topY, 18);
+          const flareRadius = isDesktop ? 18 : 10;
+          const flareGrad = ctx.createRadialGradient(topX, topY, 0, topX, topY, flareRadius);
           flareGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
           flareGrad.addColorStop(0.35, 'rgba(0, 229, 255, 0.85)');
           flareGrad.addColorStop(1, 'rgba(0, 229, 255, 0)');
           ctx.beginPath();
-          ctx.arc(topX, topY, 18, 0, Math.PI * 2);
+          ctx.arc(topX, topY, flareRadius, 0, Math.PI * 2);
           ctx.fillStyle = flareGrad;
           ctx.fill();
         }
@@ -533,15 +533,22 @@ export default function Background() {
         {/* === CONCERT STAGE VOLUMETRIC SPOTLIGHTS (Matching Live Stage Reference) === */}
         {/* 1. Primary Spotlight Cone: Upper-Left Truss -> Center-Right Stage */}
         <div 
-          className="absolute -top-6 left-[8%] sm:left-[16%] w-[150px] sm:w-[280px] h-[95vh] pointer-events-none animate-spotlight-left"
-          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          className="absolute -top-4 left-[6%] sm:left-[16%] w-[110px] sm:w-[280px] h-[75vh] sm:h-[95vh] pointer-events-none animate-spotlight-left overflow-hidden sm:overflow-visible"
+          style={{ transformOrigin: 'top center' }}
           aria-hidden="true"
         >
           {/* Projector Head Lens Flare Bulb */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white shadow-[0_0_35px_12px_rgba(0,229,255,0.95),0_0_70px_24px_rgba(56,189,248,0.7)] animate-spotlight-flare" />
-          {/* Volumetric Light Shaft Cone */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-5 sm:w-8 sm:h-8 rounded-full bg-white shadow-[0_0_24px_8px_rgba(0,229,255,0.95),0_0_50px_16px_rgba(56,189,248,0.7)] animate-spotlight-flare" />
+          {/* Volumetric Light Shaft Cone: Mobile Uses Native Smooth Radial Fade (Zero GPU clipping glitch) */}
           <div 
-            className="w-full h-full opacity-90"
+            className="w-full h-full opacity-80 sm:hidden"
+            style={{
+              background: 'radial-gradient(ellipse 65% 90% at 50% 0%, rgba(255,255,255,0.75) 0%, rgba(0,229,255,0.38) 22%, rgba(56,189,248,0.18) 55%, transparent 85%)',
+            }}
+          />
+          {/* Desktop High-Def Volumetric Polygon */}
+          <div 
+            className="w-full h-full opacity-90 hidden sm:block"
             style={{
               clipPath: 'polygon(48% 0%, 52% 0%, 100% 100%, 0% 100%)',
               background: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(0,229,255,0.7) 18%, rgba(56,189,248,0.4) 55%, rgba(0,229,255,0.1) 85%, transparent 100%)',
@@ -552,15 +559,22 @@ export default function Background() {
 
         {/* 2. Piercing Right Spotlight Cone: Upper-Right Truss -> Center-Left Stage */}
         <div 
-          className="absolute -top-6 right-[6%] sm:right-[14%] w-[130px] sm:w-[260px] h-[92vh] pointer-events-none animate-spotlight-right"
-          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          className="absolute -top-4 right-[6%] sm:right-[14%] w-[100px] sm:w-[260px] h-[72vh] sm:h-[92vh] pointer-events-none animate-spotlight-right overflow-hidden sm:overflow-visible"
+          style={{ transformOrigin: 'top center' }}
           aria-hidden="true"
         >
           {/* Projector Head Lens Flare Bulb */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-white shadow-[0_0_30px_10px_rgba(0,229,255,0.95),0_0_65px_20px_rgba(14,165,233,0.75)] animate-spotlight-flare" />
-          {/* Volumetric Light Shaft Cone */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-white shadow-[0_0_22px_7px_rgba(0,229,255,0.95),0_0_48px_14px_rgba(14,165,233,0.75)] animate-spotlight-flare" />
+          {/* Volumetric Light Shaft Cone: Mobile Uses Native Smooth Radial Fade */}
           <div 
-            className="w-full h-full opacity-85"
+            className="w-full h-full opacity-75 sm:hidden"
+            style={{
+              background: 'radial-gradient(ellipse 65% 90% at 50% 0%, rgba(255,255,255,0.75) 0%, rgba(0,229,255,0.35) 22%, rgba(14,165,233,0.16) 55%, transparent 85%)',
+            }}
+          />
+          {/* Desktop High-Def Volumetric Polygon */}
+          <div 
+            className="w-full h-full opacity-85 hidden sm:block"
             style={{
               clipPath: 'polygon(48% 0%, 52% 0%, 100% 100%, 0% 100%)',
               background: 'linear-gradient(to bottom, rgba(255,255,255,0.92) 0%, rgba(0,229,255,0.65) 20%, rgba(14,165,233,0.38) 60%, rgba(0,229,255,0.08) 88%, transparent 100%)',
@@ -569,10 +583,10 @@ export default function Background() {
           />
         </div>
 
-        {/* 3. Mid-Stage Floating Projector Fixture (Matches Center Spotlight in Reference Photo) */}
+        {/* 3. Mid-Stage Floating Projector Fixture - Desktop Only (Prevents Mobile Overdraw) */}
         <div 
-          className="absolute top-[22%] sm:top-[26%] left-[24%] sm:left-[34%] w-[110px] sm:w-[220px] h-[75vh] pointer-events-none animate-spotlight-mid"
-          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          className="hidden sm:block absolute top-[22%] sm:top-[26%] left-[24%] sm:left-[34%] w-[110px] sm:w-[220px] h-[75vh] pointer-events-none animate-spotlight-mid"
+          style={{ transformOrigin: 'top center' }}
           aria-hidden="true"
         >
           {/* Mid-stage Projector Bulb Flare */}
@@ -588,10 +602,10 @@ export default function Background() {
           />
         </div>
 
-        {/* 4. Diagonal Crossing Violet/Cyan Spotlight */}
+        {/* 4. Diagonal Crossing Violet/Cyan Spotlight - Desktop Only */}
         <div 
-          className="absolute top-[18%] sm:top-[20%] right-[16%] sm:right-[24%] w-[100px] sm:w-[200px] h-[78vh] pointer-events-none animate-spotlight-left"
-          style={{ mixBlendMode: 'screen', transformOrigin: 'top center' }}
+          className="hidden sm:block absolute top-[18%] sm:top-[20%] right-[16%] sm:right-[24%] w-[100px] sm:w-[200px] h-[78vh] pointer-events-none animate-spotlight-left"
+          style={{ transformOrigin: 'top center' }}
           aria-hidden="true"
         >
           {/* Projector Bulb Flare */}
@@ -620,7 +634,7 @@ export default function Background() {
       {/* 2. Fullscreen Canvas: Dynamic Stage Spotlights, Lasers & Festival Light Motes */}
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 z-10 pointer-events-none gpu-accelerated"
+        className="fixed inset-0 z-0 pointer-events-none gpu-accelerated"
         style={{
           position: 'fixed',
           top: 0,
