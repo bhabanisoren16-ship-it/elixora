@@ -64,9 +64,6 @@ export default function LineupSection() {
                     <Trophy className="w-4 h-4 text-sky-400" />
                     MR. FRESHER
                   </span>
-                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-sky-500/25 text-sky-200 border border-sky-400/50 font-bold backdrop-blur-sm">
-                    BATCH 2026
-                  </span>
                 </div>
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-sky-300 transition-colors tracking-tight">
                   The Charisma &amp; Presence Title
@@ -91,9 +88,6 @@ export default function LineupSection() {
                   <span className="text-xs font-outfit font-black text-purple-300 tracking-wider flex items-center gap-2">
                     <Crown className="w-4 h-4 text-purple-400" />
                     MS. FRESHER
-                  </span>
-                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded bg-purple-500/25 text-purple-200 border border-purple-400/50 font-bold backdrop-blur-sm">
-                    BATCH 2026
                   </span>
                 </div>
                 <h4 className="font-outfit font-black text-xl sm:text-2xl text-white mb-2 group-hover:text-purple-300 transition-colors tracking-tight">
