@@ -80,16 +80,16 @@ function getInitialSeniorState() {
   }
   try {
     const isHash = window.location.hash === '#senior-portal';
+    const storedOpen = (
+      sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
+      isHash
+    );
+
     const storedRoll = (
       sessionStorage.getItem('elixora_senior_roll') ||
       localStorage.getItem('elixora_senior_roll') ||
       ''
     ).trim().toUpperCase();
-
-    const storedOpen = (
-      sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
-      isHash
-    );
 
     const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
     const found = (storedRoll && (REGISTERED_SENIORS[storedRoll] || dynamicRoster[storedRoll])) || null;
@@ -125,14 +125,14 @@ function getInitialSeniorState() {
         profile
       };
     }
-    return { isUnlocked: false, isPortalOpen: false, rollNo: storedRoll || '', profile: null };
+    return { isUnlocked: false, isPortalOpen: false, rollNo: '', profile: null };
   } catch (e) {}
   return { isUnlocked: false, isPortalOpen: false, rollNo: '', profile: null };
 }
 
 export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   const [initialSeniorState] = useState(getInitialSeniorState);
-  const [accessRegNo, setAccessRegNo] = useState(initialSeniorState.rollNo || '');
+  const [accessRegNo, setAccessRegNo] = useState('');
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(initialSeniorState.isUnlocked);
   const [isPortalOpen, setIsPortalOpen] = useState(initialSeniorState.isPortalOpen);
@@ -172,6 +172,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
   const qrCanvasRef = useRef(null);
 
+  // Guarantee access input is empty on load and whenever portal is closed
+  useEffect(() => {
+    if (!isPortalOpen) {
+      setAccessRegNo('');
+    }
+  }, [isPortalOpen]);
 
   // Synchronize Senior Portal modal state, session persistence, and URL hash
   useEffect(() => {
@@ -316,6 +322,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     soundController.playClick?.();
     setIsPortalOpen(false);
     setIsUnlocked(false);
+    setAccessRegNo('');
     try {
       sessionStorage.removeItem('elixora_senior_portal_open');
       localStorage.removeItem('elixora_senior_portal_open');
@@ -599,6 +606,31 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         </p>
       </div>
 
+      {/* Pass Type Switcher Tabs (Senior VIP Pass Default across Desktop & Mobile) */}
+      <div className="flex items-center justify-center mb-6 sm:mb-8">
+        <div className="inline-flex p-1 rounded-2xl bg-obsidian-900/90 border border-white/15 backdrop-blur-xl shadow-2xl">
+          <button
+            type="button"
+            className="flex items-center gap-2 px-4 sm:px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-xs sm:text-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all cursor-default"
+          >
+            <Crown className="w-4 h-4 text-cyan-200" />
+            <span>Senior VIP Pass (Default)</span>
+          </button>
+          <a
+            href="#register"
+            onClick={(e) => {
+              e.preventDefault();
+              soundController.playClick?.();
+              scrollToTarget('#register');
+            }}
+            className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-outfit font-semibold text-xs sm:text-sm transition-all"
+          >
+            <span>Freshers Pass</span>
+            <span className="text-[10px] text-slate-500 hidden sm:inline">↓</span>
+          </a>
+        </div>
+      </div>
+
       {/* AUTHENTICATION GATEWAY (ENTER REGISTRATION NUMBER TO UNLOCK SENIOR PORTAL) */}
       <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl p-4 sm:p-7 lg:p-9 border border-cyan-500/35 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(6,182,212,0.15)] relative overflow-hidden transition-all duration-300">
         
@@ -649,12 +681,18 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
                 <input
                   type="text"
+                  name="seniorAccessPass"
                   value={accessRegNo}
                   onChange={(e) => {
                     setAccessRegNo(e.target.value);
                     if (accessError) setAccessError('');
                   }}
-                  placeholder="ENTER REGISTRATION NO"
+                  placeholder="ENTER PASS"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="characters"
+                  spellCheck="false"
+                  data-lpignore="true"
                   className="w-full pl-10 pr-3.5 py-3 sm:py-3.5 rounded-xl bg-black/60 border border-white/20 text-white placeholder-slate-500 text-xs sm:text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all placeholder:text-xs sm:placeholder:text-sm"
                 />
               </div>
