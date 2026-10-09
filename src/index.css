@@ -24,49 +24,49 @@
 
 /* Modern Hardware-Accelerated Smooth Scrolling */
 html {
-  scroll-behavior: smooth;
+  overflow-x: clip;
   scroll-padding-top: 6.5rem; /* Extra clearance for 2-row mobile fixed header */
-  overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
 }
 
 @media (min-width: 768px) {
   html {
+    scroll-behavior: smooth;
     scroll-padding-top: 5.5rem; /* Standard clearance for single-row desktop header */
   }
 }
 
-/* Lenis Smooth Inertia Integration */
-html.lenis,
-html.lenis body {
-  height: auto;
-  min-height: 100%;
-}
-
-html.lenis,
-html.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-html.lenis {
-  overscroll-behavior-y: none;
-}
-
-.lenis.lenis-stopped {
-  overflow: clip !important;
-}
-
-.lenis [data-lenis-prevent],
-.lenis [data-lenis-prevent-touch],
-.lenis [data-lenis-prevent-wheel] {
-  overscroll-behavior: contain;
-}
-
 body {
-  overflow-x: hidden;
   min-height: 100%;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
+  overflow-x: clip;
+}
+
+/* Lenis Smooth Inertia Integration - Scoped strictly to desktop devices */
+@media (min-width: 768px) {
+  html.lenis,
+  html.lenis body {
+    height: auto;
+    min-height: 100%;
+  }
+
+  html.lenis,
+  html.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  html.lenis {
+    overscroll-behavior-y: none;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden !important;
+  }
+
+  .lenis [data-lenis-prevent],
+  .lenis [data-lenis-prevent-touch],
+  .lenis [data-lenis-prevent-wheel] {
+    overscroll-behavior: contain;
+  }
 }
 
 /* Hide Scrollbar while preserving smooth scrolling */
@@ -91,18 +91,13 @@ html, body, * {
     right: 0 !important;
     bottom: 0 !important;
     width: 100% !important;
-    width: 100vw !important;
     height: 100% !important;
-    height: 100lvh !important;
-    height: 100vh !important;
-    min-height: 100% !important;
     transform: none !important;
     -webkit-transform: none !important;
     will-change: auto !important;
     overflow: hidden !important;
     z-index: 0 !important;
     pointer-events: none !important;
-    touch-action: none !important;
     -webkit-touch-callout: none !important;
     user-select: none !important;
   }
@@ -112,18 +107,13 @@ html, body, * {
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    width: 100vw !important;
     height: 100% !important;
-    height: 100lvh !important;
-    height: 100vh !important;
-    min-height: 100% !important;
     object-fit: cover !important;
     object-position: center 20% !important;
     transform: none !important;
     -webkit-transform: none !important;
     will-change: auto !important;
     pointer-events: none !important;
-    touch-action: none !important;
   }
 }
 

@@ -6,8 +6,23 @@ let rafId = null;
 let resizeHandler = null;
 
 /**
- * Initialize Lenis smooth inertia scrolling.
- * Delivers effortless, silky-smooth, fluid scrolling across desktop and mobile.
+ * Determine if the current device is a mobile or touch device.
+ * Touch devices natively execute 120Hz/60Hz hardware-accelerated momentum scrolling.
+ */
+export function isMobileOrTouch() {
+  if (typeof window === 'undefined') return false;
+  return (
+    'ontouchstart' in window ||
+    (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.innerWidth < 768
+  );
+}
+
+/**
+ * Initialize Lenis smooth inertia scrolling strictly for desktop mouse/trackpad environments.
+ * Mobile & touch devices use 100% native hardware-accelerated scrolling to permanently
+ * prevent touch locking, stutters, and address-bar resize glitches.
  */
 export function initSmoothScroll(options = {}) {
   if (typeof window === 'undefined') return null;
@@ -15,7 +30,17 @@ export function initSmoothScroll(options = {}) {
   // Clean up any prior instance
   destroySmoothScroll();
 
-  // Reset any conflicting inline styles
+  // If on mobile / touch screen, rely 100% on ultra-fast native device scrolling
+  if (isMobileOrTouch()) {
+    try {
+      document.documentElement.style.scrollBehavior = 'auto';
+      document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
+      document.body.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
+    } catch (e) {}
+    return null;
+  }
+
+  // Reset any conflicting inline styles on desktop
   try {
     document.documentElement.style.scrollBehavior = 'auto';
     document.body.style.scrollBehavior = 'auto';
@@ -23,17 +48,15 @@ export function initSmoothScroll(options = {}) {
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // High-performance Lenis configuration tailored for desktop & mobile displays (60Hz to 120Hz)
+  // High-performance Lenis configuration tailored strictly for desktop displays
   const lenis = new Lenis({
     lerp: prefersReducedMotion ? 1 : 0.088, // Silky smooth exponential damping physics for desktop wheels & touchpads
     wheelMultiplier: 1.0, // Natural 1:1 wheel response
-    touchMultiplier: 1.25, // Natural 1:1 touch response for mobile swipe gestures
+    touchMultiplier: 1.0,
     smoothWheel: !prefersReducedMotion,
-    syncTouch: !prefersReducedMotion, // Enables smooth touch inertia momentum across mobile devices & tablets!
-    syncTouchLerp: 0.075, // Silky touch damping for 60Hz and 120Hz mobile screens
-    touchInertiaExponent: 1.65, // Physics momentum curve for swipe releases
-    autoRaf: false, // Driven by our high-precision requestAnimationFrame loop
-    anchors: true, // Automatically intercepts in-page #anchor clicks
+    syncTouch: false,
+    autoRaf: false,
+    anchors: false, // Let custom scrollToTarget handle anchors cleanly
     infinite: false,
     autoResize: true,
     ...options,
@@ -42,7 +65,7 @@ export function initSmoothScroll(options = {}) {
   lenisInstance = lenis;
   window.__lenis = lenis;
 
-  // Synchronized RAF loop
+  // Synchronized RAF loop on desktop
   function raf(time) {
     if (lenisInstance) {
       lenisInstance.raf(time);
@@ -53,7 +76,10 @@ export function initSmoothScroll(options = {}) {
 
   // Recalculate dimensions on window resize and orientation changes
   resizeHandler = () => {
-    if (lenisInstance) {
+    if (isMobileOrTouch()) {
+      // User resized down to mobile viewport: destroy Lenis to free native touch
+      destroySmoothScroll();
+    } else if (lenisInstance) {
       lenisInstance.resize();
     }
   };
@@ -73,23 +99,26 @@ export function initSmoothScroll(options = {}) {
 
 /**
  * Smoothly glide to any anchor target, element, or number offset with exact header offset clearance.
- * Handles both main page elements and scrollable inner containers (e.g. Senior Portal modal).
+ * Handles both main page elements and scrollable inner containers (e.g. Senior Portal modal),
+ * seamlessly supporting both desktop Lenis and 100% native mobile smooth scrolling.
  */
 export function scrollToTarget(target, customOptions = {}) {
   if (typeof window === 'undefined') return;
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const defaultScrollOptions = {
-    duration: prefersReducedMotion ? 0 : 1.15,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Luxurious exponential deceleration curve
-    ...customOptions,
-  };
+  // Compute mobile vs desktop header clearance
+  const header = document.querySelector('header');
+  const headerOffset = header ? header.offsetHeight + 14 : (window.innerWidth < 768 ? 90 : 80);
 
   // 1. Target is top or 0
   if (target === 0 || target === 'top' || target === '#hero') {
     if (lenisInstance && !lenisInstance.isStopped) {
-      lenisInstance.scrollTo(0, defaultScrollOptions);
+      lenisInstance.scrollTo(0, {
+        duration: prefersReducedMotion ? 0 : 1.15,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        ...customOptions,
+      });
     } else {
       window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     }
@@ -100,7 +129,11 @@ export function scrollToTarget(target, customOptions = {}) {
   if (typeof target === 'number') {
     const clampedY = Math.max(0, target);
     if (lenisInstance && !lenisInstance.isStopped) {
-      lenisInstance.scrollTo(clampedY, defaultScrollOptions);
+      lenisInstance.scrollTo(clampedY, {
+        duration: prefersReducedMotion ? 0 : 1.15,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        ...customOptions,
+      });
     } else {
       window.scrollTo({ top: clampedY, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
     }
@@ -140,8 +173,8 @@ export function scrollToTarget(target, customOptions = {}) {
     const elemRect = element.getBoundingClientRect();
     const currentScroll = scrollContainer.scrollTop;
     const stickyHeader = scrollContainer.querySelector('header') || scrollContainer.querySelector('nav');
-    const headerOffset = stickyHeader ? stickyHeader.offsetHeight + 16 : 24;
-    const targetOffset = currentScroll + (elemRect.top - containerRect.top) - headerOffset;
+    const innerHeaderOffset = stickyHeader ? stickyHeader.offsetHeight + 16 : 24;
+    const targetOffset = currentScroll + (elemRect.top - containerRect.top) - innerHeaderOffset;
 
     scrollContainer.scrollTo({
       top: Math.max(0, targetOffset),
@@ -150,13 +183,20 @@ export function scrollToTarget(target, customOptions = {}) {
     return;
   }
 
-  // Main page scroll: Lenis takes precedence if active, else native smooth scrollIntoView
+  // Main page scroll:
   if (lenisInstance && !lenisInstance.isStopped) {
-    lenisInstance.scrollTo(element, defaultScrollOptions);
+    lenisInstance.scrollTo(element, {
+      duration: prefersReducedMotion ? 0 : 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      offset: -headerOffset,
+      ...customOptions,
+    });
   } else {
-    element.scrollIntoView({
+    // Native mobile/touch smooth scroll with exact header clearance
+    const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+    window.scrollTo({
+      top: Math.max(0, elementTop - headerOffset),
       behavior: prefersReducedMotion ? 'auto' : 'smooth',
-      block: 'start',
     });
   }
 }
@@ -199,6 +239,14 @@ export function destroySmoothScroll() {
     lenisInstance = null;
     window.__lenis = null;
   }
+  try {
+    document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
+    document.body.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.documentElement.style.scrollBehavior = '';
+    document.body.style.scrollBehavior = '';
+  } catch (e) {}
 }
 
 export function getLenis() {

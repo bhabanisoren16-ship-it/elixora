@@ -76,91 +76,28 @@ const REGISTERED_SENIORS = {
 const SENIOR_TICKET_PRICE = EVENT_DETAILS.seniorTicketPrice || 600;
 
 function getInitialSeniorState() {
-  if (typeof window === 'undefined') {
-    return { isUnlocked: false, isPortalOpen: false, rollNo: '', profile: null };
-  }
-  try {
-    const isHash = window.location.hash === '#senior-portal';
-    const storedRoll = (
-      sessionStorage.getItem('elixora_senior_roll') ||
-      localStorage.getItem('elixora_senior_roll') ||
-      ''
-    ).trim().toUpperCase();
-
-    const storedOpen = (
-      sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
-      localStorage.getItem('elixora_senior_portal_open') === 'true' ||
-      isHash
-    );
-
-    const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
-    const found = (storedRoll && (REGISTERED_SENIORS[storedRoll] || dynamicRoster[storedRoll])) || null;
-
-    if (storedRoll && found) {
-      const profile = {
-        name: found.name,
-        branch: found.branch || 'Biotechnology',
-        batch: found.batch || "Batch of '25 • Senior",
-        role: 'Senior VIP Pass (Full Access + Red Carpet)',
-        phone: '',
-        email: ''
-      };
-      return {
-        isUnlocked: true,
-        isPortalOpen: storedOpen,
-        rollNo: storedRoll,
-        profile
-      };
-    } else if (storedRoll) {
-      const profile = {
-        name: 'Senior Student',
-        branch: 'Biotechnology',
-        batch: "Batch of '25 • Senior",
-        role: 'Senior VIP Pass (Full Access + Red Carpet)',
-        phone: '',
-        email: ''
-      };
-      return {
-        isUnlocked: true,
-        isPortalOpen: storedOpen,
-        rollNo: storedRoll,
-        profile
-      };
-    }
-  } catch (e) {}
   return { isUnlocked: false, isPortalOpen: false, rollNo: '', profile: null };
 }
 
 export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
-  const [initialSeniorState] = useState(getInitialSeniorState);
-  const [accessRegNo, setAccessRegNo] = useState(initialSeniorState.rollNo || '');
+  const [accessRegNo, setAccessRegNo] = useState('');
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
-  const [isUnlocked, setIsUnlocked] = useState(initialSeniorState.isUnlocked);
-  const [isPortalOpen, setIsPortalOpen] = useState(initialSeniorState.isPortalOpen);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
   const [accessError, setAccessError] = useState('');
 
-  // Senior Form State
-  const [formData, setFormData] = useState(() => {
-    const base = {
-      fullName: initialSeniorState.profile?.name || '',
-      rollNo: initialSeniorState.rollNo || '',
-      branch: initialSeniorState.profile?.branch || 'Biotechnology',
-      batch: initialSeniorState.profile?.batch || "Batch of '25 • Senior",
-      role: 'Senior VIP Pass (Full Access + Red Carpet)',
-      phone: '',
-      email: '',
-      diet: 'Veg',
-      seniorQuote: '',
-      utrNumber: '',
-    };
-    try {
-      const saved = sessionStorage.getItem('elixora_senior_form') || localStorage.getItem('elixora_senior_form');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return { ...base, ...parsed };
-      }
-    } catch (e) {}
-    return base;
+  // Senior Form State - Always pristine and clean by default for every attendee
+  const [formData, setFormData] = useState({
+    fullName: '',
+    rollNo: '',
+    branch: 'Biotechnology',
+    batch: "Batch of '25 • Senior",
+    role: 'Senior VIP Pass (Full Access + Red Carpet)',
+    phone: '',
+    email: '',
+    diet: 'Veg',
+    seniorQuote: '',
+    utrNumber: '',
   });
 
   // UI state
@@ -173,20 +110,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
   const qrCanvasRef = useRef(null);
 
-
-  // Synchronize Senior Portal modal state, session persistence, and URL hash
+  // Synchronize Senior Portal modal state and URL hash (no persistent user storage)
   useEffect(() => {
     onPortalToggle?.(isPortalOpen);
     if (isPortalOpen) {
       document.body.classList.add('senior-portal-open');
-      try {
-        sessionStorage.setItem('elixora_senior_portal_open', 'true');
-        localStorage.setItem('elixora_senior_portal_open', 'true');
-        if (formData.rollNo) {
-          sessionStorage.setItem('elixora_senior_roll', formData.rollNo);
-          localStorage.setItem('elixora_senior_roll', formData.rollNo);
-        }
-      } catch (e) {}
       if (window.location.hash !== '#senior-portal') {
         try {
           history.replaceState(null, '', window.location.pathname + window.location.search + '#senior-portal');
@@ -194,10 +122,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       }
     } else {
       document.body.classList.remove('senior-portal-open');
-      try {
-        sessionStorage.removeItem('elixora_senior_portal_open');
-        localStorage.removeItem('elixora_senior_portal_open');
-      } catch (e) {}
       if (window.location.hash === '#senior-portal') {
         try {
           history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -207,47 +131,18 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     return () => {
       document.body.classList.remove('senior-portal-open');
     };
-  }, [isPortalOpen, onPortalToggle, formData.rollNo]);
+  }, [isPortalOpen, onPortalToggle]);
 
-  // Listen for hashchange to open portal if URL contains #senior-portal
+  // Handle back button / hash changes
   useEffect(() => {
     const handleHashChange = () => {
-      if (window.location.hash === '#senior-portal') {
-        const storedRoll = (
-          sessionStorage.getItem('elixora_senior_roll') ||
-          localStorage.getItem('elixora_senior_roll') ||
-          formData.rollNo ||
-          ''
-        ).trim().toUpperCase();
-
-        if (storedRoll) {
-          setIsUnlocked(true);
-          setIsPortalOpen(true);
-        }
+      if (window.location.hash !== '#senior-portal' && isPortalOpen) {
+        setIsPortalOpen(false);
       }
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [formData.rollNo]);
-
-  // Persist form inputs in both sessionStorage and localStorage during active session
-  useEffect(() => {
-    if (isUnlocked && formData.rollNo) {
-      try {
-        sessionStorage.setItem('elixora_senior_roll', formData.rollNo);
-        localStorage.setItem('elixora_senior_roll', formData.rollNo);
-        const formPayload = JSON.stringify({
-          phone: formData.phone,
-          seniorQuote: formData.seniorQuote,
-          utrNumber: formData.utrNumber,
-          batch: formData.batch,
-          diet: formData.diet,
-        });
-        sessionStorage.setItem('elixora_senior_form', formPayload);
-        localStorage.setItem('elixora_senior_form', formPayload);
-      } catch (e) {}
-    }
-  }, [isUnlocked, formData.rollNo, formData.phone, formData.seniorQuote, formData.utrNumber, formData.batch, formData.diet]);
+  }, [isPortalOpen]);
 
   // Helper: Verify Senior Registration Number strictly against the authorized roster
   const handleVerifyAccess = (e) => {
@@ -301,32 +196,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       setIsUnlocked(true);
       setIsPortalOpen(true);
-
-      try {
-        sessionStorage.setItem('elixora_senior_roll', cleaned);
-        localStorage.setItem('elixora_senior_roll', cleaned);
-        sessionStorage.setItem('elixora_senior_portal_open', 'true');
-        localStorage.setItem('elixora_senior_portal_open', 'true');
-      } catch (err) {}
     }, 450);
   };
 
   const handleClosePortal = () => {
-    soundController.playClick?.();
-    setIsPortalOpen(false);
-    try {
-      sessionStorage.removeItem('elixora_senior_portal_open');
-      localStorage.removeItem('elixora_senior_portal_open');
-      if (typeof window !== 'undefined') {
-        if (window.location.hash === '#senior-portal') {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-        scrollToTarget(0);
-      }
-    } catch (err) {}
-  };
-
-  const handleLockAgain = () => {
     soundController.playClick?.();
     setIsPortalOpen(false);
     setIsUnlocked(false);
@@ -353,13 +226,19 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       localStorage.removeItem('elixora_senior_roll');
       localStorage.removeItem('elixora_senior_portal_open');
       localStorage.removeItem('elixora_senior_form');
-      if (typeof window !== 'undefined') {
-        if (window.location.hash === '#senior-portal' || window.location.hash) {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-        scrollToTarget('#seniors');
-      }
     } catch (err) {}
+    if (typeof window !== 'undefined') {
+      if (window.location.hash === '#senior-portal') {
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch (e) {}
+      }
+      scrollToTarget('#seniors');
+    }
+  };
+
+  const handleLockAgain = () => {
+    handleClosePortal();
   };
 
   // Generate UPI QR Code dynamically for Senior Pass
@@ -397,11 +276,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
   // Lock body scroll and listen for Escape key when Senior Portal modal is open
   useEffect(() => {
-    if (!isPortalOpen) return;
+    if (!isPortalOpen) {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+      return;
+    }
 
-    const originalOverflow = document.body.style.overflow;
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-    const originalPaddingRight = document.body.style.paddingRight;
 
     document.body.style.overflow = 'hidden';
     if (scrollbarWidth > 0) {
@@ -417,8 +298,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
-      document.body.style.paddingRight = originalPaddingRight;
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isPortalOpen]);
@@ -539,7 +420,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setTimeout(() => {
       setIsMintingPass(false);
       setMintingStep(0);
-      handleClosePortal();
       soundController.playSuccess?.();
 
       const ticketId = `ELX-SR-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -572,6 +452,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         generatedAt: new Date().toISOString(),
       };
 
+      handleClosePortal();
       adminStore.addRegistration(seniorPass);
       onPassGenerated?.(seniorPass);
     }, 3600);
@@ -586,13 +467,42 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     <section id="seniors" className="relative py-8 sm:py-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Section Header */}
-      <div className="text-center mb-5 sm:mb-8">
+      <div className="text-center mb-4 sm:mb-6">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-cyan-300 text-xs font-outfit font-bold uppercase mb-2.5 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+          <Crown className="w-3.5 h-3.5 text-cyan-400" />
+          <span>OFFICIAL SENIOR VIP PASS • DEFAULT CHECKOUT</span>
+        </div>
         <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl md:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
         <p className="mt-2 text-white max-w-2xl mx-auto text-xs sm:text-base font-outfit font-bold subheading-readable tracking-wide">
           Exclusively reserved for college seniors and council leaders. Verification of registered registration number is mandatory to unlock access.
         </p>
+      </div>
+
+      {/* Pass Type Switcher Tabs (Senior VIP Pass Default across Desktop & Mobile) */}
+      <div className="flex items-center justify-center mb-6 sm:mb-8">
+        <div className="inline-flex p-1 rounded-2xl bg-obsidian-900/90 border border-white/15 backdrop-blur-xl shadow-2xl">
+          <button
+            type="button"
+            className="flex items-center gap-2 px-4 sm:px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-xs sm:text-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all cursor-default"
+          >
+            <Crown className="w-4 h-4 text-cyan-200" />
+            <span>Senior VIP Pass (Default)</span>
+          </button>
+          <a
+            href="#register"
+            onClick={(e) => {
+              e.preventDefault();
+              soundController.playClick?.();
+              scrollToTarget('#register');
+            }}
+            className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-outfit font-semibold text-xs sm:text-sm transition-all"
+          >
+            <span>Freshers Pass</span>
+            <span className="text-[10px] text-slate-500 hidden sm:inline">↓</span>
+          </a>
+        </div>
       </div>
 
       {/* STATE 1: LOCKED GATEWAY (ENTER REGISTRATION NUMBER) */}
