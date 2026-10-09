@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, Navigation, Shirt, ExternalLink, Download, Compass, Info } from 'lucide-react';
+import { Calendar, Clock, MapPin, Navigation, ExternalLink, Download, Compass, Info } from 'lucide-react';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -281,10 +281,6 @@ export default function EventDetails() {
           {/* Header row */}
           <div className="pb-5 border-b border-white/15 mb-5">
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-400/20 border border-cyan-400/50 text-cyan-200 text-xs font-outfit font-extrabold uppercase mb-2.5 shadow-[0_0_12px_rgba(0,229,255,0.25)] backdrop-blur-md">
-                <Shirt className="w-4 h-4 text-cyan-300" />
-                <span>OFFICIAL ATTIRE CODE</span>
-              </div>
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
                 Formal &amp; Indo-Western Fusion
               </h3>
