@@ -19,10 +19,7 @@
         try {
           isSenior = (
             window.location.hash === '#senior-portal' ||
-            sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
-            localStorage.getItem('elixora_senior_portal_open') === 'true' ||
-            Boolean(sessionStorage.getItem('elixora_senior_roll')) ||
-            Boolean(localStorage.getItem('elixora_senior_roll'))
+            sessionStorage.getItem('elixora_senior_portal_open') === 'true'
           );
         } catch (e) {}
 

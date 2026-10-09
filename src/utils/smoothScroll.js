@@ -11,12 +11,12 @@ let resizeHandler = null;
  */
 export function isMobileOrTouch() {
   if (typeof window === 'undefined') return false;
-  return (
-    'ontouchstart' in window ||
-    (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
-    window.matchMedia('(pointer: coarse)').matches ||
-    window.innerWidth < 768
-  );
+  // Laptops and desktops (>= 1024px) must ALWAYS be treated as desktop environments,
+  // regardless of touchscreen capabilities or Windows Precision Touchpads.
+  if (window.innerWidth >= 1024) return false;
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (window.innerWidth < 768) return true;
+  return isMobileUA;
 }
 
 /**
@@ -30,7 +30,7 @@ export function initSmoothScroll(options = {}) {
   // Clean up any prior instance
   destroySmoothScroll();
 
-  // If on mobile / touch screen, rely 100% on ultra-fast native device scrolling
+  // If on mobile / small touch screen, rely 100% on ultra-fast native device scrolling
   if (isMobileOrTouch()) {
     try {
       document.documentElement.style.scrollBehavior = 'auto';
@@ -48,14 +48,14 @@ export function initSmoothScroll(options = {}) {
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // High-performance Lenis configuration tailored strictly for desktop displays
+  // High-performance Lenis configuration tailored strictly for desktop and laptop displays
   const lenis = new Lenis({
-    lerp: prefersReducedMotion ? 1 : 0.088, // Silky smooth exponential damping physics for desktop wheels & touchpads
+    lerp: prefersReducedMotion ? 1 : 0.1, // Smooth, natural 60Hz/120Hz/144Hz responsive inertia
     wheelMultiplier: 1.0, // Natural 1:1 wheel response
     touchMultiplier: 1.0,
     smoothWheel: !prefersReducedMotion,
     syncTouch: false,
-    autoRaf: false,
+    autoRaf: true, // Use Lenis's built-in high-precision animation loop
     anchors: false, // Let custom scrollToTarget handle anchors cleanly
     infinite: false,
     autoResize: true,
@@ -64,15 +64,6 @@ export function initSmoothScroll(options = {}) {
 
   lenisInstance = lenis;
   window.__lenis = lenis;
-
-  // Synchronized RAF loop on desktop
-  function raf(time) {
-    if (lenisInstance) {
-      lenisInstance.raf(time);
-    }
-    rafId = requestAnimationFrame(raf);
-  }
-  rafId = requestAnimationFrame(raf);
 
   // Recalculate dimensions on window resize and orientation changes
   resizeHandler = () => {
@@ -217,6 +208,12 @@ export function resumeSmoothScroll() {
   if (lenisInstance) {
     lenisInstance.start();
   }
+  try {
+    document.documentElement.classList.remove('lenis-stopped');
+    document.body.classList.remove('lenis-stopped');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  } catch (e) {}
 }
 
 /**

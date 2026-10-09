@@ -27,10 +27,7 @@ function checkIsSeniorPortalRoute() {
   try {
     return (
       window.location.hash === '#senior-portal' ||
-      sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
-      localStorage.getItem('elixora_senior_portal_open') === 'true' ||
-      Boolean(sessionStorage.getItem('elixora_senior_roll')) ||
-      Boolean(localStorage.getItem('elixora_senior_roll'))
+      sessionStorage.getItem('elixora_senior_portal_open') === 'true'
     );
   } catch (e) {
     return false;
@@ -120,6 +117,9 @@ export default function App() {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
       document.documentElement.style.overflow = '';
+      document.documentElement.classList.remove('lenis-stopped');
+      document.body.classList.remove('lenis-stopped');
+      resumeSmoothScroll();
 
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';

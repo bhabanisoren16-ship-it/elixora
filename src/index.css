@@ -24,21 +24,21 @@
 
 /* Modern Hardware-Accelerated Smooth Scrolling */
 html {
-  overflow-x: clip;
+  overflow-x: hidden;
   scroll-padding-top: 6.5rem; /* Extra clearance for 2-row mobile fixed header */
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto;
 }
 
 @media (min-width: 768px) {
   html {
-    scroll-behavior: smooth;
     scroll-padding-top: 5.5rem; /* Standard clearance for single-row desktop header */
   }
 }
 
 body {
   min-height: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 /* Lenis Smooth Inertia Integration - Scoped strictly to desktop devices */

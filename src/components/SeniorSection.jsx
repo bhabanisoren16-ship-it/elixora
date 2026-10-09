@@ -89,7 +89,6 @@ function getInitialSeniorState() {
 
     const storedOpen = (
       sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
-      localStorage.getItem('elixora_senior_portal_open') === 'true' ||
       isHash
     );
 
@@ -194,6 +193,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       }
     } else {
       document.body.classList.remove('senior-portal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
       try {
         sessionStorage.removeItem('elixora_senior_portal_open');
         localStorage.removeItem('elixora_senior_portal_open');
