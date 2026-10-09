@@ -99,18 +99,18 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
             </span>
           )}
 
-          {/* Grab Pass CTA - Defaults to Senior Pass */}
+          {/* Grab Pass CTA */}
           <a
-            href="#seniors"
+            href="#register"
             onClick={(e) => {
               e.preventDefault();
               soundController.playClick?.();
-              scrollToTarget('#seniors');
+              scrollToTarget('#register');
             }}
-            className="ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white text-[11px] font-bold hover:shadow-neon-cyan transition-all flex items-center gap-1.5 border border-white/20 shadow-[0_0_15px_rgba(6,182,212,0.4)]"
+            className="ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-[11px] font-bold hover:shadow-neon-violet transition-all flex items-center gap-1.5 border border-white/20"
           >
             <Ticket className="w-3.5 h-3.5 text-cyan-200" />
-            <span>Senior Pass</span>
+            <span>Grab Pass</span>
           </a>
         </div>
 
@@ -153,18 +153,18 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
             </button>
           )}
 
-          {/* Grab Pass CTA - Defaults to Senior Pass */}
+          {/* Grab Pass CTA */}
           <a
-            href="#seniors"
+            href="#register"
             onClick={(e) => {
               e.preventDefault();
               soundController.playClick?.();
-              scrollToTarget('#seniors');
+              scrollToTarget('#register');
             }}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white text-xs sm:text-sm font-semibold hover:shadow-neon-cyan hover:scale-[1.02] transition-all flex items-center gap-1.5 border border-white/20 shadow-[0_0_20px_rgba(6,182,212,0.4)]"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-xs sm:text-sm font-semibold hover:shadow-neon-violet hover:scale-[1.02] transition-all flex items-center gap-1.5 border border-white/20"
           >
             <Ticket className="w-3.5 h-3.5 text-cyan-200" />
-            <span>Senior Pass</span>
+            <span>Grab Pass</span>
           </a>
         </div>
       </div>

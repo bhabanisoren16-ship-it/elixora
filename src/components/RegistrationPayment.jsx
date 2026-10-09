@@ -185,31 +185,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
         </p>
       </div>
 
-      {/* Pass Type Switcher Tabs (Direct Link Back to Senior VIP Pass Default) */}
-      <div className="flex items-center justify-center mb-6 sm:mb-8">
-        <div className="inline-flex p-1 rounded-2xl bg-obsidian-900/90 border border-white/15 backdrop-blur-xl shadow-2xl">
-          <a
-            href="#seniors"
-            onClick={(e) => {
-              e.preventDefault();
-              soundController.playClick?.();
-              scrollToTarget('#seniors');
-            }}
-            className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 font-outfit font-semibold text-xs sm:text-sm transition-all"
-          >
-            <Crown className="w-4 h-4 text-cyan-400" />
-            <span>Senior VIP Pass (Default)</span>
-            <span className="text-[10px] text-cyan-400 hidden sm:inline">↑</span>
-          </a>
-          <button
-            type="button"
-            className="flex items-center gap-2 px-4 sm:px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-xs sm:text-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all cursor-default"
-          >
-            <span>Freshers Pass</span>
-          </button>
-        </div>
-      </div>
-
       {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER (FULL WIDTH WITH COMPACT HEIGHT) */}
       <div className="w-full max-w-[86rem] xl:max-w-[90rem] 2xl:max-w-[94rem] mx-auto rounded-3xl py-4 sm:py-5 px-5 sm:px-8 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden transition-all duration-300">
         

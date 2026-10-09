@@ -606,31 +606,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         </p>
       </div>
 
-      {/* Pass Type Switcher Tabs (Senior VIP Pass Default across Desktop & Mobile) */}
-      <div className="flex items-center justify-center mb-6 sm:mb-8">
-        <div className="inline-flex p-1 rounded-2xl bg-obsidian-900/90 border border-white/15 backdrop-blur-xl shadow-2xl">
-          <button
-            type="button"
-            className="flex items-center gap-2 px-4 sm:px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-xs sm:text-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all cursor-default"
-          >
-            <Crown className="w-4 h-4 text-cyan-200" />
-            <span>Senior VIP Pass (Default)</span>
-          </button>
-          <a
-            href="#register"
-            onClick={(e) => {
-              e.preventDefault();
-              soundController.playClick?.();
-              scrollToTarget('#register');
-            }}
-            className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 font-outfit font-semibold text-xs sm:text-sm transition-all"
-          >
-            <span>Freshers Pass</span>
-            <span className="text-[10px] text-slate-500 hidden sm:inline">↓</span>
-          </a>
-        </div>
-      </div>
-
       {/* AUTHENTICATION GATEWAY (ENTER REGISTRATION NUMBER TO UNLOCK SENIOR PORTAL) */}
       <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl p-4 sm:p-7 lg:p-9 border border-cyan-500/35 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(6,182,212,0.15)] relative overflow-hidden transition-all duration-300">
         

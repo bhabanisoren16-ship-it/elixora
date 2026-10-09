@@ -141,7 +141,7 @@ export default function App() {
   };
 
   const handleScrollToRegister = () => {
-    scrollToTarget('#seniors');
+    scrollToTarget('#register');
   };
 
   return (
@@ -169,15 +169,15 @@ export default function App() {
         {/* Festival Highlights & Lineup */}
         <LineupSection />
 
-        {/* Senior VIP Portal & Gated Access (Default Registration Pass) */}
+        {/* Registration & Dynamic UPI Payment */}
+        <RegistrationPayment
+          onPassGenerated={handlePassGenerated}
+        />
+
+        {/* Senior VIP Portal & Gated Access */}
         <SeniorSection
           onPassGenerated={handlePassGenerated}
           onPortalToggle={setIsSeniorPortalOpen}
-        />
-
-        {/* Registration & Dynamic UPI Payment (Freshers Checkout) */}
-        <RegistrationPayment
-          onPassGenerated={handlePassGenerated}
         />
       </main>
 
