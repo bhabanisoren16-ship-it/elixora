@@ -24,7 +24,7 @@
 
 /* Modern Hardware-Accelerated Smooth Scrolling */
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
   scroll-padding-top: 6.5rem; /* Extra clearance for 2-row mobile fixed header */
   -webkit-text-size-adjust: 100%;
   scroll-behavior: auto;
@@ -38,48 +38,64 @@ html {
 
 body {
   min-height: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
-/* Lenis Smooth Inertia Integration - Scoped strictly to desktop devices */
+/* Universal High-Performance GPU Compositor Scrollbar & Container Styling */
 @media (min-width: 768px) {
-  html.lenis,
-  html.lenis body {
-    height: auto;
-    min-height: 100%;
+  /* Firefox */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(6, 182, 212, 0.45) #060814;
   }
 
-  html.lenis,
-  html.lenis.lenis-smooth {
-    scroll-behavior: auto !important;
+  /* Desktop Chrome, Edge, Safari Custom Cyber Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
   }
 
-  html.lenis {
-    overscroll-behavior-y: none;
+  ::-webkit-scrollbar-track {
+    background: #060814;
   }
 
-  .lenis.lenis-stopped {
-    overflow: hidden !important;
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(6, 182, 212, 0.55), rgba(168, 85, 247, 0.55));
+    border-radius: 9999px;
+    border: 2px solid #060814;
   }
 
-  .lenis [data-lenis-prevent],
-  .lenis [data-lenis-prevent-touch],
-  .lenis [data-lenis-prevent-wheel] {
-    overscroll-behavior: contain;
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(6, 182, 212, 0.95), rgba(168, 85, 247, 0.95));
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
   }
 }
 
-/* Hide Scrollbar while preserving smooth scrolling */
-::-webkit-scrollbar {
+/* Mobile & touch devices: preserve full screen real estate while retaining full native velocity */
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    height: 0px;
+    background: transparent;
+  }
+
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Horizontal pill bar and tab scroll helper */
+.no-scrollbar::-webkit-scrollbar {
   display: none;
   width: 0px;
   height: 0px;
-  background: transparent;
 }
 
-html, body, * {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Ensure background picture is 100% frozen and does NOT move while scrolling in mobile view */

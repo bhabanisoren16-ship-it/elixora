@@ -1,133 +1,122 @@
-import Lenis from 'lenis';
-import 'lenis/dist/lenis.css';
+/**
+ * Universal Hardware-Accelerated Smooth Scroll System
+ * 
+ * Provides 100% native GPU compositor scrolling for user mouse, trackpad, and touch inputs,
+ * completely eliminating wheel-hijacking, lag, stutters, middle-click breakage, and frozen scroll locks.
+ * Programmatic anchor clicks (e.g. #register, #details, #seniors) glide seamlessly via high-precision RAF easing.
+ */
 
-let lenisInstance = null;
-let rafId = null;
-let resizeHandler = null;
+let activeScrollAnimationId = null;
 
 /**
- * Determine if the current device is a mobile or touch device.
- * Touch devices natively execute 120Hz/60Hz hardware-accelerated momentum scrolling.
+ * High-precision easeInOutCubic deceleration curve for luxurious programmatic glides
  */
-export function isMobileOrTouch() {
-  if (typeof window === 'undefined') return false;
-  // Laptops and desktops (>= 1024px) must ALWAYS be treated as desktop environments,
-  // regardless of touchscreen capabilities or Windows Precision Touchpads.
-  if (window.innerWidth >= 1024) return false;
-  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  if (window.innerWidth < 768) return true;
-  return isMobileUA;
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
 /**
- * Initialize Lenis smooth inertia scrolling strictly for desktop mouse/trackpad environments.
- * Mobile & touch devices use 100% native hardware-accelerated scrolling to permanently
- * prevent touch locking, stutters, and address-bar resize glitches.
+ * Smoothly animate window scroll position to targetY without hijacking user wheel events
  */
-export function initSmoothScroll(options = {}) {
-  if (typeof window === 'undefined') return null;
+function animateWindowScroll(targetY, duration = 850) {
+  if (typeof window === 'undefined') return;
 
-  // Clean up any prior instance
-  destroySmoothScroll();
-
-  // If on mobile / small touch screen, rely 100% on ultra-fast native device scrolling
-  if (isMobileOrTouch()) {
-    try {
-      document.documentElement.style.scrollBehavior = 'auto';
-      document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
-      document.body.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
-    } catch (e) {}
-    return null;
+  if (activeScrollAnimationId) {
+    cancelAnimationFrame(activeScrollAnimationId);
+    activeScrollAnimationId = null;
   }
 
-  // Reset any conflicting inline styles on desktop
+  const startY = window.pageYOffset || window.scrollY || 0;
+  const distance = targetY - startY;
+
+  if (Math.abs(distance) < 3 || duration <= 0) {
+    window.scrollTo(0, targetY);
+    return;
+  }
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    window.scrollTo(0, targetY);
+    return;
+  }
+
+  const startTime = performance.now();
+
+  // Cancel animation if user manually scrolls or touches
+  const cancelOnUserInteraction = () => {
+    if (activeScrollAnimationId) {
+      cancelAnimationFrame(activeScrollAnimationId);
+      activeScrollAnimationId = null;
+    }
+    window.removeEventListener('wheel', cancelOnUserInteraction);
+    window.removeEventListener('touchstart', cancelOnUserInteraction);
+  };
+
+  window.addEventListener('wheel', cancelOnUserInteraction, { passive: true, once: true });
+  window.addEventListener('touchstart', cancelOnUserInteraction, { passive: true, once: true });
+
+  function step(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = easeInOutCubic(progress);
+
+    window.scrollTo(0, Math.round(startY + distance * ease));
+
+    if (progress < 1) {
+      activeScrollAnimationId = requestAnimationFrame(step);
+    } else {
+      activeScrollAnimationId = null;
+      window.removeEventListener('wheel', cancelOnUserInteraction);
+      window.removeEventListener('touchstart', cancelOnUserInteraction);
+    }
+  }
+
+  activeScrollAnimationId = requestAnimationFrame(step);
+}
+
+/**
+ * Initialize scroll system (cleans up any conflicting lock classes and ensures native fluidity)
+ */
+export function initSmoothScroll() {
+  if (typeof window === 'undefined') return null;
+
   try {
+    document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
+    document.body.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
     document.documentElement.style.scrollBehavior = 'auto';
     document.body.style.scrollBehavior = 'auto';
   } catch (e) {}
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // High-performance Lenis configuration tailored strictly for desktop and laptop displays
-  const lenis = new Lenis({
-    lerp: prefersReducedMotion ? 1 : 0.1, // Smooth, natural 60Hz/120Hz/144Hz responsive inertia
-    wheelMultiplier: 1.0, // Natural 1:1 wheel response
-    touchMultiplier: 1.0,
-    smoothWheel: !prefersReducedMotion,
-    syncTouch: false,
-    autoRaf: true, // Use Lenis's built-in high-precision animation loop
-    anchors: false, // Let custom scrollToTarget handle anchors cleanly
-    infinite: false,
-    autoResize: true,
-    ...options,
-  });
-
-  lenisInstance = lenis;
-  window.__lenis = lenis;
-
-  // Recalculate dimensions on window resize and orientation changes
-  resizeHandler = () => {
-    if (isMobileOrTouch()) {
-      // User resized down to mobile viewport: destroy Lenis to free native touch
-      destroySmoothScroll();
-    } else if (lenisInstance) {
-      lenisInstance.resize();
-    }
+  return {
+    destroy: destroySmoothScroll,
+    scrollTo: (target, opts) => scrollToTarget(target, opts),
+    stop: pauseSmoothScroll,
+    start: resumeSmoothScroll,
   };
-  window.addEventListener('resize', resizeHandler, { passive: true });
-  window.addEventListener('orientationchange', resizeHandler, { passive: true });
-
-  if (typeof document !== 'undefined' && document.fonts) {
-    document.fonts.ready.then(() => {
-      if (lenisInstance) {
-        lenisInstance.resize();
-      }
-    });
-  }
-
-  return lenis;
 }
 
 /**
- * Smoothly glide to any anchor target, element, or number offset with exact header offset clearance.
- * Handles both main page elements and scrollable inner containers (e.g. Senior Portal modal),
- * seamlessly supporting both desktop Lenis and 100% native mobile smooth scrolling.
+ * Smoothly glide to any anchor target, element, or number offset with exact header clearance.
+ * Works seamlessly across desktop, laptop, and mobile.
  */
 export function scrollToTarget(target, customOptions = {}) {
   if (typeof window === 'undefined') return;
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Compute mobile vs desktop header clearance
   const header = document.querySelector('header');
   const headerOffset = header ? header.offsetHeight + 14 : (window.innerWidth < 768 ? 90 : 80);
+  const duration = customOptions.duration ? customOptions.duration * 1000 : 750;
 
-  // 1. Target is top or 0
+  // 1. Target is top, 0, or #hero
   if (target === 0 || target === 'top' || target === '#hero') {
-    if (lenisInstance && !lenisInstance.isStopped) {
-      lenisInstance.scrollTo(0, {
-        duration: prefersReducedMotion ? 0 : 1.15,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        ...customOptions,
-      });
-    } else {
-      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-    }
+    animateWindowScroll(0, duration);
     return;
   }
 
   // 2. Target is a numeric offset
   if (typeof target === 'number') {
-    const clampedY = Math.max(0, target);
-    if (lenisInstance && !lenisInstance.isStopped) {
-      lenisInstance.scrollTo(clampedY, {
-        duration: prefersReducedMotion ? 0 : 1.15,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        ...customOptions,
-      });
-    } else {
-      window.scrollTo({ top: clampedY, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-    }
+    animateWindowScroll(Math.max(0, target), duration);
     return;
   }
 
@@ -159,7 +148,6 @@ export function scrollToTarget(target, customOptions = {}) {
   }
 
   if (scrollContainer !== window) {
-    // Scroll inside nested scroll container with smooth animation
     const containerRect = scrollContainer.getBoundingClientRect();
     const elemRect = element.getBoundingClientRect();
     const currentScroll = scrollContainer.scrollTop;
@@ -169,83 +157,62 @@ export function scrollToTarget(target, customOptions = {}) {
 
     scrollContainer.scrollTo({
       top: Math.max(0, targetOffset),
-      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      behavior: 'smooth',
     });
     return;
   }
 
-  // Main page scroll:
-  if (lenisInstance && !lenisInstance.isStopped) {
-    lenisInstance.scrollTo(element, {
-      duration: prefersReducedMotion ? 0 : 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      offset: -headerOffset,
-      ...customOptions,
-    });
-  } else {
-    // Native mobile/touch smooth scroll with exact header clearance
-    const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
-    window.scrollTo({
-      top: Math.max(0, elementTop - headerOffset),
-      behavior: prefersReducedMotion ? 'auto' : 'smooth',
-    });
-  }
+  // Main page scroll with exact header offset clearance
+  const elementTop = element.getBoundingClientRect().top + (window.pageYOffset || window.scrollY || 0);
+  const finalTargetY = Math.max(0, elementTop - headerOffset);
+
+  animateWindowScroll(finalTargetY, duration);
 }
 
 /**
- * Pause scrolling (e.g., when full-screen modals open)
+ * Pause scrolling when full-screen modals open
  */
 export function pauseSmoothScroll() {
-  if (lenisInstance) {
-    lenisInstance.stop();
-  }
+  if (typeof document === 'undefined') return;
+  try {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+  } catch (e) {}
 }
 
 /**
- * Resume scrolling (e.g., when modal closes)
+ * Resume scrolling when modals close
  */
 export function resumeSmoothScroll() {
-  if (lenisInstance) {
-    lenisInstance.start();
-  }
+  if (typeof document === 'undefined') return;
   try {
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    document.documentElement.style.overflow = '';
     document.documentElement.classList.remove('lenis-stopped');
     document.body.classList.remove('lenis-stopped');
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
   } catch (e) {}
 }
 
 /**
- * Clean up Lenis instance
+ * Clean up scroll locks
  */
 export function destroySmoothScroll() {
-  if (rafId) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
+  resumeSmoothScroll();
+  if (activeScrollAnimationId) {
+    cancelAnimationFrame(activeScrollAnimationId);
+    activeScrollAnimationId = null;
   }
-  if (resizeHandler) {
-    window.removeEventListener('resize', resizeHandler);
-    window.removeEventListener('orientationchange', resizeHandler);
-    resizeHandler = null;
-  }
-  if (lenisInstance) {
-    try {
-      lenisInstance.destroy();
-    } catch (e) {}
-    lenisInstance = null;
-    window.__lenis = null;
-  }
-  try {
-    document.documentElement.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
-    document.body.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    document.documentElement.style.scrollBehavior = '';
-    document.body.style.scrollBehavior = '';
-  } catch (e) {}
+}
+
+export function isMobileOrTouch() {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < 768;
 }
 
 export function getLenis() {
-  return lenisInstance;
+  return null;
 }
