@@ -208,9 +208,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
                     <h3 className="font-outfit font-extrabold text-lg text-white tracking-tight">Student Details</h3>
                   </div>
                 </div>
-                <span className="text-[9px] font-mono font-bold text-cyan-300 bg-cyan-500/15 border border-cyan-400/30 px-2 py-0.5 rounded">
-                  FRESHER
-                </span>
               </div>
 
               <div className="space-y-2.5">
@@ -319,9 +316,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
                     <h3 className="font-outfit font-extrabold text-lg text-white tracking-tight">UPI Payment</h3>
                   </div>
                 </div>
-                <span className="text-[9px] font-mono font-bold text-purple-300 bg-purple-500/15 border border-purple-400/30 px-2 py-0.5 rounded">
-                  INSTANT QR
-                </span>
               </div>
 
               {/* Compact Payment Info: QR Code + Price & UPI ID */}
