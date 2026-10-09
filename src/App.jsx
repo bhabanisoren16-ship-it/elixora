@@ -24,7 +24,17 @@ function checkIsAdminRoute() {
 
 function checkIsSeniorPortalRoute() {
   if (typeof window === 'undefined') return false;
-  return window.location.hash === '#senior-portal';
+  try {
+    return (
+      window.location.hash === '#senior-portal' ||
+      sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
+      localStorage.getItem('elixora_senior_portal_open') === 'true' ||
+      Boolean(sessionStorage.getItem('elixora_senior_roll')) ||
+      Boolean(localStorage.getItem('elixora_senior_roll'))
+    );
+  } catch (e) {
+    return false;
+  }
 }
 
 export default function App() {
@@ -53,8 +63,12 @@ export default function App() {
   // Synchronize URL hash for Admin Portal and Senior VIP Portal
   useEffect(() => {
     const handleRouteChange = () => {
-      setIsAdminOpen(checkIsAdminRoute());
-      setIsSeniorPortalOpen(checkIsSeniorPortalRoute());
+      if (checkIsAdminRoute()) {
+        setIsAdminOpen(true);
+      }
+      if (checkIsSeniorPortalRoute()) {
+        setIsSeniorPortalOpen(true);
+      }
     };
 
     const handleKeyDown = (e) => {
@@ -92,15 +106,15 @@ export default function App() {
     }
   }, [isAdminOpen]);
 
-  // Handle page load: ensure clean default state for regular users on every visit (admin data preserved)
+  // Handle page load: preserve senior portal on refresh if active, otherwise default to main page
   useEffect(() => {
     try {
-      localStorage.removeItem('elixora_senior_roll');
-      localStorage.removeItem('elixora_senior_portal_open');
-      localStorage.removeItem('elixora_senior_form');
-      sessionStorage.removeItem('elixora_senior_roll');
-      sessionStorage.removeItem('elixora_senior_portal_open');
-      sessionStorage.removeItem('elixora_senior_form');
+      const isSeniorPortalActive = checkIsSeniorPortalRoute();
+      if (isSeniorPortalActive) {
+        setIsSeniorPortalOpen(true);
+        // User refreshed while inside Senior Portal - stay inside portal, do not reset!
+        return;
+      }
 
       // Explicitly reset any lingering body scroll lock styles
       document.body.style.overflow = '';
@@ -111,7 +125,10 @@ export default function App() {
         history.scrollRestoration = 'manual';
       }
       if (typeof window !== 'undefined') {
-        if (!window.location.hash && !window.location.pathname.includes('admin')) {
+        if (window.location.hash === '#seniors') {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+        if (window.location.hash !== '#admin' && !window.location.hash.includes('senior')) {
           window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         }
       }
@@ -124,7 +141,7 @@ export default function App() {
   };
 
   const handleScrollToRegister = () => {
-    scrollToTarget('#seniors');
+    scrollToTarget('#register');
   };
 
   return (
@@ -152,15 +169,15 @@ export default function App() {
         {/* Festival Highlights & Lineup */}
         <LineupSection />
 
-        {/* Senior VIP Portal & Gated Access (Default Registration Pass) */}
+        {/* Registration & Dynamic UPI Payment */}
+        <RegistrationPayment
+          onPassGenerated={handlePassGenerated}
+        />
+
+        {/* Senior VIP Portal & Gated Access */}
         <SeniorSection
           onPassGenerated={handlePassGenerated}
           onPortalToggle={setIsSeniorPortalOpen}
-        />
-
-        {/* Registration & Dynamic UPI Payment (Freshers Checkout) */}
-        <RegistrationPayment
-          onPassGenerated={handlePassGenerated}
         />
       </main>
 

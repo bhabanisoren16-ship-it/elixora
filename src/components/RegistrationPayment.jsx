@@ -12,13 +12,11 @@ import {
   Smartphone, 
   User, 
   Phone, 
-  Loader2,
-  Crown
+  Loader2
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
-import { scrollToTarget } from '../utils/smoothScroll';
 
 export default function RegistrationPayment({ onPassGenerated }) {
   // Form State
@@ -166,15 +164,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
 
       adminStore.addRegistration(generatedPass);
       onPassGenerated(generatedPass);
-      setFormData({
-        fullName: '',
-        rollNo: '',
-        phone: '',
-        diet: 'Veg',
-        utrNumber: '',
-      });
-      setScreenshotPreview(null);
-      setErrors({});
     }, 2800);
   };
 
@@ -192,31 +181,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
         <p className="mt-1.5 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
           Fill your student details, complete payment via dynamic UPI QR, and your personalized 3D VIP pass will be rendered instantly.
         </p>
-      </div>
-
-      {/* Pass Type Switcher Tabs (Direct Link Back to Senior VIP Pass Default) */}
-      <div className="flex items-center justify-center mb-6 sm:mb-8">
-        <div className="inline-flex p-1 rounded-2xl bg-obsidian-900/90 border border-white/15 backdrop-blur-xl shadow-2xl">
-          <a
-            href="#seniors"
-            onClick={(e) => {
-              e.preventDefault();
-              soundController.playClick?.();
-              scrollToTarget('#seniors');
-            }}
-            className="flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 font-outfit font-semibold text-xs sm:text-sm transition-all"
-          >
-            <Crown className="w-4 h-4 text-cyan-400" />
-            <span>Senior VIP Pass (Default)</span>
-            <span className="text-[10px] text-cyan-400 hidden sm:inline">↑</span>
-          </a>
-          <button
-            type="button"
-            className="flex items-center gap-2 px-4 sm:px-6 py-2 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-xs sm:text-sm shadow-[0_0_20px_rgba(6,182,212,0.5)] transition-all cursor-default"
-          >
-            <span>Freshers Pass</span>
-          </button>
-        </div>
       </div>
 
       {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER (FULL WIDTH WITH COMPACT HEIGHT) */}

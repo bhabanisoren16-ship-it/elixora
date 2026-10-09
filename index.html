@@ -10,30 +10,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Unbounded:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
-      // Automatically clear user session & registration data on website load
-      // Every attendee starts with a clean, default state (admin data is strictly preserved)
-      try {
-        localStorage.removeItem('elixora_senior_roll');
-        localStorage.removeItem('elixora_senior_portal_open');
-        localStorage.removeItem('elixora_senior_form');
-        sessionStorage.removeItem('elixora_senior_roll');
-        sessionStorage.removeItem('elixora_senior_portal_open');
-        sessionStorage.removeItem('elixora_senior_form');
-      } catch (e) {}
-
       // Handle scroll restoration and refresh routing safely
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
       (function() {
+        var isSenior = false;
+        try {
+          isSenior = (
+            window.location.hash === '#senior-portal' ||
+            sessionStorage.getItem('elixora_senior_portal_open') === 'true' ||
+            localStorage.getItem('elixora_senior_portal_open') === 'true' ||
+            Boolean(sessionStorage.getItem('elixora_senior_roll')) ||
+            Boolean(localStorage.getItem('elixora_senior_roll'))
+          );
+        } catch (e) {}
+
         var isAdmin = (
           window.location.hash === '#admin' ||
           window.location.pathname === '/admin' ||
           window.location.search.indexOf('admin') !== -1
         );
 
-        // Always default-scroll to top on clean load if not navigating directly to Admin Portal
-        if (!isAdmin && (!window.location.hash || window.location.hash === '#seniors')) {
+        // Only default-scroll to top if NOT refreshing inside Senior Portal or Admin Portal
+        if (!isSenior && !isAdmin) {
           if (window.location.hash === '#seniors') {
             try {
               history.replaceState(null, '', window.location.pathname + window.location.search);
