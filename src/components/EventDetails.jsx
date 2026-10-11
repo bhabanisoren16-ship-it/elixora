@@ -332,11 +332,6 @@ export default function EventDetails() {
                       alt="Boys Formal Tuxedo and Suit Attire"
                       className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg z-20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0 shadow-[0_0_6px_#38bdf8]" />
-                      <span className="truncate sm:whitespace-normal">Tailored black tuxedos, classic suits, blazers, or Indo-Western</span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -369,11 +364,6 @@ export default function EventDetails() {
                       alt="Girls Cyber Costume Style"
                       className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none z-10" />
-                    <div className="absolute bottom-2.5 left-2.5 right-2.5 text-xs text-white font-outfit font-bold px-3 py-2 rounded-xl bg-obsidian-950/80 backdrop-blur-md border border-white/20 flex items-center gap-2 shadow-lg z-20">
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0 shadow-[0_0_6px_#00e5ff]" />
-                      <span className="truncate sm:whitespace-normal">Chic evening gowns, cocktail dresses, or designer sarees &amp; lehengas</span>
-                    </div>
                   </div>
                 </div>
               </div>
