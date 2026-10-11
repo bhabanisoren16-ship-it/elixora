@@ -202,7 +202,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
               {/* Step 1 Header */}
               <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/25 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.25)] shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/25 border border-purple-400/40 flex items-center justify-center text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.35)] shrink-0">
                     <User className="w-3.5 h-3.5" />
                   </div>
                   <div>
