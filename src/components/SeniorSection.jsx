@@ -1190,7 +1190,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
               {/* Outfit Header Inside Unified Box */}
-              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 sm:pb-8 border-b border-white/10">
+              <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                   <h3 className="font-outfit font-black text-2xl sm:text-4xl text-white tracking-tight">
                     Senior Outfit &amp; Style Lookbook
