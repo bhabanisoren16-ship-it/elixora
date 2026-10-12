@@ -1316,22 +1316,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
               </div>
 
-              {/* VIP Red Carpet Photobooth Note */}
-              <div className="mt-5 sm:mt-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-amber-500/10 border border-cyan-400/30 backdrop-blur-md flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
-                    <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-300" />
-                  </div>
-                  <div>
-                    <h5 className="font-outfit font-bold text-xs sm:text-sm text-white">
-                      Senior Council Red Carpet &amp; 360° Photobooth Access
-                    </h5>
-                    <p className="text-[10.5px] sm:text-xs text-slate-300 font-outfit">
-                      All seniors verified through the portal receive priority access to the official festival media wall and 360-degree rotating video booth.
-                    </p>
-                  </div>
-                </div>
-              </div>
+
 
             </div>
 
