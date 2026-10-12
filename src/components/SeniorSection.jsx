@@ -1230,12 +1230,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-80 sm:h-96 md:h-[450px] lg:h-[500px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[540px] md:h-[620px] lg:h-[720px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
                         alt="Senior Boys Royal Black-Tie and Indo-Western Suits"
-                        className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
@@ -1258,12 +1258,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-80 sm:h-96 md:h-[450px] lg:h-[500px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[540px] md:h-[620px] lg:h-[720px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls.jpg"
                         alt="Senior Girls Glamorous Ethnic Sarees and Gowns"
-                        className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
