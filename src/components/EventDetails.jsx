@@ -279,14 +279,11 @@ export default function EventDetails() {
 
         <div className="relative z-10">
           {/* Header row */}
-          <div className="pb-5 border-b border-white/15 mb-5">
+          <div className="mb-4 sm:mb-5">
             <div>
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
                 Formal &amp; Indo-Western Fusion
               </h3>
-              <p className="text-xs sm:text-sm text-white font-outfit font-bold mt-1 max-w-xl subheading-readable">
-                Dress to impress in sharp western formals, tailored suits, or elegant Indo-Western and ethnic attire infused with radiant celebratory glam.
-              </p>
             </div>
           </div>
 
