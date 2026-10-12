@@ -174,7 +174,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
       
       {/* Header */}
       <div className="text-center mb-5 sm:mb-7">
-        <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-lg bg-obsidian-950/85 backdrop-blur-md text-cyan-300 text-xs sm:text-sm font-outfit font-black uppercase tracking-widest mb-2.5 shadow-[0_4px_25px_rgba(0,0,0,0.85),0_0_20px_rgba(6,182,212,0.2)] [text-shadow:_0_1px_4px_rgba(0,0,0,1),_0_0_14px_rgba(0,242,254,0.8)]">
+        <div className="inline-flex items-center justify-center px-4 py-1 rounded-full bg-slate-950/40 border border-cyan-400/40 text-cyan-200 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-2.5 shadow-[0_0_15px_rgba(0,229,255,0.25)] backdrop-blur-md">
           <span>PORTAL GATEWAY • BIOTECHNOLOGY FRESHERS '26</span>
         </div>
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
