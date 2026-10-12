@@ -1185,14 +1185,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
             {/* ================================================================= */}
             {/* SENIOR DRESS CODE & OUTFIT INSPIRATION LOOKBOOK SECTION */}
             {/* ================================================================= */}
-            <div id="senior-box-outfit" className="w-full max-w-4xl mt-6 sm:mt-10 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
-              <div className="absolute -top-20 -left-20 w-52 h-52 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-20 -right-20 w-52 h-52 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
+            <div id="senior-box-outfit" className="w-full max-w-7xl mt-6 sm:mt-12 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
+              <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
               {/* Outfit Header Inside Unified Box */}
               <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-outfit font-black text-lg sm:text-2xl text-white tracking-tight">
+                  <h3 className="font-outfit font-black text-xl sm:text-2xl text-white tracking-tight">
                     Senior Outfit &amp; Style Lookbook
                   </h3>
                 </div>
@@ -1211,13 +1211,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               </div>
 
               {/* 2-Column Lookbook Showcase Grid Inside Unified Box */}
-              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-5 mt-4 sm:mt-5 items-stretch">
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6 items-stretch">
                 
                 {/* 1. Senior Gentlemen / Boys Lookbook Panel */}
-                <div className="group rounded-xl sm:rounded-2xl p-3 sm:p-4 bg-white/[0.03] border border-white/10 hover:border-sky-400/40 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between">
+                <div className="group rounded-xl sm:rounded-2xl p-3.5 sm:p-5 bg-white/[0.03] border border-white/10 hover:border-sky-400/40 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between">
                   <div>
                     {/* Panel Header */}
-                    <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10 mb-3">
+                    <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10 mb-3 sm:mb-4">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)] animate-pulse" />
                         <h4 className="font-outfit font-black text-sm sm:text-base text-white tracking-tight">
@@ -1230,7 +1230,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-44 sm:h-56 w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-52 sm:h-64 w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
@@ -1242,10 +1242,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
 
                 {/* 2. Senior Ladies / Girls Lookbook Panel */}
-                <div className="group rounded-xl sm:rounded-2xl p-3 sm:p-4 bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between">
+                <div className="group rounded-xl sm:rounded-2xl p-3.5 sm:p-5 bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between">
                   <div>
                     {/* Panel Header */}
-                    <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10 mb-3">
+                    <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10 mb-3 sm:mb-4">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)] animate-pulse" />
                         <h4 className="font-outfit font-black text-sm sm:text-base text-white tracking-tight">
@@ -1258,7 +1258,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-44 sm:h-56 w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-52 sm:h-64 w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls.jpg"
