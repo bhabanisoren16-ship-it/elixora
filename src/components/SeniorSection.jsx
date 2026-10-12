@@ -21,7 +21,9 @@ import {
   Hash, 
   Phone, 
   Quote,
-  X
+  X,
+  Sparkles,
+  Shirt
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
@@ -812,10 +814,26 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               </span>
               <span><span className="hidden sm:inline">3. </span>Proof &amp; Mint</span>
             </button>
+
+            <ArrowRight className="w-3.5 h-3.5 text-slate-600 hidden sm:block" />
+
+            <button
+              type="button"
+              onClick={() => scrollToBox('senior-box-outfit')}
+              className="flex items-center gap-1.5 hover:text-cyan-300 transition-colors cursor-pointer shrink-0 px-2 py-1 rounded-lg bg-white/5 sm:bg-transparent"
+            >
+              <span className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 flex items-center justify-center text-[9px] sm:text-[10px] font-bold">
+                4
+              </span>
+              <span className="flex items-center gap-1">
+                <Shirt className="w-3 h-3 text-cyan-400 sm:hidden" />
+                <span className="hidden sm:inline">4. </span>Dress Code &amp; Outfits
+              </span>
+            </button>
           </nav>
 
           {/* Minimalist 3-Column Sideways Dashboard Layout */}
-          <main className="w-full shrink-0 min-h-screen pt-4 sm:pt-10 pb-28 sm:pb-40 px-3 sm:px-6 lg:px-8 flex justify-center items-start relative z-10">
+          <main className="w-full shrink-0 min-h-screen pt-4 sm:pt-10 pb-28 sm:pb-40 px-3 sm:px-6 lg:px-8 flex flex-col justify-start items-center relative z-10">
             <form onSubmit={handleSubmit} className="w-full max-w-7xl">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 xl:gap-7 items-stretch">
                 
@@ -1160,6 +1178,162 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
               </div>
             </form>
+
+            {/* ================================================================= */}
+            {/* SENIOR DRESS CODE & OUTFIT INSPIRATION LOOKBOOK SECTION */}
+            {/* ================================================================= */}
+            <div id="senior-box-outfit" className="w-full max-w-7xl mt-8 sm:mt-14 scroll-mt-28 sm:scroll-mt-36">
+              
+              {/* Outfit Header Card */}
+              <div className="bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.7)] relative overflow-hidden mb-6 sm:mb-8">
+                <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-[10px] sm:text-xs font-outfit font-black uppercase tracking-wider mb-2.5 shadow-[0_0_15px_rgba(0,229,255,0.25)]">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>SENIOR VIP DRESS CODE &amp; ATTIRE GUIDE</span>
+                    </div>
+                    <h3 className="font-outfit font-black text-2xl sm:text-4xl text-white tracking-tight">
+                      Senior Outfit &amp; Style Lookbook
+                    </h3>
+                    <p className="mt-1.5 text-xs sm:text-sm text-slate-300 font-outfit font-semibold max-w-2xl leading-relaxed">
+                      Recommended royal black-tie, Indo-Western fusion, and glamorous evening styling for Biotechnology &apos;25 Seniors &amp; Council Leaders.
+                    </p>
+                  </div>
+
+                  {/* VIP Theme Color Swatches */}
+                  <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-white/[0.04] border border-white/10 shrink-0">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 font-bold mr-1 hidden sm:inline">Theme Palette:</span>
+                    <div className="flex items-center gap-1.5" title="Midnight Obsidian">
+                      <span className="w-5 h-5 rounded-full bg-[#040508] border border-white/30 inline-block shadow-sm" title="Royal Obsidian" />
+                      <span className="w-5 h-5 rounded-full bg-[#fbbf24] border border-amber-300 inline-block shadow-[0_0_8px_rgba(251,191,36,0.5)]" title="Royal Cyber Gold" />
+                      <span className="w-5 h-5 rounded-full bg-[#00f2fe] border border-cyan-300 inline-block shadow-[0_0_8px_rgba(0,242,254,0.6)]" title="Electric Cyan" />
+                      <span className="w-5 h-5 rounded-full bg-[#1e3a8a] border border-sky-400 inline-block shadow-sm" title="Deep Sapphire" />
+                      <span className="w-5 h-5 rounded-full bg-[#8b5cf6] border border-purple-400 inline-block shadow-[0_0_8px_rgba(139,92,246,0.5)]" title="Velvet Violet" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2-Column Lookbook Showcase Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-7 items-stretch">
+                
+                {/* 1. Senior Gentlemen / Boys Lookbook Card */}
+                <div className="group rounded-2xl sm:rounded-3xl p-5 sm:p-7 bg-obsidian-950/85 backdrop-blur-xl border border-white/15 hover:border-sky-400/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:shadow-[0_0_30px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+                  <div className="relative z-10">
+                    {/* Card Header */}
+                    <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-4">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.9)] animate-pulse" />
+                        <h4 className="font-outfit font-black text-base sm:text-xl text-white tracking-tight">
+                          Gentlemen&apos;s Royal Attire
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-outfit font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-200 backdrop-blur-md">
+                        BLACK-TIE &amp; INDO-WESTERN
+                      </span>
+                    </div>
+
+                    {/* Photo Showcase with Neon Rim Glow */}
+                    <div className="relative rounded-2xl overflow-hidden h-64 sm:h-72 w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-xl mb-4">
+                      <div className="lookbook-backlight" />
+                      <img
+                        src="/costume-boys.jpg"
+                        alt="Senior Boys Royal Black-Tie and Indo-Western Suits"
+                        className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                      />
+                    </div>
+
+                    {/* Styling Tags & Advice */}
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
+                          👔 Sharp Tuxedos &amp; Blazers
+                        </span>
+                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
+                          👑 Velvet Bandhgalas &amp; Kurta Sets
+                        </span>
+                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
+                          ⚡ Midnight, Navy &amp; Charcoal
+                        </span>
+                      </div>
+
+                      <div className="p-3 sm:p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-[11px] sm:text-xs text-slate-300 font-outfit leading-relaxed">
+                        <strong className="text-sky-300">Styling Recommendation:</strong> Pair tailored single or double-breasted suits with dark formal shoes, clean metallic cufflinks, and your official Senior Council wristband.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Senior Ladies / Girls Lookbook Card */}
+                <div className="group rounded-2xl sm:rounded-3xl p-5 sm:p-7 bg-obsidian-950/85 backdrop-blur-xl border border-white/15 hover:border-cyan-400/50 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:shadow-[0_0_30px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+                  <div className="relative z-10">
+                    {/* Card Header */}
+                    <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-4">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.9)] animate-pulse" />
+                        <h4 className="font-outfit font-black text-base sm:text-xl text-white tracking-tight">
+                          Ladies&apos; Royal Glamour
+                        </h4>
+                      </div>
+                      <span className="text-[10px] font-outfit font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 backdrop-blur-md">
+                        ETHNIC GLAM &amp; GOWNS
+                      </span>
+                    </div>
+
+                    {/* Photo Showcase with Neon Rim Glow */}
+                    <div className="relative rounded-2xl overflow-hidden h-64 sm:h-72 w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-xl mb-4">
+                      <div className="lookbook-backlight" />
+                      <img
+                        src="/costume-girls.jpg"
+                        alt="Senior Girls Glamorous Ethnic Sarees and Gowns"
+                        className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                      />
+                    </div>
+
+                    {/* Styling Tags & Advice */}
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
+                          ✨ Silk, Satin &amp; Georgette Sarees
+                        </span>
+                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
+                          👗 Floor-Length Evening Gowns
+                        </span>
+                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
+                          💎 Modern Indo-Western Fusions
+                        </span>
+                      </div>
+
+                      <div className="p-3 sm:p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-[11px] sm:text-xs text-slate-300 font-outfit leading-relaxed">
+                        <strong className="text-cyan-300">Styling Recommendation:</strong> Complete your evening aesthetic with statement metallic earrings, elegant heels, and your holographic Senior VIP digital badge.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* VIP Red Carpet Photobooth Note */}
+              <div className="mt-5 sm:mt-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-amber-500/10 border border-cyan-400/30 backdrop-blur-md flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+                    <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-300" />
+                  </div>
+                  <div>
+                    <h5 className="font-outfit font-bold text-xs sm:text-sm text-white">
+                      Senior Council Red Carpet &amp; 360° Photobooth Access
+                    </h5>
+                    <p className="text-[10.5px] sm:text-xs text-slate-300 font-outfit">
+                      All seniors verified through the portal receive priority access to the official festival media wall and 360-degree rotating video booth.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
 
             {/* Floating Back to Home in Senior Portal */}
             <div className="fixed bottom-3.5 right-3 sm:bottom-6 sm:right-6 z-50 pointer-events-auto">
