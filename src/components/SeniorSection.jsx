@@ -1230,7 +1230,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[540px] md:h-[620px] lg:h-[720px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[520px] md:h-[460px] lg:h-[480px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
@@ -1258,7 +1258,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[540px] md:h-[620px] lg:h-[720px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[520px] md:h-[460px] lg:h-[480px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls.jpg"
