@@ -1195,9 +1195,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <h3 className="font-outfit font-black text-2xl sm:text-4xl text-white tracking-tight">
                     Senior Outfit &amp; Style Lookbook
                   </h3>
-                  <p className="mt-1.5 text-xs sm:text-sm text-slate-300 font-outfit font-semibold max-w-2xl leading-relaxed">
-                    Recommended royal black-tie, Indo-Western fusion, and glamorous evening styling for Biotechnology &apos;25 Seniors &amp; Council Leaders.
-                  </p>
                 </div>
 
                 {/* VIP Theme Color Swatches */}
