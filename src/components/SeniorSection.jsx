@@ -601,9 +601,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl md:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
-        <p className="mt-2 text-white max-w-2xl mx-auto text-xs sm:text-base font-outfit font-bold subheading-readable tracking-wide">
-          Exclusively reserved for college seniors and council leaders. Verification of registered registration number is mandatory to unlock access.
-        </p>
       </div>
 
       {/* AUTHENTICATION GATEWAY (ENTER REGISTRATION NUMBER TO UNLOCK SENIOR PORTAL) */}
