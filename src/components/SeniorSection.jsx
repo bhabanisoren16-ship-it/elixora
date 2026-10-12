@@ -1192,10 +1192,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               {/* Outfit Header Inside Unified Box */}
               <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 sm:pb-8 border-b border-white/10">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/40 text-cyan-300 text-[10px] sm:text-xs font-outfit font-black uppercase tracking-wider mb-2.5 shadow-[0_0_15px_rgba(0,229,255,0.25)]">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                    <span>SENIOR VIP DRESS CODE &amp; ATTIRE GUIDE</span>
-                  </div>
                   <h3 className="font-outfit font-black text-2xl sm:text-4xl text-white tracking-tight">
                     Senior Outfit &amp; Style Lookbook
                   </h3>
