@@ -322,7 +322,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-64 sm:h-76 md:h-84 w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-80 sm:h-96 md:h-[450px] lg:h-[500px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-boys.jpg"
@@ -354,7 +354,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-64 sm:h-76 md:h-84 w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-80 sm:h-96 md:h-[450px] lg:h-[500px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-girls.jpg"
