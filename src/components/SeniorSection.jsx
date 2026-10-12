@@ -1237,32 +1237,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-2xl overflow-hidden h-64 sm:h-72 w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-xl mb-4">
+                    <div className="relative rounded-2xl overflow-hidden h-64 sm:h-80 w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-xl">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
                         alt="Senior Boys Royal Black-Tie and Indo-Western Suits"
                         className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
-                    </div>
-
-                    {/* Styling Tags & Advice */}
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
-                          👔 Sharp Tuxedos &amp; Blazers
-                        </span>
-                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
-                          👑 Velvet Bandhgalas &amp; Kurta Sets
-                        </span>
-                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
-                          ⚡ Midnight, Navy &amp; Charcoal
-                        </span>
-                      </div>
-
-                      <div className="p-3 sm:p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-[11px] sm:text-xs text-slate-300 font-outfit leading-relaxed">
-                        <strong className="text-sky-300">Styling Recommendation:</strong> Pair tailored single or double-breasted suits with dark formal shoes, clean metallic cufflinks, and your official Senior Council wristband.
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1284,32 +1265,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-2xl overflow-hidden h-64 sm:h-72 w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-xl mb-4">
+                    <div className="relative rounded-2xl overflow-hidden h-64 sm:h-80 w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-xl">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls.jpg"
                         alt="Senior Girls Glamorous Ethnic Sarees and Gowns"
                         className="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
-                    </div>
-
-                    {/* Styling Tags & Advice */}
-                    <div className="space-y-3">
-                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
-                          ✨ Silk, Satin &amp; Georgette Sarees
-                        </span>
-                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
-                          👗 Floor-Length Evening Gowns
-                        </span>
-                        <span className="text-[10.5px] sm:text-xs font-outfit font-bold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">
-                          💎 Modern Indo-Western Fusions
-                        </span>
-                      </div>
-
-                      <div className="p-3 sm:p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-[11px] sm:text-xs text-slate-300 font-outfit leading-relaxed">
-                        <strong className="text-cyan-300">Styling Recommendation:</strong> Complete your evening aesthetic with statement metallic earrings, elegant heels, and your holographic Senior VIP digital badge.
-                      </div>
                     </div>
                   </div>
                 </div>
