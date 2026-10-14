@@ -492,9 +492,6 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           <div className="flex items-center gap-2 text-cyan-300">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff] animate-ping" />
             <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{currentPhaseText}</span>
-            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono tracking-widest bg-cyan-950/70 text-cyan-300 border border-cyan-500/30">
-              LIVE OSCILLOSCOPE // 48 kHz
-            </span>
           </div>
           <div className="flex items-center gap-2 font-mono">
             <span className="text-cyan-300 font-black">{String(progress).padStart(2, '0')}%</span>
