@@ -626,14 +626,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           {/* Left Column: Lock Badge, Title & Context */}
           <div className="md:col-span-6 text-left">
             <div className="flex flex-row items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-3 justify-start">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-tr from-cyan-400 to-sky-600 p-[2px] shadow-[0_0_20px_rgba(6,182,212,0.4)] shrink-0">
-                <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-cyan-300">
-                  <Lock className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse text-cyan-400" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-600 p-[2px] shadow-[0_0_20px_rgba(245,158,11,0.4)] shrink-0">
+                <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-amber-400">
+                  <Lock className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse text-amber-400" />
                 </div>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 text-[10.5px] sm:text-xs font-outfit font-bold uppercase">
-                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+              <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-[10.5px] sm:text-xs font-outfit font-bold uppercase shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>AUTHENTICATION GATEWAY</span>
               </div>
             </div>
@@ -650,7 +650,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           <div className="md:col-span-6 w-full">
             <form onSubmit={handleVerifyAccess} className="space-y-3 w-full bg-black/45 p-3.5 sm:p-6 rounded-xl sm:rounded-2xl border border-white/10 backdrop-blur-md">
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-cyan-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-sky-400">
                   <Hash className="w-4 h-4" />
                 </div>
                 <input
@@ -674,7 +674,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               {/* Error Message */}
               {accessError && (
                 <div className="p-2.5 sm:p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs font-outfit flex items-start gap-2 text-left">
-                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
                   <span>{accessError}</span>
                 </div>
               )}
@@ -687,12 +687,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               >
                 {isVerifyingAccess ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin text-amber-300" />
                     <span>CHECKING SENIOR ROSTER...</span>
                   </>
                 ) : (
                   <>
-                    <KeyRound className="w-4 h-4" />
+                    <KeyRound className="w-4 h-4 text-amber-300" />
                     <span>VERIFY &amp; UNLOCK SENIOR PORTAL</span>
                   </>
                 )}
@@ -732,9 +732,9 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           {/* Sticky Fullscreen Top Bar Header */}
           <header className="shrink-0 sticky top-0 z-50 px-3 sm:px-8 py-2.5 sm:py-4 border-b border-white/10 flex items-center justify-between bg-obsidian-950/95 backdrop-blur-xl">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-sky-600 p-[2px] shadow-[0_0_15px_rgba(6,182,212,0.4)] shrink-0">
-                <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-cyan-300">
-                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-600 p-[2px] shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0">
+                <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-amber-300">
+                  <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 fill-amber-400/20" />
                 </div>
               </div>
               <div className="min-w-0">
@@ -760,7 +760,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/15 text-xs font-outfit font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                 title="Switch Registration ID"
               >
-                <Lock className="w-3.5 h-3.5 text-slate-400" />
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
                 <span className="hidden min-[400px]:inline">Switch ID</span>
               </button>
 
@@ -770,7 +770,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 className="px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 via-sky-500/25 to-cyan-500/20 hover:from-cyan-500/40 hover:to-sky-500/40 border border-cyan-400/50 hover:border-cyan-300 text-cyan-200 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer text-xs sm:text-sm font-outfit font-bold shadow-[0_0_15px_rgba(6,182,212,0.25)] hover:scale-105 active:scale-95 shrink-0"
                 title="Return to Festival Home Page"
               >
-                <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-300" />
+                <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-300" />
                 <span>Back to Home</span>
               </button>
             </div>
@@ -826,7 +826,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 4
               </span>
               <span className="flex items-center gap-1">
-                <Shirt className="w-3 h-3 text-cyan-400 sm:hidden" />
+                <Shirt className="w-3 h-3 text-purple-400 sm:hidden" />
                 <span className="hidden sm:inline">4. </span>Dress Code &amp; Outfits
               </span>
             </button>
@@ -844,7 +844,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <User className="w-4 h-4 text-cyan-400" />
+                        <User className="w-4 h-4 text-sky-400" />
                         <span>Senior Personal Details</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
@@ -869,7 +869,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                               errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                             } text-white placeholder-slate-500 text-xs sm:text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all`}
                           />
-                          <User className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                          <User className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-sky-400/70 pointer-events-none" />
                         </div>
                         {errors.fullName && <p className="text-rose-400 text-[10px] sm:text-[11px] mt-1 font-outfit">{errors.fullName}</p>}
                       </div>
@@ -908,7 +908,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                               errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                             } text-white placeholder-slate-500 text-xs sm:text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all`}
                           />
-                          <Phone className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                          <Phone className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-emerald-400 pointer-events-none" />
                         </div>
                         {errors.phone && <p className="text-rose-400 text-[10px] sm:text-[11px] mt-1 font-outfit">{errors.phone}</p>}
                       </div>
@@ -971,7 +971,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             placeholder="e.g. Cherish every single moment!"
                             className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-xs sm:text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all"
                           />
-                          <Quote className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                          <Quote className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-amber-400/80 pointer-events-none" />
                         </div>
                       </div>
                     </div>
@@ -986,7 +986,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-cyan-400" />
+                        <CreditCard className="w-4 h-4 text-indigo-400" />
                         <span>Pay on Barcode</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
@@ -1016,7 +1016,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3.5 h-3.5" />
+                            <Copy className="w-3.5 h-3.5 text-sky-300" />
                             <span>Copy UPI</span>
                           </>
                         )}
@@ -1028,8 +1028,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       <div className="p-2 sm:p-2.5 bg-white rounded-2xl shadow-xl relative inline-block">
                         <canvas ref={qrCanvasRef} className="rounded-lg max-w-full block" />
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <div className="w-7 h-7 rounded-lg bg-obsidian-950 border border-cyan-400 flex items-center justify-center shadow-lg">
-                            <Crown className="w-3.5 h-3.5 text-cyan-400" />
+                          <div className="w-7 h-7 rounded-lg bg-obsidian-950 border border-amber-400/80 flex items-center justify-center shadow-[0_0_10px_rgba(251,191,36,0.5)]">
+                            <Crown className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />
                           </div>
                         </div>
                       </div>
@@ -1045,7 +1045,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         href={seniorUpiLink}
                         className="mt-3 w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 hover:from-cyan-400 hover:to-sky-500 text-white font-outfit font-bold text-xs flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all active:scale-95 sm:hidden"
                       >
-                        <CreditCard className="w-3.5 h-3.5" />
+                        <CreditCard className="w-3.5 h-3.5 text-amber-300" />
                         <span>Tap to Pay with UPI App</span>
                       </a>
                     </div>
@@ -1059,7 +1059,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <Upload className="w-4 h-4 text-cyan-400" />
+                        <Upload className="w-4 h-4 text-sky-400" />
                         <span>Proof &amp; Mint Pass</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
@@ -1078,8 +1078,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                           <label className={`flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl border-2 border-dashed ${
                             errors.screenshot ? 'border-rose-500 bg-rose-500/5' : 'border-white/20 hover:border-cyan-400/60 bg-white/5 hover:bg-white/10'
                           } cursor-pointer transition-all text-center group`}>
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-300 mb-1.5 group-hover:scale-110 transition-transform">
-                              <Upload className="w-4 h-4" />
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-300 mb-1.5 group-hover:scale-110 transition-transform shadow-[0_0_12px_rgba(56,189,248,0.25)]">
+                              <Upload className="w-4 h-4 text-sky-300" />
                             </div>
                             <span className="text-xs font-outfit font-bold text-white mb-0.5">
                               Attach Payment Receipt / Slip
@@ -1104,7 +1104,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                               />
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-outfit font-bold">
-                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                                   <span>Receipt Attached ✓</span>
                                 </div>
                                 <p className="text-[10px] sm:text-[11px] text-slate-300 font-mono truncate mt-0.5">
@@ -1117,7 +1117,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                                 className="p-1 rounded-lg bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 transition-colors cursor-pointer"
                                 title="Remove screenshot"
                               >
-                                <X className="w-3.5 h-3.5" />
+                                <X className="w-3.5 h-3.5 text-rose-300" />
                               </button>
                             </div>
                           </div>
@@ -1159,7 +1159,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     >
                       {isMintingPass ? (
                         <>
-                          <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+                          <Loader2 className="w-4 h-4 animate-spin text-amber-300" />
                           <span className="text-[11px] sm:text-xs">
                             {mintingStep === 1 && 'VERIFYING UTR ON SENIOR LEDGER...'}
                             {mintingStep === 2 && 'AUTHENTICATING ATTACHED PAYMENT PROOF...'}
@@ -1168,7 +1168,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </>
                       ) : (
                         <>
-                          <Crown className="w-4 h-4 text-white" />
+                          <Crown className="w-4 h-4 text-amber-300 fill-amber-300/30" />
                           <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
                         </>
                       )}
@@ -1280,7 +1280,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 className="group flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-cyan-400/60 hover:border-cyan-300 text-cyan-200 hover:text-white shadow-[0_10px_30px_rgba(0,0,0,0.9),0_0_20px_rgba(6,182,212,0.4)] backdrop-blur-xl text-xs font-outfit font-extrabold tracking-wide transition-all hover:scale-105 active:scale-95 cursor-pointer"
                 title="Return to Festival Home Page"
               >
-                <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-300 group-hover:-translate-x-0.5 transition-transform" />
+                <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-300 group-hover:-translate-x-0.5 transition-transform" />
                 <span>Home Page</span>
               </button>
             </div>
