@@ -15,59 +15,6 @@ import { adminStore } from '../utils/adminStore';
  * 7. Real-time numerical progress HUD (0% -> 100%) with travelling spark head
  * 8. Quick skip anytime via ESC / Space / Skip button
  */
-
-// 48 rhythmic EDM frequency bars for the cyber soundwave visualizer
-const EDM_VISUALIZER_BARS = [
-  { h: 35, dur: 0.55, del: 0.05 },
-  { h: 50, dur: 0.70, del: 0.20 },
-  { h: 75, dur: 0.45, del: 0.10 },
-  { h: 95, dur: 0.60, del: 0.35 },
-  { h: 60, dur: 0.80, del: 0.15 },
-  { h: 40, dur: 0.50, del: 0.40 },
-  { h: 80, dur: 0.65, del: 0.25 },
-  { h: 100, dur: 0.40, del: 0.00 },
-  { h: 85, dur: 0.75, del: 0.30 },
-  { h: 65, dur: 0.55, del: 0.10 },
-  { h: 50, dur: 0.70, del: 0.45 },
-  { h: 90, dur: 0.48, del: 0.18 },
-  { h: 100, dur: 0.62, del: 0.08 },
-  { h: 70, dur: 0.52, del: 0.28 },
-  { h: 45, dur: 0.78, del: 0.38 },
-  { h: 60, dur: 0.46, del: 0.12 },
-  { h: 85, dur: 0.66, del: 0.22 },
-  { h: 95, dur: 0.58, del: 0.02 },
-  { h: 55, dur: 0.72, del: 0.32 },
-  { h: 35, dur: 0.64, del: 0.14 },
-  { h: 65, dur: 0.44, del: 0.24 },
-  { h: 90, dur: 0.68, del: 0.06 },
-  { h: 100, dur: 0.50, del: 0.16 },
-  { h: 80, dur: 0.74, del: 0.36 },
-  { h: 60, dur: 0.56, del: 0.26 },
-  { h: 75, dur: 0.48, del: 0.08 },
-  { h: 95, dur: 0.62, del: 0.18 },
-  { h: 85, dur: 0.70, del: 0.34 },
-  { h: 50, dur: 0.54, del: 0.14 },
-  { h: 70, dur: 0.66, del: 0.24 },
-  { h: 90, dur: 0.42, del: 0.04 },
-  { h: 100, dur: 0.58, del: 0.12 },
-  { h: 75, dur: 0.76, del: 0.32 },
-  { h: 55, dur: 0.50, del: 0.22 },
-  { h: 40, dur: 0.68, del: 0.42 },
-  { h: 65, dur: 0.46, del: 0.16 },
-  { h: 85, dur: 0.60, del: 0.28 },
-  { h: 95, dur: 0.72, del: 0.08 },
-  { h: 60, dur: 0.52, del: 0.38 },
-  { h: 45, dur: 0.64, del: 0.18 },
-  { h: 70, dur: 0.44, del: 0.26 },
-  { h: 90, dur: 0.68, del: 0.10 },
-  { h: 80, dur: 0.54, del: 0.30 },
-  { h: 60, dur: 0.74, del: 0.20 },
-  { h: 45, dur: 0.58, del: 0.40 },
-  { h: 35, dur: 0.66, del: 0.15 },
-  { h: 50, dur: 0.48, del: 0.25 },
-  { h: 30, dur: 0.62, del: 0.35 },
-];
-
 export default function CinematicIntro({ onComplete, onRegisterClick }) {
   const [phase, setPhase] = useState(0); // 0: Init, 1: Beam sweep, 2: Atmosphere, 3: 3D Portal, 4: Details, 5: Actions
   const [isExiting, setIsExiting] = useState(false);
@@ -538,80 +485,69 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* 7. Bottom Futuristic Cyber Soundwave & EDM Audio Visualizer Deck */}
+      {/* 7. Bottom Futuristic Minimalist Dual Laser Horizon & Sonic Pulse Deck */}
       <div className="absolute bottom-0 inset-x-0 z-30 pb-3 sm:pb-4 px-4 sm:px-8 bg-gradient-to-t from-obsidian-950 via-obsidian-950/85 to-transparent">
         {/* Telemetry Row */}
-        <div className="max-w-4xl mx-auto flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-1.5 sm:mb-2">
-          {/* Live EQ Indicator & Phase Text */}
+        <div className="max-w-4xl mx-auto flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-2">
+          {/* Horizon Status & Phase Text */}
           <div className="flex items-center gap-2 sm:gap-2.5 text-cyan-300">
-            {/* 4-bar mini dynamic equalizer */}
-            <div className="flex items-end gap-[2px] h-3.5 w-4 mb-0.5" aria-hidden="true">
-              <span className="w-0.5 bg-cyan-400 rounded-full animate-soundwave-bar" style={{ height: '70%', '--sw-dur': '0.55s', '--sw-del': '0.05s' }} />
-              <span className="w-0.5 bg-sky-300 rounded-full animate-soundwave-bar" style={{ height: '100%', '--sw-dur': '0.4s', '--sw-del': '0.2s' }} />
-              <span className="w-0.5 bg-fuchsia-400 rounded-full animate-soundwave-bar" style={{ height: '85%', '--sw-dur': '0.65s', '--sw-del': '0.1s' }} />
-              <span className="w-0.5 bg-pink-400 rounded-full animate-soundwave-bar" style={{ height: '50%', '--sw-dur': '0.5s', '--sw-del': '0.3s' }} />
+            {/* Minimalist Horizon Optics Indicator */}
+            <div className="flex items-center gap-1" aria-hidden="true">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00e5ff] animate-ping" />
+              <span className="w-2.5 h-[1.5px] bg-gradient-to-r from-cyan-400 to-transparent" />
             </div>
             <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{currentPhaseText}</span>
-            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] bg-purple-500/20 text-purple-300 border border-purple-500/30">
-              48 kHz LIVE AUDIO
+            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono tracking-widest bg-cyan-950/70 text-cyan-300 border border-cyan-500/30">
+              HORIZON // QUANTUM
             </span>
           </div>
 
           {/* Numerical percentage & Sync status */}
           <div className="flex items-center gap-1.5 font-mono">
             <span className="text-cyan-300 font-black">{String(progress).padStart(2, '0')}%</span>
-            <span className={progress >= 100 ? 'text-pink-400 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_8px_rgba(244,114,182,0.8)]' : 'text-slate-500'}>
-              {progress >= 100 ? 'READY' : 'SYNCING'}
+            <span className={progress >= 100 ? 'text-cyan-300 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_8px_rgba(0,229,255,0.9)]' : 'text-slate-500'}>
+              {progress >= 100 ? 'ONLINE' : 'CHARGING'}
             </span>
           </div>
         </div>
 
-        {/* Dynamic Cyber Soundwave Spectrum & Glowing Laser Baseline */}
-        <div className="max-w-4xl mx-auto relative">
-          {/* Multi-Band Equalizer Frequency Bars */}
-          <div className="flex items-end justify-between gap-[2px] sm:gap-[3px] h-6 sm:h-7 px-0.5 mb-1 overflow-hidden">
-            {EDM_VISUALIZER_BARS.map((bar, idx) => {
-              const barPercent = ((idx + 1) / EDM_VISUALIZER_BARS.length) * 100;
-              const isActive = progress >= barPercent || progress >= 100;
-              const ratio = idx / EDM_VISUALIZER_BARS.length;
-              const barColor =
-                ratio < 0.33
-                  ? 'bg-gradient-to-t from-cyan-500 to-sky-300'
-                  : ratio < 0.66
-                  ? 'bg-gradient-to-t from-sky-400 via-purple-500 to-fuchsia-400'
-                  : 'bg-gradient-to-t from-fuchsia-500 via-pink-500 to-rose-300';
-
-              return (
-                <div
-                  key={idx}
-                  className="flex-1 flex flex-col justify-end items-center h-full"
-                >
-                  <div
-                    className={`w-full rounded-full transition-all duration-300 origin-bottom ${
-                      isActive
-                        ? `${barColor} shadow-[0_0_8px_rgba(0,229,255,0.35)]`
-                        : 'bg-white/10 opacity-25 scale-y-[0.18]'
-                    }`}
-                    style={{
-                      height: `${bar.h}%`,
-                      animation: isActive
-                        ? `soundwaveBounce ${bar.dur}s ease-in-out infinite ${bar.del}s`
-                        : 'none',
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Glowing Base Laser Track Line with Travelling Spark Head */}
-          <div className="relative h-1 sm:h-1.5 bg-white/10 rounded-full overflow-hidden">
+        {/* Minimalist Dual Laser Horizon Rails with Center-Radiating Sonic Flares */}
+        <div className="max-w-4xl mx-auto relative py-1">
+          {/* Upper Horizon Laser Rail (Cyan Spectrum) */}
+          <div className="relative h-[1.5px] bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 transition-all duration-100 ease-linear rounded-full relative"
+              className="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-white transition-all duration-100 ease-linear rounded-full relative shadow-[0_0_8px_#00e5ff]"
               style={{ width: `${progress}%` }}
             >
-              {/* Travelling Glowing Spark Head */}
-              <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white shadow-[0_0_12px_#ff007f,0_0_20px_#00e5ff] -mr-1" />
+              {/* Travelling Laser Glint Tip */}
+              <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white shadow-[0_0_10px_#00e5ff] -mr-1" />
+            </div>
+          </div>
+
+          {/* Center Sonic Flare Corridor with Central Nexus Diamond */}
+          <div className="relative h-2 my-0.5 flex items-center justify-center overflow-hidden pointer-events-none">
+            {/* Center Nexus Diamond Node */}
+            <div className="relative z-10 w-2 h-2 rotate-45 bg-cyan-300 shadow-[0_0_10px_#00e5ff,0_0_20px_#d946ef] animate-[horizonGlintPulse_2s_ease-in-out_infinite]" />
+
+            {/* Sonic Pulse Shockwave Flares Radiating Symmetrically Outward from Center */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-transparent via-fuchsia-400 to-transparent animate-sonic-flare opacity-80" />
+            <div
+              className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-sonic-flare opacity-60"
+              style={{ animationDelay: '1.1s' }}
+            />
+
+            {/* Continuous Roving Laser Scanner Beam */}
+            <div className="absolute top-1/2 -translate-y-1/2 h-[2px] w-28 bg-gradient-to-r from-transparent via-cyan-300 to-transparent animate-laser-scan blur-[0.5px]" />
+          </div>
+
+          {/* Lower Horizon Laser Rail (Neon Fuchsia / Pink Spectrum) */}
+          <div className="relative h-[1.5px] bg-white/10 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-400 transition-all duration-100 ease-linear rounded-full relative shadow-[0_0_8px_#d946ef]"
+              style={{ width: `${progress}%` }}
+            >
+              {/* Travelling Laser Glint Tip */}
+              <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-pink-300 shadow-[0_0_10px_#ec4899] -mr-1" />
             </div>
           </div>
         </div>
