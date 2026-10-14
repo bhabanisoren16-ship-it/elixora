@@ -486,21 +486,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       </div>
 
       {/* 7. Bottom Full-Screen Edge-to-Edge Fluid Oscilloscope Sine Wave (No Box / 100% Transparent) */}
-      <div className="absolute bottom-0 inset-x-0 z-30 pb-2 sm:pb-3 pointer-events-none">
-        {/* Telemetry Row (Centered cleanly) */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-1.5">
-          <div className="flex items-center gap-2 text-cyan-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff] animate-ping" />
-            <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{currentPhaseText}</span>
-          </div>
-          <div className="flex items-center gap-2 font-mono">
-            <span className="text-cyan-300 font-black">{String(progress).padStart(2, '0')}%</span>
-            <span className={progress >= 100 ? 'text-pink-400 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_6px_#ec4899]' : 'text-slate-500'}>
-              {progress >= 100 ? 'ONLINE' : 'STREAMING'}
-            </span>
-          </div>
-        </div>
-
+      <div className="absolute bottom-0 inset-x-0 z-30 pb-2 sm:pb-4 pointer-events-none">
         {/* 100% Full-Screen Edge-to-Edge Fluid Wave (No box, no background container) */}
         <div className="relative w-full h-10 sm:h-12 overflow-hidden flex items-center">
           {/* Seamless Flowing Harmonic Sine Waves (SVG) */}
