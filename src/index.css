@@ -965,41 +965,51 @@ body.senior-portal-open nav {
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 10px rgba(168, 85, 247, 0.2);
 }
 
-/* 13. Sci-Fi Segmented HUD Power Rail Keyframes */
-@keyframes cellShimmerWave {
-  0%, 100% {
-    filter: brightness(1) drop-shadow(0 0 4px rgba(0, 229, 255, 0.4));
-  }
-  50% {
-    filter: brightness(1.3) drop-shadow(0 0 10px rgba(217, 70, 239, 0.85));
-  }
-}
-
-@keyframes cellGlintGlide {
+/* 13. Fluid Oscilloscope Sine Wave Keyframes */
+@keyframes oscFlow1 {
   0% {
-    left: -20%;
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    left: 120%;
-    opacity: 0;
+    transform: translate3d(-120px, 0, 0);
   }
 }
 
-.animate-cell-shimmer {
-  animation: cellShimmerWave 2.5s ease-in-out infinite;
+@keyframes oscFlow2 {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-160px, 0, 0);
+  }
 }
 
-.animate-cell-glint {
-  animation: cellGlintGlide 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  will-change: left, opacity;
+@keyframes oscPulseBreathe {
+  0%, 100% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 5px #00e5ff);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px #00e5ff) drop-shadow(0 0 20px #ec4899);
+  }
 }
+
+.animate-osc-1 {
+  animation: oscFlow1 4s linear infinite;
+  will-change: transform;
+}
+
+.animate-osc-2 {
+  animation: oscFlow2 3s linear infinite;
+  will-change: transform;
+}
+
+.animate-osc-pulse {
+  animation: oscPulseBreathe 3s ease-in-out infinite;
+  will-change: filter, opacity;
+}
+
 
 
 

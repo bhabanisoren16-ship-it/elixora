@@ -485,62 +485,102 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* 7. Bottom Sci-Fi Segmented HUD Power Rail */}
+      {/* 7. Bottom Fluid Oscilloscope Sine Wave Loading Display */}
       <div className="absolute bottom-0 inset-x-0 z-30 pb-3 sm:pb-4 px-4 sm:px-8 bg-gradient-to-t from-obsidian-950 via-obsidian-950/85 to-transparent">
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           {/* Telemetry Row */}
-          <div className="flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-2">
+          <div className="flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-1.5">
             <div className="flex items-center gap-2 text-cyan-300">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff] animate-ping" />
               <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{currentPhaseText}</span>
+              <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono tracking-widest bg-cyan-950/70 text-cyan-300 border border-cyan-500/30">
+                LIVE OSCILLOSCOPE // 48 kHz
+              </span>
             </div>
             <div className="flex items-center gap-2 font-mono">
               <span className="text-cyan-300 font-black">{String(progress).padStart(2, '0')}%</span>
               <span className={progress >= 100 ? 'text-pink-400 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_6px_#ec4899]' : 'text-slate-500'}>
-                {progress >= 100 ? 'READY' : 'CHARGING'}
+                {progress >= 100 ? 'ONLINE' : 'STREAMING'}
               </span>
             </div>
           </div>
 
-          {/* Segmented Power Cells Rail */}
-          <div className="relative p-1 rounded-lg bg-obsidian-950/90 border border-white/10 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.9)] overflow-hidden">
-            {/* Shimmer Light Glint Sweeper */}
-            <div className="absolute inset-y-0 w-24 bg-gradient-to-r from-transparent via-white/25 to-transparent animate-cell-glint pointer-events-none" />
+          {/* Fluid Oscilloscope Neon Sine Wave Arena */}
+          <div className="relative h-10 sm:h-12 w-full overflow-hidden flex items-center">
+            {/* Ambient Background Wave Glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 blur-xl pointer-events-none" />
 
-            {/* 20 Segmented Quantum Cells */}
-            <div className="flex items-center gap-1 sm:gap-1.5">
-              {Array.from({ length: 20 }).map((_, i) => {
-                const cellPercent = ((i + 1) / 20) * 100;
-                const isCharged = progress >= cellPercent;
-                const ratio = i / 20;
-                const cellGrad =
-                  ratio < 0.4
-                    ? 'bg-gradient-to-r from-cyan-400 to-sky-400 shadow-[0_0_8px_rgba(0,229,255,0.8)]'
-                    : ratio < 0.75
-                    ? 'bg-gradient-to-r from-sky-400 to-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.8)]'
-                    : 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.9)]';
+            {/* Seamless Flowing Harmonic Sine Waves (SVG) */}
+            <svg
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              preserveAspectRatio="none"
+              viewBox="0 0 1000 40"
+            >
+              <defs>
+                <linearGradient id="oscCyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#00e5ff" stopOpacity="0.8" />
+                  <stop offset="50%" stopColor="#38bdf8" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#818cf8" stopOpacity="0.8" />
+                </linearGradient>
+                <linearGradient id="oscPinkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#c084fc" stopOpacity="0.8" />
+                  <stop offset="50%" stopColor="#f472b6" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#ec4899" stopOpacity="0.8" />
+                </linearGradient>
+              </defs>
 
-                return (
-                  <div
-                    key={i}
-                    className={`flex-1 h-2 sm:h-2.5 rounded-sm transition-all duration-200 ${
-                      isCharged
-                        ? `${cellGrad} ${progress >= 100 ? 'animate-cell-shimmer' : ''}`
-                        : 'bg-white/5 border border-white/5'
-                    }`}
-                  />
-                );
-              })}
+              {/* Baseline Center Dotted Axis */}
+              <line
+                x1="0"
+                y1="20"
+                x2="1000"
+                y2="20"
+                stroke="rgba(255, 255, 255, 0.12)"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+              />
+
+              {/* Primary Cyan Sine Wave (Wavelength 120, Amplitude 12) */}
+              <g className="animate-osc-1">
+                <path
+                  d="M 0 20 Q 30 8, 60 20 T 120 20 T 180 20 T 240 20 T 300 20 T 360 20 T 420 20 T 480 20 T 540 20 T 600 20 T 660 20 T 720 20 T 780 20 T 840 20 T 900 20 T 960 20 T 1020 20 T 1080 20 T 1140 20 T 1200 20 T 1260 20 T 1320 20 T 1380 20 T 1440 20"
+                  fill="none"
+                  stroke="url(#oscCyanGrad)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  className="animate-osc-pulse"
+                />
+              </g>
+
+              {/* Harmonic Pink / Fuchsia Sine Wave (Wavelength 160, Amplitude 8) */}
+              <g className="animate-osc-2">
+                <path
+                  d="M 0 20 Q 40 12, 80 20 T 160 20 T 240 20 T 320 20 T 400 20 T 480 20 T 560 20 T 640 20 T 720 20 T 800 20 T 880 20 T 960 20 T 1040 20 T 1120 20 T 1200 20 T 1280 20 T 1360 20 T 1440 20"
+                  fill="none"
+                  stroke="url(#oscPinkGrad)"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+              </g>
+            </svg>
+
+            {/* Precision Laser Horizon Track with Travelling Photon Glint */}
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1.5px] pointer-events-none">
+              <div
+                className="h-full bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 rounded-full shadow-[0_0_10px_#00e5ff] transition-all duration-150 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
             </div>
-          </div>
 
-          {/* Calibration Notches */}
-          <div className="flex items-center justify-between text-[8px] font-mono tracking-widest text-slate-500 mt-1 px-1">
-            <span>00</span>
-            <span>25</span>
-            <span>50</span>
-            <span>75</span>
-            <span className={progress >= 100 ? 'text-cyan-300 font-bold' : ''}>100</span>
+            {/* Leading Edge Electric Travelling Spark */}
+            <div
+              className="absolute top-1/2 -translate-y-1/2 transition-all duration-150 ease-linear pointer-events-none z-10"
+              style={{ left: `${progress}%` }}
+            >
+              <span className="absolute -inset-1.5 rounded-full bg-cyan-400/40 animate-ping" />
+              <span className="relative block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white shadow-[0_0_8px_#fff,0_0_16px_#00e5ff,0_0_24px_#ec4899] -translate-x-1/2" />
+            </div>
           </div>
         </div>
       </div>
