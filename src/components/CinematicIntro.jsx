@@ -445,7 +445,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           )}
         </div>
 
-        {/* Stage 5: Primary ENTER Action CTA */}
+        {/* Stage 5: Ultra-Aesthetic Cyber ENTER Action CTA */}
         <div
           className={`mt-6 sm:mt-8 flex items-center justify-center w-full max-w-xs mx-auto transition-all duration-700 transform ${
             phase >= 5
@@ -455,13 +455,30 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         >
           <button
             onClick={() => handleExit(false)}
-            className="group relative px-8 py-3.5 sm:px-11 sm:py-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-black text-base sm:text-lg tracking-[0.22em] uppercase shadow-[0_0_40px_rgba(0,229,255,0.65),0_4px_25px_rgba(0,0,0,0.85)] hover:shadow-[0_0_60px_rgba(0,229,255,0.9)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 border border-white/30 cursor-pointer overflow-hidden"
+            className="group relative inline-flex items-center gap-3.5 px-8 py-3.5 sm:px-9 sm:py-4 rounded-full transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer"
           >
-            {/* Shimmer light sweep on hover */}
-            <span className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none" />
-            
-            <span className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">ENTER</span>
-            <ArrowRight className="w-5 h-5 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
+            {/* 1. Outer Multi-Tone Cyber Aura Bloom */}
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-600 opacity-60 blur-md group-hover:opacity-100 group-hover:blur-lg transition-all duration-500 animate-pulse" />
+
+            {/* 2. Deep Obsidian Glass Capsule Body */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-b from-obsidian-900/90 via-black/95 to-obsidian-950/95 border border-cyan-400/50 group-hover:border-cyan-300/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.25)] transition-all duration-300 overflow-hidden">
+              {/* Top Glass Bevel Glint */}
+              <div className="absolute inset-x-6 top-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-300/80 to-transparent" />
+              {/* Shimmer Light Beam on Hover */}
+              <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out" />
+            </div>
+
+            {/* 3. Button Content: Glowing Metallic Typography & Icon Capsule */}
+            <div className="relative z-10 flex items-center gap-3">
+              <span className="font-outfit font-black text-sm sm:text-base tracking-[0.32em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-slate-200 drop-shadow-[0_0_12px_rgba(0,229,255,0.7)] ml-1">
+                ENTER
+              </span>
+              
+              {/* Glowing Icon Capsule */}
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-cyan-500/15 border border-cyan-400/50 group-hover:border-cyan-300 group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-sky-400 flex items-center justify-center transition-all duration-300 shadow-[0_0_12px_rgba(0,229,255,0.35)]">
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-300 group-hover:text-obsidian-950 group-hover:translate-x-0.5 transition-all duration-300" />
+              </div>
+            </div>
           </button>
         </div>
       </div>
