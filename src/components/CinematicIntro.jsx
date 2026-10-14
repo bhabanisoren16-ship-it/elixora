@@ -199,38 +199,41 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
-      {/* 3D Concert Stage Atmosphere Background Layer with Spatial Parallax */}
+      {/* Concert Stage Atmosphere Background Layer matching Main Page Theme with 3D Tilt Parallax */}
       <div
         className="absolute inset-[-45px] pointer-events-none select-none overflow-hidden will-change-transform"
         style={{
-          transform: `perspective(1000px) rotateX(${mousePos.y * -7}deg) rotateY(${mousePos.x * 7}deg) translate3d(${mousePos.x * -18}px, ${mousePos.y * -14}px, 0px) scale(${phase >= 3 ? 1.06 : 1.01})`,
+          transform: `perspective(1000px) rotateX(${mousePos.y * -7}deg) rotateY(${mousePos.x * 7}deg) translate3d(${mousePos.x * -18}px, ${mousePos.y * -14}px, 0px) scale(${phase >= 3 ? 1.05 : 1.01})`,
           transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
         }}
       >
-        <img
-          src="/elixora-3d-loading-bg.jpg"
-          alt="ELIXORA 3D Stage Environment"
-          className="w-full h-full object-cover object-center filter brightness-105 contrast-110"
-        />
+        <picture>
+          <source media="(min-width: 768px)" srcSet="/background-desktop.jpg" />
+          <img
+            src="/party-background.jpg"
+            alt="ELIXORA Concert Stage Atmosphere"
+            className="w-full h-full object-cover object-center filter brightness-[1.05] contrast-[1.10]"
+          />
+        </picture>
 
-        {/* 3D Depth Portal Vignette & Atmosphere Balancing */}
+        {/* Ambient Concert Stage Lighting Vignette matching Main Page Theme */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(0, 229, 255, 0.08) 0%, rgba(147, 51, 234, 0.12) 38%, rgba(6, 8, 20, 0.42) 65%, rgba(6, 8, 20, 0.88) 100%)',
+              'radial-gradient(ellipse 70% 65% at 50% 48%, rgba(6, 8, 20, 0.40) 0%, rgba(6, 8, 20, 0.70) 58%, rgba(6, 8, 20, 0.95) 100%)',
           }}
         />
 
-        {/* Ambient Top & Bottom Gradients for Contrast & Readability */}
-        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-obsidian-950/80 via-obsidian-950/40 to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-obsidian-950/90 via-obsidian-950/50 to-transparent pointer-events-none" />
+        {/* Ambient Top & Bottom Gradients for Letterbox & Readability */}
+        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-obsidian-950/90 via-obsidian-950/50 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-obsidian-950/95 via-obsidian-950/65 to-transparent pointer-events-none" />
 
-        {/* Dynamic 3D Portal Energy Aura Pulse in Phase >= 1 */}
+        {/* Dynamic Stage Lighting Pulse Glow matching Main Page Theme in Phase >= 1 */}
         <div
-          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full blur-[90px] pointer-events-none transition-all duration-1000 ${
+          className={`absolute top-[32%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[360px] rounded-full blur-[110px] pointer-events-none transition-all duration-1000 ${
             phase >= 1
-              ? 'opacity-60 bg-gradient-to-tr from-cyan-400/40 via-sky-500/30 to-purple-500/40 scale-110'
+              ? 'opacity-40 bg-gradient-to-tr from-cyan-500/30 via-purple-600/25 to-amber-500/20 scale-105'
               : 'opacity-0 scale-75'
           }`}
         />
@@ -243,7 +246,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       <div className="absolute top-5 right-5 sm:top-8 sm:right-8 z-30 flex items-center gap-3">
         <button
           onClick={() => handleExit(false)}
-          className="group px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 hover:border-cyan-400/50 text-slate-200 hover:text-white text-xs font-outfit font-semibold tracking-wider transition-all backdrop-blur-md flex items-center gap-1.5 cursor-pointer shadow-lg"
+          className="group px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-black/70 hover:bg-black/90 border border-white/25 hover:border-cyan-400/60 text-slate-100 hover:text-white text-xs font-outfit font-bold tracking-wider transition-all backdrop-blur-md flex items-center gap-1.5 cursor-pointer shadow-lg"
           title="Skip intro animation (Esc)"
         >
           <span>SKIP INTRO</span>
@@ -275,7 +278,9 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
         }}
       >
-        
+        {/* Dark Contrast Shield behind Central Content for 100% Text Legibility */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[850px] h-[380px] sm:h-[460px] bg-obsidian-950/80 rounded-full blur-3xl pointer-events-none -z-10" />
+
         {/* 3D Chrome Title: ELIXORA */}
         <div
           className={`relative select-none transition-all duration-1000 transform ${
@@ -288,20 +293,20 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 blur-2xl opacity-40 animate-pulse pointer-events-none" />
 
           {/* Letter Stagger Container */}
-          <h1 className="relative font-outfit font-black tracking-tight text-6xl xs:text-7xl sm:text-8xl md:text-9xl text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-slate-400 flex items-center justify-center drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)]">
+          <h1 className="relative font-outfit font-black tracking-tight text-6xl xs:text-7xl sm:text-8xl md:text-9xl text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-slate-300 flex items-center justify-center drop-shadow-[0_12px_40px_rgba(0,0,0,1)]">
             {letters.map((char, idx) => (
               <span
                 key={idx}
                 className="inline-block transition-all duration-700 transform will-change-transform hover:scale-110 hover:text-cyan-200"
                 style={{
                   transitionDelay: `${idx * 75}ms`,
-                  textShadow: '0 0 20px rgba(0, 229, 255, 0.45), 0 0 50px rgba(168, 85, 247, 0.35)',
+                  textShadow: '0 0 25px rgba(0, 229, 255, 0.6), 0 4px 20px rgba(0,0,0,1)',
                 }}
               >
                 {char}
               </span>
             ))}
-            <span className="text-2xl sm:text-4xl text-cyan-400 ml-1.5 sm:ml-2 font-black align-top self-start mt-2 sm:mt-4 text-glow-cyan">
+            <span className="text-2xl sm:text-4xl text-cyan-400 ml-1.5 sm:ml-2 font-black align-top self-start mt-2 sm:mt-4 text-glow-cyan drop-shadow-[0_4px_15px_rgba(0,0,0,0.9)]">
               2.0
             </span>
           </h1>
@@ -312,20 +317,20 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
 
         {/* Tagline: A Night to Remember */}
         <div
-          className={`mt-3 sm:mt-5 transition-all duration-700 transform ${
+          className={`mt-4 sm:mt-5 transition-all duration-700 transform ${
             phase >= 4
               ? 'opacity-100 translate-y-0 filter-none'
               : 'opacity-0 translate-y-6 filter blur-sm'
           }`}
         >
-          <p className="font-outfit text-sm sm:text-lg md:text-xl text-slate-200 font-extrabold tracking-[0.3em] uppercase drop-shadow-md text-glow-violet">
+          <p className="font-outfit text-sm sm:text-lg md:text-xl text-white font-black tracking-[0.35em] uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,1)] text-glow-cyan">
             A Night to Remember
           </p>
         </div>
 
         {/* Event Date & Location: Revealed only if officially announced from Admin Portal */}
         <div
-          className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-outfit font-bold text-slate-300 transition-all duration-700 delay-100 transform ${
+          className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs sm:text-sm font-outfit font-extrabold transition-all duration-700 delay-100 transform ${
             phase >= 4
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-6'
@@ -333,18 +338,22 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         >
           {isDateVenueAnnounced ? (
             <>
-              <span className="px-3 py-1 rounded-lg bg-black/50 border border-white/10 text-cyan-300 shadow-sm">
-                📅 {humanDate}
+              <span className="px-4 py-2 rounded-xl bg-obsidian-900/90 border border-cyan-400/50 text-cyan-200 shadow-[0_4px_25px_rgba(0,0,0,0.85)] backdrop-blur-xl flex items-center gap-2">
+                <span>📅</span>
+                <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{humanDate}</span>
               </span>
-              <span className="hidden sm:inline-block text-white/30">•</span>
-              <span className="px-3 py-1 rounded-lg bg-black/50 border border-white/10 text-purple-300 shadow-sm">
-                📍 {venueTitle}
+              <span className="hidden sm:inline-block text-white/40">•</span>
+              <span className="px-4 py-2 rounded-xl bg-obsidian-900/90 border border-purple-400/50 text-purple-200 shadow-[0_4px_25px_rgba(0,0,0,0.85)] backdrop-blur-xl flex items-center gap-2">
+                <span>📍</span>
+                <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{venueTitle}</span>
               </span>
             </>
           ) : (
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/25 text-cyan-300 shadow-sm text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00e5ff]" />
-              <span>Official Date &amp; Venue Revealing Soon</span>
+            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-obsidian-900/90 border border-cyan-400/60 shadow-[0_4px_30px_rgba(0,0,0,0.9),0_0_15px_rgba(0,229,255,0.25)] backdrop-blur-xl">
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#00e5ff]" />
+              <span className="text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
+                Official Date &amp; Venue Revealing Soon
+              </span>
             </div>
           )}
         </div>
