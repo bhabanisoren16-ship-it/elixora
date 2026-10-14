@@ -944,3 +944,25 @@ body.senior-portal-open nav {
   }
 }
 
+/* 12. Luxury Nightlife Glows & Chromatic Accents */
+.text-glow-cyan {
+  text-shadow: 0 0 15px rgba(0, 229, 255, 0.6), 0 0 30px rgba(0, 229, 255, 0.3);
+}
+
+.text-glow-violet {
+  text-shadow: 0 0 15px rgba(168, 85, 247, 0.6), 0 0 35px rgba(168, 85, 247, 0.35);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 15px rgba(251, 191, 36, 0.6), 0 0 35px rgba(251, 191, 36, 0.3);
+}
+
+.shadow-neon-cyan {
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.4), inset 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.shadow-neon-violet {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 10px rgba(168, 85, 247, 0.2);
+}
+
+

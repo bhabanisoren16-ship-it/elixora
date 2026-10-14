@@ -79,8 +79,8 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
   const navLinks = [
     { name: 'Home', shortName: 'Home', href: '#hero', icon: RealisticHome },
     { name: 'Event Details', shortName: 'Details', href: '#details', icon: RealisticCalendar },
-    { name: 'Dress Code', shortName: 'Attire', href: '#dress-code', icon: RealisticPalette },
-    { name: 'Venue & Guide', shortName: 'Venue', href: '#venue', icon: RealisticCompass },
+    { name: 'Party Experiences', shortName: 'Party', href: '#experiences', icon: RealisticPalette },
+    { name: 'Gallery', shortName: 'Gallery', href: '#gallery', icon: RealisticCompass },
     { name: 'Seniors', shortName: 'Seniors', href: '#seniors', icon: RealisticGraduationCap },
   ];
 
