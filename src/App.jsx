@@ -41,15 +41,18 @@ export default function App() {
   const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(checkIsSeniorPortalRoute);
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminRoute);
 
-  // Cinematic loading screen state
+  // Cinematic loading screen state - plays every time the page is refreshed or loaded
   const [showIntro, setShowIntro] = useState(() => {
     if (typeof window === 'undefined') return false;
     try {
-      const hasSeen = sessionStorage.getItem('elixora_intro_seen');
-      const isDirectRoute = window.location.hash && window.location.hash !== '#hero';
-      return !hasSeen && !isDirectRoute;
+      // Clear any cached flag so refresh always triggers the loading screen
+      sessionStorage.removeItem('elixora_intro_seen');
+      const isDirectRoute =
+        window.location.hash.includes('admin') ||
+        window.location.pathname.includes('admin');
+      return !isDirectRoute;
     } catch (e) {
-      return false;
+      return true;
     }
   });
 
@@ -159,9 +162,6 @@ export default function App() {
 
   const handleIntroComplete = () => {
     setShowIntro(false);
-    try {
-      sessionStorage.setItem('elixora_intro_seen', 'true');
-    } catch (e) {}
   };
 
   return (

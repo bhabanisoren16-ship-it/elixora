@@ -21,6 +21,10 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
   const [phase, setPhase] = useState(0); // 0: Init, 1: Beam sweep, 2: Particles, 3: 3D Title emerge, 4: Tagline & Details, 5: Ready/Action
   const [isExiting, setIsExiting] = useState(false);
   const [settings, setSettings] = useState(() => adminStore.getSettings());
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const mouseTargetRef = useRef({ x: 0, y: 0 });
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const tiltAnimRef = useRef(null);
   const canvasRef = useRef(null);
   const animFrameRef = useRef(null);
 
@@ -33,24 +37,58 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     return () => window.removeEventListener('elixora_admin_update', handleUpdate);
   }, []);
 
+  // Smooth 3D tilt parallax tracking (cursor on desktop, tilt on mobile)
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      mouseTargetRef.current = { x, y };
+    };
+
+    const handleDeviceOrientation = (e) => {
+      if (e.gamma !== null && e.beta !== null) {
+        const x = Math.max(-1, Math.min(1, e.gamma / 25));
+        const y = Math.max(-1, Math.min(1, (e.beta - 45) / 25));
+        mouseTargetRef.current = { x, y };
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('deviceorientation', handleDeviceOrientation, { passive: true });
+
+    const animateTilt = () => {
+      mousePosRef.current.x += (mouseTargetRef.current.x - mousePosRef.current.x) * 0.08;
+      mousePosRef.current.y += (mouseTargetRef.current.y - mousePosRef.current.y) * 0.08;
+      setMousePos({ x: mousePosRef.current.x, y: mousePosRef.current.y });
+      tiltAnimRef.current = requestAnimationFrame(animateTilt);
+    };
+    tiltAnimRef.current = requestAnimationFrame(animateTilt);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('deviceorientation', handleDeviceOrientation);
+      if (tiltAnimRef.current) cancelAnimationFrame(tiltAnimRef.current);
+    };
+  }, []);
+
   const isDateVenueAnnounced = Boolean(settings.isDateVenueAnnounced);
   const humanDate = settings.eventHumanDate || EVENT_DETAILS.humanDate;
   const venueTitle = settings.venueTitle || EVENT_DETAILS.location;
 
-  // Staged timeline sequence
+  // Staged timeline sequence (Extended to 8.5s for immersive 3D viewing)
   useEffect(() => {
-    // Stage 1: Neon beam sweep (at 250ms)
-    const t1 = setTimeout(() => setPhase(1), 250);
-    // Stage 2: Atmospheric dust & haze (at 900ms)
-    const t2 = setTimeout(() => setPhase(2), 900);
-    // Stage 3: 3D ELIXORA title emerges with chrome reflection (at 1700ms)
-    const t3 = setTimeout(() => setPhase(3), 1700);
-    // Stage 4: Tagline, Date & Venue reveal (at 2800ms)
-    const t4 = setTimeout(() => setPhase(4), 2800);
-    // Stage 5: Primary CTAs & Enter site buttons (at 3700ms)
-    const t5 = setTimeout(() => setPhase(5), 3700);
-    // Stage 6: Seamless auto-transition to website (at 4500ms)
-    const tAuto = setTimeout(() => handleExit(false), 4500);
+    // Stage 1: Neon beam sweep & 3D stage lighting (at 400ms)
+    const t1 = setTimeout(() => setPhase(1), 400);
+    // Stage 2: Atmospheric dust & rising pyro sparks (at 1400ms)
+    const t2 = setTimeout(() => setPhase(2), 1400);
+    // Stage 3: 3D ELIXORA title emerges with chrome reflection (at 2400ms)
+    const t3 = setTimeout(() => setPhase(3), 2400);
+    // Stage 4: Tagline, Date & Venue reveal (at 4000ms)
+    const t4 = setTimeout(() => setPhase(4), 4000);
+    // Stage 5: Primary CTAs & Enter site buttons (at 5200ms)
+    const t5 = setTimeout(() => setPhase(5), 5200);
+    // Stage 6: Seamless auto-transition to website (at 8500ms)
+    const tAuto = setTimeout(() => handleExit(false), 8500);
 
     return () => {
       clearTimeout(t1);
@@ -62,7 +100,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     };
   }, []);
 
-  // Atmospheric dust and spark particles in canvas
+  // Atmospheric dust and spark particles in canvas with 3D depth
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -79,15 +117,17 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     };
     window.addEventListener('resize', handleResize);
 
-    const particleCount = width > 768 ? 45 : 22;
+    const particleCount = width > 768 ? 55 : 28;
+    const colors = ['#00e5ff', '#38bdf8', '#c084fc', '#e879f9', '#fbbf24', '#ffffff'];
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: -(Math.random() * 0.8 + 0.3),
-      size: Math.random() * 2 + 0.8,
-      alpha: Math.random() * 0.7 + 0.2,
-      color: Math.random() > 0.5 ? '#00e5ff' : '#c084fc',
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: -(Math.random() * 0.9 + 0.3),
+      size: Math.random() * 2.2 + 0.8,
+      alpha: Math.random() * 0.7 + 0.25,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      depth: Math.random() * 0.8 + 0.4,
     }));
 
     const render = () => {
@@ -95,7 +135,8 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        p.x += p.vx;
+        const driftX = mousePosRef.current.x * p.depth * 0.6;
+        p.x += p.vx + driftX;
         p.y += p.vy;
 
         if (p.y < 0) {
@@ -111,7 +152,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha;
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 12;
         ctx.fill();
         ctx.restore();
       }
@@ -158,24 +199,42 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
-      {/* Simple Concert Atmosphere Background Image */}
-      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-        <picture>
-          <source media="(min-width: 768px)" srcSet="/background-desktop.jpg" />
-          <img
-            src="/party-background.jpg"
-            alt="ELIXORA Atmosphere"
-            className="w-full h-full object-cover object-center opacity-30 scale-105"
-          />
-        </picture>
-        {/* Dark Vignette Overlay for Readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/85 via-obsidian-950/75 to-obsidian-950/95" />
-      </div>
+      {/* 3D Concert Stage Atmosphere Background Layer with Spatial Parallax */}
+      <div
+        className="absolute inset-[-45px] pointer-events-none select-none overflow-hidden will-change-transform"
+        style={{
+          transform: `perspective(1000px) rotateX(${mousePos.y * -7}deg) rotateY(${mousePos.x * 7}deg) translate3d(${mousePos.x * -18}px, ${mousePos.y * -14}px, 0px) scale(${phase >= 3 ? 1.06 : 1.01})`,
+          transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        }}
+      >
+        <img
+          src="/elixora-3d-loading-bg.jpg"
+          alt="ELIXORA 3D Stage Environment"
+          className="w-full h-full object-cover object-center filter brightness-105 contrast-110"
+        />
 
-      {/* Background Volumetric Gradients */}
-      <div className="absolute inset-0 bg-radial-gradient from-purple-900/20 via-obsidian-950/90 to-obsidian-950 pointer-events-none" />
-      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-cyan-500/15 rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-purple-600/15 rounded-full blur-[130px] pointer-events-none" />
+        {/* 3D Depth Portal Vignette & Atmosphere Balancing */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 65% 60% at 50% 50%, rgba(0, 229, 255, 0.08) 0%, rgba(147, 51, 234, 0.12) 38%, rgba(6, 8, 20, 0.42) 65%, rgba(6, 8, 20, 0.88) 100%)',
+          }}
+        />
+
+        {/* Ambient Top & Bottom Gradients for Contrast & Readability */}
+        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-obsidian-950/80 via-obsidian-950/40 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-obsidian-950/90 via-obsidian-950/50 to-transparent pointer-events-none" />
+
+        {/* Dynamic 3D Portal Energy Aura Pulse in Phase >= 1 */}
+        <div
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full blur-[90px] pointer-events-none transition-all duration-1000 ${
+            phase >= 1
+              ? 'opacity-60 bg-gradient-to-tr from-cyan-400/40 via-sky-500/30 to-purple-500/40 scale-110'
+              : 'opacity-0 scale-75'
+          }`}
+        />
+      </div>
 
       {/* Floating Sparkles Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />
@@ -184,7 +243,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       <div className="absolute top-5 right-5 sm:top-8 sm:right-8 z-30 flex items-center gap-3">
         <button
           onClick={() => handleExit(false)}
-          className="group px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/15 hover:border-cyan-400/50 text-slate-300 hover:text-white text-xs font-outfit font-semibold tracking-wider transition-all backdrop-blur-md flex items-center gap-1.5 cursor-pointer shadow-lg"
+          className="group px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 hover:border-cyan-400/50 text-slate-200 hover:text-white text-xs font-outfit font-semibold tracking-wider transition-all backdrop-blur-md flex items-center gap-1.5 cursor-pointer shadow-lg"
           title="Skip intro animation (Esc)"
         >
           <span>SKIP INTRO</span>
@@ -196,20 +255,26 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       <div
         className={`absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent pointer-events-none transition-all duration-1000 ${
           phase >= 1
-            ? 'top-1/2 -translate-y-1/2 opacity-90 scale-x-100 shadow-[0_0_25px_4px_#00e5ff]'
+            ? 'top-1/2 -translate-y-1/2 opacity-95 scale-x-100 shadow-[0_0_25px_4px_#00e5ff]'
             : 'top-1/2 -translate-y-1/2 opacity-0 scale-x-0'
         }`}
       />
       <div
         className={`absolute inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-purple-400 to-transparent pointer-events-none transition-all duration-1000 delay-150 ${
           phase >= 1
-            ? 'top-[52%] opacity-75 scale-x-100 shadow-[0_0_20px_3px_#c084fc]'
+            ? 'top-[52%] opacity-80 scale-x-100 shadow-[0_0_20px_3px_#c084fc]'
             : 'top-[52%] opacity-0 scale-x-0'
         }`}
       />
 
       {/* Central Cinematic Typography & Experience Reveal */}
-      <div className="relative z-10 max-w-4xl px-4 text-center flex flex-col items-center">
+      <div
+        className="relative z-10 max-w-4xl px-4 text-center flex flex-col items-center will-change-transform"
+        style={{
+          transform: `perspective(800px) rotateX(${mousePos.y * 4}deg) rotateY(${mousePos.x * -4}deg) translate3d(${mousePos.x * 12}px, ${mousePos.y * 8}px, 20px)`,
+          transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        }}
+      >
         
         {/* 3D Chrome Title: ELIXORA */}
         <div
@@ -311,11 +376,14 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* Bottom Progress Bar: 4-second auto completion */}
+      {/* Bottom Progress Bar: 8.5-second extended auto completion */}
       <div className="absolute bottom-0 inset-x-0 h-1 bg-white/10">
         <div
-          className="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 transition-all duration-[4200ms] ease-linear"
-          style={{ width: phase >= 1 ? '100%' : '0%' }}
+          className="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 ease-linear"
+          style={{
+            width: phase >= 1 ? '100%' : '0%',
+            transition: 'width 8100ms linear',
+          }}
         />
       </div>
     </div>
