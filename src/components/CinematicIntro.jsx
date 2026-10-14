@@ -485,60 +485,83 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* 7. Bottom High-Speed Cyber Laser Comet Progress Deck */}
-      <div className="absolute bottom-0 inset-x-0 z-30 pb-3 sm:pb-4 px-4 sm:px-8 bg-gradient-to-t from-obsidian-950 via-obsidian-950/85 to-transparent">
-        {/* Telemetry Row */}
-        <div className="max-w-4xl mx-auto flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-2">
-          {/* Laser Comet Status & Phase Text */}
-          <div className="flex items-center gap-2 sm:gap-2.5 text-cyan-300">
-            <Zap className="w-3.5 h-3.5 text-cyan-300 animate-pulse drop-shadow-[0_0_8px_#00e5ff]" />
-            <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{currentPhaseText}</span>
-            <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono tracking-widest bg-cyan-950/70 text-cyan-300 border border-cyan-500/30">
-              COMET // HYPERSPEED
-            </span>
-          </div>
+      {/* 7. Bottom Centered Circular Holographic Reactor Dial (Replaces Bottom Bar) */}
+      <div className="absolute bottom-3 sm:bottom-5 inset-x-0 z-30 flex flex-col items-center justify-center px-4 pointer-events-none">
+        {/* Holographic Circular Dial Deck */}
+        <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
+          {/* Layer A: Atmospheric Ambient Neon Glow */}
+          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-500/25 via-purple-500/20 to-pink-500/25 blur-lg animate-reactor-glow" />
 
-          {/* Numerical percentage & Sync status */}
-          <div className="flex items-center gap-1.5 font-mono">
-            <span className="text-cyan-300 font-black">{String(progress).padStart(2, '0')}%</span>
-            <span className={progress >= 100 ? 'text-pink-400 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_8px_rgba(244,114,182,0.9)]' : 'text-slate-500'}>
-              {progress >= 100 ? 'READY' : 'CHARGING'}
+          {/* Layer B: Outer Calibrated Sci-Fi HUD Ticks Ring (Rotating Clockwise) */}
+          <div className="absolute inset-0 rounded-full border border-dashed border-cyan-400/40 animate-reactor-cw" />
+
+          {/* Layer C: Counter-Rotating Secondary Cyan Arc Ring */}
+          <div className="absolute inset-1 rounded-full border-t border-b border-cyan-300/80 border-l-transparent border-r-transparent animate-reactor-arc-fast shadow-[0_0_10px_#00e5ff]" />
+
+          {/* Layer D: Counter-Rotating Pink Neon Laser Arc Ring */}
+          <div className="absolute inset-2.5 rounded-full border-l border-r border-fuchsia-400/80 border-t-transparent border-b-transparent animate-reactor-ccw shadow-[0_0_10px_#d946ef]" />
+
+          {/* Layer E: Real-time SVG Circular Progress Arc */}
+          <svg
+            className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
+            viewBox="0 0 80 80"
+          >
+            <defs>
+              <linearGradient id="reactorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#00e5ff" />
+                <stop offset="50%" stopColor="#c084fc" />
+                <stop offset="100%" stopColor="#ec4899" />
+              </linearGradient>
+            </defs>
+
+            {/* Inactive background track */}
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
+              fill="none"
+              stroke="rgba(255, 255, 255, 0.08)"
+              strokeWidth="2.5"
+            />
+
+            {/* Active progress stroke */}
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
+              fill="none"
+              stroke="url(#reactorGrad)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray={213.63}
+              strokeDashoffset={213.63 - (213.63 * progress) / 100}
+              className="transition-[stroke-dashoffset] duration-150 ease-linear shadow-[0_0_12px_#00e5ff]"
+            />
+          </svg>
+
+          {/* Layer F: Central Obsidian Glass Core */}
+          <div className="relative z-10 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-obsidian-950/95 border border-white/20 backdrop-blur-2xl shadow-[inset_0_0_12px_rgba(0,229,255,0.4),0_0_15px_rgba(0,0,0,0.9)] flex flex-col items-center justify-center animate-reactor-core">
+            <span className="font-mono font-black text-xs sm:text-sm text-cyan-300 drop-shadow-[0_0_8px_#00e5ff] tracking-tight">
+              {String(progress).padStart(2, '0')}%
+            </span>
+            <span className="text-[7px] sm:text-[8px] font-mono tracking-widest text-slate-400 font-bold uppercase -mt-0.5">
+              {progress >= 100 ? 'READY' : 'SYNC'}
             </span>
           </div>
         </div>
 
-        {/* High-Speed Cyber Laser Comet Rail */}
-        <div className="max-w-4xl mx-auto relative py-1.5">
-          {/* Background Cyber Guide Rail */}
-          <div className="relative h-1.5 sm:h-2 bg-obsidian-950/90 rounded-full border border-white/10 shadow-[inset_0_1px_2px_rgba(0,0,0,0.9)] overflow-hidden">
-            {/* Background Sub-Glow */}
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
-
-            {/* Continuous Roving Laser Comet Sweeper with Particle Tail */}
-            <div className="absolute top-0 bottom-0 w-36 sm:w-48 bg-gradient-to-r from-transparent via-cyan-400/40 via-fuchsia-400/80 to-white animate-laser-comet pointer-events-none blur-[0.5px]" />
-
-            {/* Dynamic Progress Fill Beam */}
-            <div
-              className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-100 ease-linear rounded-full relative shadow-[0_0_14px_rgba(0,229,255,0.7),0_0_25px_rgba(217,70,239,0.5)]"
-              style={{ width: `${progress}%` }}
-            >
-              {/* Internal Laser Glint Line */}
-              <div className="absolute inset-x-0 top-0 h-[1px] bg-white/60 rounded-full" />
-            </div>
-
-            {/* Leading Edge Electric Comet Head & Trailing Aura */}
-            <div
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-100 ease-linear pointer-events-none z-10"
-              style={{ left: `${progress}%` }}
-            >
-              {/* Outer Pulsing Shockwave Ring */}
-              <span className="absolute -inset-1.5 rounded-full bg-cyan-400/40 animate-ping" />
-              {/* Mid Chromatic Aura */}
-              <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 to-pink-500 blur-[2px] opacity-90" />
-              {/* Core White Diamond Comet Spark */}
-              <span className="relative block w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white shadow-[0_0_10px_#fff,0_0_20px_#00e5ff,0_0_30px_#d946ef]" />
-            </div>
-          </div>
+        {/* Telemetry Capsule Badge (Centered Below Dial) */}
+        <div className="mt-2.5 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian-950/85 border border-cyan-400/30 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping shadow-[0_0_6px_#00e5ff]" />
+          <span className="text-white text-[10px] sm:text-[11px] font-mono font-bold tracking-wider drop-shadow">
+            {currentPhaseText}
+          </span>
+          <span className="text-white/30 text-xs">•</span>
+          <span className={`text-[9px] sm:text-[10px] font-mono font-extrabold tracking-widest uppercase ${
+            progress >= 100 ? 'text-pink-400 animate-pulse drop-shadow-[0_0_6px_#ec4899]' : 'text-cyan-300'
+          }`}>
+            {progress >= 100 ? 'ONLINE' : 'CHARGING'}
+          </span>
         </div>
       </div>
     </div>
