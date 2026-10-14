@@ -184,10 +184,10 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     }, 600);
   };
 
-  // Keyboard shortcut: Escape or Space to skip
+  // Keyboard shortcut: Enter, Escape or Space to enter/skip
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' || e.code === 'Space') {
+      if (e.key === 'Enter' || e.key === 'Escape' || e.code === 'Space') {
         handleExit();
       }
     };
@@ -203,9 +203,9 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     'ATMOSPHERE // SYNCHRONIZING',
     '3D PORTAL // RENDERING',
     'ELIXORA 2.0 // REVEALED',
-    'CHOOSE AN OPTION BELOW TO ENTER',
+    'CLICK ENTER TO BEGIN',
   ];
-  const currentPhaseText = phaseNames[phase] || 'CHOOSE AN OPTION BELOW TO ENTER';
+  const currentPhaseText = phaseNames[phase] || 'CLICK ENTER TO BEGIN';
 
   return (
     <div
@@ -445,29 +445,23 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           )}
         </div>
 
-        {/* Stage 5: Primary Action CTAs */}
+        {/* Stage 5: Primary ENTER Action CTA */}
         <div
-          className={`mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md mx-auto transition-all duration-700 transform ${
+          className={`mt-6 sm:mt-8 flex items-center justify-center w-full max-w-xs mx-auto transition-all duration-700 transform ${
             phase >= 5
               ? 'opacity-100 translate-y-0 scale-100'
               : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
           }`}
         >
-          {/* Register Now Button */}
-          <button
-            onClick={() => handleExit(true)}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-sm tracking-wide shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 border border-white/25 cursor-pointer group"
-          >
-            <span>REGISTER NOW</span>
-            <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1 transition-transform" />
-          </button>
-
-          {/* Explore the Night Button */}
           <button
             onClick={() => handleExit(false)}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-obsidian-900/90 hover:bg-white/10 border border-white/20 text-slate-200 hover:text-white font-outfit font-semibold text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
+            className="group relative px-8 py-3.5 sm:px-11 sm:py-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-black text-base sm:text-lg tracking-[0.22em] uppercase shadow-[0_0_40px_rgba(0,229,255,0.65),0_4px_25px_rgba(0,0,0,0.85)] hover:shadow-[0_0_60px_rgba(0,229,255,0.9)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 border border-white/30 cursor-pointer overflow-hidden"
           >
-            <span>Explore The Night</span>
+            {/* Shimmer light sweep on hover */}
+            <span className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none" />
+            
+            <span className="drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">ENTER</span>
+            <ArrowRight className="w-5 h-5 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
           </button>
         </div>
       </div>
