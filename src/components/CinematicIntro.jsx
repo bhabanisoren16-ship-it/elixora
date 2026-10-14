@@ -199,7 +199,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
-      {/* Concert Stage Atmosphere Background Layer matching Main Page Theme with 3D Tilt Parallax */}
+      {/* Animated Concert Stage Background Image matching Main Page Theme with 3D Tilt Parallax */}
       <div
         className="absolute inset-[-45px] pointer-events-none select-none overflow-hidden will-change-transform"
         style={{
@@ -208,11 +208,11 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         }}
       >
         <picture>
-          <source media="(min-width: 768px)" srcSet="/background-desktop.jpg" />
+          <source type="image/webp" srcSet="/elixora-animated-stage.webp" />
           <img
-            src="/party-background.jpg"
-            alt="ELIXORA Concert Stage Atmosphere"
-            className="w-full h-full object-cover object-center filter brightness-[1.05] contrast-[1.10]"
+            src="/elixora-animated-stage.gif"
+            alt="ELIXORA Animated Concert Stage"
+            className="w-full h-full object-cover object-center filter brightness-[1.04] contrast-[1.08]"
           />
         </picture>
 
