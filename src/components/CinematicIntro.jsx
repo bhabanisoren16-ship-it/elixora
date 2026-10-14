@@ -36,16 +36,16 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     return () => window.removeEventListener('elixora_admin_update', handleUpdate);
   }, []);
 
-  // Smooth numerical percentage counter (0% to 100% over 8.1s)
+  // Smooth numerical percentage counter (0% to 100% until actions ready)
   useEffect(() => {
     const startTime = Date.now();
-    const duration = 8100;
+    const duration = 5000;
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
       const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
       setProgress(pct);
       if (pct >= 100) clearInterval(interval);
-    }, 40);
+    }, 35);
     return () => clearInterval(interval);
   }, []);
 
@@ -87,14 +87,13 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
   const humanDate = settings.eventHumanDate || EVENT_DETAILS.humanDate;
   const venueTitle = settings.venueTitle || EVENT_DETAILS.location;
 
-  // Staged timeline sequence
+  // Staged timeline sequence - STAYS ON LOADING SCREEN UNTIL USER CLICKS AN ACTION
   useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 400);
     const t2 = setTimeout(() => setPhase(2), 1400);
     const t3 = setTimeout(() => setPhase(3), 2400);
-    const t4 = setTimeout(() => setPhase(4), 4000);
-    const t5 = setTimeout(() => setPhase(5), 5200);
-    const tAuto = setTimeout(() => handleExit(false), 8500);
+    const t4 = setTimeout(() => setPhase(4), 3800);
+    const t5 = setTimeout(() => setPhase(5), 5000);
 
     return () => {
       clearTimeout(t1);
@@ -102,7 +101,6 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       clearTimeout(t3);
       clearTimeout(t4);
       clearTimeout(t5);
-      clearTimeout(tAuto);
     };
   }, []);
 
@@ -205,9 +203,9 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     'ATMOSPHERE // SYNCHRONIZING',
     '3D PORTAL // RENDERING',
     'ELIXORA 2.0 // REVEALED',
-    'ENTER EXPERIENCE // READY',
+    'CHOOSE AN OPTION BELOW TO ENTER',
   ];
-  const currentPhaseText = phaseNames[phase] || 'INITIALIZING';
+  const currentPhaseText = phaseNames[phase] || 'CHOOSE AN OPTION BELOW TO ENTER';
 
   return (
     <div
@@ -484,7 +482,9 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           </div>
           <div className="flex items-center gap-1.5 text-white font-black font-mono">
             <span className="text-cyan-400">{String(progress).padStart(2, '0')}%</span>
-            <span className="text-slate-500">COMPLETE</span>
+            <span className={progress >= 100 ? 'text-cyan-300 font-bold tracking-widest animate-pulse' : 'text-slate-500'}>
+              {progress >= 100 ? 'READY' : 'LOADING'}
+            </span>
           </div>
         </div>
 
