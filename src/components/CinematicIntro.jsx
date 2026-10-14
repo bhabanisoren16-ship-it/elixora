@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight, X, Sparkles, Zap, Radio, Activity } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { adminStore } from '../utils/adminStore';
 
 /**
- * 3–5 Second Cinematic Loading Screen for ELIXORA
+ * Next-Gen Futuristic Cyber Festival Loading Screen for ELIXORA 2.0
  * Features:
- * 1. Simple atmospheric concert background image with soft vignette
- * 2. Sweeping neon laser beam with prismatic lens flare
- * 3. Atmospheric floating smoke & dust motes
- * 4. 3D Chrome "ELIXORA" text emergence with metallic reflections & push-in
- * 5. Chromatic aberration & letter-by-letter stagger
- * 6. "A Night to Remember" luxury reveal
- * 7. Gated schedule & venue (only reveals if announced by Admin Portal)
- * 8. "Register Now" / "Explore the Night" action buttons
- * 9. Seamless exit fade into the live site
- * 10. Instant "Skip Intro" option anytime
+ * 1. Animated concert stage background with real-time 3D tilt parallax
+ * 2. Cyberpunk HUD viewfinders with live pulsing equalizer bars
+ * 3. Rotating 3D holographic cyber-mandala portal rings
+ * 4. Liquid Chrome 3D typography with chromatic flare
+ * 5. Dynamic 16-bar audio frequency visualizer wave
+ * 6. High-contrast obsidian glass badges & status badges
+ * 7. Real-time numerical progress HUD (0% -> 100%) with travelling spark head
+ * 8. Quick skip anytime via ESC / Space / Skip button
  */
 export default function CinematicIntro({ onComplete, onRegisterClick }) {
-  const [phase, setPhase] = useState(0); // 0: Init, 1: Beam sweep, 2: Particles, 3: 3D Title emerge, 4: Tagline & Details, 5: Ready/Action
+  const [phase, setPhase] = useState(0); // 0: Init, 1: Beam sweep, 2: Atmosphere, 3: 3D Portal, 4: Details, 5: Actions
   const [isExiting, setIsExiting] = useState(false);
   const [settings, setSettings] = useState(() => adminStore.getSettings());
+  const [progress, setProgress] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const mouseTargetRef = useRef({ x: 0, y: 0 });
   const mousePosRef = useRef({ x: 0, y: 0 });
@@ -37,7 +36,20 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     return () => window.removeEventListener('elixora_admin_update', handleUpdate);
   }, []);
 
-  // Smooth 3D tilt parallax tracking (cursor on desktop, tilt on mobile)
+  // Smooth numerical percentage counter (0% to 100% over 8.1s)
+  useEffect(() => {
+    const startTime = Date.now();
+    const duration = 8100;
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
+      setProgress(pct);
+      if (pct >= 100) clearInterval(interval);
+    }, 40);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Smooth 3D tilt parallax tracking (cursor on desktop, gyro tilt on mobile)
   useEffect(() => {
     const handleMouseMove = (e) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -75,19 +87,13 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
   const humanDate = settings.eventHumanDate || EVENT_DETAILS.humanDate;
   const venueTitle = settings.venueTitle || EVENT_DETAILS.location;
 
-  // Staged timeline sequence (Extended to 8.5s for immersive 3D viewing)
+  // Staged timeline sequence
   useEffect(() => {
-    // Stage 1: Neon beam sweep & 3D stage lighting (at 400ms)
     const t1 = setTimeout(() => setPhase(1), 400);
-    // Stage 2: Atmospheric dust & rising pyro sparks (at 1400ms)
     const t2 = setTimeout(() => setPhase(2), 1400);
-    // Stage 3: 3D ELIXORA title emerges with chrome reflection (at 2400ms)
     const t3 = setTimeout(() => setPhase(3), 2400);
-    // Stage 4: Tagline, Date & Venue reveal (at 4000ms)
     const t4 = setTimeout(() => setPhase(4), 4000);
-    // Stage 5: Primary CTAs & Enter site buttons (at 5200ms)
     const t5 = setTimeout(() => setPhase(5), 5200);
-    // Stage 6: Seamless auto-transition to website (at 8500ms)
     const tAuto = setTimeout(() => handleExit(false), 8500);
 
     return () => {
@@ -193,13 +199,23 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
 
   const letters = ['E', 'L', 'I', 'X', 'O', 'R', 'A'];
 
+  const phaseNames = [
+    'SYS // INITIATING STAGE 01',
+    'LASER MATRIX // CALIBRATING',
+    'ATMOSPHERE // SYNCHRONIZING',
+    '3D PORTAL // RENDERING',
+    'ELIXORA 2.0 // REVEALED',
+    'ENTER EXPERIENCE // READY',
+  ];
+  const currentPhaseText = phaseNames[phase] || 'INITIALIZING';
+
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian-950 overflow-hidden select-none transition-all duration-700 ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-obsidian-950 overflow-hidden select-none transition-all duration-700 font-outfit ${
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
-      {/* Animated Concert Stage Background Image matching Main Page Theme with 3D Tilt Parallax */}
+      {/* 1. Animated Concert Stage Background Image with 3D Tilt Parallax */}
       <div
         className="absolute inset-[-45px] pointer-events-none select-none overflow-hidden will-change-transform"
         style={{
@@ -239,22 +255,51 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         />
       </div>
 
-      {/* Floating Sparkles Canvas */}
+      {/* 2. Floating Sparkles Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />
 
-      {/* Top Controls: Skip Intro & Keyboard Shortcut Hint */}
-      <div className="absolute top-5 right-5 sm:top-8 sm:right-8 z-30 flex items-center gap-3">
+      {/* 3. Cyberpunk HUD Corner Brackets & Telemetry */}
+      {/* Top-Left Telemetry & Audio Matrix Equalizer */}
+      <div className="absolute top-5 left-5 sm:top-8 sm:left-8 z-30 flex items-center gap-3 pointer-events-none">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00e5ff]" />
+            <span className="font-mono text-[10px] sm:text-xs font-bold uppercase tracking-widest text-cyan-300">
+              ELX-NEXUS // ONLINE
+            </span>
+          </div>
+          {/* Animated Audio Equalizer Bars */}
+          <div className="flex items-end gap-1 h-3 mt-0.5">
+            {[40, 75, 55, 95, 60, 85, 45, 90].map((h, i) => (
+              <span
+                key={i}
+                className="w-1 bg-gradient-to-t from-cyan-400 to-sky-200 rounded-full animate-pulse"
+                style={{
+                  height: `${h}%`,
+                  animationDuration: `${0.4 + (i % 4) * 0.2}s`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Top-Right Controls: Skip Intro & ESC Pill Badge */}
+      <div className="absolute top-5 right-5 sm:top-8 sm:right-8 z-30 flex items-center gap-2.5">
         <button
           onClick={() => handleExit(false)}
-          className="group px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-black/70 hover:bg-black/90 border border-white/25 hover:border-cyan-400/60 text-slate-100 hover:text-white text-xs font-outfit font-bold tracking-wider transition-all backdrop-blur-md flex items-center gap-1.5 cursor-pointer shadow-lg"
-          title="Skip intro animation (Esc)"
+          className="group px-4 py-2 rounded-full bg-black/75 hover:bg-black/95 border border-white/20 hover:border-cyan-400/60 text-slate-200 hover:text-white text-xs font-bold tracking-wider transition-all backdrop-blur-xl flex items-center gap-2 cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.8)]"
+          title="Skip intro animation (Esc or Space)"
         >
-          <span>SKIP INTRO</span>
+          <span className="tracking-widest">SKIP INTRO</span>
+          <span className="px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-mono text-cyan-300 border border-white/10 group-hover:bg-cyan-500/20">
+            ESC
+          </span>
           <X className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-90 transition-transform" />
         </button>
       </div>
 
-      {/* Stage 1: Neon Laser Sweep Beam */}
+      {/* 4. Stage 1: Neon Laser Sweep Beam */}
       <div
         className={`absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent pointer-events-none transition-all duration-1000 ${
           phase >= 1
@@ -270,7 +315,38 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         }`}
       />
 
-      {/* Central Cinematic Typography & Experience Reveal */}
+      {/* 5. Central 3D Holographic Cyber-Portal & Rotating Mandala Rings */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[520px] h-[340px] sm:h-[520px] pointer-events-none transition-all duration-1000 will-change-transform"
+        style={{
+          transform: `translate(-50%, -50%) perspective(1000px) rotateX(${mousePos.y * 6}deg) rotateY(${mousePos.x * -6}deg) scale(${phase >= 3 ? 1.0 : 0.7})`,
+          opacity: phase >= 2 ? 0.75 : 0,
+        }}
+      >
+        {/* Outer Rotating Dotted Cyan Ring */}
+        <div
+          className="absolute inset-0 rounded-full border border-cyan-400/30 border-dashed animate-[spin_40s_linear_infinite]"
+          style={{
+            boxShadow: '0 0 35px rgba(0, 229, 255, 0.15), inset 0 0 35px rgba(0, 229, 255, 0.10)',
+          }}
+        />
+
+        {/* Middle Counter-Rotating Ultraviolet Ring with Satellite Orbit Nodes */}
+        <div className="absolute inset-8 rounded-full border border-purple-500/35 border-dotted animate-[spin_25s_linear_infinite_reverse]">
+          <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff]" />
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2 h-2 rounded-full bg-purple-400 shadow-[0_0_8px_#c084fc]" />
+          <span className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#fbbf24]" />
+          <span className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-sky-300 shadow-[0_0_6px_#38bdf8]" />
+        </div>
+
+        {/* Inner Precision Compass Crosshairs */}
+        <div className="absolute inset-16 rounded-full border border-cyan-400/20">
+          <div className="absolute inset-x-0 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
+          <div className="absolute inset-y-0 left-1/2 w-[1px] bg-gradient-to-b from-transparent via-cyan-400/30 to-transparent" />
+        </div>
+      </div>
+
+      {/* 6. Central Cinematic Typography & Experience Reveal */}
       <div
         className="relative z-10 max-w-4xl px-4 text-center flex flex-col items-center will-change-transform"
         style={{
@@ -281,7 +357,23 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         {/* Dark Contrast Shield behind Central Content for 100% Text Legibility */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[850px] h-[380px] sm:h-[460px] bg-obsidian-950/80 rounded-full blur-3xl pointer-events-none -z-10" />
 
-        {/* 3D Chrome Title: ELIXORA */}
+        {/* Top Gala Badge: THE BIOTECHNOLOGY ANNUAL GALA '26 */}
+        <div
+          className={`mb-3 sm:mb-4 transition-all duration-700 transform ${
+            phase >= 2
+              ? 'opacity-100 translate-y-0 scale-100'
+              : 'opacity-0 -translate-y-4 scale-95 pointer-events-none'
+          }`}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 border border-cyan-400/40 text-cyan-300 shadow-[0_4px_20px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            <span className="font-mono text-[10px] sm:text-xs font-black tracking-[0.22em] uppercase">
+              BIOTECHNOLOGY FRESHERS GALA '26
+            </span>
+          </div>
+        </div>
+
+        {/* 3D Chrome Title: ELIXORA 2.0 */}
         <div
           className={`relative select-none transition-all duration-1000 transform ${
             phase >= 3
@@ -385,15 +477,30 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* Bottom Progress Bar: 8.5-second extended auto completion */}
-      <div className="absolute bottom-0 inset-x-0 h-1 bg-white/10">
-        <div
-          className="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 ease-linear"
-          style={{
-            width: phase >= 1 ? '100%' : '0%',
-            transition: 'width 8100ms linear',
-          }}
-        />
+      {/* 7. Bottom Futuristic HUD Progress Deck & Live Percentage */}
+      <div className="absolute bottom-0 inset-x-0 z-30 pb-3 sm:pb-4 px-4 sm:px-8 bg-gradient-to-t from-obsidian-950 via-obsidian-950/80 to-transparent">
+        {/* Telemetry Row */}
+        <div className="max-w-4xl mx-auto flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-2">
+          <div className="flex items-center gap-2 text-cyan-300">
+            <Activity className="w-3.5 h-3.5 animate-pulse" />
+            <span>{currentPhaseText}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-white font-black font-mono">
+            <span className="text-cyan-400">{String(progress).padStart(2, '0')}%</span>
+            <span className="text-slate-500">COMPLETE</span>
+          </div>
+        </div>
+
+        {/* Dual-tone Progress Bar with Travelling Spark Head */}
+        <div className="max-w-4xl mx-auto relative h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 transition-all duration-100 ease-linear rounded-full relative"
+            style={{ width: `${progress}%` }}
+          >
+            {/* Travelling glowing laser spark head */}
+            <span className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white shadow-[0_0_12px_#00e5ff] -mr-1" />
+          </div>
+        </div>
       </div>
     </div>
   );
