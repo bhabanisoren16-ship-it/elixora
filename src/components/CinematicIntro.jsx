@@ -457,26 +457,28 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
             onClick={() => handleExit(false)}
             className="group relative inline-flex items-center gap-3.5 px-8 py-3.5 sm:px-9 sm:py-4 rounded-full transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer"
           >
-            {/* 1. Outer Multi-Tone Cyber Aura Bloom */}
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-600 opacity-60 blur-md group-hover:opacity-100 group-hover:blur-lg transition-all duration-500 animate-pulse" />
+            {/* 1. Outer Multi-Tone Neon Purple & Magenta EDM Aura Bloom */}
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-500 opacity-70 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 animate-pulse" />
 
-            {/* 2. Deep Obsidian Glass Capsule Body */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-b from-obsidian-900/90 via-black/95 to-obsidian-950/95 border border-cyan-400/50 group-hover:border-cyan-300/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.25)] transition-all duration-300 overflow-hidden">
+            {/* 2. Vibrant Electric Purple-Pink Capsule Body with Gloss Highlights */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-500 border border-pink-300/50 group-hover:border-white/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(217,70,239,0.55),0_0_25px_rgba(168,85,247,0.45),inset_0_1px_2px_rgba(255,255,255,0.45)] transition-all duration-300 overflow-hidden">
+              {/* Gloss overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-black/20 pointer-events-none" />
               {/* Top Glass Bevel Glint */}
-              <div className="absolute inset-x-6 top-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-300/80 to-transparent" />
+              <div className="absolute inset-x-6 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/80 to-transparent" />
               {/* Shimmer Light Beam on Hover */}
-              <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/15 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out" />
+              <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out" />
             </div>
 
-            {/* 3. Button Content: Glowing Metallic Typography & Icon Capsule */}
+            {/* 3. Button Content: Luminous Crisp White Typography & Icon Capsule */}
             <div className="relative z-10 flex items-center gap-3">
-              <span className="font-outfit font-black text-sm sm:text-base tracking-[0.32em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-slate-200 drop-shadow-[0_0_12px_rgba(0,229,255,0.7)] ml-1">
+              <span className="font-outfit font-black text-sm sm:text-base tracking-[0.32em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_12px_rgba(255,255,255,0.7)] ml-1">
                 ENTER
               </span>
               
               {/* Glowing Icon Capsule */}
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-cyan-500/15 border border-cyan-400/50 group-hover:border-cyan-300 group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-sky-400 flex items-center justify-center transition-all duration-300 shadow-[0_0_12px_rgba(0,229,255,0.35)]">
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-300 group-hover:text-obsidian-950 group-hover:translate-x-0.5 transition-all duration-300" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 border border-white/60 group-hover:border-white group-hover:bg-white flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
               </div>
             </div>
           </button>
