@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, MapPin, Navigation, ExternalLink, Download, Compass, Info } from 'lucide-react';
+import { RealisticCalendar, RealisticClock, RealisticMapPin } from './RealisticIcons';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -92,7 +93,7 @@ export default function EventDetails() {
 
             <div className="relative z-10">
               <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
-                <Calendar className="w-5 h-5 text-cyan-300" />
+                <RealisticCalendar className="w-6 h-6 drop-shadow-md" />
               </div>
 
               <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase block mb-1">
@@ -104,7 +105,7 @@ export default function EventDetails() {
 
               <div className="space-y-2 mb-3.5">
                 <div className="flex items-center gap-3 p-2.5 sm:p-3 rounded-xl bg-white/[0.08] backdrop-blur-md border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
-                  <Clock className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <RealisticClock className="w-4 h-4 shrink-0 drop-shadow-sm" />
                   <div>
                     <div className="text-xs text-cyan-200 font-outfit font-bold tracking-wide">{timingLabel}</div>
                     <div className="text-sm sm:text-base font-outfit font-black text-white">{timeRange}</div>
@@ -122,7 +123,7 @@ export default function EventDetails() {
                 onClick={() => soundController.playClick()}
                 className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500/40 via-sky-500/35 to-violet-500/35 hover:from-cyan-500/60 hover:to-sky-500/60 border border-cyan-300/60 text-white font-outfit font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_18px_rgba(0,229,255,0.3)] backdrop-blur-md"
               >
-                <Calendar className="w-4 h-4 text-cyan-200" />
+                <RealisticCalendar className="w-4 h-4" />
                 <span>Add to Google Calendar</span>
                 <ExternalLink className="w-3.5 h-3.5 opacity-90" />
               </a>
@@ -152,7 +153,7 @@ export default function EventDetails() {
 
             <div className="relative z-10">
               <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
-                <MapPin className="w-5 h-5 text-cyan-300" />
+                <RealisticMapPin className="w-6 h-6 drop-shadow-md" />
               </div>
 
               <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase block mb-1">

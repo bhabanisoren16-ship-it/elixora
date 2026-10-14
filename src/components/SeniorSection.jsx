@@ -15,16 +15,17 @@ import {
   Check, 
   Upload, 
   ArrowRight, 
-  ArrowLeft,
+  ArrowLeft, 
   Loader2, 
   User, 
   Hash, 
   Phone, 
-  Quote,
-  X,
-  Sparkles,
-  Shirt
+  Quote, 
+  X, 
+  Sparkles, 
+  Shirt 
 } from 'lucide-react';
+import { RealisticLock, RealisticShieldCheck, RealisticKey } from './RealisticIcons';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -627,13 +628,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           <div className="md:col-span-6 text-left">
             <div className="flex flex-row items-center gap-2.5 sm:gap-3 mb-2.5 sm:mb-3 justify-start">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-tr from-amber-400 via-yellow-500 to-amber-600 p-[2px] shadow-[0_0_20px_rgba(245,158,11,0.4)] shrink-0">
-                <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center text-amber-400">
-                  <Lock className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse text-amber-400" />
+                <div className="w-full h-full bg-obsidian-950 rounded-[10px] flex items-center justify-center">
+                  <RealisticLock className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-md" />
                 </div>
               </div>
 
               <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-[10.5px] sm:text-xs font-outfit font-bold uppercase shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <RealisticShieldCheck className="w-3.5 h-3.5 shrink-0" />
                 <span>AUTHENTICATION GATEWAY</span>
               </div>
             </div>
@@ -692,7 +693,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   </>
                 ) : (
                   <>
-                    <KeyRound className="w-4 h-4 text-amber-300" />
+                    <RealisticKey className="w-4 h-4 shrink-0" />
                     <span>VERIFY &amp; UNLOCK SENIOR PORTAL</span>
                   </>
                 )}
@@ -760,7 +761,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/15 text-xs font-outfit font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                 title="Switch Registration ID"
               >
-                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <RealisticLock className="w-3.5 h-3.5 shrink-0" />
                 <span className="hidden min-[400px]:inline">Switch ID</span>
               </button>
 

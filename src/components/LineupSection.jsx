@@ -1,5 +1,5 @@
 import React from 'react';
-import { Crown, Trophy } from 'lucide-react';
+import { RealisticCrown, RealisticTrophy } from './RealisticIcons';
 
 export default function LineupSection() {
   const handleMouseMove = (e) => {
@@ -61,7 +61,7 @@ export default function LineupSection() {
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-outfit font-black text-sky-300 tracking-wider flex items-center gap-2">
-                    <Trophy className="w-4 h-4 text-sky-400" />
+                    <RealisticTrophy className="w-5 h-5 drop-shadow-sm" />
                     MR. FRESHER
                   </span>
                 </div>
@@ -86,7 +86,7 @@ export default function LineupSection() {
               <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-outfit font-black text-purple-300 tracking-wider flex items-center gap-2">
-                    <Crown className="w-4 h-4 text-purple-400" />
+                    <RealisticCrown className="w-5 h-5 drop-shadow-sm" />
                     MS. FRESHER
                   </span>
                 </div>
