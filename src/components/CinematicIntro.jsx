@@ -215,7 +215,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
-      {/* 1. Animated Concert Stage Background Image with 3D Tilt Parallax */}
+      {/* 1. 3D Cyber Gateway Tunnel Background with Spatial Tilt Parallax */}
       <div
         className="absolute inset-[-45px] pointer-events-none select-none overflow-hidden will-change-transform"
         style={{
@@ -223,33 +223,30 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
         }}
       >
-        <picture>
-          <source type="image/webp" srcSet="/elixora-animated-stage.webp" />
-          <img
-            src="/elixora-animated-stage.gif"
-            alt="ELIXORA Animated Concert Stage"
-            className="w-full h-full object-cover object-center filter brightness-[1.04] contrast-[1.08]"
-          />
-        </picture>
+        <img
+          src="/elixora-3d-tunnel-bg.jpg"
+          alt="ELIXORA 3D Cyber Gateway Tunnel"
+          className="w-full h-full object-cover object-center filter brightness-[1.05] contrast-[1.10]"
+        />
 
-        {/* Ambient Concert Stage Lighting Vignette matching Main Page Theme */}
+        {/* Ambient 3D Tunnel Depth Vignette for Text Readability */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 70% 65% at 50% 48%, rgba(6, 8, 20, 0.40) 0%, rgba(6, 8, 20, 0.70) 58%, rgba(6, 8, 20, 0.95) 100%)',
+              'radial-gradient(ellipse 75% 70% at 50% 50%, rgba(6, 8, 20, 0.22) 0%, rgba(6, 8, 20, 0.55) 55%, rgba(6, 8, 20, 0.90) 100%)',
           }}
         />
 
-        {/* Ambient Top & Bottom Gradients for Letterbox & Readability */}
-        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-obsidian-950/90 via-obsidian-950/50 to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-obsidian-950/95 via-obsidian-950/65 to-transparent pointer-events-none" />
+        {/* Ambient Top & Bottom Depth Gradients */}
+        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-obsidian-950/85 via-obsidian-950/45 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-obsidian-950/90 via-obsidian-950/55 to-transparent pointer-events-none" />
 
-        {/* Dynamic Stage Lighting Pulse Glow matching Main Page Theme in Phase >= 1 */}
+        {/* Dynamic Center Tunnel Energy Pulse in Phase >= 1 */}
         <div
-          className={`absolute top-[32%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[360px] rounded-full blur-[110px] pointer-events-none transition-all duration-1000 ${
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full blur-[110px] pointer-events-none transition-all duration-1000 ${
             phase >= 1
-              ? 'opacity-40 bg-gradient-to-tr from-cyan-500/30 via-purple-600/25 to-amber-500/20 scale-105'
+              ? 'opacity-45 bg-gradient-to-tr from-cyan-500/35 via-purple-600/30 to-sky-400/25 scale-105'
               : 'opacity-0 scale-75'
           }`}
         />
