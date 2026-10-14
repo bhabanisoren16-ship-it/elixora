@@ -971,7 +971,7 @@ body.senior-portal-open nav {
     transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(-120px, 0, 0);
+    transform: translate3d(-5%, 0, 0);
   }
 }
 
@@ -980,13 +980,13 @@ body.senior-portal-open nav {
     transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(-160px, 0, 0);
+    transform: translate3d(-6.666667%, 0, 0);
   }
 }
 
 @keyframes oscPulseBreathe {
   0%, 100% {
-    opacity: 0.75;
+    opacity: 0.85;
     filter: drop-shadow(0 0 5px #00e5ff);
   }
   50% {
@@ -1009,6 +1009,7 @@ body.senior-portal-open nav {
   animation: oscPulseBreathe 3s ease-in-out infinite;
   will-change: filter, opacity;
 }
+
 
 
 
