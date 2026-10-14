@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, X, Sparkles, Zap, Radio, Activity } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, Radio, Activity } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { adminStore } from '../utils/adminStore';
 
@@ -279,20 +279,6 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* Top-Right Controls: Skip Intro & ESC Pill Badge */}
-      <div className="absolute top-5 right-5 sm:top-8 sm:right-8 z-30 flex items-center gap-2.5">
-        <button
-          onClick={() => handleExit(false)}
-          className="group px-4 py-2 rounded-full bg-black/75 hover:bg-black/95 border border-white/20 hover:border-cyan-400/60 text-slate-200 hover:text-white text-xs font-bold tracking-wider transition-all backdrop-blur-xl flex items-center gap-2 cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.8)]"
-          title="Skip intro animation (Esc or Space)"
-        >
-          <span className="tracking-widest">SKIP INTRO</span>
-          <span className="px-1.5 py-0.5 rounded bg-white/10 text-[9px] font-mono text-cyan-300 border border-white/10 group-hover:bg-cyan-500/20">
-            ESC
-          </span>
-          <X className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-90 transition-transform" />
-        </button>
-      </div>
 
       {/* 4. Stage 1: Neon Laser Sweep Beam */}
       <div
