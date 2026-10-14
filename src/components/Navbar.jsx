@@ -1,14 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Ticket, Compass, Calendar, Palette, GraduationCap, Home } from 'lucide-react';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { soundController } from '../utils/audio';
 
 export default function Navbar({ onOpenPass, hasGeneratedPass }) {
+  const [isScrolledDown, setIsScrolledDown] = useState(false);
+
+  useEffect(() => {
+    let lastScrollY = window.pageYOffset || window.scrollY || 0;
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.pageYOffset || window.scrollY || 0;
+
+          // Ignore negative overscroll on iOS bounce
+          if (currentScrollY < 0) {
+            ticking = false;
+            return;
+          }
+
+          // Near top: always keep navbar fully visible
+          if (currentScrollY <= 25) {
+            setIsScrolledDown(false);
+          } else {
+            const scrollDifference = currentScrollY - lastScrollY;
+            // Scroll down threshold: user scrolled down by more than 8px
+            if (scrollDifference > 8 && currentScrollY > 50) {
+              setIsScrolledDown(true);
+            } 
+            // Scroll up threshold: user scrolled up by more than 8px
+            else if (scrollDifference < -8) {
+              setIsScrolledDown(false);
+            }
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleNavLinkClick = (e, href) => {
     e.preventDefault();
     soundController.playClick?.();
     if (href === '#hero') {
+      setIsScrolledDown(false);
       scrollToTarget(0);
       if (window.location.hash) {
         try {
@@ -16,6 +59,9 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
         } catch (err) {}
       }
     } else {
+      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+        setIsScrolledDown(true);
+      }
       scrollToTarget(href);
       try {
         history.replaceState(null, '', href);
@@ -32,7 +78,13 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-8 py-2 sm:py-3">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 px-3 sm:px-8 py-2 sm:py-3 transition-all duration-300 ease-in-out will-change-transform ${
+        isScrolledDown
+          ? '-translate-y-full opacity-0 pointer-events-none md:translate-y-0 md:opacity-100 md:pointer-events-auto'
+          : 'translate-y-0 opacity-100 pointer-events-auto'
+      }`}
+    >
       <div className="max-w-7xl mx-auto rounded-2xl glass-panel bg-obsidian-950/85 border border-white/10 shadow-2xl backdrop-blur-xl px-3 sm:px-6 py-2 sm:py-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
         
         {/* Brand Logo (Hidden per user request) */}
@@ -105,6 +157,9 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
             onClick={(e) => {
               e.preventDefault();
               soundController.playClick?.();
+              if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                setIsScrolledDown(true);
+              }
               scrollToTarget('#register');
             }}
             className="ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-[11px] font-bold hover:shadow-neon-violet transition-all flex items-center gap-1.5 border border-white/20"

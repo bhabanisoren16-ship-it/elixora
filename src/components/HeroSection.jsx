@@ -52,10 +52,6 @@ export default function HeroSection({ onGrabPassClick }) {
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
         
-        <div className="inline-flex items-center justify-center px-4 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/40 text-cyan-200 text-[11px] sm:text-xs font-outfit font-bold uppercase tracking-wider mb-1.5 sm:mb-2 shadow-[0_0_15px_rgba(0,229,255,0.25)] backdrop-blur-md">
-          <span>Welcome Biotechnology Freshers '26</span>
-        </div>
-
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-1 sm:my-2 select-none flex flex-col items-center justify-center">
           {/* Main Title Graphic: 100% Exact Typography from Official Artwork */}
