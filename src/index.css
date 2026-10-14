@@ -965,68 +965,41 @@ body.senior-portal-open nav {
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 10px rgba(168, 85, 247, 0.2);
 }
 
-/* 13. Circular Holographic Reactor Dial Keyframes */
-@keyframes reactorSpinClockwise {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes reactorSpinCounter {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
-}
-
-@keyframes reactorPulseGlow {
+/* 13. Sci-Fi Segmented HUD Power Rail Keyframes */
+@keyframes cellShimmerWave {
   0%, 100% {
-    filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.6)) drop-shadow(0 0 14px rgba(217, 70, 239, 0.4));
+    filter: brightness(1) drop-shadow(0 0 4px rgba(0, 229, 255, 0.4));
   }
   50% {
-    filter: drop-shadow(0 0 14px rgba(0, 229, 255, 0.9)) drop-shadow(0 0 24px rgba(217, 70, 239, 0.75));
+    filter: brightness(1.3) drop-shadow(0 0 10px rgba(217, 70, 239, 0.85));
   }
 }
 
-@keyframes reactorCoreBreathe {
-  0%, 100% {
-    transform: scale(0.94);
-    opacity: 0.75;
+@keyframes cellGlintGlide {
+  0% {
+    left: -20%;
+    opacity: 0;
   }
-  50% {
-    transform: scale(1.06);
+  15% {
     opacity: 1;
   }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: 120%;
+    opacity: 0;
+  }
 }
 
-.animate-reactor-cw {
-  animation: reactorSpinClockwise 12s linear infinite;
-  will-change: transform;
+.animate-cell-shimmer {
+  animation: cellShimmerWave 2.5s ease-in-out infinite;
 }
 
-.animate-reactor-ccw {
-  animation: reactorSpinCounter 8s linear infinite;
-  will-change: transform;
+.animate-cell-glint {
+  animation: cellGlintGlide 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: left, opacity;
 }
 
-.animate-reactor-arc-fast {
-  animation: reactorSpinClockwise 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  will-change: transform;
-}
-
-.animate-reactor-glow {
-  animation: reactorPulseGlow 3s ease-in-out infinite;
-  will-change: filter;
-}
-
-.animate-reactor-core {
-  animation: reactorCoreBreathe 2s ease-in-out infinite;
-  will-change: transform, opacity;
-}
 
 

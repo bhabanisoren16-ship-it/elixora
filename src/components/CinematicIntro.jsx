@@ -485,83 +485,63 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* 7. Bottom Centered Circular Holographic Reactor Dial (Replaces Bottom Bar) */}
-      <div className="absolute bottom-3 sm:bottom-5 inset-x-0 z-30 flex flex-col items-center justify-center px-4 pointer-events-none">
-        {/* Holographic Circular Dial Deck */}
-        <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
-          {/* Layer A: Atmospheric Ambient Neon Glow */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-cyan-500/25 via-purple-500/20 to-pink-500/25 blur-lg animate-reactor-glow" />
-
-          {/* Layer B: Outer Calibrated Sci-Fi HUD Ticks Ring (Rotating Clockwise) */}
-          <div className="absolute inset-0 rounded-full border border-dashed border-cyan-400/40 animate-reactor-cw" />
-
-          {/* Layer C: Counter-Rotating Secondary Cyan Arc Ring */}
-          <div className="absolute inset-1 rounded-full border-t border-b border-cyan-300/80 border-l-transparent border-r-transparent animate-reactor-arc-fast shadow-[0_0_10px_#00e5ff]" />
-
-          {/* Layer D: Counter-Rotating Pink Neon Laser Arc Ring */}
-          <div className="absolute inset-2.5 rounded-full border-l border-r border-fuchsia-400/80 border-t-transparent border-b-transparent animate-reactor-ccw shadow-[0_0_10px_#d946ef]" />
-
-          {/* Layer E: Real-time SVG Circular Progress Arc */}
-          <svg
-            className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
-            viewBox="0 0 80 80"
-          >
-            <defs>
-              <linearGradient id="reactorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00e5ff" />
-                <stop offset="50%" stopColor="#c084fc" />
-                <stop offset="100%" stopColor="#ec4899" />
-              </linearGradient>
-            </defs>
-
-            {/* Inactive background track */}
-            <circle
-              cx="40"
-              cy="40"
-              r="34"
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.08)"
-              strokeWidth="2.5"
-            />
-
-            {/* Active progress stroke */}
-            <circle
-              cx="40"
-              cy="40"
-              r="34"
-              fill="none"
-              stroke="url(#reactorGrad)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeDasharray={213.63}
-              strokeDashoffset={213.63 - (213.63 * progress) / 100}
-              className="transition-[stroke-dashoffset] duration-150 ease-linear shadow-[0_0_12px_#00e5ff]"
-            />
-          </svg>
-
-          {/* Layer F: Central Obsidian Glass Core */}
-          <div className="relative z-10 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-obsidian-950/95 border border-white/20 backdrop-blur-2xl shadow-[inset_0_0_12px_rgba(0,229,255,0.4),0_0_15px_rgba(0,0,0,0.9)] flex flex-col items-center justify-center animate-reactor-core">
-            <span className="font-mono font-black text-xs sm:text-sm text-cyan-300 drop-shadow-[0_0_8px_#00e5ff] tracking-tight">
-              {String(progress).padStart(2, '0')}%
-            </span>
-            <span className="text-[7px] sm:text-[8px] font-mono tracking-widest text-slate-400 font-bold uppercase -mt-0.5">
-              {progress >= 100 ? 'READY' : 'SYNC'}
-            </span>
+      {/* 7. Bottom Sci-Fi Segmented HUD Power Rail */}
+      <div className="absolute bottom-0 inset-x-0 z-30 pb-3 sm:pb-4 px-4 sm:px-8 bg-gradient-to-t from-obsidian-950 via-obsidian-950/85 to-transparent">
+        <div className="max-w-xl mx-auto">
+          {/* Telemetry Row */}
+          <div className="flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-2">
+            <div className="flex items-center gap-2 text-cyan-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff] animate-ping" />
+              <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{currentPhaseText}</span>
+            </div>
+            <div className="flex items-center gap-2 font-mono">
+              <span className="text-cyan-300 font-black">{String(progress).padStart(2, '0')}%</span>
+              <span className={progress >= 100 ? 'text-pink-400 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_6px_#ec4899]' : 'text-slate-500'}>
+                {progress >= 100 ? 'READY' : 'CHARGING'}
+              </span>
+            </div>
           </div>
-        </div>
 
-        {/* Telemetry Capsule Badge (Centered Below Dial) */}
-        <div className="mt-2.5 inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-obsidian-950/85 border border-cyan-400/30 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping shadow-[0_0_6px_#00e5ff]" />
-          <span className="text-white text-[10px] sm:text-[11px] font-mono font-bold tracking-wider drop-shadow">
-            {currentPhaseText}
-          </span>
-          <span className="text-white/30 text-xs">•</span>
-          <span className={`text-[9px] sm:text-[10px] font-mono font-extrabold tracking-widest uppercase ${
-            progress >= 100 ? 'text-pink-400 animate-pulse drop-shadow-[0_0_6px_#ec4899]' : 'text-cyan-300'
-          }`}>
-            {progress >= 100 ? 'ONLINE' : 'CHARGING'}
-          </span>
+          {/* Segmented Power Cells Rail */}
+          <div className="relative p-1 rounded-lg bg-obsidian-950/90 border border-white/10 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.9)] overflow-hidden">
+            {/* Shimmer Light Glint Sweeper */}
+            <div className="absolute inset-y-0 w-24 bg-gradient-to-r from-transparent via-white/25 to-transparent animate-cell-glint pointer-events-none" />
+
+            {/* 20 Segmented Quantum Cells */}
+            <div className="flex items-center gap-1 sm:gap-1.5">
+              {Array.from({ length: 20 }).map((_, i) => {
+                const cellPercent = ((i + 1) / 20) * 100;
+                const isCharged = progress >= cellPercent;
+                const ratio = i / 20;
+                const cellGrad =
+                  ratio < 0.4
+                    ? 'bg-gradient-to-r from-cyan-400 to-sky-400 shadow-[0_0_8px_rgba(0,229,255,0.8)]'
+                    : ratio < 0.75
+                    ? 'bg-gradient-to-r from-sky-400 to-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.8)]'
+                    : 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.9)]';
+
+                return (
+                  <div
+                    key={i}
+                    className={`flex-1 h-2 sm:h-2.5 rounded-sm transition-all duration-200 ${
+                      isCharged
+                        ? `${cellGrad} ${progress >= 100 ? 'animate-cell-shimmer' : ''}`
+                        : 'bg-white/5 border border-white/5'
+                    }`}
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Calibration Notches */}
+          <div className="flex items-center justify-between text-[8px] font-mono tracking-widest text-slate-500 mt-1 px-1">
+            <span>00</span>
+            <span>25</span>
+            <span>50</span>
+            <span>75</span>
+            <span className={progress >= 100 ? 'text-cyan-300 font-bold' : ''}>100</span>
+          </div>
         </div>
       </div>
     </div>
