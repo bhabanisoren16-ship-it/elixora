@@ -149,7 +149,7 @@ export default function App() {
       
 
 
-      {/* 1. Fullscreen Poster Background with 2D Lightning & No 3D Effect */}
+      {/* 1. Fullscreen Concert Poster & Lighting Atmosphere Background */}
       <Background />
 
       {/* 2. Top Navigation Bar */}

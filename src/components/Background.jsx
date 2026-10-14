@@ -1,52 +1,11 @@
-import React, { useEffect, useRef, useCallback } from 'react';
-import { soundController } from '../utils/audio';
+import React, { useEffect, useRef } from 'react';
 import desktopBg from '../assets/desktop-background.jpg'; // Widescreen 16:9 desktop atmosphere
 import mobileBg from '../assets/party-background.jpg';
-
-// High-Voltage Fractal Branching Generator for Concert Strobe & Lightning Lasers
-function generateStrikingBranches(x1, y1, x2, y2, displace = 50, depth = 4) {
-  const segments = [];
-  function recurse(xa, ya, xb, yb, disp, d) {
-    if (d <= 0 || disp < 2.5 || segments.length >= 24) {
-      segments.push({ x1: xa, y1: ya, x2: xb, y2: yb });
-      return;
-    }
-    const mx = (xa + xb) / 2;
-    const my = (ya + yb) / 2;
-    const dx = xb - xa;
-    const dy = yb - ya;
-    const len = Math.hypot(dx, dy);
-    if (len < 8) {
-      segments.push({ x1: xa, y1: ya, x2: xb, y2: yb });
-      return;
-    }
-    const nx = -dy / len;
-    const ny = dx / len;
-    const offset = (Math.random() - 0.5) * disp * 1.8;
-    const splitX = mx + nx * offset;
-    const splitY = my + ny * offset;
-
-    recurse(xa, ya, splitX, splitY, disp * 0.55, d - 1);
-    recurse(splitX, splitY, xb, yb, disp * 0.55, d - 1);
-
-    if (Math.random() < 0.38 && d > 1 && segments.length < 20) {
-      const branchAngle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 1.0;
-      const branchLen = len * (0.24 + Math.random() * 0.36);
-      const bx = splitX + Math.cos(branchAngle) * branchLen;
-      const by = splitY + Math.sin(branchAngle) * branchLen;
-      recurse(splitX, splitY, bx, by, disp * 0.45, d - 2);
-    }
-  }
-  recurse(x1, y1, x2, y2, displace, depth);
-  return segments;
-}
 
 export default function Background() {
   const canvasRef = useRef(null);
 
   const sparksRef = useRef([]);
-  const activeBoltRef = useRef(null);
-  const nextAutoStrikeTimeRef = useRef(Date.now() + 3500);
   const mousePosRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
   const isVisibleRef = useRef(true);
   const animFrameRef = useRef(null);
@@ -68,94 +27,6 @@ export default function Background() {
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
   }, []);
-
-  // Concert Stage Laser & Lightning Strobe Strike (with Electric Palettes)
-  const spawnStrikingEffect = useCallback((targetX = null, targetY = null, isIntense = true) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const w = canvas.width;
-    const h = canvas.height;
-    const isDesktop = w >= 768;
-
-    const sourceX = targetX !== null ? targetX : w * (0.2 + Math.random() * 0.6);
-    const startX = sourceX + (Math.random() - 0.5) * (w * 0.25);
-    const startY = 0; // Starts from top concert stage truss
-
-    const endX = targetX !== null ? targetX : w * (0.25 + Math.random() * 0.5);
-    const endY = targetY !== null ? targetY : h * (0.55 + Math.random() * 0.35); // Reaches crowd
-
-    const strikePalettes = [
-      { main: '#00e5ff', glow: '#0284c7', core: '#ffffff' }, // Electric Cyan
-      { main: '#38bdf8', glow: '#0369a1', core: '#e0f2fe' }, // Neon Blue
-      { main: '#ff9e00', glow: '#ea580c', core: '#fffbeb' }, // Stage Pyro Amber
-      { main: '#c084fc', glow: '#7c3aed', core: '#faf5ff' }, // Electric Violet
-    ];
-
-    const palette = strikePalettes[Math.floor(Math.random() * strikePalettes.length)];
-    const mainColor = palette.main;
-    const glowColor = palette.glow;
-    const coreColor = palette.core;
-
-    const primarySegments = generateStrikingBranches(
-      startX,
-      startY,
-      endX,
-      endY,
-      isDesktop ? 55 : 35,
-      4
-    );
-
-    let secondarySegments = [];
-    if (isDesktop && Math.random() > 0.4) {
-      const s2X = startX + (Math.random() - 0.5) * 120;
-      secondarySegments = generateStrikingBranches(
-        s2X,
-        0,
-        endX + (Math.random() - 0.5) * 80,
-        endY + (Math.random() - 0.5) * 30,
-        35,
-        3
-      );
-    }
-
-    activeBoltRef.current = {
-      primary: primarySegments,
-      secondary: secondarySegments,
-      alpha: 1.0,
-      fadeRate: isIntense ? 0.045 : 0.055,
-      mainColor,
-      glowColor,
-      coreColor,
-      createdAt: Date.now(),
-    };
-
-    soundController.playLightningThunder();
-
-    setTimeout(() => {
-      if (activeBoltRef.current && Date.now() - activeBoltRef.current.createdAt > 450) {
-        activeBoltRef.current = null;
-      }
-    }, 480);
-  }, []);
-
-  // Click anywhere on page to trigger interactive stage lightning
-  useEffect(() => {
-    const handleWindowClick = (e) => {
-      const target = e.target;
-      if (
-        target.closest('button') ||
-        target.closest('a') ||
-        target.closest('input') ||
-        target.closest('[role="dialog"]')
-      ) {
-        return;
-      }
-      spawnStrikingEffect(e.clientX, e.clientY, true);
-    };
-
-    window.addEventListener('click', handleWindowClick);
-    return () => window.removeEventListener('click', handleWindowClick);
-  }, [spawnStrikingEffect]);
 
   // Smooth micro-parallax tracking on mouse move
   useEffect(() => {
@@ -350,50 +221,7 @@ export default function Background() {
 
         ctx.restore();
 
-        // 3. INTERACTIVE CONCERT LIGHTNING / STROBE BOLTS
-        const bolt = activeBoltRef.current;
-        if (bolt && bolt.primary && bolt.primary.length > 0) {
-          bolt.alpha -= bolt.fadeRate;
 
-          if (bolt.alpha > 0) {
-            ctx.save();
-            ctx.globalCompositeOperation = 'screen';
-
-            const drawSegments = (segs, strokeColor, lineWidth, alphaMult) => {
-              ctx.beginPath();
-              for (let i = 0; i < segs.length; i++) {
-                const s = segs[i];
-                ctx.moveTo(s.x1, s.y1);
-                ctx.lineTo(s.x2, s.y2);
-              }
-              ctx.strokeStyle = strokeColor;
-              ctx.lineWidth = lineWidth;
-              ctx.lineCap = 'round';
-              ctx.lineJoin = 'round';
-              ctx.globalAlpha = Math.max(0, Math.min(1, bolt.alpha * alphaMult));
-              ctx.stroke();
-            };
-
-            // Pass 1: Diffused Outer Aura (Hardware Screen Glow)
-            drawSegments(bolt.primary, bolt.glowColor, isDesktop ? 7.0 : 4.5, 0.45);
-
-            // Pass 2: Intense Neon Body
-            drawSegments(bolt.primary, bolt.mainColor, isDesktop ? 3.0 : 2.0, 0.85);
-
-            // Pass 3: Incandescent Core Beam
-            drawSegments(bolt.primary, bolt.coreColor || '#ffffff', isDesktop ? 1.5 : 1.0, 1.0);
-
-            // Secondary companion strike
-            if (bolt.secondary && bolt.secondary.length > 0) {
-              drawSegments(bolt.secondary, bolt.glowColor, isDesktop ? 3.5 : 2.5, 0.5);
-              drawSegments(bolt.secondary, bolt.coreColor || '#ffffff', isDesktop ? 1.2 : 0.8, 0.9);
-            }
-
-            ctx.restore();
-          } else {
-            activeBoltRef.current = null;
-          }
-        }
 
         // 4. ATMOSPHERIC CONCERT SPARKS & LIGHT MOTES (Rising from crowd)
         const maxSparks = isDesktop ? 40 : 22;
@@ -442,15 +270,8 @@ export default function Background() {
         sparks.length = sparkWriteIdx;
         ctx.restore();
 
-        // 5. Auto Stage Lightning Scheduler
-        if (!activeBoltRef.current && now > nextAutoStrikeTimeRef.current) {
-          spawnStrikingEffect();
-          nextAutoStrikeTimeRef.current = now + 6000 + Math.random() * 4000;
-        }
-
       } catch (err) {
         console.error("Canvas render error caught cleanly:", err);
-        activeBoltRef.current = null;
       }
     };
 
@@ -460,7 +281,7 @@ export default function Background() {
       window.removeEventListener('resize', resize);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [spawnStrikingEffect]);
+  }, []);
 
   return (
     <>
