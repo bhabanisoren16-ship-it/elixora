@@ -39,6 +39,8 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
     const t4 = setTimeout(() => setPhase(4), 2800);
     // Stage 5: Primary CTAs & Enter site buttons (at 3700ms)
     const t5 = setTimeout(() => setPhase(5), 3700);
+    // Stage 6: Seamless auto-transition to website (at 4500ms)
+    const tAuto = setTimeout(() => handleExit(false), 4500);
 
     return () => {
       clearTimeout(t1);
@@ -46,6 +48,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       clearTimeout(t3);
       clearTimeout(t4);
       clearTimeout(t5);
+      clearTimeout(tAuto);
     };
   }, []);
 

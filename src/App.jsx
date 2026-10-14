@@ -3,16 +3,12 @@ import Background from './components/Background';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import EventDetails from './components/EventDetails';
-import PartyExperience from './components/PartyExperience';
-import InteractiveGallery from './components/InteractiveGallery';
 import LineupSection from './components/LineupSection';
 import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
-import FinalCinematicSection from './components/FinalCinematicSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
 import CinematicIntro from './components/CinematicIntro';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
-import { initScrollStory } from './utils/scrollStory';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
 const AdminPortal = lazy(() => import('./components/AdminPortal'));
@@ -45,7 +41,7 @@ export default function App() {
   const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(checkIsSeniorPortalRoute);
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminRoute);
 
-  // Cinematic 3-5s opening sequence state
+  // Cinematic loading screen state
   const [showIntro, setShowIntro] = useState(() => {
     if (typeof window === 'undefined') return false;
     try {
@@ -65,15 +61,7 @@ export default function App() {
     };
   }, []);
 
-  // Initialize GSAP ScrollTrigger Choreography
-  useEffect(() => {
-    const cleanupStory = initScrollStory();
-    return () => {
-      cleanupStory?.();
-    };
-  }, []);
-
-  // Pause background smooth scroll when modals, admin portal, or cinematic intro are active
+  // Pause background smooth scroll when modals, admin portal, or loading screen are active
   useEffect(() => {
     if (isModalOpen || isSeniorPortalOpen || isAdminOpen || showIntro) {
       pauseSmoothScroll();
@@ -176,18 +164,17 @@ export default function App() {
     } catch (e) {}
   };
 
-  const handleReplayIntro = () => {
-    setShowIntro(true);
-  };
-
   return (
     <div className="relative min-h-screen bg-obsidian-950 text-slate-100 selection:bg-cyber-violet selection:text-white">
       
-      {/* 0. Cinematic Opening Sequence (3–5s Staged Arrival) */}
+      {/* 0. Cinematic Loading Screen Sequence */}
       {showIntro && (
         <CinematicIntro
           onComplete={handleIntroComplete}
-          onRegisterClick={handleScrollToRegister}
+          onRegisterClick={() => {
+            handleIntroComplete();
+            handleScrollToRegister();
+          }}
         />
       )}
 
@@ -200,38 +187,26 @@ export default function App() {
         hasGeneratedPass={!!passData}
       />
 
-      {/* 3. Main Content Flow with Choreographed Storytelling */}
+      {/* 3. Main Content Flow */}
       <main className="relative z-10 flex flex-col">
-        {/* Hero Section with 3D Chrome Centerpiece & Live Event Countdown */}
+        {/* Hero Section */}
         <HeroSection onGrabPassClick={handleScrollToRegister} />
 
-        {/* Event Blueprint, Schedule & Venue Navigation */}
+        {/* Event Details & Navigation Grid */}
         <EventDetails />
 
-        {/* Confirmed Party Experiences & Activities */}
-        <PartyExperience />
-
-        {/* Interactive Visual Atmosphere & Style Gallery */}
-        <InteractiveGallery />
-
-        {/* Mr. & Ms. Fresher Runway Contest */}
+        {/* Festival Highlights & Lineup */}
         <LineupSection />
 
-        {/* Junior Pass Registration & Dynamic UPI Payment */}
+        {/* Registration & Dynamic UPI Payment */}
         <RegistrationPayment
           onPassGenerated={handlePassGenerated}
         />
 
-        {/* Senior VIP Portal & Gated Roster Access */}
+        {/* Senior VIP Portal & Gated Access */}
         <SeniorSection
           onPassGenerated={handlePassGenerated}
           onPortalToggle={setIsSeniorPortalOpen}
-        />
-
-        {/* Final Cinematic Climax: "YOUR NIGHT. YOUR PEOPLE. YOUR ELIXORA." */}
-        <FinalCinematicSection
-          onReplayIntro={handleReplayIntro}
-          onRegisterClick={handleScrollToRegister}
         />
       </main>
 
