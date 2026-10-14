@@ -965,22 +965,22 @@ body.senior-portal-open nav {
   box-shadow: 0 0 20px rgba(168, 85, 247, 0.4), inset 0 0 10px rgba(168, 85, 247, 0.2);
 }
 
-/* 13. Fluid Oscilloscope Sine Wave Keyframes */
+/* 13. Fluid Oscilloscope Sine Wave Keyframes (Left to Right Flow) */
 @keyframes oscFlow1 {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(-5%, 0, 0);
   }
   100% {
-    transform: translate3d(-5%, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes oscFlow2 {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(-6.666667%, 0, 0);
   }
   100% {
-    transform: translate3d(-6.666667%, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 

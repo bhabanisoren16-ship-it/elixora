@@ -522,9 +522,19 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
                 <stop offset="80%" stopColor="#ec4899" stopOpacity="0.95" />
                 <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.8" />
               </linearGradient>
+              {/* Left-to-Right Progress Revealer Clip */}
+              <clipPath id="progressWaveClip">
+                <rect
+                  x="0"
+                  y="0"
+                  width={`${(2400 * Math.max(progress, 0)) / 100}`}
+                  height="40"
+                  className="transition-[width] duration-150 ease-linear"
+                />
+              </clipPath>
             </defs>
 
-            {/* Baseline Center Dotted Axis */}
+            {/* Baseline Center Dotted Axis (Dormant track waiting to be activated) */}
             <line
               x1="0"
               y1="20"
@@ -535,28 +545,31 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
               strokeDasharray="4 4"
             />
 
-            {/* Primary Cyan Sine Wave (Wavelength 120, Amplitude 12) */}
-            <g className="animate-osc-1">
-              <path
-                d="M 0 20 Q 30 8, 60 20 T 120 20 T 180 20 T 240 20 T 300 20 T 360 20 T 420 20 T 480 20 T 540 20 T 600 20 T 660 20 T 720 20 T 780 20 T 840 20 T 900 20 T 960 20 T 1020 20 T 1080 20 T 1140 20 T 1200 20 T 1260 20 T 1320 20 T 1380 20 T 1440 20 T 1500 20 T 1560 20 T 1620 20 T 1680 20 T 1740 20 T 1800 20 T 1860 20 T 1920 20 T 1980 20 T 2040 20 T 2100 20 T 2160 20 T 2220 20 T 2280 20 T 2340 20 T 2400 20"
-                fill="none"
-                stroke="url(#oscCyanGrad)"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                className="animate-osc-pulse"
-              />
-            </g>
+            {/* Active Harmonic Sine Waves Unfolding From Left to Right */}
+            <g clipPath="url(#progressWaveClip)">
+              {/* Primary Cyan Sine Wave (Wavelength 120, Amplitude 12) */}
+              <g className="animate-osc-1">
+                <path
+                  d="M 0 20 Q 30 8, 60 20 T 120 20 T 180 20 T 240 20 T 300 20 T 360 20 T 420 20 T 480 20 T 540 20 T 600 20 T 660 20 T 720 20 T 780 20 T 840 20 T 900 20 T 960 20 T 1020 20 T 1080 20 T 1140 20 T 1200 20 T 1260 20 T 1320 20 T 1380 20 T 1440 20 T 1500 20 T 1560 20 T 1620 20 T 1680 20 T 1740 20 T 1800 20 T 1860 20 T 1920 20 T 1980 20 T 2040 20 T 2100 20 T 2160 20 T 2220 20 T 2280 20 T 2340 20 T 2400 20"
+                  fill="none"
+                  stroke="url(#oscCyanGrad)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  className="animate-osc-pulse"
+                />
+              </g>
 
-            {/* Harmonic Pink / Fuchsia Sine Wave (Wavelength 160, Amplitude 8) */}
-            <g className="animate-osc-2">
-              <path
-                d="M 0 20 Q 40 12, 80 20 T 160 20 T 240 20 T 320 20 T 400 20 T 480 20 T 560 20 T 640 20 T 720 20 T 800 20 T 880 20 T 960 20 T 1040 20 T 1120 20 T 1200 20 T 1280 20 T 1360 20 T 1440 20 T 1520 20 T 1600 20 T 1680 20 T 1760 20 T 1840 20 T 1920 20 T 2000 20 T 2080 20 T 2160 20 T 2240 20 T 2320 20 T 2400 20"
-                fill="none"
-                stroke="url(#oscPinkGrad)"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                opacity="0.85"
-              />
+              {/* Harmonic Pink / Fuchsia Sine Wave (Wavelength 160, Amplitude 8) */}
+              <g className="animate-osc-2">
+                <path
+                  d="M 0 20 Q 40 12, 80 20 T 160 20 T 240 20 T 320 20 T 400 20 T 480 20 T 560 20 T 640 20 T 720 20 T 800 20 T 880 20 T 960 20 T 1040 20 T 1120 20 T 1200 20 T 1280 20 T 1360 20 T 1440 20 T 1520 20 T 1600 20 T 1680 20 T 1760 20 T 1840 20 T 1920 20 T 2000 20 T 2080 20 T 2160 20 T 2240 20 T 2320 20 T 2400 20"
+                  fill="none"
+                  stroke="url(#oscPinkGrad)"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+              </g>
             </g>
           </svg>
 
