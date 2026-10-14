@@ -5,6 +5,7 @@ import { elixoraBackendPlugin } from './server/vitePlugin.js';
 export default defineConfig({
   plugins: [react(), elixoraBackendPlugin()],
   server: {
+    host: '0.0.0.0',
     port: 3000,
     open: true
   },

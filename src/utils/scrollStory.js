@@ -80,7 +80,7 @@ export function initScrollStory() {
     });
 
     // 4. Subtle scale reveal on the climax section
-    const climaxSection = document.querySelector('section:has(h2:contains("YOUR NIGHT"))');
+    const climaxSection = document.getElementById('climax') || document.querySelector('#climax');
     if (climaxSection) {
       gsap.fromTo(
         climaxSection,

@@ -61,6 +61,7 @@ export default function FinalCinematicSection({ onReplayIntro, onRegisterClick }
   return (
     <section
       ref={sectionRef}
+      id="climax"
       className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto z-10 text-center overflow-hidden"
     >
       {/* Volumetric Climax Stage Lighting */}
