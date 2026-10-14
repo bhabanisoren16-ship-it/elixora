@@ -485,69 +485,58 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         </div>
       </div>
 
-      {/* 7. Bottom Futuristic Minimalist Dual Laser Horizon & Sonic Pulse Deck */}
+      {/* 7. Bottom High-Speed Cyber Laser Comet Progress Deck */}
       <div className="absolute bottom-0 inset-x-0 z-30 pb-3 sm:pb-4 px-4 sm:px-8 bg-gradient-to-t from-obsidian-950 via-obsidian-950/85 to-transparent">
         {/* Telemetry Row */}
         <div className="max-w-4xl mx-auto flex items-center justify-between text-[10px] sm:text-xs font-mono font-bold tracking-wider text-slate-400 mb-2">
-          {/* Horizon Status & Phase Text */}
+          {/* Laser Comet Status & Phase Text */}
           <div className="flex items-center gap-2 sm:gap-2.5 text-cyan-300">
-            {/* Minimalist Horizon Optics Indicator */}
-            <div className="flex items-center gap-1" aria-hidden="true">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00e5ff] animate-ping" />
-              <span className="w-2.5 h-[1.5px] bg-gradient-to-r from-cyan-400 to-transparent" />
-            </div>
+            <Zap className="w-3.5 h-3.5 text-cyan-300 animate-pulse drop-shadow-[0_0_8px_#00e5ff]" />
             <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">{currentPhaseText}</span>
             <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[9px] font-mono tracking-widest bg-cyan-950/70 text-cyan-300 border border-cyan-500/30">
-              HORIZON // QUANTUM
+              COMET // HYPERSPEED
             </span>
           </div>
 
           {/* Numerical percentage & Sync status */}
           <div className="flex items-center gap-1.5 font-mono">
             <span className="text-cyan-300 font-black">{String(progress).padStart(2, '0')}%</span>
-            <span className={progress >= 100 ? 'text-cyan-300 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_8px_rgba(0,229,255,0.9)]' : 'text-slate-500'}>
-              {progress >= 100 ? 'ONLINE' : 'CHARGING'}
+            <span className={progress >= 100 ? 'text-pink-400 font-extrabold tracking-widest animate-pulse drop-shadow-[0_0_8px_rgba(244,114,182,0.9)]' : 'text-slate-500'}>
+              {progress >= 100 ? 'READY' : 'CHARGING'}
             </span>
           </div>
         </div>
 
-        {/* Minimalist Dual Laser Horizon Rails with Center-Radiating Sonic Flares */}
-        <div className="max-w-4xl mx-auto relative py-1">
-          {/* Upper Horizon Laser Rail (Cyan Spectrum) */}
-          <div className="relative h-[1.5px] bg-white/10 rounded-full overflow-hidden">
+        {/* High-Speed Cyber Laser Comet Rail */}
+        <div className="max-w-4xl mx-auto relative py-1.5">
+          {/* Background Cyber Guide Rail */}
+          <div className="relative h-1.5 sm:h-2 bg-obsidian-950/90 rounded-full border border-white/10 shadow-[inset_0_1px_2px_rgba(0,0,0,0.9)] overflow-hidden">
+            {/* Background Sub-Glow */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
+
+            {/* Continuous Roving Laser Comet Sweeper with Particle Tail */}
+            <div className="absolute top-0 bottom-0 w-36 sm:w-48 bg-gradient-to-r from-transparent via-cyan-400/40 via-fuchsia-400/80 to-white animate-laser-comet pointer-events-none blur-[0.5px]" />
+
+            {/* Dynamic Progress Fill Beam */}
             <div
-              className="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-white transition-all duration-100 ease-linear rounded-full relative shadow-[0_0_8px_#00e5ff]"
+              className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transition-all duration-100 ease-linear rounded-full relative shadow-[0_0_14px_rgba(0,229,255,0.7),0_0_25px_rgba(217,70,239,0.5)]"
               style={{ width: `${progress}%` }}
             >
-              {/* Travelling Laser Glint Tip */}
-              <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-white shadow-[0_0_10px_#00e5ff] -mr-1" />
+              {/* Internal Laser Glint Line */}
+              <div className="absolute inset-x-0 top-0 h-[1px] bg-white/60 rounded-full" />
             </div>
-          </div>
 
-          {/* Center Sonic Flare Corridor with Central Nexus Diamond */}
-          <div className="relative h-2 my-0.5 flex items-center justify-center overflow-hidden pointer-events-none">
-            {/* Center Nexus Diamond Node */}
-            <div className="relative z-10 w-2 h-2 rotate-45 bg-cyan-300 shadow-[0_0_10px_#00e5ff,0_0_20px_#d946ef] animate-[horizonGlintPulse_2s_ease-in-out_infinite]" />
-
-            {/* Sonic Pulse Shockwave Flares Radiating Symmetrically Outward from Center */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-transparent via-fuchsia-400 to-transparent animate-sonic-flare opacity-80" />
+            {/* Leading Edge Electric Comet Head & Trailing Aura */}
             <div
-              className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-sonic-flare opacity-60"
-              style={{ animationDelay: '1.1s' }}
-            />
-
-            {/* Continuous Roving Laser Scanner Beam */}
-            <div className="absolute top-1/2 -translate-y-1/2 h-[2px] w-28 bg-gradient-to-r from-transparent via-cyan-300 to-transparent animate-laser-scan blur-[0.5px]" />
-          </div>
-
-          {/* Lower Horizon Laser Rail (Neon Fuchsia / Pink Spectrum) */}
-          <div className="relative h-[1.5px] bg-white/10 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-purple-600 via-fuchsia-500 to-pink-400 transition-all duration-100 ease-linear rounded-full relative shadow-[0_0_8px_#d946ef]"
-              style={{ width: `${progress}%` }}
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-100 ease-linear pointer-events-none z-10"
+              style={{ left: `${progress}%` }}
             >
-              {/* Travelling Laser Glint Tip */}
-              <span className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-pink-300 shadow-[0_0_10px_#ec4899] -mr-1" />
+              {/* Outer Pulsing Shockwave Ring */}
+              <span className="absolute -inset-1.5 rounded-full bg-cyan-400/40 animate-ping" />
+              {/* Mid Chromatic Aura */}
+              <span className="absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-400 to-pink-500 blur-[2px] opacity-90" />
+              {/* Core White Diamond Comet Spark */}
+              <span className="relative block w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white shadow-[0_0_10px_#fff,0_0_20px_#00e5ff,0_0_30px_#d946ef]" />
             </div>
           </div>
         </div>
