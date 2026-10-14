@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Sparkles, X, Volume2, Play } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { adminStore } from '../utils/adminStore';
 
 /**
- * 3–5 Second Cinematic Opening Sequence for ELIXORA
+ * 3–5 Second Cinematic Loading Screen for ELIXORA
  * Features:
- * 1. Dark obsidian opening
+ * 1. Simple atmospheric concert background image with soft vignette
  * 2. Sweeping neon laser beam with prismatic lens flare
  * 3. Atmospheric floating smoke & dust motes
  * 4. 3D Chrome "ELIXORA" text emergence with metallic reflections & push-in
  * 5. Chromatic aberration & letter-by-letter stagger
  * 6. "A Night to Remember" luxury reveal
- * 7. Verified date & venue presentation
+ * 7. Gated schedule & venue (only reveals if announced by Admin Portal)
  * 8. "Register Now" / "Explore the Night" action buttons
  * 9. Seamless exit fade into the live site
  * 10. Instant "Skip Intro" option anytime
@@ -24,6 +24,16 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
   const canvasRef = useRef(null);
   const animFrameRef = useRef(null);
 
+  // Sync settings dynamically with Admin Portal updates
+  useEffect(() => {
+    const handleUpdate = () => {
+      setSettings(adminStore.getSettings());
+    };
+    window.addEventListener('elixora_admin_update', handleUpdate);
+    return () => window.removeEventListener('elixora_admin_update', handleUpdate);
+  }, []);
+
+  const isDateVenueAnnounced = Boolean(settings.isDateVenueAnnounced);
   const humanDate = settings.eventHumanDate || EVENT_DETAILS.humanDate;
   const venueTitle = settings.venueTitle || EVENT_DETAILS.location;
 
@@ -148,6 +158,20 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
+      {/* Simple Concert Atmosphere Background Image */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+        <picture>
+          <source media="(min-width: 768px)" srcSet="/background-desktop.jpg" />
+          <img
+            src="/party-background.jpg"
+            alt="ELIXORA Atmosphere"
+            className="w-full h-full object-cover object-center opacity-30 scale-105"
+          />
+        </picture>
+        {/* Dark Vignette Overlay for Readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/85 via-obsidian-950/75 to-obsidian-950/95" />
+      </div>
+
       {/* Background Volumetric Gradients */}
       <div className="absolute inset-0 bg-radial-gradient from-purple-900/20 via-obsidian-950/90 to-obsidian-950 pointer-events-none" />
       <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-cyan-500/15 rounded-full blur-[130px] pointer-events-none" />
@@ -187,20 +211,6 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       {/* Central Cinematic Typography & Experience Reveal */}
       <div className="relative z-10 max-w-4xl px-4 text-center flex flex-col items-center">
         
-        {/* Subtitle Badge: Biotechnology Freshers '26 */}
-        <div
-          className={`transition-all duration-700 transform mb-3 sm:mb-4 ${
-            phase >= 2
-              ? 'opacity-100 translate-y-0 filter-none'
-              : 'opacity-0 translate-y-4 filter blur-sm'
-          }`}
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-[10px] sm:text-xs font-outfit font-bold tracking-[0.25em] uppercase shadow-[0_0_15px_rgba(6,182,212,0.25)]">
-            <Sparkles className="w-3 h-3 text-cyan-300 animate-spin" style={{ animationDuration: '6s' }} />
-            <span>BIOTECHNOLOGY FRESHERS '26</span>
-          </div>
-        </div>
-
         {/* 3D Chrome Title: ELIXORA */}
         <div
           className={`relative select-none transition-all duration-1000 transform ${
@@ -248,7 +258,7 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           </p>
         </div>
 
-        {/* Event Date & Location Pill */}
+        {/* Event Date & Location: Revealed only if officially announced from Admin Portal */}
         <div
           className={`mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-outfit font-bold text-slate-300 transition-all duration-700 delay-100 transform ${
             phase >= 4
@@ -256,13 +266,22 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
               : 'opacity-0 translate-y-6'
           }`}
         >
-          <span className="px-3 py-1 rounded-lg bg-black/50 border border-white/10 text-cyan-300 shadow-sm">
-            📅 {humanDate}
-          </span>
-          <span className="hidden sm:inline-block text-white/30">•</span>
-          <span className="px-3 py-1 rounded-lg bg-black/50 border border-white/10 text-purple-300 shadow-sm">
-            📍 {venueTitle}
-          </span>
+          {isDateVenueAnnounced ? (
+            <>
+              <span className="px-3 py-1 rounded-lg bg-black/50 border border-white/10 text-cyan-300 shadow-sm">
+                📅 {humanDate}
+              </span>
+              <span className="hidden sm:inline-block text-white/30">•</span>
+              <span className="px-3 py-1 rounded-lg bg-black/50 border border-white/10 text-purple-300 shadow-sm">
+                📍 {venueTitle}
+              </span>
+            </>
+          ) : (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/25 text-cyan-300 shadow-sm text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00e5ff]" />
+              <span>Official Date &amp; Venue Revealing Soon</span>
+            </div>
+          )}
         </div>
 
         {/* Stage 5: Primary Action CTAs */}
