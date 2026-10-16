@@ -59,7 +59,7 @@ const GATEWAY_STATUSES = [
   'CELESTIAL ALIGNMENT ACHIEVED · READY FOR ENTRY',
 ];
 
-export default function CinematicIntro({ onComplete, duration = 2.2 }) {
+export default function CinematicIntro({ onComplete, duration = 1.5 }) {
   const containerRef = useRef(null);
   const statusRef = useRef(null);
   const countRef = useRef(null);
