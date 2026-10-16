@@ -504,16 +504,16 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
             Strictly requires user click/enter to open homepage; stays on loading screen until clicked.
            ========================================================================= */}
         <div
-          className={`mt-6 sm:mt-8 flex flex-col items-center justify-center w-full max-w-md mx-auto transition-all duration-700 transform ${
-            phase >= 3 ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
+          className={`mt-5 sm:mt-7 flex flex-col items-center justify-center w-full max-w-md mx-auto transition-all duration-700 transform ${
+            phase >= 1 ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
           }`}
         >
           {/* Celestial Gateway Calibration Status Line with Mini Progress Track */}
           <div className="flex flex-col items-center gap-1.5 mb-3.5 w-full max-w-xs">
-            <div className="font-mono text-[11px] sm:text-xs font-bold tracking-[0.25em] flex items-center justify-center gap-2 select-none">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
+            <div className="font-mono text-[11px] sm:text-xs font-bold tracking-[0.22em] flex items-center justify-center gap-2 select-none">
+              <span className={`w-2 h-2 rounded-full shadow-[0_0_8px_#00f2fe] ${progress >= 100 ? 'bg-emerald-400' : 'bg-cyan-400 animate-ping'}`} />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-300 drop-shadow-[0_0_8px_rgba(0,242,254,0.6)]">
-                {progress >= 100 ? 'CELESTIAL GATEWAY ALIGNED · READY' : `ALIGNING CELESTIAL STARGATE // ${progress}%`}
+                {progress >= 100 ? '✦ STARGATE READY // 100% · CLICK ENTER ✦' : `CALIBRATING STARGATE // ${progress}%`}
               </span>
             </div>
 
@@ -526,15 +526,15 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
             </div>
           </div>
 
-          {/* THE ENTER BUTTON */}
+          {/* THE ENTER HOME PAGE BUTTON - STAYS STUCK ON LOADING PAGE UNTIL USER CLICKS */}
           <button
             id="homescreen-enter-button"
             onClick={() => handleEnterHomepage(false)}
             className="group relative inline-flex items-center justify-center gap-3.5 px-9 py-4 sm:px-12 sm:py-4.5 rounded-full transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_45px_rgba(217,70,239,0.55),0_0_30px_rgba(0,242,254,0.4)]"
-            title="Click to enter ELIXORA 2.0 Celestial Odyssey"
+            title="Click to enter ELIXORA 2.0 Home Page"
           >
             {/* Outer Cosmic Multi-Tone Aura Bloom */}
-            <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 animate-pulse" />
+            <div className={`absolute -inset-1.5 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 ${progress >= 100 ? 'animate-pulse' : ''}`} />
 
             {/* Orbiting Satellite Particle around the Enter Button */}
             <div className="absolute -inset-2.5 rounded-full border border-cyan-400/30 border-dotted animate-[spin_12s_linear_infinite] pointer-events-none">
@@ -554,8 +554,8 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
 
             {/* Button Content: Luminous Crisp Typography & Icon Capsule */}
             <div className="relative z-10 flex items-center gap-3">
-              <span className="font-outfit font-black text-sm sm:text-base tracking-[0.32em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_12px_rgba(255,255,255,0.7)] ml-1">
-                ENTER CELESTIAL GALA
+              <span className="font-outfit font-black text-sm sm:text-base tracking-[0.28em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_12px_rgba(255,255,255,0.7)] ml-1">
+                ENTER HOME PAGE
               </span>
 
               {/* Glowing Arrow Capsule */}
@@ -566,10 +566,10 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
           </button>
 
           {/* Interactive Keyboard Hotkey Prompt */}
-          <p className="mt-3 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.24em] text-cyan-300/80 select-none flex items-center gap-1.5">
-            <span>[ CLICK ENTER OR PRESS</span>
+          <p className="mt-2.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.22em] text-cyan-300/80 select-none flex items-center gap-1.5">
+            <span>[ CLICK BUTTON OR PRESS</span>
             <kbd className="px-1.5 py-0.5 rounded bg-black/60 border border-cyan-400/40 text-cyan-200 font-bold">↵ ENTER</kbd>
-            <span>KEY TO OPEN ]</span>
+            <span>TO ENTER HOME PAGE ]</span>
           </p>
         </div>
       </div>

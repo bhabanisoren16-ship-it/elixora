@@ -74,12 +74,12 @@ function detectInitialLoadState() {
 
   const hasEnteredHomepage = sessionStorage.getItem('elixora_entered_homepage') === 'true';
 
-  // 1. REFRESH PAGE: Strictly when the user reloaded/refreshed the browser
-  if (isBrowserReload) {
+  // 1. REFRESH PAGE: Only if the user has ALREADY entered the homepage in this session and then reloads
+  if (hasEnteredHomepage && isBrowserReload) {
     return { isRefresh: true, isHomeLoading: false };
   }
 
-  // 2. WHEN USER OPENS WEBSITE: ALWAYS show Home Screen Loading Page with ENTER option before page interface!
+  // 2. WHEN USER OPENS WEBSITE: ALWAYS show Home Loading Page and STAY STUCK on it until user clicks ENTER HOME PAGE!
   return { isRefresh: false, isHomeLoading: true };
 }
 
