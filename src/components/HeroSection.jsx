@@ -24,97 +24,113 @@ export default function HeroSection({ onGrabPassClick }) {
   const lettersRef = useRef([]);
   const titleContainerRef = useRef(null);
 
-  // Trigger playful kinetic shake on a specific letter
-  const shakeLetter = (idx) => {
+  // Direct Tap / Click impulse for mobile & desktop
+  const kickLetter = (idx) => {
     const el = lettersRef.current[idx];
-    if (!el || el.dataset.isShaking === 'true') return;
-
-    el.dataset.isShaking = 'true';
+    if (!el) return;
     soundController.playHover?.();
+    const sx = (Math.random() > 0.5 ? 1 : -1) * 14;
+    const sy = -18;
+    const sr = (Math.random() > 0.5 ? 1 : -1) * 10;
 
-    const sx = (Math.random() > 0.5 ? 1 : -1) * (4 + Math.random() * 4);
-    const sy = (Math.random() > 0.5 ? 1 : -1) * (3 + Math.random() * 3);
-    const sr = (Math.random() > 0.5 ? 1 : -1) * (3 + Math.random() * 4);
-
-    gsap.timeline({
-      onComplete: () => {
-        setTimeout(() => {
-          if (el) el.dataset.isShaking = 'false';
-        }, 90);
-      },
-    })
-      .to(el, {
-        x: sx,
-        y: sy,
-        rotation: sr,
-        scale: 1.08,
-        duration: 0.05,
-        ease: 'power1.inOut',
-      })
-      .to(el, {
-        x: -sx * 0.75,
-        y: -sy * 0.75,
-        rotation: -sr * 0.75,
-        scale: 1.04,
-        duration: 0.06,
-        ease: 'power1.inOut',
-      })
-      .to(el, {
-        x: sx * 0.35,
-        y: -sy * 0.35,
-        rotation: sr * 0.35,
-        scale: 1.02,
-        duration: 0.06,
-      })
-      .to(el, {
-        x: 0,
-        y: 0,
-        rotation: 0,
-        scale: 1,
-        duration: 0.28,
-        ease: 'elastic.out(1.2, 0.3)',
-      });
+    gsap.timeline()
+      .to(el, { x: sx, y: sy, rotation: sr, scale: 1.15, duration: 0.1, ease: 'power2.out' })
+      .to(el, { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.6, ease: 'elastic.out(1.2, 0.38)' });
   };
 
-  // Proximity Detection: Shakes individual letters when cursor moves near them
+  // Proximity Physics: Makes each letter actively move, repel, and shake when cursor moves near it
   useEffect(() => {
-    let ticking = false;
-    const handleGlobalMouseMove = (e) => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+    const EFFECT_RADIUS = 160; // Proximity threshold in pixels
+    let lastSoundTime = 0;
 
-        if (titleContainerRef.current) {
-          const containerRect = titleContainerRef.current.getBoundingClientRect();
-          // Gate check: only calculate letter distances if mouse is anywhere near the title banner
-          if (
-            mouseX >= containerRect.left - 120 &&
-            mouseX <= containerRect.right + 120 &&
-            mouseY >= containerRect.top - 90 &&
-            mouseY <= containerRect.bottom + 90
-          ) {
-            lettersRef.current.forEach((el, idx) => {
-              if (!el) return;
-              const rect = el.getBoundingClientRect();
-              const centerX = rect.left + rect.width / 2;
-              const centerY = rect.top + rect.height / 2;
-              const dist = Math.hypot(mouseX - centerX, mouseY - centerY);
+    const handleMouseMove = (e) => {
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
 
-              // Shakes when cursor is moved near letter (< 85px)
-              if (dist < 85) {
-                shakeLetter(idx);
-              }
+      lettersRef.current.forEach((el, idx) => {
+        if (!el) return;
+
+        const rect = el.getBoundingClientRect();
+        // Remove current displacement to find original resting center
+        const currX = gsap.getProperty(el, 'x') || 0;
+        const currY = gsap.getProperty(el, 'y') || 0;
+        const origCenterX = (rect.left - currX) + rect.width / 2;
+        const origCenterY = (rect.top - currY) + rect.height / 2;
+
+        const dx = origCenterX - mouseX;
+        const dy = origCenterY - mouseY;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < EFFECT_RADIUS) {
+          // Normalized proximity force (0 at outer radius, 1 at center)
+          const factor = Math.pow(1 - dist / EFFECT_RADIUS, 1.3);
+
+          // Repulsion displacement vector (pushes away up to 34px)
+          const angle = Math.atan2(dy, dx);
+          const pushDist = factor * 34;
+          const pushX = Math.cos(angle) * pushDist;
+          const pushY = Math.sin(angle) * pushDist;
+
+          // Kinetic dynamic shake & vibration when cursor is near
+          const time = Date.now() * 0.035 + idx * 1.6;
+          const jitterX = factor * 5 * Math.sin(time);
+          const jitterY = factor * 4 * Math.cos(time * 1.2);
+          const tilt = (pushX * 0.45) + (factor * 5 * Math.sin(time * 0.8));
+
+          gsap.to(el, {
+            x: pushX + jitterX,
+            y: pushY + jitterY,
+            rotation: tilt,
+            scale: 1 + factor * 0.12,
+            duration: 0.12,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+
+          // Play subtle celestial hover sound on close proximity
+          if (dist < 75 && Date.now() - lastSoundTime > 180) {
+            lastSoundTime = Date.now();
+            soundController.playHover?.();
+          }
+        } else {
+          // Smoothly spring back to rest position when cursor leaves proximity
+          if (currX !== 0 || currY !== 0) {
+            gsap.to(el, {
+              x: 0,
+              y: 0,
+              rotation: 0,
+              scale: 1,
+              duration: 0.65,
+              ease: 'elastic.out(1.15, 0.38)',
+              overwrite: 'auto',
             });
           }
         }
-        ticking = false;
       });
     };
 
-    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+    const handleMouseLeave = () => {
+      lettersRef.current.forEach((el) => {
+        if (!el) return;
+        gsap.to(el, {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          scale: 1,
+          duration: 0.7,
+          ease: 'elastic.out(1.2, 0.4)',
+          overwrite: 'auto',
+        });
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+    };
   }, []);
 
   useEffect(() => {
@@ -186,8 +202,8 @@ export default function HeroSection({ onGrabPassClick }) {
                   <span
                     key={idx}
                     ref={(el) => (lettersRef.current[idx] = el)}
-                    onMouseEnter={() => shakeLetter(idx)}
-                    onClick={() => shakeLetter(idx)}
+                    onClick={() => kickLetter(idx)}
+                    onTouchStart={() => kickLetter(idx)}
                     className={`inline-block transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent drop-shadow-[0_6px_35px_rgba(0,0,0,0.98)] drop-shadow-[0_0_25px_rgba(255,255,255,0.22)] cursor-pointer select-none`}
                     style={{ transformOrigin: '50% 70%' }}
                     title={item.char}
