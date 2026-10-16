@@ -54,16 +54,11 @@ export default function HeroSection({ onGrabPassClick }) {
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-1 sm:my-2 select-none flex flex-col items-center justify-center">
-          {/* Main Title Graphic: 100% Exact Typography from Official Artwork */}
-          <div className="relative my-0.5 select-none animate-hero-float flex items-center justify-center w-full px-2">
-            <h1 className="sr-only">ELIXORA 2.0</h1>
-            <img
-              src="/elixora-title.png"
-              alt="ELIXORA 2.0"
-              className="w-full max-w-[280px] xs:max-w-[320px] sm:max-w-lg md:max-w-xl lg:max-w-2xl h-auto object-contain mx-auto transition-transform duration-300 hover:scale-[1.02] drop-shadow-[0_4px_25px_rgba(0,0,0,0.95)]"
-              loading="eager"
-              decoding="sync"
-            />
+          {/* Main Title: Exact Luxury High-Contrast Serif Typography from INNOVISION Reference */}
+          <div className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full px-2">
+            <h1 className="font-innovision-serif font-black text-4xl min-[380px]:text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.06em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase text-white drop-shadow-[0_6px_35px_rgba(0,0,0,0.98)] drop-shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-transform duration-300 hover:scale-[1.02] whitespace-nowrap leading-none">
+              ELIXORA 2.0
+            </h1>
           </div>
 
           {/* Highlighted Subtitle (Clean without neon glow) */}

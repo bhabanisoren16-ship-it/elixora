@@ -44,6 +44,11 @@ export default {
         chakra: ['"Chakra Petch"', 'sans-serif'],
         rajdhani: ['Rajdhani', 'sans-serif'],
         syncopate: ['Syncopate', 'sans-serif'],
+        bodoni: ['"Bodoni Moda"', 'serif'],
+        cinzel: ['Cinzel', 'serif'],
+        playfair: ['"Playfair Display"', 'serif'],
+        italiana: ['Italiana', 'serif'],
+        prata: ['Prata', 'serif'],
       },
       animation: {
         'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
