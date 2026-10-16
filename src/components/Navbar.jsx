@@ -81,7 +81,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
 
   return (
     <header
-      className={`md:hidden fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 py-2.5 transition-all duration-300 ease-in-out will-change-transform flex justify-end pointer-events-none ${
+      className={`fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 py-2.5 sm:py-3.5 transition-all duration-300 ease-in-out will-change-transform flex justify-end md:justify-center pointer-events-none ${
         isScrolledDown
           ? '-translate-y-full opacity-0'
           : 'translate-y-0 opacity-100'
