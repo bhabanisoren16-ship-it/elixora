@@ -38,9 +38,9 @@ export default function HeroSection({ onGrabPassClick }) {
       .to(el, { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.6, ease: 'elastic.out(1.2, 0.38)' });
   };
 
-  // Proximity Physics: Makes each letter actively move, repel, and shake when cursor moves near it
+  // Innovision Proximity Physics: Magnetic attraction towards cursor (data-attract=".22")
   useEffect(() => {
-    const EFFECT_RADIUS = 160; // Proximity threshold in pixels
+    const EFFECT_RADIUS = 180; // Proximity threshold in pixels
     let lastSoundTime = 0;
 
     const handleMouseMove = (e) => {
@@ -57,38 +57,38 @@ export default function HeroSection({ onGrabPassClick }) {
         const origCenterX = (rect.left - currX) + rect.width / 2;
         const origCenterY = (rect.top - currY) + rect.height / 2;
 
-        const dx = origCenterX - mouseX;
-        const dy = origCenterY - mouseY;
+        // Vector pointing TOWARDS the cursor (Innovision magnetic attraction)
+        const dx = mouseX - origCenterX;
+        const dy = mouseY - origCenterY;
         const dist = Math.hypot(dx, dy);
 
         if (dist < EFFECT_RADIUS) {
-          // Normalized proximity force (0 at outer radius, 1 at center)
-          const factor = Math.pow(1 - dist / EFFECT_RADIUS, 1.3);
+          // Exact Innovision data-attract=".22" magnetic curve
+          const ATTRACT_FACTOR = 0.22;
+          const power = Math.pow(1 - dist / EFFECT_RADIUS, 1.25);
 
-          // Repulsion displacement vector (pushes away up to 34px)
-          const angle = Math.atan2(dy, dx);
-          const pushDist = factor * 34;
-          const pushX = Math.cos(angle) * pushDist;
-          const pushY = Math.sin(angle) * pushDist;
+          // Magnetic pull towards cursor
+          const pullX = dx * ATTRACT_FACTOR * power;
+          const pullY = dy * ATTRACT_FACTOR * power;
 
-          // Kinetic dynamic shake & vibration when cursor is near
-          const time = Date.now() * 0.035 + idx * 1.6;
-          const jitterX = factor * 5 * Math.sin(time);
-          const jitterY = factor * 4 * Math.cos(time * 1.2);
-          const tilt = (pushX * 0.45) + (factor * 5 * Math.sin(time * 0.8));
+          // Subtle kinetic vibration & dynamic tilt leaning towards cursor
+          const time = Date.now() * 0.035 + idx * 1.5;
+          const shakeX = Math.sin(time) * 3 * power;
+          const shakeY = Math.cos(time * 1.1) * 2.5 * power;
+          const tilt = (dx / EFFECT_RADIUS) * 14 * power;
 
           gsap.to(el, {
-            x: pushX + jitterX,
-            y: pushY + jitterY,
+            x: pullX + shakeX,
+            y: pullY + shakeY,
             rotation: tilt,
-            scale: 1 + factor * 0.12,
-            duration: 0.12,
+            scale: 1 + power * 0.1,
+            duration: 0.14,
             ease: 'power2.out',
             overwrite: 'auto',
           });
 
-          // Play subtle celestial hover sound on close proximity
-          if (dist < 75 && Date.now() - lastSoundTime > 180) {
+          // Play subtle celestial hover sound on close encounter
+          if (dist < 70 && Date.now() - lastSoundTime > 180) {
             lastSoundTime = Date.now();
             soundController.playHover?.();
           }
@@ -101,7 +101,7 @@ export default function HeroSection({ onGrabPassClick }) {
               rotation: 0,
               scale: 1,
               duration: 0.65,
-              ease: 'elastic.out(1.15, 0.38)',
+              ease: 'elastic.out(1.15, 0.4)',
               overwrite: 'auto',
             });
           }
@@ -204,6 +204,8 @@ export default function HeroSection({ onGrabPassClick }) {
                     ref={(el) => (lettersRef.current[idx] = el)}
                     onClick={() => kickLetter(idx)}
                     onTouchStart={() => kickLetter(idx)}
+                    data-h-ch=""
+                    data-attract=".22"
                     className={`inline-block transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent drop-shadow-[0_6px_35px_rgba(0,0,0,0.98)] drop-shadow-[0_0_25px_rgba(255,255,255,0.22)] cursor-pointer select-none`}
                     style={{ transformOrigin: '50% 70%' }}
                     title={item.char}
