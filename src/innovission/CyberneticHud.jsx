@@ -3,7 +3,7 @@ import { soundController } from '../utils/audio';
 import { scrambleText } from './scrambleText';
 
 export default function CyberneticHud({ onReplayIntro, onOpenPass, hasPass }) {
-  const [coords, setCoords] = useState('22.2500Â° N, 84.9000Â° E');
+  const [coords, setCoords] = useState('22.2500° N, 84.9000° E');
   const [hudSolid, setHudSolid] = useState(false);
 
   useEffect(() => {

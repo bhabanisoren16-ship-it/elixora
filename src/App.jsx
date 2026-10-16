@@ -7,6 +7,7 @@ import LineupSection from './components/LineupSection';
 import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
+import CinematicIntro from './components/CinematicIntro';
 import { SciFiOrbitalLoader, CelestialCurtain, CyberneticHud, initGlobalScrambleListener } from './innovission';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
 
@@ -35,20 +36,63 @@ function checkIsSeniorPortalRoute() {
   }
 }
 
+/**
+ * Distinguish between Home Screen Initial Visit vs Dedicated Refresh Page
+ * - Home Screen Loading Page: Celestial Armillary Stargate with ENTER option (strictly requires user to click/press ENTER).
+ * - Refresh Page: Automated Real-Time Celestial Telemetry Synchronization (000% -> 100% in ~1.3s, NO enter button).
+ */
+function detectInitialLoadState() {
+  if (typeof window === 'undefined') {
+    return { isRefresh: false, isHomeLoading: false };
+  }
+
+  // Bypass on direct admin / senior portal hash routes
+  if (checkIsAdminRoute() || checkIsSeniorPortalRoute()) {
+    return { isRefresh: false, isHomeLoading: false };
+  }
+
+  // URL parameters / hashes for previewing or testing
+  const searchParams = new URLSearchParams(window.location.search);
+  const hash = window.location.hash;
+
+  if (searchParams.get('loader') === 'refresh' || hash === '#preview-refresh') {
+    return { isRefresh: true, isHomeLoading: false };
+  }
+  if (searchParams.get('loader') === 'home' || hash === '#preview-home-loader') {
+    return { isRefresh: false, isHomeLoading: true };
+  }
+
+  let isBrowserReload = false;
+  try {
+    const navEntries = performance.getEntriesByType('navigation');
+    if (navEntries && navEntries.length > 0) {
+      isBrowserReload = navEntries[0].type === 'reload';
+    } else if (window.performance && window.performance.navigation) {
+      isBrowserReload = window.performance.navigation.type === 1;
+    }
+  } catch (e) {}
+
+  const hasEnteredHomepage = sessionStorage.getItem('elixora_entered_homepage') === 'true';
+
+  // 1. REFRESH PAGE: Strictly when the user reloaded/refreshed the browser
+  if (isBrowserReload) {
+    return { isRefresh: true, isHomeLoading: false };
+  }
+
+  // 2. WHEN USER OPENS WEBSITE: ALWAYS show Home Screen Loading Page with ENTER option before page interface!
+  return { isRefresh: false, isHomeLoading: true };
+}
+
 export default function App() {
   const [passData, setPassData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(checkIsSeniorPortalRoute);
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminRoute);
 
-  // Cinematic Sci-Fi Orbital Loader & Curtain State
-  const [showOrbitalLoader, setShowOrbitalLoader] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    const isDirectRoute =
-      window.location.hash.includes('admin') ||
-      window.location.pathname.includes('admin');
-    return !isDirectRoute;
-  });
+  // Separate states for Home Screen Loading Page and dedicated Refresh Page
+  const [initialLoad] = useState(detectInitialLoadState);
+  const [showHomeLoadingPage, setShowHomeLoadingPage] = useState(initialLoad.isHomeLoading);
+  const [showRefreshPage, setShowRefreshPage] = useState(initialLoad.isRefresh);
   const [showCurtain, setShowCurtain] = useState(false);
 
   // Initialize global hover ScrambleText listener
@@ -67,12 +111,12 @@ export default function App() {
 
   // Pause background smooth scroll when modals, admin portal, or loading screen are active
   useEffect(() => {
-    if (isModalOpen || isSeniorPortalOpen || isAdminOpen || showCurtain || showOrbitalLoader) {
+    if (isModalOpen || isSeniorPortalOpen || isAdminOpen || showCurtain || showRefreshPage || showHomeLoadingPage) {
       pauseSmoothScroll();
     } else {
       resumeSmoothScroll();
     }
-  }, [isModalOpen, isSeniorPortalOpen, isAdminOpen, showCurtain, showOrbitalLoader]);
+  }, [isModalOpen, isSeniorPortalOpen, isAdminOpen, showCurtain, showRefreshPage, showHomeLoadingPage]);
 
   // Synchronize URL hash for Admin Portal and Senior VIP Portal
   useEffect(() => {
@@ -167,53 +211,48 @@ export default function App() {
     scrollToTarget('#register');
   };
 
-  // Dynamic Loading Screen Speed: Automatically increased speed on page refresh
-  const [loaderDuration, setLoaderDuration] = useState(() => {
-    if (typeof window === 'undefined') return 1.1;
+  // When user clicks the ENTER button on the Home Screen Loading Page:
+  const handleHomeLoadingEnter = () => {
     try {
-      const navEntries = performance.getEntriesByType('navigation');
-      const isReload =
-        (navEntries && navEntries[0]?.type === 'reload') ||
-        window.performance?.navigation?.type === 1 ||
-        sessionStorage.getItem('elixora_visited') === 'true';
+      sessionStorage.setItem('elixora_entered_homepage', 'true');
+    } catch (e) {}
+    setShowHomeLoadingPage(false);
+  };
 
-      sessionStorage.setItem('elixora_visited', 'true');
-      // When refreshed or reloaded, increase speed to 1.1s (crisp and high-speed)
-      return isReload ? 1.1 : 1.4;
-    } catch (e) {
-      return 1.1;
-    }
-  });
-  const [isReplayingIntro, setIsReplayingIntro] = useState(false);
-
-  const handleOrbitalLoaderComplete = () => {
-    setShowOrbitalLoader(false);
+  // When the Refresh Page finishes its telemetry synchronization:
+  const handleRefreshComplete = () => {
+    setShowRefreshPage(false);
     setShowCurtain(true);
-    setIsReplayingIntro(false);
   };
 
   const handleCurtainComplete = () => {
     setShowCurtain(false);
   };
 
+  // Replaying intro from HUD replays the Home Screen Loading Page with the ENTER button:
   const handleReplayIntro = () => {
-    setIsReplayingIntro(true);
-    setLoaderDuration(1.2);
-    setShowOrbitalLoader(true);
+    setShowHomeLoadingPage(true);
   };
 
   return (
     <div className="relative min-h-screen bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
       
-      {/* 0. Sci-Fi Orbital Alignment Preloader Animation */}
-      {showOrbitalLoader && (
-        <SciFiOrbitalLoader
-          duration={loaderDuration}
-          onComplete={handleOrbitalLoaderComplete}
+      {/* 0. Home Screen Loading Page (Celestial Armillary Stargate - STRICTLY requires user to click/press ENTER to open homepage) */}
+      {showHomeLoadingPage && (
+        <CinematicIntro
+          onComplete={handleHomeLoadingEnter}
         />
       )}
 
-      {/* 0.5. Procedural SVG Celestial Cloud Curtain Transition */}
+      {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Telemetry Sync - Automated, NO enter button) */}
+      {showRefreshPage && (
+        <SciFiOrbitalLoader
+          duration={2.0}
+          onComplete={handleRefreshComplete}
+        />
+      )}
+
+      {/* 0.2. Procedural SVG Celestial Cloud Curtain Transition */}
       {showCurtain && (
         <CelestialCurtain
           isActive={showCurtain}
