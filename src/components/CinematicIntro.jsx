@@ -1,494 +1,462 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Sparkles, Compass, Star } from 'lucide-react';
-import { EVENT_DETAILS } from '../utils/calendar';
-import { adminStore } from '../utils/adminStore';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { scrambleText } from '../innovission/scrambleText';
 import { soundController } from '../utils/audio';
 
 /**
- * Celestial Gateway Home Screen Loading Page for ELIXORA 2.0
+ * Celestial Orbital Planetary Gateway - Home Screen Loading Page
+ * Exact design from the Celestial Orbital Conjunction with the ENTER HOME PAGE option.
  * 
- * Distinctive Features:
- * 1. Deep Celestial Cosmic Space with procedural twinkling stars, stardust sparks, & nebula aura
- * 2. SVG Constellation Charts in 3D parallax depth (Cassiopeia, Cygnus, Orion star matrices)
- * 3. Grand Rotating 3D Celestial Armillary Stargate with astronomical coordinate rings & orbiting planetary bodies
- * 4. 3D Liquid Chrome Typography for ELIXORA 2.0 with chromatic flare
- * 5. Official Gala Badge & Announced/Revealing Soon Date & Venue pill
- * 6. Centerpiece CELESTIAL ENTER OPTION:
- *    - Luminous Celestial Capsule Button with pulsating cosmic plasma aura
- *    - Orbiting stellar satellite particles
- *    - Keyboard shortcut listener: strictly Enter key (or click) to enter homepage
- *    - Stargate warp jump transition on enter
- * 7. Edge-to-edge celestial harmonic frequency sine wave along the base
+ * Behavior:
+ * 1. Appears when user opens the website before reaching the home page interface.
+ * 2. 3-Concentric Planetary Conjunction (Tidal World, Terra Sphere, Astral Mars) with laser meridian alignment.
+ * 3. Central cosmic starfield disc with high-precision tabular numeric counter (000% -> 100%).
+ * 4. Centerpiece "ENTER HOME PAGE" button with cosmic aura, satellite particles, and hotkey prompt.
+ * 5. STAYS COMPLETELY STUCK ON THIS LOADING PAGE until the user clicks "ENTER HOME PAGE" (or presses Enter key).
  */
-export default function CinematicIntro({ onComplete, onRegisterClick }) {
-  const [phase, setPhase] = useState(0); // 0: Cosmic Ignition, 1: Constellation Grid, 2: Stargate Assembly, 3: Title Reveal, 4: Gala Coordinates, 5: Enter Option Ready
+
+const CELESTIAL_ORBS = [
+  { 
+    inset: '0%', 
+    border: '1px dotted rgba(0, 242, 254, 0.55)', 
+    lockBorder: 'border-cyan-400 shadow-[0_0_18px_#00f2fe]', 
+    i: 2, 
+    a0: 236, 
+    size: 12, 
+    img: 'planet-tide.webp', 
+    name: 'TIDAL WORLD',
+    radius: 50 
+  },
+  { 
+    inset: '14%', 
+    border: '1px dashed rgba(168, 85, 247, 0.55)', 
+    lockBorder: 'border-purple-400 shadow-[0_0_18px_#a855f7]', 
+    i: 1, 
+    a0: -148, 
+    size: 13, 
+    img: 'planet-earth.webp', 
+    name: 'TERRA SPHERE',
+    radius: 36 
+  },
+  { 
+    inset: '26%', 
+    border: '1px solid rgba(236, 72, 153, 0.55)', 
+    lockBorder: 'border-pink-400 shadow-[0_0_18px_#ec4899]', 
+    i: 0, 
+    a0: 128, 
+    size: 16, 
+    img: 'planet-mars.webp', 
+    name: 'ASTRAL MARS',
+    radius: 24 
+  },
+];
+
+const GATEWAY_STATUSES = [
+  'INITIALIZING CELESTIAL STARGATE · STANDBY',
+  'SYNCHRONIZING CELESTIAL ORBITAL MERIDIAN',
+  'UPDATING FESTIVAL TELEMETRY & TICKET CACHE',
+  'CELESTIAL ALIGNMENT ACHIEVED · READY FOR ENTRY',
+];
+
+export default function CinematicIntro({ onComplete, duration = 3.6 }) {
+  const containerRef = useRef(null);
+  const statusRef = useRef(null);
+  const countRef = useRef(null);
+  const progressCircleRef = useRef(null);
+  const flareRef = useRef(null);
+  const polylineRef = useRef(null);
+  const orbRefs = useRef([]);
+  const lockRefs = useRef([]);
+  const [percent, setPercent] = useState(0);
+  const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
-  const [settings, setSettings] = useState(() => adminStore.getSettings());
-  const [progress, setProgress] = useState(0);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const mouseTargetRef = useRef({ x: 0, y: 0 });
-  const mousePosRef = useRef({ x: 0, y: 0 });
-  const tiltAnimRef = useRef(null);
-  const canvasRef = useRef(null);
-  const animFrameRef = useRef(null);
 
-  // Sync settings dynamically with Admin Portal updates
   useEffect(() => {
-    const handleUpdate = () => {
-      setSettings(adminStore.getSettings());
-    };
-    window.addEventListener('elixora_admin_update', handleUpdate);
-    return () => window.removeEventListener('elixora_admin_update', handleUpdate);
-  }, []);
+    let currentPercent = 0;
+    const startTime = performance.now();
+    const totalMs = duration * 1000;
+    let animId;
+    let lastStatusIdx = 0;
+    const doneLocks = [false, false, false];
 
-  // Smooth numerical percentage counter calibrating celestial coordinates (0% to 100% across extended duration)
-  useEffect(() => {
-    const startTime = Date.now();
-    const duration = 3800; // Extended cinematic duration for majestic celestial experience
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
-      setProgress(pct);
-      if (pct >= 100) clearInterval(interval);
-    }, 25);
-    return () => clearInterval(interval);
-  }, []);
+    const entranceDuration = Math.max(0.3, Math.min(0.5, duration * 0.2));
+    const entranceStagger = 0.03;
 
-  // Smooth 3D tilt parallax tracking (cursor on desktop, gyro tilt on mobile)
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      mouseTargetRef.current = { x, y };
-    };
+    // GSAP Entrance
+    const ctx = gsap.context(() => {
+      gsap.from('.loader-ring', {
+        scale: 0.35,
+        opacity: 0,
+        duration: entranceDuration,
+        ease: 'expo.out',
+        stagger: entranceStagger,
+      });
 
-    const handleDeviceOrientation = (e) => {
-      if (e.gamma !== null && e.beta !== null) {
-        const x = Math.max(-1, Math.min(1, e.gamma / 25));
-        const y = Math.max(-1, Math.min(1, (e.beta - 45) / 25));
-        mouseTargetRef.current = { x, y };
+      gsap.from('.loader-disc', {
+        scale: 0,
+        duration: entranceDuration,
+        ease: 'back.out(1.6)',
+      });
+
+      gsap.from('.loader-header', {
+        y: -20,
+        opacity: 0,
+        duration: entranceDuration * 0.8,
+        ease: 'power3.out',
+      });
+
+      gsap.from('.loader-footer', {
+        y: 20,
+        opacity: 0,
+        duration: entranceDuration * 0.8,
+        ease: 'power3.out',
+      });
+    }, containerRef);
+
+    const updateLoader = (now) => {
+      const elapsed = now - startTime;
+      currentPercent = Math.min(100, (elapsed / totalMs) * 100);
+      setPercent(Math.floor(currentPercent));
+
+      // Circular gauge update
+      if (progressCircleRef.current) {
+        const offset = 307.9 * (1 - currentPercent / 100);
+        progressCircleRef.current.style.strokeDashoffset = String(offset);
       }
-    };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('deviceorientation', handleDeviceOrientation, { passive: true });
+      // Format tabular count (000 - 100)
+      if (countRef.current) {
+        countRef.current.textContent = String(Math.floor(currentPercent)).padStart(3, '0');
+      }
 
-    const animateTilt = () => {
-      mousePosRef.current.x += (mouseTargetRef.current.x - mousePosRef.current.x) * 0.08;
-      mousePosRef.current.y += (mouseTargetRef.current.y - mousePosRef.current.y) * 0.08;
-      setMousePos({ x: mousePosRef.current.x, y: mousePosRef.current.y });
-      tiltAnimRef.current = requestAnimationFrame(animateTilt);
-    };
-    tiltAnimRef.current = requestAnimationFrame(animateTilt);
+      // Update planetary alignment rotation & laser alignment trajectory
+      const normProgress = currentPercent / 100;
+      const pts = ['50,50'];
+      const thresholds = [0.34, 0.67, 1.0];
 
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('deviceorientation', handleDeviceOrientation);
-      if (tiltAnimRef.current) cancelAnimationFrame(tiltAnimRef.current);
-    };
-  }, []);
+      CELESTIAL_ORBS.forEach((orb, idx) => {
+        const q = Math.min(1, normProgress / thresholds[orb.i]);
+        const angle = orb.a0 * Math.pow(1 - q, 3);
+        const rad = (angle * Math.PI) / 180;
 
-  const isDateVenueAnnounced = Boolean(settings.isDateVenueAnnounced);
-  const humanDate = settings.eventHumanDate || EVENT_DETAILS.humanDate;
-  const venueTitle = settings.venueTitle || EVENT_DETAILS.location;
-
-  // Staged timeline sequence - EXTENDED PACING FOR MAJESTIC CELESTIAL ALIGNMENT
-  useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 350);  // 1: Constellation Grid Awakening
-    const t2 = setTimeout(() => setPhase(2), 1000); // 2: 3D Armillary Stargate Assembly
-    const t3 = setTimeout(() => setPhase(3), 1800); // 3: Chrome Title & Enter Option Revealed
-    const t4 = setTimeout(() => setPhase(4), 2600); // 4: Gala Coordinates & Details
-    const t5 = setTimeout(() => setPhase(5), 3500); // 5: Stargate Fully Aligned & Supercharged
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-      clearTimeout(t5);
-    };
-  }, []);
-
-  // Atmospheric celestial stardust and spark particles in canvas with 3D depth
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    };
-    window.addEventListener('resize', handleResize);
-
-    const particleCount = width > 768 ? 65 : 35;
-    const colors = ['#00f2fe', '#38bdf8', '#c084fc', '#e879f9', '#fbbf24', '#ffffff'];
-    const particles = Array.from({ length: particleCount }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: -(Math.random() * 0.7 + 0.2),
-      size: Math.random() * 2.2 + 0.7,
-      alpha: Math.random() * 0.7 + 0.25,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      depth: Math.random() * 0.8 + 0.4,
-      twinkleSpeed: Math.random() * 0.04 + 0.015,
-      twinklePhase: Math.random() * Math.PI * 2,
-    }));
-
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        const driftX = mousePosRef.current.x * p.depth * 0.5;
-        p.x += p.vx + driftX;
-        p.y += p.vy;
-        p.twinklePhase += p.twinkleSpeed;
-
-        if (p.y < 0) {
-          p.y = height + 10;
-          p.x = Math.random() * width;
+        const orbEl = orbRefs.current[idx];
+        if (orbEl) {
+          orbEl.style.transform = `rotate(${angle}deg)`;
         }
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
 
-        const currentAlpha = Math.max(0.1, p.alpha + Math.sin(p.twinklePhase) * 0.25);
+        const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);
+        const py = (50 - orb.radius * Math.cos(rad)).toFixed(2);
+        pts.push(`${px},${py}`);
 
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = currentAlpha;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = p.size > 1.8 ? 12 : 6;
-        ctx.fill();
-        ctx.restore();
+        // Shockwave lock animation when planet aligns at top
+        if (q >= 1 && !doneLocks[orb.i]) {
+          doneLocks[orb.i] = true;
+          const lockEl = lockRefs.current[idx];
+          if (lockEl) {
+            gsap.fromTo(
+              lockEl,
+              { scale: 0.6, opacity: 1 },
+              { scale: 2.8, opacity: 0, duration: 0.6, ease: 'expo.out' }
+            );
+          }
+        }
+      });
+
+      if (polylineRef.current) {
+        polylineRef.current.setAttribute('points', pts.join(' '));
       }
 
-      animFrameRef.current = requestAnimationFrame(render);
+      // Status text updates with ScrambleText
+      const statusIdx = Math.min(3, Math.floor(currentPercent / 25));
+      if (statusIdx !== lastStatusIdx) {
+        lastStatusIdx = statusIdx;
+        if (statusRef.current) {
+          scrambleText(statusRef.current, GATEWAY_STATUSES[statusIdx], { duration: 0.22 });
+        }
+      }
+
+      if (currentPercent < 100) {
+        animId = requestAnimationFrame(updateLoader);
+      } else {
+        // Conjunction achieved! DO NOT AUTO-EXIT. STAYS STUCK UNTIL USER CLICKS ENTER HOME PAGE!
+        setIsAligned(true);
+        if (statusRef.current) {
+          scrambleText(statusRef.current, GATEWAY_STATUSES[3], { duration: 0.25 });
+        }
+        if (flareRef.current) {
+          gsap.fromTo(
+            flareRef.current,
+            { scale: 0.8, opacity: 1 },
+            { scale: 2.6, opacity: 0, duration: 0.8, ease: 'expo.out' }
+          );
+        }
+      }
     };
 
-    animFrameRef.current = requestAnimationFrame(render);
+    animId = requestAnimationFrame(updateLoader);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      cancelAnimationFrame(animId);
+      ctx.revert();
     };
-  }, []);
+  }, [duration]);
 
-  // Handle Enter trigger: Warp expansion transition into the homepage
-  const handleEnterHomepage = (triggerRegister = false) => {
+  // Handle User clicking ENTER HOME PAGE (or pressing Enter key)
+  const handleEnterHomepage = () => {
     if (isExiting) return;
     soundController.playClick?.();
     setIsExiting(true);
-    setTimeout(() => {
-      onComplete?.();
-      if (triggerRegister) {
-        onRegisterClick?.();
-      }
-    }, 650);
+
+    const exitDuration = 0.45;
+    if (flareRef.current) {
+      gsap.fromTo(
+        flareRef.current,
+        { scale: 0.9, opacity: 1 },
+        { scale: 2.8, opacity: 0, duration: exitDuration * 1.5, ease: 'expo.out' }
+      );
+    }
+
+    gsap.timeline({
+      onComplete: () => {
+        if (onComplete) onComplete();
+      },
+    })
+      .to('.loader-ring', { scale: 1.8, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
+      .to('.loader-disc', { scale: 0.6, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
+      .to('.loader-fade', { opacity: 0, duration: exitDuration * 0.8 }, 0)
+      .to(containerRef.current, { opacity: 0, duration: exitDuration }, exitDuration * 0.2);
   };
 
-  // Keyboard shortcut: strictly Enter key to enter homepage
+  // Keyboard Enter key shortcut listener
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Enter') {
-        handleEnterHomepage(false);
+        handleEnterHomepage();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const letters = ['E', 'L', 'I', 'X', 'O', 'R', 'A'];
+  const DISC_SIZE = 'min(50vmin, 440px)';
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#05060f] text-white select-none overflow-hidden transition-all duration-700 font-outfit ${
-        isExiting ? 'opacity-0 scale-110 pointer-events-none' : 'opacity-100 scale-100'
+      ref={containerRef}
+      className={`fixed inset-0 z-[120] bg-[#070617] text-white flex flex-col items-center justify-between p-4 sm:p-7 select-none overflow-hidden transition-all duration-700 font-outfit ${
+        isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
     >
       {/* =========================================================================
-          1. 3D CYBER CELESTIAL GATEWAY TUNNEL BACKGROUND (ORIGINAL IMAGE RESTORED)
+          1. RADIAL CELESTIAL NEBULA & STARLIGHT BACKGROUND (Exact Match to Screenshot)
          ========================================================================= */}
-      <div
-        className="absolute inset-[-45px] pointer-events-none select-none overflow-hidden will-change-transform"
-        style={{
-          transform: `perspective(1000px) rotateX(${mousePos.y * -7}deg) rotateY(${mousePos.x * 7}deg) translate3d(${mousePos.x * -18}px, ${mousePos.y * -14}px, 0px) scale(${phase >= 3 ? 1.05 : 1.01})`,
-          transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
-        }}
-      >
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Deep Cosmic Ambient Glowing Auroras */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/15 blur-[120px]" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-purple-600/20 blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] rounded-full bg-fuchsia-600/12 blur-[130px]" />
+
+        {/* Celestial Conic Alignment Rays */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[160vmax] h-[160vmax] rounded-full bg-[repeating-conic-gradient(from_0deg,rgba(0,242,254,0.03)_0deg_0.5deg,transparent_0.5deg_6deg)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1.5px)] bg-[size:28px_28px] opacity-40" />
+
+        {/* Background Starfield Layer */}
         <img
-          src="/elixora-3d-tunnel-bg.jpg"
-          alt="ELIXORA 3D Cyber Gateway Tunnel"
-          className="w-full h-full object-cover object-center filter brightness-[1.05] contrast-[1.10]"
-        />
-
-        {/* Ambient 3D Tunnel Depth Vignette for Text Readability */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse 75% 70% at 50% 50%, rgba(6, 8, 20, 0.22) 0%, rgba(6, 8, 20, 0.55) 55%, rgba(6, 8, 20, 0.90) 100%)',
-          }}
-        />
-
-        {/* Ambient Top & Bottom Depth Gradients */}
-        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05060f]/85 via-[#05060f]/45 to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#05060f]/90 via-[#05060f]/55 to-transparent pointer-events-none" />
-
-        {/* Dynamic Center Tunnel Energy Pulse in Phase >= 1 */}
-        <div
-          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full blur-[110px] pointer-events-none transition-all duration-1000 ${
-            phase >= 1
-              ? 'opacity-45 bg-gradient-to-tr from-cyan-500/35 via-purple-600/30 to-sky-400/25 scale-105'
-              : 'opacity-0 scale-75'
-          }`}
+          src="/assets/starfield.svg"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-screen"
         />
       </div>
 
-      {/* Floating Sparkles & Dust Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-0" />
-
       {/* =========================================================================
-          2. TOP CELESTIAL TELEMETRY & ASTRONOMICAL HUD
+          2. TOP HEADER: CELESTIAL BRANDING (Exact Match to Screenshot)
          ========================================================================= */}
-      <header className="absolute top-5 left-5 right-5 sm:top-8 sm:left-10 sm:right-10 z-30 flex items-center justify-between pointer-events-none select-none font-mono text-[10px] sm:text-xs">
-        {/* Left: Celestial Gateway Identification */}
-        <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/60 border border-cyan-400/30 backdrop-blur-md shadow-[0_0_15px_rgba(0,242,254,0.15)]">
+      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase">
+        <div className="flex items-center gap-2.5">
           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
-          <span className="font-bold uppercase tracking-[0.22em] text-cyan-300">
-            CELESTIAL GATEWAY // ONLINE
+          <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em]" data-scr>
+            ELIXORA MMXXVI // CELESTIAL GATEWAY
           </span>
         </div>
-
-        {/* Right: Astronomical Calibration Status */}
-        <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-purple-400/30 backdrop-blur-md text-purple-200">
-          <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-          <span className="font-bold tracking-[0.20em] uppercase">
-            ASTRAL SECTOR 2026.04
-          </span>
+        <div className="font-outfit font-bold tracking-[0.20em] text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-cyan-300">
+          <span data-scr>REAL-TIME ASTRAL RE-ALIGNMENT</span>
         </div>
       </header>
 
       {/* =========================================================================
-          3. GRAND 3D ROTATING CELESTIAL ARMILLARY STARGATE RINGS
+          3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE (Exact Match to Screenshot)
          ========================================================================= */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] sm:w-[620px] md:w-[720px] h-[380px] sm:h-[620px] md:h-[720px] pointer-events-none transition-all duration-1000 will-change-transform"
-        style={{
-          transform: `translate(-50%, -50%) perspective(1000px) rotateX(${mousePos.y * 7}deg) rotateY(${mousePos.x * -7}deg) scale(${
-            isExiting ? 2.2 : phase >= 2 ? 1.0 : 0.75
-          })`,
-          opacity: phase >= 2 ? (isExiting ? 0 : 0.85) : 0,
-        }}
+        className="relative my-auto flex items-center justify-center"
+        style={{ width: DISC_SIZE, height: DISC_SIZE }}
       >
-        {/* Outer Astrolabe Horizon Ring with 360-degree Radial Ticks */}
-        <div
-          className="absolute inset-0 rounded-full border border-cyan-400/25 animate-[spin_60s_linear_infinite]"
-          style={{
-            boxShadow: '0 0 45px rgba(0, 242, 254, 0.12), inset 0 0 35px rgba(0, 242, 254, 0.08)',
-          }}
+        {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
+        <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
+        <div className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none" />
+
+        {/* Dynamic Multi-Color Laser Conjunction Trajectory (Points connect center to each planet) */}
+        <svg
+          viewBox="0 0 100 100"
+          className="loader-fade absolute inset-0 w-full h-full overflow-visible pointer-events-none z-10"
         >
-          {/* Astrolabe Degree Cardinal Markers */}
-          <span className="absolute top-1 left-1/2 -translate-x-1/2 font-mono text-[9px] text-cyan-300/80 tracking-widest">
-            000° // NORTH
-          </span>
-          <span className="absolute bottom-1 left-1/2 -translate-x-1/2 font-mono text-[9px] text-cyan-300/80 tracking-widest">
-            180° // SOUTH
-          </span>
-          <span className="absolute left-1 top-1/2 -translate-y-1/2 font-mono text-[9px] text-cyan-300/80 tracking-widest">
-            270°
-          </span>
-          <span className="absolute right-1 top-1/2 -translate-y-1/2 font-mono text-[9px] text-cyan-300/80 tracking-widest">
-            090°
-          </span>
-        </div>
+          <defs>
+            <linearGradient id="laserTrajectoryGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#ec4899" stopOpacity="0.95" />
+              <stop offset="50%" stopColor="#a855f7" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#00f2fe" stopOpacity="0.95" />
+            </linearGradient>
+          </defs>
+          <polyline
+            ref={polylineRef}
+            points="50,50 50,26 50,14 50,0"
+            fill="none"
+            stroke="url(#laserTrajectoryGrad)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            strokeDasharray="1.2 1.8"
+            className="drop-shadow-[0_0_10px_#00f2fe]"
+          />
+        </svg>
 
-        {/* Orbit Ring 1: Celestial Equator with Orbiting Ringed Planet */}
-        <div className="absolute inset-8 sm:inset-12 rounded-full border border-purple-400/35 border-dashed animate-[spin_40s_linear_infinite_reverse]">
-          {/* Orbiting Planet Ringed */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <img
-              src="/assets/planet-ringed.webp"
-              alt="Orbiting Ringed Celestial Body"
-              className="w-10 h-10 sm:w-14 sm:h-14 object-contain drop-shadow-[0_0_16px_rgba(168,85,247,0.7)]"
-            />
+        {/* 3 Concentric Planetary Alignment Rings (Outer Cyan, Middle Purple, Inner Pink) */}
+        {CELESTIAL_ORBS.map((orb, idx) => (
+          <div
+            key={orb.i}
+            className="loader-ring absolute rounded-full"
+            style={{
+              inset: orb.inset,
+              border: orb.border,
+            }}
+          >
+            {/* Orbiting Planet Container */}
+            <div
+              ref={(el) => (orbRefs.current[idx] = el)}
+              className="absolute inset-0 pointer-events-none"
+            >
+              <div
+                className="absolute left-1/2 top-0"
+                style={{
+                  width: `${orb.size}%`,
+                  height: `${orb.size}%`,
+                  margin: `-${orb.size / 2}% 0 0 -${orb.size / 2}%`,
+                }}
+              >
+                {/* Lock Shockwave Ring */}
+                <span
+                  ref={(el) => (lockRefs.current[idx] = el)}
+                  className={`absolute inset-[-40%] rounded-full border-2 ${orb.lockBorder} opacity-0 pointer-events-none`}
+                />
+                <img
+                  src={`/assets/${orb.img}`}
+                  alt={orb.name}
+                  className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)]"
+                />
+              </div>
+            </div>
           </div>
-          {/* Opposite Orbit Node */}
-          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#00f2fe]" />
-        </div>
+        ))}
 
-        {/* Orbit Ring 2: Ecliptic Orbit with Cratered Moon & Asteroids */}
-        <div className="absolute inset-20 sm:inset-28 rounded-full border border-pink-400/30 border-dotted animate-[spin_28s_linear_infinite]">
-          {/* Orbiting Moon */}
-          <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <img
-              src="/assets/moon-cratered.webp"
-              alt="Orbiting Moon"
-              className="w-7 h-7 sm:w-10 sm:h-10 object-contain drop-shadow-[0_0_12px_rgba(236,72,153,0.7)]"
-            />
+        {/* SVG Circular Loading Progress Ring (Cyan to Fuchsia to Purple) */}
+        <svg
+          viewBox="0 0 100 100"
+          className="loader-fade absolute inset-[30%] w-[40%] h-[40%] overflow-visible pointer-events-none z-20"
+        >
+          <defs>
+            <linearGradient id="orbitProgressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#00f2fe" />
+              <stop offset="50%" stopColor="#d946ef" />
+              <stop offset="100%" stopColor="#8b5cf6" />
+            </linearGradient>
+          </defs>
+          <circle
+            cx="50"
+            cy="50"
+            r="49"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.08)"
+            strokeWidth="1.5"
+          />
+          <circle
+            ref={progressCircleRef}
+            cx="50"
+            cy="50"
+            r="49"
+            fill="none"
+            stroke="url(#orbitProgressGrad)"
+            strokeWidth="2.4"
+            strokeDasharray="307.9"
+            strokeDashoffset="307.9"
+            transform="rotate(-90 50 50)"
+            className="drop-shadow-[0_0_10px_rgba(217,70,239,0.8)]"
+          />
+        </svg>
+
+        {/* Flare Shockwave on Conjunction Completion */}
+        <span
+          ref={flareRef}
+          className="absolute inset-[24%] rounded-full border-2 border-fuchsia-400 shadow-[0_0_30px_#d946ef] opacity-0 pointer-events-none z-30"
+        />
+
+        {/* Center Cosmic Starfield Disc with Live Numeric Counter */}
+        <div
+          className="loader-disc absolute inset-[33%] rounded-full bg-[#060810] border border-fuchsia-500/40 overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.4),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10"
+        >
+          <img
+            src="/assets/starfield.svg"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none"
+          />
+          <div className="relative z-10 flex flex-col items-center justify-center text-center">
+            <span
+              ref={countRef}
+              className="font-outfit font-black text-3xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_12px_rgba(168,85,247,0.5)]"
+            >
+              000
+            </span>
+            <span className="mt-1 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-cyan-300/90 font-bold">
+              PERCENT
+            </span>
           </div>
-          {/* Orbiting Asteroid Node */}
-          <div className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2">
-            <img
-              src="/assets/asteroid.webp"
-              alt="Asteroid Cluster"
-              className="w-6 h-6 sm:w-8 sm:h-8 object-contain drop-shadow-[0_0_10px_rgba(251,191,36,0.7)]"
-            />
-          </div>
         </div>
-
-        {/* Inner Luminous Stargate Aperture & Celestial Compass Crosshair */}
-        <div className="absolute inset-32 sm:inset-44 rounded-full border border-cyan-400/20">
-          <div className="absolute inset-x-0 top-1/2 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
-          <div className="absolute inset-y-0 left-1/2 w-[1px] bg-gradient-to-b from-transparent via-cyan-400/40 to-transparent" />
-        </div>
-
-        {/* Central Luminous Celestial Plasma Core */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 sm:w-60 h-44 sm:h-60 rounded-full bg-gradient-to-tr from-cyan-500/25 via-purple-600/30 to-pink-500/20 blur-2xl animate-pulse" />
       </div>
 
       {/* =========================================================================
-          4. CENTRAL HERO REVEAL: GALA TITLE & ENTER OPTION
+          4. BOTTOM STATUS & THE ENTER HOME PAGE OPTION
+          Stuck on this loading page until user explicitly clicks ENTER HOME PAGE!
          ========================================================================= */}
-      <div
-        className="relative z-10 max-w-4xl px-4 text-center flex flex-col items-center will-change-transform"
-        style={{
-          transform: `perspective(800px) rotateX(${mousePos.y * 4}deg) rotateY(${mousePos.x * -4}deg) translate3d(${mousePos.x * 10}px, ${mousePos.y * 8}px, 20px)`,
-          transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
-        }}
-      >
-        {/* Obsidian Glass Depth Shield behind Central Text for 100% Readability */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[850px] h-[420px] sm:h-[480px] bg-[#05060f]/85 rounded-full blur-3xl pointer-events-none -z-10" />
-
-        {/* 1. Celestial Gala Badge */}
-        <div
-          className={`mb-3 sm:mb-4 transition-all duration-700 transform ${
-            phase >= 2 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-4 scale-95 pointer-events-none'
-          }`}
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/80 border border-cyan-400/50 text-cyan-300 shadow-[0_4px_25px_rgba(0,0,0,0.9),0_0_15px_rgba(0,242,254,0.2)] backdrop-blur-xl">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-            <span className="font-mono text-[10px] sm:text-xs font-black tracking-[0.25em] uppercase">
-              BIOTECHNOLOGY ANNUAL GALA '26 · CELESTIAL ODYSSEY
-            </span>
-          </div>
+      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center gap-2.5 relative z-10 text-center">
+        {/* Status Line with Pulsing Neon Dot */}
+        <div className="font-mono text-xs sm:text-sm font-bold tracking-[0.28em] flex items-center justify-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 shadow-[0_0_10px_#d946ef] animate-pulse" />
+          <span
+            ref={statusRef}
+            className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-300 to-purple-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]"
+            data-scr
+          >
+            {GATEWAY_STATUSES[0]}
+          </span>
         </div>
 
-        {/* 2. 3D Chrome Liquid Typography: ELIXORA 2.0 */}
-        <div
-          className={`relative select-none transition-all duration-1000 transform ${
-            phase >= 3 ? 'opacity-100 scale-100 filter-none translate-y-0' : 'opacity-0 scale-90 filter blur-md translate-y-8'
-          }`}
-        >
-          {/* Chromatic Backing Glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 blur-2xl opacity-45 animate-pulse pointer-events-none" />
-
-          {/* Letter Stagger Container */}
-          <h1 className="relative font-outfit font-black tracking-tight text-6xl xs:text-7xl sm:text-8xl md:text-9xl text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-100 to-slate-300 flex items-center justify-center drop-shadow-[0_12px_45px_rgba(0,0,0,1)]">
-            {letters.map((char, idx) => (
-              <span
-                key={idx}
-                className="inline-block transition-all duration-700 transform will-change-transform hover:scale-110 hover:text-cyan-200"
-                style={{
-                  transitionDelay: `${idx * 70}ms`,
-                  textShadow: '0 0 30px rgba(0, 242, 254, 0.65), 0 4px 25px rgba(0,0,0,1)',
-                }}
-              >
-                {char}
-              </span>
-            ))}
-            <span className="text-2xl sm:text-4xl text-cyan-400 ml-1.5 sm:ml-2 font-black align-top self-start mt-2 sm:mt-4 drop-shadow-[0_0_18px_rgba(0,242,254,0.9)]">
-              2.0
-            </span>
-          </h1>
-
-          {/* Starlight Glint Horizon Reflection Line */}
-          <div className="h-[2px] w-48 sm:w-80 mx-auto mt-2 bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-85 shadow-[0_0_15px_#00f2fe]" />
+        {/* Real-time Status Pill */}
+        <div className="px-5 py-1.5 rounded-full border border-cyan-400/30 bg-cyan-950/40 text-cyan-200 font-mono text-[10px] sm:text-xs tracking-[0.25em] uppercase flex items-center gap-2.5 backdrop-blur-md shadow-[0_0_15px_rgba(0,242,254,0.15)]">
+          <span className={`w-2 h-2 rounded-full ${isAligned ? 'bg-emerald-400' : 'bg-cyan-400 animate-ping'}`} />
+          <span>{isAligned ? '✦ ALIGNMENT 100% · READY FOR ENTRY ✦' : 'CALIBRATING CELESTIAL ALIGNMENT...'}</span>
         </div>
 
-        {/* 3. Celestial Tagline */}
-        <div
-          className={`mt-3 sm:mt-4 transition-all duration-700 transform ${
-            phase >= 4 ? 'opacity-100 translate-y-0 filter-none' : 'opacity-0 translate-y-6 filter blur-sm'
-          }`}
-        >
-          <p className="font-outfit text-sm sm:text-lg md:text-xl text-white font-black tracking-[0.35em] uppercase drop-shadow-[0_4px_16px_rgba(0,0,0,1)]">
-            A Night to Remember
-          </p>
-        </div>
-
-        {/* 4. Date & Venue Coordinates Pill */}
-        <div
-          className={`mt-4 sm:mt-5 flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 text-xs sm:text-sm font-outfit font-extrabold transition-all duration-700 delay-100 transform ${
-            phase >= 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-          }`}
-        >
-          {isDateVenueAnnounced ? (
-            <>
-              <span className="px-4 py-2 rounded-xl bg-black/80 border border-cyan-400/50 text-cyan-200 shadow-[0_4px_25px_rgba(0,0,0,0.85)] backdrop-blur-xl flex items-center gap-2">
-                <span>📅</span>
-                <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{humanDate}</span>
-              </span>
-              <span className="hidden sm:inline-block text-white/40">•</span>
-              <span className="px-4 py-2 rounded-xl bg-black/80 border border-purple-400/50 text-purple-200 shadow-[0_4px_25px_rgba(0,0,0,0.85)] backdrop-blur-xl flex items-center gap-2">
-                <span>📍</span>
-                <span className="text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">{venueTitle}</span>
-              </span>
-            </>
-          ) : (
-            <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-black/85 border border-cyan-400/60 shadow-[0_4px_30px_rgba(0,0,0,0.95),0_0_15px_rgba(0,242,254,0.25)] backdrop-blur-xl">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_#00f2fe]" />
-              <span className="text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
-                Official Date &amp; Venue Revealing Soon
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* =========================================================================
-            5. THE CELESTIAL ENTER OPTION (CENTERPIECE INTERACTIVE CTA)
-            Strictly requires user click/enter to open homepage; stays on loading screen until clicked.
-           ========================================================================= */}
-        <div
-          className={`mt-5 sm:mt-7 flex flex-col items-center justify-center w-full max-w-md mx-auto transition-all duration-700 transform ${
-            phase >= 1 ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
-          }`}
-        >
-          {/* Celestial Gateway Calibration Status Line with Mini Progress Track */}
-          <div className="flex flex-col items-center gap-1.5 mb-3.5 w-full max-w-xs">
-            <div className="font-mono text-[11px] sm:text-xs font-bold tracking-[0.22em] flex items-center justify-center gap-2 select-none">
-              <span className={`w-2 h-2 rounded-full shadow-[0_0_8px_#00f2fe] ${progress >= 100 ? 'bg-emerald-400' : 'bg-cyan-400 animate-ping'}`} />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-300 drop-shadow-[0_0_8px_rgba(0,242,254,0.6)]">
-                {progress >= 100 ? '✦ STARGATE READY // 100% · CLICK ENTER ✦' : `CALIBRATING STARGATE // ${progress}%`}
-              </span>
-            </div>
-
-            {/* Glowing Celestial Mini Progress Track */}
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden border border-cyan-400/20 backdrop-blur-sm">
-              <div 
-                className="h-full bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 rounded-full shadow-[0_0_8px_#00f2fe] transition-all duration-100 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-
-          {/* THE ENTER HOME PAGE BUTTON - STAYS STUCK ON LOADING PAGE UNTIL USER CLICKS */}
+        {/* =====================================================================
+            THE ENTER HOME PAGE BUTTON
+            User is stuck on this screen until clicking this button (or pressing Enter)
+           ===================================================================== */}
+        <div className="mt-1 flex flex-col items-center gap-2 w-full">
           <button
             id="homescreen-enter-button"
-            onClick={() => handleEnterHomepage(false)}
-            className="group relative inline-flex items-center justify-center gap-3.5 px-9 py-4 sm:px-12 sm:py-4.5 rounded-full transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_45px_rgba(217,70,239,0.55),0_0_30px_rgba(0,242,254,0.4)]"
+            onClick={handleEnterHomepage}
+            className="group relative inline-flex items-center justify-center gap-3.5 px-8 py-3.5 sm:px-11 sm:py-4 rounded-full transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_45px_rgba(217,70,239,0.55),0_0_30px_rgba(0,242,254,0.4)]"
             title="Click to enter ELIXORA 2.0 Home Page"
           >
             {/* Outer Cosmic Multi-Tone Aura Bloom */}
-            <div className={`absolute -inset-1.5 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 ${progress >= 100 ? 'animate-pulse' : ''}`} />
+            <div className={`absolute -inset-1.5 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 ${isAligned ? 'animate-pulse' : ''}`} />
 
             {/* Orbiting Satellite Particle around the Enter Button */}
             <div className="absolute -inset-2.5 rounded-full border border-cyan-400/30 border-dotted animate-[spin_12s_linear_infinite] pointer-events-none">
@@ -508,73 +476,25 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
 
             {/* Button Content: Luminous Crisp Typography & Icon Capsule */}
             <div className="relative z-10 flex items-center gap-3">
-              <span className="font-outfit font-black text-sm sm:text-base tracking-[0.28em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_12px_rgba(255,255,255,0.7)] ml-1">
+              <span className="font-outfit font-black text-xs sm:text-sm tracking-[0.28em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_12px_rgba(255,255,255,0.7)] ml-1">
                 ENTER HOME PAGE
               </span>
 
               {/* Glowing Arrow Capsule */}
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 border border-white/60 group-hover:border-white group-hover:bg-white flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.4)]">
-                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 border border-white/60 group-hover:border-white group-hover:bg-white flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
               </div>
             </div>
           </button>
 
           {/* Interactive Keyboard Hotkey Prompt */}
-          <p className="mt-2.5 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.22em] text-cyan-300/80 select-none flex items-center gap-1.5">
+          <p className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.22em] text-cyan-300/80 select-none flex items-center gap-1.5">
             <span>[ CLICK BUTTON OR PRESS</span>
             <kbd className="px-1.5 py-0.5 rounded bg-black/60 border border-cyan-400/40 text-cyan-200 font-bold">↵ ENTER</kbd>
             <span>TO ENTER HOME PAGE ]</span>
           </p>
         </div>
-      </div>
-
-      {/* =========================================================================
-          6. BOTTOM CELESTIAL HARMONIC OSCILLOSCOPE WAVE
-         ========================================================================= */}
-      <div className="absolute bottom-0 inset-x-0 z-30 pb-2 sm:pb-3 pointer-events-none">
-        <div className="relative w-full h-8 sm:h-10 overflow-hidden flex items-center">
-          <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 2400 40">
-            <defs>
-              <linearGradient id="celestialWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#00f2fe" stopOpacity="0.85" />
-                <stop offset="35%" stopColor="#38bdf8" stopOpacity="1" />
-                <stop offset="70%" stopColor="#818cf8" stopOpacity="0.9" />
-                <stop offset="100%" stopColor="#c084fc" stopOpacity="0.85" />
-              </linearGradient>
-            </defs>
-
-            {/* Dotted Baseline Axis */}
-            <line x1="0" y1="20" x2="2400" y2="20" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="1" strokeDasharray="4 4" />
-
-            {/* Flowing Harmonic Sine Wave */}
-            <path
-              d="M 0 20 Q 30 8, 60 20 T 120 20 T 180 20 T 240 20 T 300 20 T 360 20 T 420 20 T 480 20 T 540 20 T 600 20 T 660 20 T 720 20 T 780 20 T 840 20 T 900 20 T 960 20 T 1020 20 T 1080 20 T 1140 20 T 1200 20 T 1260 20 T 1320 20 T 1380 20 T 1440 20 T 1500 20 T 1560 20 T 1620 20 T 1680 20 T 1740 20 T 1800 20 T 1860 20 T 1920 20 T 1980 20 T 2040 20 T 2100 20 T 2160 20 T 2220 20 T 2280 20 T 2340 20 T 2400 20"
-              fill="none"
-              stroke="url(#celestialWaveGrad)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              className="opacity-75"
-            />
-          </svg>
-
-          {/* Full Screen Edge-to-Edge Progress Laser Line */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1.5px] pointer-events-none">
-            <div
-              className="h-full bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-pink-500 rounded-full shadow-[0_0_10px_#00f2fe] transition-all duration-150 ease-linear"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          {/* Leading Edge Spark */}
-          <div
-            className="absolute top-1/2 -translate-y-1/2 transition-all duration-150 ease-linear pointer-events-none z-10"
-            style={{ left: `${progress}%` }}
-          >
-            <span className="absolute -inset-1.5 rounded-full bg-cyan-400/40 animate-ping" />
-            <span className="relative block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-white shadow-[0_0_8px_#fff,0_0_16px_#00f2fe,0_0_24px_#ec4899] -translate-x-1/2" />
-          </div>
-        </div>
-      </div>
+      </footer>
     </div>
   );
 }

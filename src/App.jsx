@@ -237,9 +237,10 @@ export default function App() {
   return (
     <div className="relative min-h-screen bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
       
-      {/* 0. Home Screen Loading Page (Celestial Armillary Stargate - STRICTLY requires user to click/press ENTER to open homepage) */}
+      {/* 0. Home Screen Loading Page (Celestial Orbital Planetary Gateway from Screenshot - STRICTLY requires user to click/press ENTER to open homepage) */}
       {showHomeLoadingPage && (
         <CinematicIntro
+          duration={3.6}
           onComplete={handleHomeLoadingEnter}
         />
       )}
@@ -247,7 +248,7 @@ export default function App() {
       {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Telemetry Sync - Automated, NO enter button) */}
       {showRefreshPage && (
         <SciFiOrbitalLoader
-          duration={2.0}
+          duration={1.4}
           onComplete={handleRefreshComplete}
         />
       )}
