@@ -4,9 +4,6 @@ import QRCode from 'qrcode';
 import partyBg from '../assets/party-background.jpg';
 import desktopBg from '../assets/desktop-background.jpg';
 import { 
-  KeyRound, 
-  Lock, 
-  ShieldCheck, 
   Crown, 
   CheckCircle2, 
   AlertTriangle, 
@@ -22,7 +19,6 @@ import {
   Phone, 
   Quote, 
   X, 
-  Sparkles, 
   Shirt 
 } from 'lucide-react';
 import { RealisticLock, RealisticShieldCheck, RealisticKey } from './RealisticIcons';

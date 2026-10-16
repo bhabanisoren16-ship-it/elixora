@@ -11,14 +11,11 @@ import {
   ArrowRight, 
   Smartphone, 
   User, 
-  Phone, 
-  Loader2,
-  Crown
+  Loader2
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
-import { scrollToTarget } from '../utils/smoothScroll';
 
 export default function RegistrationPayment({ onPassGenerated }) {
   // Form State

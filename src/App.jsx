@@ -7,7 +7,7 @@ import LineupSection from './components/LineupSection';
 import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
-import CinematicIntro from './components/CinematicIntro';
+import { SciFiOrbitalLoader, CelestialCurtain, CyberneticHud, initGlobalScrambleListener } from './innovission';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
@@ -41,20 +41,21 @@ export default function App() {
   const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(checkIsSeniorPortalRoute);
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminRoute);
 
-  // Cinematic loading screen state - plays every time the page is refreshed or loaded
-  const [showIntro, setShowIntro] = useState(() => {
+  // Cinematic Sci-Fi Orbital Loader & Curtain State
+  const [showOrbitalLoader, setShowOrbitalLoader] = useState(() => {
     if (typeof window === 'undefined') return false;
-    try {
-      // Clear any cached flag so refresh always triggers the loading screen
-      sessionStorage.removeItem('elixora_intro_seen');
-      const isDirectRoute =
-        window.location.hash.includes('admin') ||
-        window.location.pathname.includes('admin');
-      return !isDirectRoute;
-    } catch (e) {
-      return true;
-    }
+    const isDirectRoute =
+      window.location.hash.includes('admin') ||
+      window.location.pathname.includes('admin');
+    return !isDirectRoute;
   });
+  const [showCurtain, setShowCurtain] = useState(false);
+
+  // Initialize global hover ScrambleText listener
+  useEffect(() => {
+    const cleanupScramble = initGlobalScrambleListener();
+    return () => cleanupScramble?.();
+  }, []);
 
   // Initialize high-performance buttery smooth scrolling (Lenis)
   useEffect(() => {
@@ -66,12 +67,12 @@ export default function App() {
 
   // Pause background smooth scroll when modals, admin portal, or loading screen are active
   useEffect(() => {
-    if (isModalOpen || isSeniorPortalOpen || isAdminOpen || showIntro) {
+    if (isModalOpen || isSeniorPortalOpen || isAdminOpen || showCurtain || showOrbitalLoader) {
       pauseSmoothScroll();
     } else {
       resumeSmoothScroll();
     }
-  }, [isModalOpen, isSeniorPortalOpen, isAdminOpen, showIntro]);
+  }, [isModalOpen, isSeniorPortalOpen, isAdminOpen, showCurtain, showOrbitalLoader]);
 
   // Synchronize URL hash for Admin Portal and Senior VIP Portal
   useEffect(() => {
@@ -119,34 +120,40 @@ export default function App() {
     }
   }, [isAdminOpen]);
 
-  // Handle page load: preserve senior portal on refresh if active, otherwise default to main page
+  // Handle page load: on refresh, never show or scroll to register option; display loading page from top
   useEffect(() => {
     try {
       const isSeniorPortalActive = checkIsSeniorPortalRoute();
       if (isSeniorPortalActive) {
         setIsSeniorPortalOpen(true);
-        // User refreshed while inside Senior Portal - stay inside portal, do not reset!
         return;
       }
 
-      // Explicitly reset any lingering body scroll lock styles
+      const isAdminActive = checkIsAdminRoute();
+      if (isAdminActive) {
+        setIsAdminOpen(true);
+        return;
+      }
+
+      // Always clear any #register or section hash on refresh so the user is never sent to register
+      const hash = window.location.hash;
+      if (hash && hash !== '#admin' && !hash.includes('senior')) {
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch (e) {}
+      }
+
+      // Reset scroll position to absolute top
+      window.scrollTo(0, 0);
+
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
       document.documentElement.style.overflow = '';
       document.documentElement.classList.remove('lenis-stopped');
       document.body.classList.remove('lenis-stopped');
-      resumeSmoothScroll();
 
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
-      }
-      if (typeof window !== 'undefined') {
-        if (window.location.hash === '#seniors') {
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-        }
-        if (window.location.hash !== '#admin' && !window.location.hash.includes('senior')) {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }
       }
     } catch (e) {}
   }, []);
@@ -160,21 +167,57 @@ export default function App() {
     scrollToTarget('#register');
   };
 
-  const handleIntroComplete = () => {
-    setShowIntro(false);
+  // Dynamic Loading Screen Speed: Automatically increased speed on page refresh
+  const [loaderDuration, setLoaderDuration] = useState(() => {
+    if (typeof window === 'undefined') return 1.1;
+    try {
+      const navEntries = performance.getEntriesByType('navigation');
+      const isReload =
+        (navEntries && navEntries[0]?.type === 'reload') ||
+        window.performance?.navigation?.type === 1 ||
+        sessionStorage.getItem('elixora_visited') === 'true';
+
+      sessionStorage.setItem('elixora_visited', 'true');
+      // When refreshed or reloaded, increase speed to 1.1s (crisp and high-speed)
+      return isReload ? 1.1 : 1.4;
+    } catch (e) {
+      return 1.1;
+    }
+  });
+  const [isReplayingIntro, setIsReplayingIntro] = useState(false);
+
+  const handleOrbitalLoaderComplete = () => {
+    setShowOrbitalLoader(false);
+    setShowCurtain(true);
+    setIsReplayingIntro(false);
+  };
+
+  const handleCurtainComplete = () => {
+    setShowCurtain(false);
+  };
+
+  const handleReplayIntro = () => {
+    setIsReplayingIntro(true);
+    setLoaderDuration(1.2);
+    setShowOrbitalLoader(true);
   };
 
   return (
-    <div className="relative min-h-screen bg-obsidian-950 text-slate-100 selection:bg-cyber-violet selection:text-white">
+    <div className="relative min-h-screen bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
       
-      {/* 0. Cinematic Loading Screen Sequence */}
-      {showIntro && (
-        <CinematicIntro
-          onComplete={handleIntroComplete}
-          onRegisterClick={() => {
-            handleIntroComplete();
-            handleScrollToRegister();
-          }}
+      {/* 0. Sci-Fi Orbital Alignment Preloader Animation */}
+      {showOrbitalLoader && (
+        <SciFiOrbitalLoader
+          duration={loaderDuration}
+          onComplete={handleOrbitalLoaderComplete}
+        />
+      )}
+
+      {/* 0.5. Procedural SVG Celestial Cloud Curtain Transition */}
+      {showCurtain && (
+        <CelestialCurtain
+          isActive={showCurtain}
+          onComplete={handleCurtainComplete}
         />
       )}
 
@@ -189,7 +232,7 @@ export default function App() {
 
       {/* 3. Main Content Flow */}
       <main className="relative z-10 flex flex-col">
-        {/* Hero Section */}
+        {/* Hero Section with Celestial Disc & Orbiting Rings Parallax */}
         <HeroSection onGrabPassClick={handleScrollToRegister} />
 
         {/* Event Details & Navigation Grid */}
@@ -234,9 +277,17 @@ export default function App() {
         </Suspense>
       )}
 
-      {/* 6. Quick Floating Back-to-Home Action */}
+      {/* 6. Cybernetic Telemetry HUD with ScrambleText & Replay Trigger */}
+      <CyberneticHud
+        onReplayIntro={handleReplayIntro}
+        onOpenPass={() => setIsModalOpen(true)}
+        hasPass={!!passData}
+      />
+
+      {/* 7. Quick Floating Back-to-Home Action */}
       <FloatingHomeButton />
 
     </div>
   );
 }
+

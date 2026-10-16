@@ -10,8 +10,7 @@ import {
   CheckCircle2, 
   ShieldCheck, 
   Printer, 
-  ArrowLeft,
-  Home
+  ArrowLeft
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';

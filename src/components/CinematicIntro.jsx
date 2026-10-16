@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Sparkles, Zap, Radio, Activity } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { adminStore } from '../utils/adminStore';
 

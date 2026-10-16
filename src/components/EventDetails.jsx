@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, Navigation, ExternalLink, Download, Compass, Info } from 'lucide-react';
+import { MapPin, Navigation, ExternalLink, Download, Compass, Info } from 'lucide-react';
 import { RealisticCalendar, RealisticClock, RealisticMapPin } from './RealisticIcons';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
