@@ -276,7 +276,7 @@ export default function CinematicIntro({ onComplete, duration = 3.6 }) {
         <div className="flex items-center gap-2.5">
           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
           <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em]" data-scr>
-            ELIXORA MMXXVI // CELESTIAL GATEWAY
+            ELIXORA GATEWAY
           </span>
         </div>
         <div className="font-outfit font-bold tracking-[0.20em] text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-cyan-300">
