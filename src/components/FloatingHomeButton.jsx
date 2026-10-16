@@ -3,8 +3,9 @@ import { ArrowUp } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrollToTarget } from '../utils/smoothScroll';
 
-export default function FloatingHomeButton() {
+export default function FloatingHomeButton({ onNavigate }) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +23,10 @@ export default function FloatingHomeButton() {
 
   const scrollToHome = () => {
     soundController.playClick?.();
+    if (onNavigate) {
+      onNavigate(0, 'HOME', 'CELESTIAL NEXUS');
+      return;
+    }
     scrollToTarget(0);
     // Clear URL hash to keep URL clean
     if (window.location.hash) {
@@ -40,7 +45,19 @@ export default function FloatingHomeButton() {
     >
       <button
         type="button"
+        onPointerDown={() => setIsPressed(true)}
+        onPointerUp={() => setTimeout(() => setIsPressed(false), 350)}
+        onPointerLeave={() => setIsPressed(false)}
         onClick={scrollToHome}
+        style={{
+          backgroundImage: "url('/assets/cloud-curtain-bg.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderColor: isPressed ? '#c084fc' : 'rgba(192, 132, 252, 0.6)',
+          boxShadow: isPressed
+            ? '0 0 25px rgba(192, 132, 252, 0.85)'
+            : '0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.4)',
+        }}
         className="group flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2.5 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-white/20 hover:border-cyan-400/60 shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_20px_rgba(6,182,212,0.25)] hover:shadow-neon-cyan backdrop-blur-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer text-slate-200 hover:text-white"
         title="Quick jump to Home Page (Top)"
       >

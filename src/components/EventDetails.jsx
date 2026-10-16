@@ -50,6 +50,12 @@ export default function EventDetails() {
 
   return (
     <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
+      {/* Celestial Cloud Backdrop Texture */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-25 mix-blend-screen bg-cover bg-center overflow-hidden rounded-3xl"
+        style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
+        aria-hidden="true"
+      />
       
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">

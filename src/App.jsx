@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import Background from './components/Background';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
@@ -93,7 +93,50 @@ export default function App() {
   const [initialLoad] = useState(detectInitialLoadState);
   const [showHomeLoadingPage, setShowHomeLoadingPage] = useState(initialLoad.isHomeLoading);
   const [showRefreshPage, setShowRefreshPage] = useState(initialLoad.isRefresh);
-  const [showCurtain, setShowCurtain] = useState(false);
+  const [curtainConfig, setCurtainConfig] = useState({
+    isActive: false,
+    key: 0,
+    mode: 'reveal',
+    title: 'ELIXORA 2026',
+    subtitle: 'A NIGHT TO REMEMBER · CELESTIAL ODYSSEY',
+    target: null,
+  });
+  const curtainTargetRef = useRef(null);
+  const [activeSection, setActiveSection] = useState('HOME');
+
+  // Synchronize active section with scroll position for dynamic background
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.pageYOffset || window.scrollY || 0;
+      const detailsEl = document.getElementById('details');
+      const lineupEl = document.getElementById('lineup');
+      const registerEl = document.getElementById('register');
+      const seniorsEl = document.getElementById('seniors');
+
+      const detailsTop = detailsEl ? detailsEl.offsetTop - 300 : 999999;
+      const lineupTop = lineupEl ? lineupEl.offsetTop - 300 : 999999;
+      const registerTop = registerEl ? registerEl.offsetTop - 300 : 999999;
+      const seniorsTop = seniorsEl ? seniorsEl.offsetTop - 300 : 999999;
+
+      if (isSeniorPortalOpen) {
+        setActiveSection('SENIOR_PORTAL');
+      } else if (scrollY >= seniorsTop) {
+        setActiveSection('SENIORS');
+      } else if (scrollY >= registerTop) {
+        setActiveSection('REGISTER');
+      } else if (scrollY >= lineupTop) {
+        setActiveSection('LINEUP');
+      } else if (scrollY >= detailsTop) {
+        setActiveSection('EVENT DETAILS');
+      } else {
+        setActiveSection('HOME');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isSeniorPortalOpen]);
 
   // Initialize global hover ScrambleText listener
   useEffect(() => {
@@ -111,12 +154,12 @@ export default function App() {
 
   // Pause background smooth scroll when modals, admin portal, or loading screen are active
   useEffect(() => {
-    if (isModalOpen || isSeniorPortalOpen || isAdminOpen || showCurtain || showRefreshPage || showHomeLoadingPage) {
+    if (isModalOpen || isSeniorPortalOpen || isAdminOpen || showRefreshPage || showHomeLoadingPage) {
       pauseSmoothScroll();
     } else {
       resumeSmoothScroll();
     }
-  }, [isModalOpen, isSeniorPortalOpen, isAdminOpen, showCurtain, showRefreshPage, showHomeLoadingPage]);
+  }, [isModalOpen, isSeniorPortalOpen, isAdminOpen, showRefreshPage, showHomeLoadingPage]);
 
   // Synchronize URL hash for Admin Portal and Senior VIP Portal
   useEffect(() => {
@@ -208,7 +251,7 @@ export default function App() {
   };
 
   const handleScrollToRegister = () => {
-    scrollToTarget('#register');
+    handleNavigateWithCurtain('#register', 'GRAB YOUR PASS', 'VIP INVITATION PASS');
   };
 
   // When user clicks the ENTER button on the Home Screen Loading Page:
@@ -217,17 +260,96 @@ export default function App() {
       sessionStorage.setItem('elixora_entered_homepage', 'true');
     } catch (e) {}
     setShowHomeLoadingPage(false);
+    setCurtainConfig({
+      isActive: true,
+      mode: 'reveal',
+      title: 'ELIXORA 2026',
+      subtitle: 'NOW ENTERING',
+      target: null,
+    });
   };
 
   // When the Refresh Page finishes its telemetry synchronization:
   const handleRefreshComplete = () => {
     setShowRefreshPage(false);
-    setShowCurtain(true);
+    setCurtainConfig({
+      isActive: true,
+      mode: 'reveal',
+      title: 'ELIXORA 2026',
+      subtitle: 'NOW ENTERING',
+      target: null,
+    });
   };
 
   const handleCurtainComplete = () => {
-    setShowCurtain(false);
+    setCurtainConfig((prev) => ({ ...prev, isActive: false }));
   };
+
+  const handleCurtainMidway = () => {
+    const target = curtainTargetRef.current ?? curtainConfig.target;
+    if (target !== null && target !== undefined) {
+      if (target === 0 || target === '#hero') {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        try {
+          scrollToTarget(0, { duration: 0 });
+        } catch (e) {}
+        if (window.location.hash) {
+          try {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+          } catch (e) {}
+        }
+      } else {
+        const selector = typeof target === 'string' ? target : null;
+        if (selector) {
+          const el = document.querySelector(selector);
+          if (el) {
+            const header = document.querySelector('header');
+            const headerOffset = header ? header.offsetHeight + 14 : (window.innerWidth < 768 ? 90 : 80);
+            const elementTop = el.getBoundingClientRect().top + (window.pageYOffset || window.scrollY || 0);
+            window.scrollTo({ top: Math.max(0, elementTop - headerOffset), behavior: 'instant' });
+          }
+        }
+        try {
+          scrollToTarget(target, { duration: 0 });
+        } catch (e) {}
+        try {
+          history.replaceState(null, '', target);
+        } catch (e) {}
+      }
+    }
+  };
+
+  const handleNavigateWithCurtain = (target, title, subtitle) => {
+    curtainTargetRef.current = target;
+    if (title === 'HOME' || target === 0 || target === '#hero') {
+      setActiveSection('HOME');
+    } else if (title === 'EVENT DETAILS' || target === '#details') {
+      setActiveSection('EVENT DETAILS');
+    } else if (title === 'SENIORS' || target === '#seniors') {
+      setActiveSection('SENIORS');
+    } else if (title === 'SENIOR VIP PORTAL' || target === '#senior-portal') {
+      setActiveSection('SENIOR_PORTAL');
+    } else {
+      setActiveSection('OTHER');
+    }
+
+    setCurtainConfig((prev) => ({
+      isActive: true,
+      key: (prev.key || 0) + 1,
+      mode: 'transition',
+      title: title || 'ELIXORA 2026',
+      subtitle: subtitle || 'CELESTIAL ODYSSEY',
+      target,
+    }));
+  };
+
+  // Celestial cloud background is strictly active ONLY on Home, Event Details, Seniors, and Senior Portal
+  const isCloudBgActive =
+    activeSection === 'HOME' ||
+    activeSection === 'EVENT DETAILS' ||
+    activeSection === 'SENIORS' ||
+    activeSection === 'SENIOR_PORTAL' ||
+    isSeniorPortalOpen;
 
   // Replaying intro from HUD replays the Home Screen Loading Page with the ENTER button:
   const handleReplayIntro = () => {
@@ -253,27 +375,36 @@ export default function App() {
         />
       )}
 
-      {/* 0.2. Procedural SVG Celestial Cloud Curtain Transition */}
-      {showCurtain && (
+      {/* 0.2. Procedural SVG Celestial Cloud Curtain Transition with Background Image */}
+      {curtainConfig.isActive && (
         <CelestialCurtain
-          isActive={showCurtain}
+          key={curtainConfig.key}
+          isActive={curtainConfig.isActive}
+          mode={curtainConfig.mode}
+          title={curtainConfig.title}
+          subtitle={curtainConfig.subtitle}
+          onMidway={handleCurtainMidway}
           onComplete={handleCurtainComplete}
         />
       )}
 
-      {/* 1. Fullscreen Concert Poster & Lighting Atmosphere Background */}
-      <Background />
+      {/* 1. Fullscreen Concert Poster & Lighting Atmosphere Background with Dynamic Celestial Cloud Layer */}
+      <Background isCloudBgActive={isCloudBgActive} />
 
       {/* 2. Top Navigation Bar */}
       <Navbar
         onOpenPass={() => setIsModalOpen(true)}
         hasGeneratedPass={!!passData}
+        onNavigate={handleNavigateWithCurtain}
       />
 
       {/* 3. Main Content Flow */}
       <main className="relative z-10 flex flex-col">
         {/* Hero Section with Celestial Disc & Orbiting Rings Parallax */}
-        <HeroSection onGrabPassClick={handleScrollToRegister} />
+        <HeroSection 
+          onGrabPassClick={handleScrollToRegister}
+          onNavigate={handleNavigateWithCurtain}
+        />
 
         {/* Event Details & Navigation Grid */}
         <EventDetails />
@@ -290,6 +421,7 @@ export default function App() {
         <SeniorSection
           onPassGenerated={handlePassGenerated}
           onPortalToggle={setIsSeniorPortalOpen}
+          onNavigate={handleNavigateWithCurtain}
         />
       </main>
 
@@ -325,7 +457,7 @@ export default function App() {
       />
 
       {/* 7. Quick Floating Back-to-Home Action */}
-      <FloatingHomeButton />
+      <FloatingHomeButton onNavigate={handleNavigateWithCurtain} />
 
     </div>
   );

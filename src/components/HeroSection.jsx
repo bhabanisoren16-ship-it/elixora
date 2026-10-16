@@ -19,7 +19,7 @@ const TITLE_LETTERS = [
   { char: '0', color: 'from-white via-[#e0e7ff] to-[#818cf8]' },
 ];
 
-export default function HeroSection({ onGrabPassClick }) {
+export default function HeroSection({ onGrabPassClick, onNavigate }) {
   const [settings, setSettings] = useState(() => adminStore.getSettings());
   const lettersRef = useRef([]);
   const titleContainerRef = useRef(null);
@@ -175,6 +175,12 @@ export default function HeroSection({ onGrabPassClick }) {
 
   return (
     <section id="hero" className="relative min-h-[75vh] sm:min-h-[85vh] pt-20 sm:pt-24 pb-4 sm:pb-6 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      {/* Celestial Cloud Backdrop Texture */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-20 mix-blend-screen bg-cover bg-center overflow-hidden"
+        style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
+        aria-hidden="true"
+      />
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
         
@@ -267,10 +273,14 @@ export default function HeroSection({ onGrabPassClick }) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 mt-1 sm:mt-2">
           <button
             onClick={() => {
-              soundController.playClick();
-              onGrabPassClick();
+              soundController.playClick?.();
+              if (onGrabPassClick) {
+                onGrabPassClick();
+              } else {
+                scrollToTarget('#register');
+              }
             }}
-            className="w-full sm:w-auto px-5 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine"
+            className="w-full sm:w-auto px-5 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine cursor-pointer"
           >
             <span>GRAB YOUR PASS</span>
             <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
@@ -280,10 +290,10 @@ export default function HeroSection({ onGrabPassClick }) {
             href="#details"
             onClick={(e) => {
               e.preventDefault();
-              soundController.playClick();
+              soundController.playClick?.();
               scrollToTarget('#details');
             }}
-            className="w-full sm:w-auto px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-obsidian-900/80 border border-white/20 text-slate-200 font-outfit font-semibold text-xs sm:text-sm hover:bg-white/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all flex items-center justify-center gap-2 backdrop-blur-md"
+            className="w-full sm:w-auto px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-obsidian-900/80 border border-white/20 text-slate-200 font-outfit font-semibold text-xs sm:text-sm hover:bg-white/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
           >
             <span>Explore Event Guide</span>
           </a>

@@ -106,7 +106,7 @@ export function scrollToTarget(target, customOptions = {}) {
 
   const header = document.querySelector('header');
   const headerOffset = header ? header.offsetHeight + 14 : (window.innerWidth < 768 ? 90 : 80);
-  const duration = customOptions.duration ? customOptions.duration * 1000 : 750;
+  const duration = typeof customOptions.duration === 'number' ? customOptions.duration * 1000 : 750;
 
   // 1. Target is top, 0, or #hero
   if (target === 0 || target === 'top' || target === '#hero') {

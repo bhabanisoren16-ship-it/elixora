@@ -129,10 +129,11 @@ function getInitialSeniorState() {
   return { isUnlocked: false, isPortalOpen: false, rollNo: '', profile: null };
 }
 
-export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
+export default function SeniorSection({ onPassGenerated, onPortalToggle, onNavigate }) {
   const [initialSeniorState] = useState(getInitialSeniorState);
   const [accessRegNo, setAccessRegNo] = useState('');
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
+  const [isVerifyBtnPressed, setIsVerifyBtnPressed] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(initialSeniorState.isUnlocked);
   const [isPortalOpen, setIsPortalOpen] = useState(initialSeniorState.isPortalOpen);
   const [accessError, setAccessError] = useState('');
@@ -307,6 +308,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
       setIsUnlocked(true);
       setIsPortalOpen(true);
+
+      if (onNavigate) {
+        onNavigate('#senior-portal', 'SENIOR VIP PORTAL', 'HONOR & RECOGNITION');
+      }
 
       try {
         sessionStorage.setItem('elixora_senior_roll', cleaned);
@@ -594,6 +599,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
   return (
     <section id="seniors" className="relative py-8 sm:py-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
+      {/* Celestial Cloud Backdrop Texture */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-25 mix-blend-screen bg-cover bg-center overflow-hidden rounded-3xl"
+        style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
+        aria-hidden="true"
+      />
       
       {/* Section Header */}
       <div className="text-center mb-5 sm:mb-8">
@@ -680,7 +691,19 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               <button
                 type="submit"
                 disabled={isVerifyingAccess}
-                className="w-full py-3 sm:py-3.5 px-4 sm:px-6 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-xs sm:text-sm tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                onPointerDown={() => setIsVerifyBtnPressed(true)}
+                onPointerUp={() => setTimeout(() => setIsVerifyBtnPressed(false), 350)}
+                onPointerLeave={() => setIsVerifyBtnPressed(false)}
+                style={{
+                  backgroundImage: "url('/assets/cloud-curtain-bg.png')",
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  borderColor: isVerifyBtnPressed ? '#c084fc' : 'rgba(192, 132, 252, 0.7)',
+                  boxShadow: isVerifyBtnPressed
+                    ? '0 0 35px rgba(192, 132, 252, 0.95)'
+                    : '0 0 22px rgba(168, 85, 247, 0.6)',
+                }}
+                className="w-full py-3 sm:py-3.5 px-4 sm:px-6 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold text-xs sm:text-sm tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border border-transparent"
               >
                 {isVerifyingAccess ? (
                   <>
@@ -719,6 +742,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 className="w-full h-full object-cover object-center filter brightness-[0.30] contrast-[1.18] saturate-[1.20]" 
               />
             </picture>
+            {/* Celestial Cloud Curtain Backdrop Layer */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center opacity-35 mix-blend-screen pointer-events-none"
+              style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
+            />
             {/* Multi-layered dark gradient & vignette overlay to guarantee maximum readability and contrast */}
             <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/92 via-obsidian-950/75 to-obsidian-950/95" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(10,10,18,0.75)_100%)]" />

@@ -1,14 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   RealisticHome, 
   RealisticCalendar, 
-  RealisticGraduationCap 
+  RealisticGraduationCap,
+  RealisticTicket
 } from './RealisticIcons';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { soundController } from '../utils/audio';
 
-export default function Navbar({ onOpenPass, hasGeneratedPass }) {
+export default function Navbar({ onOpenPass, hasGeneratedPass, onNavigate }) {
   const [isScrolledDown, setIsScrolledDown] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeBtn, setActiveBtn] = useState(null);
+  const [activeSection, setActiveSection] = useState('HOME');
+  const mobileMenuRef = useRef(null);
+
+  // Synchronize active section with scroll position
+  useEffect(() => {
+    const handleScrollSpy = () => {
+      const scrollY = window.pageYOffset || window.scrollY || 0;
+      const detailsEl = document.getElementById('details');
+      const seniorsEl = document.getElementById('seniors');
+
+      const detailsTop = detailsEl ? detailsEl.offsetTop - 300 : 999999;
+      const seniorsTop = seniorsEl ? seniorsEl.offsetTop - 300 : 999999;
+
+      if (scrollY >= seniorsTop) {
+        setActiveSection('SENIORS');
+      } else if (scrollY >= detailsTop) {
+        setActiveSection('EVENT DETAILS');
+      } else {
+        setActiveSection('HOME');
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollSpy, { passive: true });
+    handleScrollSpy();
+    return () => window.removeEventListener('scroll', handleScrollSpy);
+  }, []);
 
   useEffect(() => {
     let lastScrollY = window.pageYOffset || window.scrollY || 0;
@@ -51,9 +80,67 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavLinkClick = (e, href) => {
+  // Close mobile menu on outside tap or Escape key press
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleClickOutside = (e) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu when user scrolls down
+  useEffect(() => {
+    if (isScrolledDown && mobileMenuOpen) {
+      setMobileMenuOpen(false);
+    }
+  }, [isScrolledDown, mobileMenuOpen]);
+
+  // Close mobile menu when viewport expands to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleNavLinkClick = (e, href, name) => {
     e.preventDefault();
     soundController.playClick?.();
+
+    const subtitleMap = {
+      'HOME': 'CELESTIAL NEXUS',
+      'EVENT DETAILS': 'SCHEDULE & VENUE',
+      'SENIORS': 'HONOR & RECOGNITION',
+    };
+
+    if (onNavigate) {
+      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+        setIsScrolledDown(true);
+      }
+      onNavigate(href, name, subtitleMap[name] || 'CELESTIAL ODYSSEY');
+      return;
+    }
+
     if (href === '#hero') {
       setIsScrolledDown(false);
       scrollToTarget(0);
@@ -87,29 +174,166 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
           : 'translate-y-0 opacity-100'
       }`}
     >
-      {/* Floating Transparent Navigation Pill */}
-      <nav
-        aria-label="Main Navigation"
+      {/* 1. Mobile View Only: Cybernetic Menu Bar Button & Floating Dropdown (Top Right Side) */}
+      <div 
+        ref={mobileMenuRef}
         data-lenis-prevent
-        className="pointer-events-auto rounded-2xl bg-transparent border border-white/20 backdrop-blur-md px-2 sm:px-3 py-1.5 flex items-center gap-1 sm:gap-2 shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
+        className="flex md:hidden relative flex-col items-end pointer-events-auto"
+      >
+        <button
+          type="button"
+          onClick={() => {
+            soundController.playClick?.();
+            setMobileMenuOpen((prev) => !prev);
+          }}
+          aria-expanded={mobileMenuOpen}
+          aria-label="Toggle navigation menu bar"
+          className={`px-3 py-1.5 rounded-2xl border backdrop-blur-xl transition-all duration-300 flex items-center gap-2 shadow-[0_8px_32px_rgba(0,0,0,0.35)] active:scale-95 cursor-pointer ${
+            mobileMenuOpen
+              ? 'bg-obsidian-950/90 border-cyan-400/60 shadow-[0_0_20px_rgba(6,182,212,0.3)]'
+              : 'bg-obsidian-950/70 hover:bg-obsidian-900/90 border-white/20 hover:border-cyan-400/40'
+          }`}
+        >
+          <span className="text-[11px] font-outfit font-extrabold uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-white to-sky-300">
+            {mobileMenuOpen ? 'CLOSE' : 'MENU'}
+          </span>
+
+          {/* 3 Animated Menu Bars (Transforms smoothly to 'X' when open) */}
+          <div className="w-4 h-3.5 flex flex-col justify-between items-center relative shrink-0">
+            <span
+              className={`w-4 h-0.5 rounded-full transition-all duration-300 ease-in-out ${
+                mobileMenuOpen
+                  ? 'rotate-45 translate-y-[5px] bg-cyan-400 shadow-[0_0_8px_#00f2fe]'
+                  : 'bg-cyan-300'
+              }`}
+            />
+            <span
+              className={`w-4 h-0.5 rounded-full bg-white transition-all duration-200 ease-in-out ${
+                mobileMenuOpen ? 'opacity-0 scale-x-0' : 'opacity-100'
+              }`}
+            />
+            <span
+              className={`w-4 h-0.5 rounded-full transition-all duration-300 ease-in-out ${
+                mobileMenuOpen
+                  ? '-rotate-45 -translate-y-[5px] bg-cyan-400 shadow-[0_0_8px_#00f2fe]'
+                  : 'bg-cyan-300'
+              }`}
+            />
+          </div>
+        </button>
+
+        {/* Mobile Dropdown Panel: All 3 Buttons */}
+        {mobileMenuOpen && (
+          <nav
+            aria-label="Mobile Navigation"
+            className="absolute top-full right-0 mt-2 w-52 rounded-2xl bg-[#07090e]/95 border border-white/20 backdrop-blur-2xl p-2 shadow-[0_16px_40px_rgba(0,0,0,0.7),0_0_25px_rgba(6,182,212,0.2)] flex flex-col gap-1.5 z-50 animate-in fade-in slide-in-from-top-2 duration-200"
+          >
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isSelected = activeSection === link.name || activeBtn === link.name;
+              const isSenior = link.name === 'SENIORS';
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onPointerDown={() => setActiveBtn(link.name)}
+                  onClick={(e) => {
+                    setActiveSection(link.name);
+                    setActiveBtn(link.name);
+                    handleNavLinkClick(e, link.href, link.name);
+                    setMobileMenuOpen(false);
+                  }}
+                  style={
+                    isSelected
+                      ? {
+                          backgroundImage: "url('/assets/cloud-curtain-bg.png')",
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          borderColor: isSenior ? '#fbbf24' : '#c084fc',
+                          boxShadow: isSenior ? '0 0 18px rgba(251, 191, 36, 0.65)' : '0 0 18px rgba(192, 132, 252, 0.65)',
+                          textShadow: '0 1px 3px rgba(0, 0, 0, 0.9)',
+                        }
+                      : undefined
+                  }
+                  className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 active:scale-95 group border ${
+                    isSelected
+                      ? isSenior
+                        ? 'text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
+                        : 'text-white border-[#c084fc] shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                      : isSenior
+                      ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
+                      : 'text-white/90 hover:text-white hover:bg-white/10 border-white/5 hover:border-white/20'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
+                  <span>{link.name}</span>
+                </a>
+              );
+            })}
+
+            {/* Quick View VIP Pass Button (If pass has been generated) */}
+            {hasGeneratedPass && (
+              <button
+                type="button"
+                onClick={() => {
+                  soundController.playClick?.();
+                  setMobileMenuOpen(false);
+                  onOpenPass?.();
+                }}
+                className="w-full mt-0.5 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-cyan-500/20 to-sky-500/20 hover:from-cyan-500/30 hover:to-sky-500/30 border border-cyan-400/50 text-cyan-300 shadow-neon-cyan flex items-center gap-2.5 transition-all active:scale-95 cursor-pointer"
+              >
+                <RealisticTicket className="w-4 h-4 shrink-0" />
+                <span>MY VIP PASS</span>
+              </button>
+            )}
+          </nav>
+        )}
+      </div>
+
+      {/* 2. Desktop View Only: Centered Floating Transparent Navigation Pill (All 3 Buttons) */}
+      <nav
+        aria-label="Desktop Navigation"
+        data-lenis-prevent
+        className="hidden md:flex pointer-events-auto rounded-2xl bg-transparent border border-white/20 backdrop-blur-md px-2 sm:px-3 py-1.5 items-center gap-1 sm:gap-2 shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
       >
         {navLinks.map((link) => {
           const Icon = link.icon;
+          const isSelected = activeSection === link.name || activeBtn === link.name;
           const isSenior = link.name === 'SENIORS';
           return (
             <a
               key={link.name}
               href={link.href}
-              onClick={(e) => handleNavLinkClick(e, link.href)}
-              className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 ${
-                isSenior
-                  ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
-                  : 'text-white/90 hover:text-white hover:bg-white/10 border border-transparent'
+              onPointerDown={() => setActiveBtn(link.name)}
+              onClick={(e) => {
+                setActiveSection(link.name);
+                setActiveBtn(link.name);
+                handleNavLinkClick(e, link.href, link.name);
+              }}
+              style={
+                isSelected
+                  ? {
+                      backgroundImage: "url('/assets/cloud-curtain-bg.png')",
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      borderColor: isSenior ? '#fbbf24' : '#c084fc',
+                      boxShadow: isSenior ? '0 0 18px rgba(251, 191, 36, 0.65)' : '0 0 18px rgba(192, 132, 252, 0.65)',
+                      textShadow: '0 1px 3px rgba(0, 0, 0, 0.9)',
+                    }
+                  : undefined
+              }
+              className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 border ${
+                isSelected
+                  ? isSenior
+                    ? 'text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
+                    : 'text-white border-[#c084fc] shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                  : isSenior
+                  ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
+                  : 'text-white/90 hover:text-white hover:bg-white/10 border-transparent'
               }`}
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
-              <span className="hidden min-[370px]:inline">{link.name}</span>
-              <span className="inline min-[370px]:hidden">{link.shortName || link.name}</span>
+              <span>{link.name}</span>
             </a>
           );
         })}
