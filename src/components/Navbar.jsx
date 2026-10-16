@@ -88,34 +88,17 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
           : 'translate-y-0 opacity-100 pointer-events-auto'
       }`}
     >
-      <div className="max-w-7xl mx-auto rounded-2xl glass-panel bg-obsidian-950/85 border border-white/10 shadow-2xl backdrop-blur-xl px-3 sm:px-6 py-2 sm:py-2.5 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+      <div className="max-w-7xl mx-auto rounded-2xl glass-panel bg-obsidian-950/85 border border-white/10 shadow-2xl backdrop-blur-xl px-3 sm:px-6 py-2 sm:py-2.5 flex items-center justify-between relative">
         
-        {/* Brand Logo (Hidden per user request) */}
-        <a href="#hero" className="hidden">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 via-sky-500 to-cyber-violet p-[2px] transition-transform duration-300 group-hover:scale-105 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
-            <div className="w-full h-full bg-obsidian-900 rounded-[10px] flex items-center justify-center">
-              <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-sky-200 text-lg">
-                E
-              </span>
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-outfit font-extrabold text-base sm:text-xl tracking-wider text-white">
-                ELIXORA 2.0
-              </span>
-              <span className="text-[10px] font-outfit px-1.5 py-0.5 rounded bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 font-bold">
-                '26
-              </span>
-            </div>
-            <p className="text-[10px] text-slate-400 font-outfit tracking-widest hidden sm:block uppercase">
-              Biotechnology Freshers '26
-            </p>
-          </div>
-        </a>
+        {/* Brand Logo (Desktop left placeholder/brand) */}
+        <div className="hidden md:flex items-center gap-2 shrink-0">
+          <span className="text-xs font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-white tracking-widest uppercase">
+            ELIXORA 2.0
+          </span>
+        </div>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+        {/* Desktop Navigation Links: 100% Centered in Middle */}
+        <nav className="hidden md:flex md:absolute md:left-1/2 md:-translate-x-1/2 items-center gap-1.5 lg:gap-2.5">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isSenior = link.name === 'Seniors';
@@ -137,66 +120,51 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
           })}
         </nav>
 
-        {/* Mobile Top Row: Action Controls */}
-        <div className="flex md:hidden items-center justify-between gap-2 w-full pb-1.5 border-b border-white/10">
-          {/* Quick View Pass Button (If pass generated) */}
-          {hasGeneratedPass ? (
-            <button
-              onClick={() => onOpenPass()}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 to-sky-500/20 border border-cyan-400/50 text-cyan-300 text-[11px] font-outfit font-bold shadow-neon-cyan"
-            >
-              <RealisticTicket className="w-3.5 h-3.5 shrink-0" />
-              <span>VIP PASS</span>
-            </button>
-          ) : (
-            <span className="text-[11px] font-outfit font-bold text-cyan-300 tracking-wider">
-              ELIXORA 2.0
-            </span>
-          )}
-
-          {/* Grab Pass CTA */}
-          <a
-            href="#register"
-            onClick={(e) => {
-              e.preventDefault();
-              soundController.playClick?.();
-              if (typeof window !== 'undefined' && window.innerWidth < 768) {
-                setIsScrolledDown(true);
-              }
-              scrollToTarget('#register');
-            }}
-            className="ml-auto px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyber-violet via-purple-600 to-cyber-cyan text-white text-[11px] font-bold hover:shadow-neon-violet transition-all flex items-center gap-1.5 border border-white/20 active:scale-95"
-          >
-            <RealisticTicket className="w-3.5 h-3.5 shrink-0" />
-            <span>Grab Pass</span>
-          </a>
-        </div>
-
-        {/* Mobile Navigation Links Row (All 5 Links Fit Comfortably across Screens) */}
-        <nav 
-          data-lenis-prevent
-          className="flex md:hidden items-center justify-between gap-1 overflow-x-auto no-scrollbar py-0.5 px-0.5 scroll-smooth"
-        >
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            const isSenior = link.name === 'Seniors';
-            return (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleNavLinkClick(e, link.href)}
-                className={`px-1.5 min-[370px]:px-2 py-1 rounded-lg text-[10.5px] min-[370px]:text-[11px] font-medium transition-all flex items-center gap-1.5 shrink-0 whitespace-nowrap active:scale-95 ${
-                  isSenior
-                    ? 'text-amber-300 bg-amber-500/15 border border-amber-400/40 shadow-[0_0_8px_rgba(251,191,36,0.25)] font-semibold'
-                    : 'text-slate-300 hover:text-white bg-white/5 border border-white/10 active:bg-white/15'
-                }`}
+        {/* Mobile View: Single Top Row with Brand on Left and Nav Links in Right Top Side */}
+        <div className="flex md:hidden items-center justify-between gap-2 w-full">
+          {/* Mobile Left: Brand or Pass Button */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {hasGeneratedPass ? (
+              <button
+                onClick={() => onOpenPass()}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-gradient-to-r from-cyan-500/20 to-sky-500/20 border border-cyan-400/50 text-cyan-300 text-[10.5px] font-outfit font-bold shadow-neon-cyan"
               >
-                <Icon className="w-3.5 h-3.5 shrink-0 drop-shadow-sm" />
-                <span>{link.shortName || link.name}</span>
-              </a>
-            );
-          })}
-        </nav>
+                <RealisticTicket className="w-3.5 h-3.5 shrink-0" />
+                <span>VIP PASS</span>
+              </button>
+            ) : (
+              <span className="text-[11px] font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-sky-200 tracking-wider">
+                ELIXORA 2.0
+              </span>
+            )}
+          </div>
+
+          {/* Mobile Right: Nav Links in Right Top Side */}
+          <nav 
+            data-lenis-prevent
+            className="flex items-center gap-1 min-[360px]:gap-1.5 ml-auto shrink-0"
+          >
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isSenior = link.name === 'Seniors';
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => handleNavLinkClick(e, link.href)}
+                  className={`px-2 py-1 rounded-lg text-[10.5px] min-[370px]:text-[11px] font-medium transition-all flex items-center gap-1 shrink-0 whitespace-nowrap active:scale-95 ${
+                    isSenior
+                      ? 'text-amber-300 bg-amber-500/15 border border-amber-400/40 shadow-[0_0_8px_rgba(251,191,36,0.25)] font-semibold'
+                      : 'text-slate-300 hover:text-white bg-white/5 border border-white/10 active:bg-white/15'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5 shrink-0 drop-shadow-sm" />
+                  <span>{link.shortName || link.name}</span>
+                </a>
+              );
+            })}
+          </nav>
+        </div>
 
         {/* Desktop Right Action Buttons */}
         <div className="hidden md:flex items-center gap-2 sm:gap-3 ml-auto">
