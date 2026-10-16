@@ -1,11 +1,121 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { ArrowRight } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { adminStore } from '../utils/adminStore';
 
+const TITLE_LETTERS = [
+  { char: 'E', color: 'from-white via-[#dcf7ff] to-[#38bdf8]' },
+  { char: 'L', color: 'from-white via-[#e0f2fe] to-[#60a5fa]' },
+  { char: 'I', color: 'from-white via-[#ede9fe] to-[#a78bfa]' },
+  { char: 'X', color: 'from-white via-[#f3e8ff] to-[#c084fc]' },
+  { char: 'O', color: 'from-white via-[#fae8ff] to-[#e879f9]' },
+  { char: 'R', color: 'from-white via-[#fce7f3] to-[#f472b6]' },
+  { char: 'A', color: 'from-white via-[#ffe4e6] to-[#fb7185]' },
+  { char: ' ', isSpace: true },
+  { char: '2', color: 'from-white via-[#fef3c7] to-[#f59e0b]' },
+  { char: '.', color: 'from-white via-[#dcfce7] to-[#34d399]' },
+  { char: '0', color: 'from-white via-[#e0e7ff] to-[#818cf8]' },
+];
+
 export default function HeroSection({ onGrabPassClick }) {
   const [settings, setSettings] = useState(() => adminStore.getSettings());
+  const lettersRef = useRef([]);
+  const titleContainerRef = useRef(null);
+
+  // Trigger playful kinetic shake on a specific letter
+  const shakeLetter = (idx) => {
+    const el = lettersRef.current[idx];
+    if (!el || el.dataset.isShaking === 'true') return;
+
+    el.dataset.isShaking = 'true';
+    soundController.playHover?.();
+
+    const sx = (Math.random() > 0.5 ? 1 : -1) * (4 + Math.random() * 4);
+    const sy = (Math.random() > 0.5 ? 1 : -1) * (3 + Math.random() * 3);
+    const sr = (Math.random() > 0.5 ? 1 : -1) * (3 + Math.random() * 4);
+
+    gsap.timeline({
+      onComplete: () => {
+        setTimeout(() => {
+          if (el) el.dataset.isShaking = 'false';
+        }, 90);
+      },
+    })
+      .to(el, {
+        x: sx,
+        y: sy,
+        rotation: sr,
+        scale: 1.08,
+        duration: 0.05,
+        ease: 'power1.inOut',
+      })
+      .to(el, {
+        x: -sx * 0.75,
+        y: -sy * 0.75,
+        rotation: -sr * 0.75,
+        scale: 1.04,
+        duration: 0.06,
+        ease: 'power1.inOut',
+      })
+      .to(el, {
+        x: sx * 0.35,
+        y: -sy * 0.35,
+        rotation: sr * 0.35,
+        scale: 1.02,
+        duration: 0.06,
+      })
+      .to(el, {
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        duration: 0.28,
+        ease: 'elastic.out(1.2, 0.3)',
+      });
+  };
+
+  // Proximity Detection: Shakes individual letters when cursor moves near them
+  useEffect(() => {
+    let ticking = false;
+    const handleGlobalMouseMove = (e) => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        if (titleContainerRef.current) {
+          const containerRect = titleContainerRef.current.getBoundingClientRect();
+          // Gate check: only calculate letter distances if mouse is anywhere near the title banner
+          if (
+            mouseX >= containerRect.left - 120 &&
+            mouseX <= containerRect.right + 120 &&
+            mouseY >= containerRect.top - 90 &&
+            mouseY <= containerRect.bottom + 90
+          ) {
+            lettersRef.current.forEach((el, idx) => {
+              if (!el) return;
+              const rect = el.getBoundingClientRect();
+              const centerX = rect.left + rect.width / 2;
+              const centerY = rect.top + rect.height / 2;
+              const dist = Math.hypot(mouseX - centerX, mouseY - centerY);
+
+              // Shakes when cursor is moved near letter (< 85px)
+              if (dist < 85) {
+                shakeLetter(idx);
+              }
+            });
+          }
+        }
+        ticking = false;
+      });
+    };
+
+    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove);
+  }, []);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -54,10 +164,38 @@ export default function HeroSection({ onGrabPassClick }) {
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-1 sm:my-2 select-none flex flex-col items-center justify-center">
-          {/* Main Title: Exact Luxury High-Contrast Serif Typography from INNOVISION Reference */}
-          <div className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full px-2">
-            <h1 className="font-innovision-serif font-black text-4xl min-[380px]:text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.06em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase text-white drop-shadow-[0_6px_35px_rgba(0,0,0,0.98)] drop-shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-transform duration-300 hover:scale-[1.02] whitespace-nowrap leading-none">
-              ELIXORA 2.0
+          {/* Main Title: Exact Luxury High-Contrast Serif Typography with Celestial Tint & Interactive Proximity Shake */}
+          <div
+            ref={titleContainerRef}
+            className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full px-2 py-1"
+          >
+            <h1 className="font-innovision-serif font-black text-4xl min-[380px]:text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.06em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
+              {TITLE_LETTERS.map((item, idx) => {
+                if (item.isSpace) {
+                  return (
+                    <span
+                      key={idx}
+                      className="inline-block w-2.5 sm:w-5 md:w-7 select-none"
+                      aria-hidden="true"
+                    >
+                      &nbsp;
+                    </span>
+                  );
+                }
+                return (
+                  <span
+                    key={idx}
+                    ref={(el) => (lettersRef.current[idx] = el)}
+                    onMouseEnter={() => shakeLetter(idx)}
+                    onClick={() => shakeLetter(idx)}
+                    className={`inline-block transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent drop-shadow-[0_6px_35px_rgba(0,0,0,0.98)] drop-shadow-[0_0_25px_rgba(255,255,255,0.22)] cursor-pointer select-none`}
+                    style={{ transformOrigin: '50% 70%' }}
+                    title={item.char}
+                  >
+                    {item.char}
+                  </span>
+                );
+              })}
             </h1>
           </div>
 

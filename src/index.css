@@ -28,6 +28,18 @@
   -webkit-font-smoothing: antialiased;
 }
 
+@keyframes letterJitter {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  20% { transform: translate3d(-3.5px, 2.5px, 0) rotate(-3.5deg); }
+  40% { transform: translate3d(3.5px, -2.5px, 0) rotate(3deg); }
+  60% { transform: translate3d(-2.5px, -1.5px, 0) rotate(-2deg); }
+  80% { transform: translate3d(2px, 1.5px, 0) rotate(1.5deg); }
+}
+
+.animate-letter-shake {
+  animation: letterJitter 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
 :root {
   color-scheme: dark;
 }
