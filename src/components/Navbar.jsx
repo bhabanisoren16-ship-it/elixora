@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { 
   RealisticHome, 
   RealisticCalendar, 
-  RealisticPalette, 
-  RealisticCompass, 
   RealisticGraduationCap, 
   RealisticTicket 
 } from './RealisticIcons';
@@ -79,8 +77,6 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
   const navLinks = [
     { name: 'Home', shortName: 'Home', href: '#hero', icon: RealisticHome },
     { name: 'Event Details', shortName: 'Details', href: '#details', icon: RealisticCalendar },
-    { name: 'Dress Code', shortName: 'Attire', href: '#dress-code', icon: RealisticPalette },
-    { name: 'Venue & Guide', shortName: 'Venue', href: '#venue', icon: RealisticCompass },
     { name: 'Seniors', shortName: 'Seniors', href: '#seniors', icon: RealisticGraduationCap },
   ];
 
