@@ -215,88 +215,42 @@ export default function CinematicIntro({ onComplete, onRegisterClick }) {
       }`}
     >
       {/* =========================================================================
-          1. DEEP CELESTIAL COSMOS & NEBULA BACKDROP (Parallax Tilt)
+          1. 3D CYBER CELESTIAL GATEWAY TUNNEL BACKGROUND (ORIGINAL IMAGE RESTORED)
          ========================================================================= */}
       <div
-        className="absolute inset-[-40px] pointer-events-none select-none overflow-hidden will-change-transform"
+        className="absolute inset-[-45px] pointer-events-none select-none overflow-hidden will-change-transform"
         style={{
-          transform: `perspective(1000px) rotateX(${mousePos.y * -6}deg) rotateY(${mousePos.x * 6}deg) translate3d(${mousePos.x * -16}px, ${mousePos.y * -12}px, 0px) scale(${phase >= 3 ? 1.04 : 1.0})`,
+          transform: `perspective(1000px) rotateX(${mousePos.y * -7}deg) rotateY(${mousePos.x * 7}deg) translate3d(${mousePos.x * -18}px, ${mousePos.y * -14}px, 0px) scale(${phase >= 3 ? 1.05 : 1.01})`,
           transition: 'transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1)',
         }}
       >
-        {/* Base Deep Cosmic Space Gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#0f0c29_0%,_#090918_45%,_#03040a_100%)]" />
-
-        {/* Ambient Cosmic Nebula Glowing Clouds */}
-        <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] rounded-full bg-cyan-500/15 blur-[130px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] rounded-full bg-purple-600/20 blur-[140px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] rounded-full bg-fuchsia-600/12 blur-[150px] pointer-events-none" />
-
-        {/* Starlight Conic Array & Cosmic Dust Texture */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[160vmax] h-[160vmax] rounded-full bg-[repeating-conic-gradient(from_0deg,rgba(0,242,254,0.025)_0deg_0.5deg,transparent_0.5deg_8deg)] pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1.5px)] bg-[size:32px_32px] opacity-45 pointer-events-none" />
-
-        {/* Embedded High-Fidelity Starfield Layer */}
         <img
-          src="/assets/starfield.svg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-screen pointer-events-none"
+          src="/elixora-3d-tunnel-bg.jpg"
+          alt="ELIXORA 3D Cyber Gateway Tunnel"
+          className="w-full h-full object-cover object-center filter brightness-[1.05] contrast-[1.10]"
         />
 
-        {/* SVG Constellation Matrices (Drifting Cosmic Sky Maps) */}
-        <svg
-          viewBox="0 0 1200 800"
-          className="absolute inset-0 w-full h-full pointer-events-none opacity-40 transition-opacity duration-1000"
-          style={{ opacity: phase >= 1 ? 0.45 : 0 }}
-        >
-          <defs>
-            <linearGradient id="constellationLine" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#00f2fe" stopOpacity="0.7" />
-              <stop offset="50%" stopColor="#c084fc" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#ec4899" stopOpacity="0.6" />
-            </linearGradient>
-          </defs>
+        {/* Ambient 3D Tunnel Depth Vignette for Text Readability */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(ellipse 75% 70% at 50% 50%, rgba(6, 8, 20, 0.22) 0%, rgba(6, 8, 20, 0.55) 55%, rgba(6, 8, 20, 0.90) 100%)',
+          }}
+        />
 
-          {/* Left Celestial Constellation (Cassiopeia / Astral Crown) */}
-          <g transform="translate(120, 140) scale(0.9)">
-            <polyline
-              points="0,60 55,15 110,75 180,25 240,80"
-              fill="none"
-              stroke="url(#constellationLine)"
-              strokeWidth="1.2"
-              strokeDasharray="4 3"
-            />
-            {[[0, 60], [55, 15], [110, 75], [180, 25], [240, 80]].map(([cx, cy], idx) => (
-              <g key={idx}>
-                <circle cx={cx} cy={cy} r="3" fill="#ffffff" className="drop-shadow-[0_0_8px_#00f2fe]" />
-                <circle cx={cx} cy={cy} r="6" fill="none" stroke="#00f2fe" strokeWidth="0.8" opacity="0.6" />
-              </g>
-            ))}
-            <text x="60" y="110" fill="#38bdf8" fontSize="10" fontFamily="monospace" letterSpacing="0.25em" opacity="0.6">
-              α-CASSIOPEIA // 01.44°
-            </text>
-          </g>
+        {/* Ambient Top & Bottom Depth Gradients */}
+        <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[#05060f]/85 via-[#05060f]/45 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#05060f]/90 via-[#05060f]/55 to-transparent pointer-events-none" />
 
-          {/* Right Celestial Constellation (Cygnus / Northern Cross) */}
-          <g transform="translate(860, 180) scale(0.85)">
-            <line x1="80" y1="0" x2="80" y2="160" stroke="url(#constellationLine)" strokeWidth="1.2" strokeDasharray="4 3" />
-            <line x1="10" y1="60" x2="150" y2="60" stroke="url(#constellationLine)" strokeWidth="1.2" strokeDasharray="4 3" />
-            {[[80, 0], [80, 60], [80, 160], [10, 60], [150, 60]].map(([cx, cy], idx) => (
-              <g key={idx}>
-                <circle cx={cx} cy={cy} r="3" fill="#ffffff" className="drop-shadow-[0_0_8px_#c084fc]" />
-                <circle cx={cx} cy={cy} r="6" fill="none" stroke="#c084fc" strokeWidth="0.8" opacity="0.6" />
-              </g>
-            ))}
-            <text x="35" y="190" fill="#c084fc" fontSize="10" fontFamily="monospace" letterSpacing="0.25em" opacity="0.6">
-              CYGNUS · DENEB // 20.41°
-            </text>
-          </g>
-        </svg>
-
-        {/* Ambient Top & Bottom Depth Vignettes */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#05060f]/90 via-[#05060f]/40 to-transparent pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#05060f]/95 via-[#05060f]/50 to-transparent pointer-events-none" />
+        {/* Dynamic Center Tunnel Energy Pulse in Phase >= 1 */}
+        <div
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full blur-[110px] pointer-events-none transition-all duration-1000 ${
+            phase >= 1
+              ? 'opacity-45 bg-gradient-to-tr from-cyan-500/35 via-purple-600/30 to-sky-400/25 scale-105'
+              : 'opacity-0 scale-75'
+          }`}
+        />
       </div>
 
       {/* Floating Sparkles & Dust Canvas */}
