@@ -259,18 +259,9 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 0.95 }) {
       </div>
 
       {/* =========================================================================
-          2. TOP HEADER: CELESTIAL REFRESH BRANDING
+          2. TOP HEADER (Telemetry Hidden)
          ========================================================================= */}
-      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase">
-        <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
-          <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em]" data-scr>
-            ELIXORA MMXXVI // CELESTIAL REFRESH
-          </span>
-        </div>
-        <div className="font-outfit font-bold tracking-[0.20em] text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-cyan-300">
-          <span data-scr>REAL-TIME ASTRAL RE-ALIGNMENT</span>
-        </div>
+      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase min-h-[24px]">
       </header>
 
       {/* =========================================================================
@@ -411,26 +402,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 0.95 }) {
       </div>
 
       {/* =========================================================================
-          4. BOTTOM STATUS: AUTOMATED REAL-TIME REFRESH STATUS (NO ENTER BUTTON)
+          4. BOTTOM STATUS (Hidden for Ultra-Clean Minimalist Refresh)
          ========================================================================= */}
-      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center gap-3 relative z-10 text-center">
-        {/* Status Line with Pulsing Neon Dot */}
-        <div className="font-mono text-xs sm:text-sm font-bold tracking-[0.28em] flex items-center justify-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 shadow-[0_0_10px_#d946ef] animate-pulse" />
-          <span
-            ref={statusRef}
-            className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-300 to-purple-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]"
-            data-scr
-          >
-            {REFRESH_STATUSES[0]}
-          </span>
-        </div>
-
-        {/* Automated Refresh Status Pill */}
-        <div className="mt-1 px-5 py-2 rounded-full border border-cyan-400/30 bg-cyan-950/40 text-cyan-200 font-mono text-[10px] sm:text-xs tracking-[0.25em] uppercase flex items-center gap-2.5 backdrop-blur-md shadow-[0_0_15px_rgba(0,242,254,0.15)]">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-          <span>{isReady ? 'CONJUNCTION ACHIEVED · RESTORING HOMEPAGE' : 'CALIBRATING CELESTIAL ALIGNMENT...'}</span>
-        </div>
+      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-10 text-center pb-2 sm:pb-4 min-h-[32px]">
+        {/* Hidden status ref for safe script reference */}
+        <span ref={statusRef} className="hidden" aria-hidden="true" />
       </footer>
     </div>
   );
