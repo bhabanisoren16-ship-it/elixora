@@ -74,9 +74,9 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
   };
 
   const navLinks = [
-    { name: 'Home', shortName: 'Home', href: '#hero', icon: RealisticHome },
-    { name: 'Event Details', shortName: 'Details', href: '#details', icon: RealisticCalendar },
-    { name: 'Seniors', shortName: 'Seniors', href: '#seniors', icon: RealisticGraduationCap },
+    { name: 'HOME', shortName: 'HOME', href: '#hero', icon: RealisticHome },
+    { name: 'EVENT DETAILS', shortName: 'DETAILS', href: '#details', icon: RealisticCalendar },
+    { name: 'SENIORS', shortName: 'SENIORS', href: '#seniors', icon: RealisticGraduationCap },
   ];
 
   return (
@@ -87,24 +87,24 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
           : 'translate-y-0 opacity-100'
       }`}
     >
-      {/* Floating Navigation Pill */}
+      {/* Floating Transparent Navigation Pill */}
       <nav
         aria-label="Main Navigation"
         data-lenis-prevent
-        className="pointer-events-auto rounded-2xl glass-panel bg-obsidian-950/85 border border-white/10 shadow-2xl backdrop-blur-xl px-2 sm:px-3 py-1.5 flex items-center gap-1 sm:gap-2"
+        className="pointer-events-auto rounded-2xl bg-transparent border border-white/20 backdrop-blur-md px-2 sm:px-3 py-1.5 flex items-center gap-1 sm:gap-2 shadow-[0_8px_32px_rgba(0,0,0,0.2)]"
       >
         {navLinks.map((link) => {
           const Icon = link.icon;
-          const isSenior = link.name === 'Seniors';
+          const isSenior = link.name === 'SENIORS';
           return (
             <a
               key={link.name}
               href={link.href}
               onClick={(e) => handleNavLinkClick(e, link.href)}
-              className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 ${
+              className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 ${
                 isSenior
-                  ? 'text-amber-300 hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-400/40 shadow-[0_0_10px_rgba(251,191,36,0.2)] font-semibold'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5 border border-transparent'
+                  ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
+                  : 'text-white/90 hover:text-white hover:bg-white/10 border border-transparent'
               }`}
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
