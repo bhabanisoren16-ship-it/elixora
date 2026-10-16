@@ -279,9 +279,6 @@ export default function CinematicIntro({ onComplete, duration = 3.6 }) {
             ELIXORA GATEWAY
           </span>
         </div>
-        <div className="font-outfit font-bold tracking-[0.20em] text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-300 via-purple-300 to-cyan-300">
-          <span data-scr>REAL-TIME ASTRAL RE-ALIGNMENT</span>
-        </div>
       </header>
 
       {/* =========================================================================
@@ -425,34 +422,19 @@ export default function CinematicIntro({ onComplete, duration = 3.6 }) {
           4. BOTTOM STATUS & THE ENTER HOME PAGE OPTION
           Stuck on this loading page until user explicitly clicks ENTER HOME PAGE!
          ========================================================================= */}
-      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center gap-2.5 relative z-10 text-center">
-        {/* Status Line with Pulsing Neon Dot */}
-        <div className="font-mono text-xs sm:text-sm font-bold tracking-[0.28em] flex items-center justify-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-fuchsia-500 shadow-[0_0_10px_#d946ef] animate-pulse" />
-          <span
-            ref={statusRef}
-            className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-pink-300 to-purple-300 drop-shadow-[0_0_8px_rgba(217,70,239,0.5)]"
-            data-scr
-          >
-            {GATEWAY_STATUSES[0]}
-          </span>
-        </div>
-
-        {/* Real-time Status Pill */}
-        <div className="px-5 py-1.5 rounded-full border border-cyan-400/30 bg-cyan-950/40 text-cyan-200 font-mono text-[10px] sm:text-xs tracking-[0.25em] uppercase flex items-center gap-2.5 backdrop-blur-md shadow-[0_0_15px_rgba(0,242,254,0.15)]">
-          <span className={`w-2 h-2 rounded-full ${isAligned ? 'bg-emerald-400' : 'bg-cyan-400 animate-ping'}`} />
-          <span>{isAligned ? '✦ ALIGNMENT 100% · READY FOR ENTRY ✦' : 'CALIBRATING CELESTIAL ALIGNMENT...'}</span>
-        </div>
+      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-10 text-center pb-2 sm:pb-4">
+        {/* Hidden status ref for safe script reference */}
+        <span ref={statusRef} className="hidden" aria-hidden="true" />
 
         {/* =====================================================================
             THE ENTER HOME PAGE BUTTON
             User is stuck on this screen until clicking this button (or pressing Enter)
            ===================================================================== */}
-        <div className="mt-1 flex flex-col items-center gap-2 w-full">
+        <div className="flex flex-col items-center justify-center w-full">
           <button
             id="homescreen-enter-button"
             onClick={handleEnterHomepage}
-            className="group relative inline-flex items-center justify-center gap-3.5 px-8 py-3.5 sm:px-11 sm:py-4 rounded-full transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_45px_rgba(217,70,239,0.55),0_0_30px_rgba(0,242,254,0.4)]"
+            className="group relative inline-flex items-center justify-center gap-3.5 px-9 py-4 sm:px-12 sm:py-4.5 rounded-full transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_45px_rgba(217,70,239,0.55),0_0_30px_rgba(0,242,254,0.4)]"
             title="Click to enter ELIXORA 2.0 Home Page"
           >
             {/* Outer Cosmic Multi-Tone Aura Bloom */}
@@ -482,17 +464,10 @@ export default function CinematicIntro({ onComplete, duration = 3.6 }) {
 
               {/* Glowing Arrow Capsule */}
               <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/20 border border-white/60 group-hover:border-white group-hover:bg-white flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.4)]">
-                <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
+                <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
               </div>
             </div>
           </button>
-
-          {/* Interactive Keyboard Hotkey Prompt */}
-          <p className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.22em] text-cyan-300/80 select-none flex items-center gap-1.5">
-            <span>[ CLICK BUTTON OR PRESS</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-black/60 border border-cyan-400/40 text-cyan-200 font-bold">↵ ENTER</kbd>
-            <span>TO ENTER HOME PAGE ]</span>
-          </p>
         </div>
       </footer>
     </div>
