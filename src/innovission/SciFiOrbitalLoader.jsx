@@ -58,7 +58,7 @@ const REFRESH_STATUSES = [
   'CELESTIAL REFRESH COMPLETE · OPENING HOMEPAGE',
 ];
 
-export default function SciFiOrbitalLoader({ onComplete, duration = 1.3 }) {
+export default function SciFiOrbitalLoader({ onComplete, duration = 0.95 }) {
   const containerRef = useRef(null);
   const statusRef = useRef(null);
   const countRef = useRef(null);

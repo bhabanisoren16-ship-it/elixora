@@ -59,7 +59,7 @@ const GATEWAY_STATUSES = [
   'CELESTIAL ALIGNMENT ACHIEVED · READY FOR ENTRY',
 ];
 
-export default function CinematicIntro({ onComplete, duration = 3.6 }) {
+export default function CinematicIntro({ onComplete, duration = 2.2 }) {
   const containerRef = useRef(null);
   const statusRef = useRef(null);
   const countRef = useRef(null);
@@ -441,7 +441,7 @@ export default function CinematicIntro({ onComplete, duration = 3.6 }) {
             <div className={`absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-500 ${isAligned ? 'animate-pulse' : ''}`} />
 
             {/* Orbiting Satellite Particle around the Enter Button */}
-            <div className="absolute -inset-2 rounded-full border border-cyan-400/30 border-dotted animate-[spin_12s_linear_infinite] pointer-events-none">
+            <div className="absolute -inset-2 rounded-full border border-cyan-400/30 border-dotted animate-[spin_7s_linear_infinite] pointer-events-none">
               <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_6px_#00f2fe]" />
               <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1 h-1 rounded-full bg-fuchsia-400 shadow-[0_0_5px_#e879f9]" />
             </div>

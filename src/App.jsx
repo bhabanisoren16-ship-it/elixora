@@ -240,7 +240,7 @@ export default function App() {
       {/* 0. Home Screen Loading Page (Celestial Orbital Planetary Gateway from Screenshot - STRICTLY requires user to click/press ENTER to open homepage) */}
       {showHomeLoadingPage && (
         <CinematicIntro
-          duration={3.6}
+          duration={2.2}
           onComplete={handleHomeLoadingEnter}
         />
       )}
@@ -248,7 +248,7 @@ export default function App() {
       {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Telemetry Sync - Automated, NO enter button) */}
       {showRefreshPage && (
         <SciFiOrbitalLoader
-          duration={1.4}
+          duration={0.95}
           onComplete={handleRefreshComplete}
         />
       )}
