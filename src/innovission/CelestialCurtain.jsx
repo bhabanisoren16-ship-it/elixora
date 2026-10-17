@@ -55,16 +55,16 @@ function cloudBank(seed) {
 }
 
 /**
- * Rich Royal Purple & Cosmic Violet Celestial Cloud Layers (NO black):
- * Vibrant multi-tiered purple, royal violet, celestial amethyst, and starlight lavender.
- * Clear shaded contour strokes define each cumulus ridge with rich depth.
+ * Celestial Cloud Layers themed to ELIXORA's Cosmic Obsidian & Astral Violet palette:
+ * Back to front in rich deep space tones (Obsidian Void, Midnight Indigo, Astral Violet, Celestial Velvet).
+ * Natural inked contour folds define the cumulus ridges without harsh neon outlines.
  */
 const LAYERS = [
-  { color: '#240c48', ink: '#431475', ...cloudBank(11) }, // Layer 0: Deep Royal Violet
-  { color: '#3b0764', ink: '#6b21a8', ...cloudBank(23) }, // Layer 1: Imperial Cosmic Purple
-  { color: '#581c87', ink: '#7e22ce', ...cloudBank(37) }, // Layer 2: Radiant Celestial Amethyst
-  { color: '#6d28d9', ink: '#8b5cf6', ...cloudBank(41) }, // Layer 3: Vibrant Nebula Violet
-  { color: '#4c1d95', ink: '#7c3aed', ...cloudBank(59) }, // Layer 4 (Front): Majestic Starlight Purple Banner
+  { color: '#070a16', ink: '#101733', ...cloudBank(11) }, // Layer 0: Obsidian Deep Space Void
+  { color: '#0d132b', ink: '#1c2552', ...cloudBank(23) }, // Layer 1: Cosmic Midnight Indigo
+  { color: '#18123b', ink: '#2d2269', ...cloudBank(37) }, // Layer 2: Astral Amethyst Twilight
+  { color: '#271452', ink: '#422285', ...cloudBank(41) }, // Layer 3: Royal Nebula Violet
+  { color: '#130c2a', ink: '#2a1854', ...cloudBank(59) }, // Layer 4 (Front): Celestial Obsidian Nexus
 ];
 
 function Clouds({ l, flip }) {
@@ -121,15 +121,15 @@ export default function CelestialCurtain({
         },
       });
 
-      // 1. Initial State: Resting at y=0 (middle banner perfectly covering viewport)
-      tl.set(layers, { y: 0, force3D: true })
-        // 2. Brief 0.2s pause for dramatic presence, then cloud banks roll up into the heavens
+      // 1. Initial State: Centered on the middle banner block (-33.333% of 300vh = -100vh)
+      tl.set(layers, { yPercent: -33.333, force3D: true })
+        // 2. Brief settle, then layers lift sequentially into the sky
         .to(layers, {
-          y: '-205vh',
-          duration: 1.6,
+          yPercent: -100,
+          duration: 1.5,
           ease: 'power3.inOut',
-          stagger: 0.08,
-          delay: 0.2,
+          stagger: 0.075,
+          delay: 0.15,
         });
     }, containerRef);
 
@@ -144,32 +144,34 @@ export default function CelestialCurtain({
       ref={containerRef}
       className="fixed inset-0 z-[99999] overflow-hidden pointer-events-none select-none w-screen h-screen"
     >
-      {/* 5 Themed Celestial Cloud Curtain Banks (Royal Purple & Radiant Violet - NO BLACK) */}
+      {/* Underlying Solid Theme Obsidian Mask */}
+      <div className="absolute inset-0 bg-[#040508] pointer-events-none" />
+
+      {/* 5 Themed Celestial Cloud Curtain Banks */}
       {LAYERS.map((l, k) => (
         <div
           key={k}
-          className="curtain-layer absolute top-[-100vh] left-0 w-full h-[300vh] will-change-transform pointer-events-none"
+          className="curtain-layer absolute top-0 left-0 w-full h-[300vh] will-change-transform pointer-events-none"
+          style={{ transform: 'translateY(-33.333%)' }}
         >
-          {/* Top Cloud Skyline Bank (Resting above viewport) */}
+          {/* Top Cloud Skyline Bank */}
           <Clouds l={l} />
 
-          {/* Middle Solid Banner Section (Resting directly in viewport) */}
+          {/* Middle Solid Banner Section */}
           {k === LAYERS.length - 1 ? (
             <div
               className="relative h-[calc(100vh+4px)] -my-[2px] flex flex-col items-center justify-center gap-3 sm:gap-4 text-center px-4 overflow-hidden"
-              style={{
-                background: 'radial-gradient(circle at center, rgba(109, 40, 217, 0.95) 0%, rgba(76, 29, 149, 0.98) 55%, #3b0764 100%)',
-              }}
+              style={{ background: l.color }}
             >
-              {/* Starfield Overlay */}
+              {/* Subtle Starfield Overlay */}
               <img
                 src="/assets/starfield.svg"
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-45 mix-blend-screen pointer-events-none"
+                className="absolute inset-0 w-full h-full object-cover opacity-35 mix-blend-screen pointer-events-none"
               />
 
               {/* Glowing Telemetry Badge */}
-              <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-400/50 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.35)]">
+              <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-400/40 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.25)]">
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
                 <span className="font-mono text-[10px] sm:text-xs font-bold tracking-[0.35em] text-cyan-300 uppercase">
                   NOW ENTERING
@@ -177,7 +179,7 @@ export default function CelestialCurtain({
               </div>
 
               {/* Grand Glowing Event Title */}
-              <h1 className="relative z-10 font-outfit font-black text-4xl sm:text-7xl md:text-8xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-purple-200 drop-shadow-[0_0_35px_rgba(139,92,246,0.8)] uppercase">
+              <h1 className="relative z-10 font-outfit font-black text-4xl sm:text-7xl md:text-8xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-purple-200 drop-shadow-[0_0_35px_rgba(139,92,246,0.6)] uppercase">
                 {title}
               </h1>
 
@@ -189,7 +191,7 @@ export default function CelestialCurtain({
               </div>
 
               {/* Subtitle Telemetry */}
-              <span className="relative z-10 font-mono text-[9px] sm:text-xs tracking-[0.3em] text-purple-100 font-medium uppercase mt-1">
+              <span className="relative z-10 font-mono text-[9px] sm:text-xs tracking-[0.3em] text-purple-200/90 uppercase mt-1">
                 {subtitle}
               </span>
             </div>
@@ -200,7 +202,7 @@ export default function CelestialCurtain({
             />
           )}
 
-          {/* Bottom Trailing Edge Cloud Bank (Lifts smoothly across viewport to unveil homepage) */}
+          {/* Bottom Trailing Edge Cloud Bank (Flips to lift off the screen) */}
           <Clouds l={l} flip />
         </div>
       ))}
