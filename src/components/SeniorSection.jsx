@@ -129,7 +129,7 @@ function getInitialSeniorState() {
   return { isUnlocked: false, isPortalOpen: false, rollNo: '', profile: null };
 }
 
-export default function SeniorSection({ onPassGenerated, onPortalToggle, onNavigate }) {
+export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   const [initialSeniorState] = useState(getInitialSeniorState);
   const [accessRegNo, setAccessRegNo] = useState('');
   const [isVerifyingAccess, setIsVerifyingAccess] = useState(false);
@@ -308,10 +308,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle, onNavig
 
       setIsUnlocked(true);
       setIsPortalOpen(true);
-
-      if (onNavigate) {
-        onNavigate('#senior-portal', 'SENIOR VIP PORTAL', 'HONOR & RECOGNITION');
-      }
 
       try {
         sessionStorage.setItem('elixora_senior_roll', cleaned);
@@ -599,13 +595,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle, onNavig
 
   return (
     <section id="seniors" className="relative py-8 sm:py-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
-      {/* Celestial Cloud Backdrop Texture */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-25 mix-blend-screen bg-cover bg-center overflow-hidden rounded-3xl"
-        style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
-        aria-hidden="true"
-      />
-      
       {/* Section Header */}
       <div className="text-center mb-5 sm:mb-8">
         <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl md:text-5xl text-white tracking-tight">
@@ -695,9 +684,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle, onNavig
                 onPointerUp={() => setTimeout(() => setIsVerifyBtnPressed(false), 350)}
                 onPointerLeave={() => setIsVerifyBtnPressed(false)}
                 style={{
-                  backgroundImage: "url('/assets/cloud-curtain-bg.png')",
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
                   borderColor: isVerifyBtnPressed ? '#c084fc' : 'rgba(192, 132, 252, 0.7)',
                   boxShadow: isVerifyBtnPressed
                     ? '0 0 35px rgba(192, 132, 252, 0.95)'
@@ -742,11 +728,6 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle, onNavig
                 className="w-full h-full object-cover object-center filter brightness-[0.30] contrast-[1.18] saturate-[1.20]" 
               />
             </picture>
-            {/* Celestial Cloud Curtain Backdrop Layer */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center opacity-35 mix-blend-screen pointer-events-none"
-              style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
-            />
             {/* Multi-layered dark gradient & vignette overlay to guarantee maximum readability and contrast */}
             <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/92 via-obsidian-950/75 to-obsidian-950/95" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(10,10,18,0.75)_100%)]" />

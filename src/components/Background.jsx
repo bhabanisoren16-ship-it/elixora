@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import desktopBg from '../assets/desktop-background.jpg'; // Widescreen 16:9 desktop atmosphere
 import mobileBg from '../assets/party-background.jpg';
 
-export default function Background({ isCloudBgActive = true }) {
+export default function Background() {
   const canvasRef = useRef(null);
 
   const sparksRef = useRef([]);
@@ -335,14 +335,6 @@ export default function Background({ isCloudBgActive = true }) {
           }}
         />
 
-        {/* Celestial Purple Cloud Atmosphere (Active strictly on Home, Event Details, Seniors, and Senior Portal) */}
-        <div 
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 pointer-events-none z-[1] ${
-            isCloudBgActive ? 'opacity-90' : 'opacity-0'
-          }`}
-          style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
-          aria-hidden="true"
-        />
 
         {/* Rhythmic Stage Beat Pulse Glow (Concert Lighting Heartbeat) */}
         <div 

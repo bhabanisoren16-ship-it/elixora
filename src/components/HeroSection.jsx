@@ -19,7 +19,7 @@ const TITLE_LETTERS = [
   { char: '0', color: 'from-white via-[#e0e7ff] to-[#818cf8]' },
 ];
 
-export default function HeroSection({ onGrabPassClick, onNavigate }) {
+export default function HeroSection({ onGrabPassClick }) {
   const [settings, setSettings] = useState(() => adminStore.getSettings());
   const lettersRef = useRef([]);
   const titleContainerRef = useRef(null);
@@ -175,12 +175,6 @@ export default function HeroSection({ onGrabPassClick, onNavigate }) {
 
   return (
     <section id="hero" className="relative min-h-[75vh] sm:min-h-[85vh] pt-20 sm:pt-24 pb-4 sm:pb-6 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      {/* Celestial Cloud Backdrop Texture */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-20 mix-blend-screen bg-cover bg-center overflow-hidden"
-        style={{ backgroundImage: "url('/assets/cloud-curtain-bg.png')" }}
-        aria-hidden="true"
-      />
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
         

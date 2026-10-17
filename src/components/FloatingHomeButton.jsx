@@ -3,7 +3,7 @@ import { ArrowUp } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrollToTarget } from '../utils/smoothScroll';
 
-export default function FloatingHomeButton({ onNavigate }) {
+export default function FloatingHomeButton() {
   const [isVisible, setIsVisible] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
 
@@ -23,10 +23,6 @@ export default function FloatingHomeButton({ onNavigate }) {
 
   const scrollToHome = () => {
     soundController.playClick?.();
-    if (onNavigate) {
-      onNavigate(0, 'HOME', 'CELESTIAL NEXUS');
-      return;
-    }
     scrollToTarget(0);
     // Clear URL hash to keep URL clean
     if (window.location.hash) {
@@ -50,9 +46,6 @@ export default function FloatingHomeButton({ onNavigate }) {
         onPointerLeave={() => setIsPressed(false)}
         onClick={scrollToHome}
         style={{
-          backgroundImage: "url('/assets/cloud-curtain-bg.png')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
           borderColor: isPressed ? '#c084fc' : 'rgba(192, 132, 252, 0.6)',
           boxShadow: isPressed
             ? '0 0 25px rgba(192, 132, 252, 0.85)'

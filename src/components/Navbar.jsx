@@ -8,7 +8,7 @@ import {
 import { scrollToTarget } from '../utils/smoothScroll';
 import { soundController } from '../utils/audio';
 
-export default function Navbar({ onOpenPass, hasGeneratedPass, onNavigate }) {
+export default function Navbar({ onOpenPass, hasGeneratedPass }) {
   const [isScrolledDown, setIsScrolledDown] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeBtn, setActiveBtn] = useState(null);
@@ -127,20 +127,6 @@ export default function Navbar({ onOpenPass, hasGeneratedPass, onNavigate }) {
     e.preventDefault();
     soundController.playClick?.();
 
-    const subtitleMap = {
-      'HOME': 'CELESTIAL NEXUS',
-      'EVENT DETAILS': 'SCHEDULE & VENUE',
-      'SENIORS': 'HONOR & RECOGNITION',
-    };
-
-    if (onNavigate) {
-      if (typeof window !== 'undefined' && window.innerWidth < 768) {
-        setIsScrolledDown(true);
-      }
-      onNavigate(href, name, subtitleMap[name] || 'CELESTIAL ODYSSEY');
-      return;
-    }
-
     if (href === '#hero') {
       setIsScrolledDown(false);
       scrollToTarget(0);
@@ -243,23 +229,11 @@ export default function Navbar({ onOpenPass, hasGeneratedPass, onNavigate }) {
                     handleNavLinkClick(e, link.href, link.name);
                     setMobileMenuOpen(false);
                   }}
-                  style={
-                    isSelected
-                      ? {
-                          backgroundImage: "url('/assets/cloud-curtain-bg.png')",
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          borderColor: isSenior ? '#fbbf24' : '#c084fc',
-                          boxShadow: isSenior ? '0 0 18px rgba(251, 191, 36, 0.65)' : '0 0 18px rgba(192, 132, 252, 0.65)',
-                          textShadow: '0 1px 3px rgba(0, 0, 0, 0.9)',
-                        }
-                      : undefined
-                  }
                   className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 active:scale-95 group border ${
                     isSelected
                       ? isSenior
-                        ? 'text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
-                        : 'text-white border-[#c084fc] shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                        ? 'text-amber-300 border-amber-400 bg-amber-400/20 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
+                        : 'text-white border-[#c084fc] bg-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
                       : isSenior
                       ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
                       : 'text-white/90 hover:text-white hover:bg-white/10 border-white/5 hover:border-white/20'
@@ -310,23 +284,11 @@ export default function Navbar({ onOpenPass, hasGeneratedPass, onNavigate }) {
                 setActiveBtn(link.name);
                 handleNavLinkClick(e, link.href, link.name);
               }}
-              style={
-                isSelected
-                  ? {
-                      backgroundImage: "url('/assets/cloud-curtain-bg.png')",
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      borderColor: isSenior ? '#fbbf24' : '#c084fc',
-                      boxShadow: isSenior ? '0 0 18px rgba(251, 191, 36, 0.65)' : '0 0 18px rgba(192, 132, 252, 0.65)',
-                      textShadow: '0 1px 3px rgba(0, 0, 0, 0.9)',
-                    }
-                  : undefined
-              }
               className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 border ${
                 isSelected
                   ? isSenior
-                    ? 'text-amber-300 border-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
-                    : 'text-white border-[#c084fc] shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                    ? 'text-amber-300 border-amber-400 bg-amber-400/20 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
+                    : 'text-white border-[#c084fc] bg-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
                   : isSenior
                   ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
                   : 'text-white/90 hover:text-white hover:bg-white/10 border-transparent'
