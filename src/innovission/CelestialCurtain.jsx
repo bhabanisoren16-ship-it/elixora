@@ -55,16 +55,16 @@ function cloudBank(seed) {
 }
 
 /**
- * Normal authentic celestial cloud layers:
- * Back to front in natural ink-to-paper tones (NOT neon).
- * The front paper bank (#ECE8DF) carries the "NOW ENTERING ELIXORA 2026" typography.
+ * Celestial Cloud Layers themed to ELIXORA's Cosmic Obsidian & Astral Violet palette:
+ * Back to front in rich deep space tones (Obsidian Void, Midnight Indigo, Astral Violet, Celestial Velvet).
+ * Natural inked contour folds define the cumulus ridges without harsh neon outlines.
  */
 const LAYERS = [
-  { color: '#141312', ink: '#000000', ...cloudBank(11) },
-  { color: '#3a3530', ink: '#1d1a17', ...cloudBank(23) },
-  { color: '#6e665c', ink: '#3d3832', ...cloudBank(37) },
-  { color: '#c9bfae', ink: '#857b6c', ...cloudBank(41) },
-  { color: '#ECE8DF', ink: '#a39b8d', ...cloudBank(59) },
+  { color: '#070a16', ink: '#101733', ...cloudBank(11) }, // Layer 0: Obsidian Deep Space Void
+  { color: '#0d132b', ink: '#1c2552', ...cloudBank(23) }, // Layer 1: Cosmic Midnight Indigo
+  { color: '#18123b', ink: '#2d2269', ...cloudBank(37) }, // Layer 2: Astral Amethyst Twilight
+  { color: '#271452', ink: '#422285', ...cloudBank(41) }, // Layer 3: Royal Nebula Violet
+  { color: '#130c2a', ink: '#2a1854', ...cloudBank(59) }, // Layer 4 (Front): Celestial Obsidian Nexus
 ];
 
 function Clouds({ l, flip }) {
@@ -106,7 +106,7 @@ export default function CelestialCurtain({
       }
     };
 
-    // Safety timeout: guarantee onComplete is called even if backgrounded or throttled
+    // Safety timeout: guarantee onComplete is called and curtain unmounts
     const safetyTimer = setTimeout(() => {
       completeOnce();
     }, 2400);
@@ -123,7 +123,7 @@ export default function CelestialCurtain({
 
       // 1. Initial State: Centered on the middle banner block (-33.333% of 300vh = -100vh)
       tl.set(layers, { yPercent: -33.333, force3D: true })
-        // 2. Brief settle, then layers lift sequentially to reveal the page underneath
+        // 2. Brief settle, then layers lift sequentially into the sky
         .to(layers, {
           yPercent: -100,
           duration: 1.5,
@@ -144,10 +144,10 @@ export default function CelestialCurtain({
       ref={containerRef}
       className="fixed inset-0 z-[99999] overflow-hidden pointer-events-none select-none w-screen h-screen"
     >
-      {/* Underlying Solid Mask */}
-      <div className="absolute inset-0 bg-[#141312] pointer-events-none" />
+      {/* Underlying Solid Theme Obsidian Mask */}
+      <div className="absolute inset-0 bg-[#040508] pointer-events-none" />
 
-      {/* 5 Normal Celestial Cloud Curtain Banks */}
+      {/* 5 Themed Celestial Cloud Curtain Banks */}
       {LAYERS.map((l, k) => (
         <div
           key={k}
@@ -160,16 +160,38 @@ export default function CelestialCurtain({
           {/* Middle Solid Banner Section */}
           {k === LAYERS.length - 1 ? (
             <div
-              className="relative h-[calc(100vh+4px)] -my-[2px] flex flex-col items-center justify-center gap-3 sm:gap-4 text-center px-4"
+              className="relative h-[calc(100vh+4px)] -my-[2px] flex flex-col items-center justify-center gap-3 sm:gap-4 text-center px-4 overflow-hidden"
               style={{ background: l.color }}
             >
-              <span className="font-mono text-xs sm:text-sm font-bold tracking-[0.38em] text-[#5c5346] uppercase">
-                NOW ENTERING
-              </span>
-              <h1 className="font-outfit font-black text-4xl sm:text-7xl md:text-8xl tracking-tight text-[#141312] drop-shadow-sm uppercase">
+              {/* Subtle Starfield Overlay */}
+              <img
+                src="/assets/starfield.svg"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-35 mix-blend-screen pointer-events-none"
+              />
+
+              {/* Glowing Telemetry Badge */}
+              <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/70 border border-cyan-400/40 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.25)]">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                <span className="font-mono text-[10px] sm:text-xs font-bold tracking-[0.35em] text-cyan-300 uppercase">
+                  NOW ENTERING
+                </span>
+              </div>
+
+              {/* Grand Glowing Event Title */}
+              <h1 className="relative z-10 font-outfit font-black text-4xl sm:text-7xl md:text-8xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-purple-200 drop-shadow-[0_0_35px_rgba(139,92,246,0.6)] uppercase">
                 {title}
               </h1>
-              <span className="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-[#3d3832] uppercase">
+
+              {/* Glowing Horizon Accent Divider */}
+              <div className="relative z-10 flex items-center gap-2.5 mt-0.5">
+                <span className="w-12 sm:w-20 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-purple-400" />
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_8px_#00f2fe] animate-pulse" />
+                <span className="w-12 sm:w-20 h-0.5 bg-gradient-to-l from-transparent via-cyan-400 to-purple-400" />
+              </div>
+
+              {/* Subtitle Telemetry */}
+              <span className="relative z-10 font-mono text-[9px] sm:text-xs tracking-[0.3em] text-purple-200/90 uppercase mt-1">
                 {subtitle}
               </span>
             </div>
