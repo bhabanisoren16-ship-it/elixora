@@ -233,22 +233,26 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 z-[120] bg-[#070617] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden transition-all duration-700 font-outfit ${
+      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden transition-all duration-700 font-outfit ${
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
+      style={{
+        backgroundColor: '#040508',
+        backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(26, 14, 56, 0.75) 0%, rgba(10, 8, 26, 0.96) 55%, #040508 100%)',
+      }}
     >
       {/* =========================================================================
           1. RADIAL CELESTIAL NEBULA & STARLIGHT BACKGROUND
          ========================================================================= */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Deep Cosmic Ambient Glowing Auroras */}
+        {/* Deep Cosmic Ambient Glowing Auroras in Theme Cyan & Cyber Violet */}
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/15 blur-[120px]" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-purple-600/20 blur-[120px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] rounded-full bg-fuchsia-600/12 blur-[130px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] rounded-full bg-violet-600/15 blur-[130px]" />
 
-        {/* Celestial Conic Alignment Lines */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[160vmax] h-[160vmax] rounded-full bg-[repeating-conic-gradient(from_0deg,rgba(0,242,254,0.03)_0deg_0.5deg,transparent_0.5deg_6deg)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1.5px)] bg-[size:28px_28px] opacity-40" />
+        {/* Celestial Conic Alignment Lines in Cyber Cyan */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[160vmax] h-[160vmax] rounded-full bg-[repeating-conic-gradient(from_0deg,rgba(0,242,254,0.025)_0deg_0.5deg,transparent_0.5deg_6deg)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1.5px)] bg-[size:28px_28px] opacity-30" />
 
         {/* Background Starfield Layer */}
         <img
@@ -345,7 +349,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           <defs>
             <linearGradient id="refreshProgressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#00f2fe" />
-              <stop offset="50%" stopColor="#d946ef" />
+              <stop offset="50%" stopColor="#a855f7" />
               <stop offset="100%" stopColor="#8b5cf6" />
             </linearGradient>
           </defs>
@@ -368,33 +372,36 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             strokeDasharray="307.9"
             strokeDashoffset="307.9"
             transform="rotate(-90 50 50)"
-            className="drop-shadow-[0_0_10px_rgba(217,70,239,0.8)]"
+            className="drop-shadow-[0_0_10px_rgba(168,85,247,0.7)]"
           />
         </svg>
 
         {/* Flare Shockwave on Conjunction Completion */}
         <span
           ref={flareRef}
-          className="absolute inset-[24%] rounded-full border-2 border-fuchsia-400 shadow-[0_0_30px_#d946ef] opacity-0 pointer-events-none z-30"
+          className="absolute inset-[24%] rounded-full border-2 border-violet-400 shadow-[0_0_30px_#8b5cf6] opacity-0 pointer-events-none z-30"
         />
 
         {/* Center Cosmic Starfield Disc with Live Numeric Counter */}
         <div
-          className="loader-disc absolute inset-[33%] rounded-full bg-[#060810] border border-fuchsia-500/40 overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.4),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10"
+          className="loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10"
+          style={{
+            background: 'radial-gradient(circle at center, #180e38 0%, #0a0718 70%, #040508 100%)',
+          }}
         >
           <img
             src="/assets/starfield.svg"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none"
+            className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none mix-blend-screen"
           />
           <div className="relative z-10 flex flex-col items-center justify-center text-center">
             <span
               ref={countRef}
-              className="font-outfit font-black text-3xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_12px_rgba(168,85,247,0.5)]"
+              className="font-outfit font-black text-3xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]"
             >
               000
             </span>
-            <span className="mt-1 font-mono text-[9px] sm:text-[10px] tracking-[0.3em] text-cyan-300/90 font-bold">
+            <span className="mt-1 font-mono text-[9px] sm:text-[10px] tracking-[0.35em] text-cyan-300 font-bold uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
               PERCENT
             </span>
           </div>
