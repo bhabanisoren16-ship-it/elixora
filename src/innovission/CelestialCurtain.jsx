@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
+/**
+ * Seeded random generator (mulberry32), draws deterministic celestial cloud silhouettes
+ */
 function seeded(seed) {
   return () => {
     seed = (seed + 0x6d2b79f5) | 0;
@@ -10,91 +13,84 @@ function seeded(seed) {
   };
 }
 
+const r1 = (n) => Math.round(n * 10) / 10;
+const circle = (cx, cy, r) =>
+  `M${r1(cx - r)} ${r1(cy)}a${r1(r)} ${r1(r)} 0 1 1 ${r1(2 * r)} 0a${r1(r)} ${r1(r)} 0 1 1 ${r1(-2 * r)} 0`;
+
 /**
- * Top celestial curtain gate path: fills from y=0 down to scalloped billowing peaks near middle
+ * Procedural celestial cumulus bank in a 2000x1125 box.
+ * `back` is the skyline: puffs along a wandering baseline with stacked towers.
+ * `front` is a lower ridge of big puffs reading as inked folds inside the cloud.
  */
-function generateTopGatePath(seed, crestY = 380, width = 2000) {
+function cloudBank(seed) {
   const rnd = seeded(seed);
-  let d = `M -100 0 L -100 ${crestY}`;
-  let currentX = -100;
-  let currentY = crestY;
+  const p1 = rnd() * 6.3;
+  const p2 = rnd() * 6.3;
+  const base = (x) => 640 + 75 * Math.sin(x / 290 + p1) + 35 * Math.sin(x / 110 + p2);
+  let back = 'M-100 780H2100V1125H-100Z';
+  let front = '';
 
-  while (currentX < width + 100) {
-    const lobeW = 100 + rnd() * 160;
-    const lobeH = 65 + rnd() * 110;
-    const peakX = currentX + lobeW * (0.4 + rnd() * 0.2);
-    const peakY = crestY + lobeH;
-    const nextX = currentX + lobeW;
-    const nextY = crestY + (rnd() - 0.5) * 30;
-
-    const cp1x = currentX + (peakX - currentX) * 0.35;
-    const cp1y = peakY - lobeH * 0.15;
-    const cp2x = peakX + (nextX - peakX) * 0.65;
-    const cp2y = peakY - lobeH * 0.15;
-
-    d += ` C ${Math.round(cp1x)} ${Math.round(cp1y)}, ${Math.round(cp2x)} ${Math.round(cp2y)}, ${Math.round(nextX)} ${Math.round(nextY)}`;
-    currentX = nextX;
-    currentY = nextY;
+  for (let x = -60; x < 2080; x += 45 + rnd() * 75) {
+    const cy = base(x) + rnd() * 40;
+    const r = Math.max(55 + rnd() * 105, 800 - cy);
+    back += circle(x, cy, r);
+    if (rnd() < 0.1) {
+      let ty = cy - r * 0.7;
+      let tr = r * 0.7;
+      for (let k = 0; k < 2 + rnd() * 2; k++) {
+        back += circle(x + (rnd() - 0.5) * tr * 0.6, ty, tr);
+        ty -= tr * 0.6;
+        tr *= 0.72;
+      }
+    }
   }
 
-  d += ` L ${width + 100} 0 Z`;
-  return d;
+  for (let x = -40; x < 2080; x += 140 + rnd() * 180) {
+    const r = 120 + rnd() * 110;
+    const cy = 1020 + rnd() * 110;
+    front += circle(x, cy, r) + circle(x + r * 0.8, cy + 30 + rnd() * 40, r * (0.6 + rnd() * 0.3));
+  }
+
+  return { back, front };
 }
 
 /**
- * Bottom celestial curtain gate path: fills from y=550 up to scalloped billowing peaks near middle
+ * Normal authentic celestial cloud layers:
+ * Back to front in natural ink-to-paper tones (NOT neon).
+ * The front paper bank (#ECE8DF) carries the "NOW ENTERING ELIXORA 2026" typography.
  */
-function generateBottomGatePath(seed, crestY = 170, width = 2000, height = 550) {
-  const rnd = seeded(seed);
-  let d = `M -100 ${height} L -100 ${crestY}`;
-  let currentX = -100;
-  let currentY = crestY;
-
-  while (currentX < width + 100) {
-    const lobeW = 100 + rnd() * 160;
-    const lobeH = 65 + rnd() * 110;
-    const peakX = currentX + lobeW * (0.4 + rnd() * 0.2);
-    const peakY = crestY - lobeH;
-    const nextX = currentX + lobeW;
-    const nextY = crestY + (rnd() - 0.5) * 30;
-
-    const cp1x = currentX + (peakX - currentX) * 0.35;
-    const cp1y = peakY + lobeH * 0.15;
-    const cp2x = peakX + (nextX - peakX) * 0.65;
-    const cp2y = peakY + lobeH * 0.15;
-
-    d += ` C ${Math.round(cp1x)} ${Math.round(cp1y)}, ${Math.round(cp2x)} ${Math.round(cp2y)}, ${Math.round(nextX)} ${Math.round(nextY)}`;
-    currentX = nextX;
-    currentY = nextY;
-  }
-
-  d += ` L ${width + 100} ${height} Z`;
-  return d;
-}
-
-const GATE_LAYERS = [
-  { color: '#090518', ink: '#38bdf8', seedTop: 11, topCrest: 460, seedBottom: 17, bottomCrest: 90 },
-  { color: '#13082e', ink: '#00f2fe', seedTop: 29, topCrest: 410, seedBottom: 31, bottomCrest: 140 },
-  { color: '#240c48', ink: '#ec4899', seedTop: 47, topCrest: 360, seedBottom: 53, bottomCrest: 190 },
-  { color: '#351163', ink: '#c084fc', seedTop: 67, topCrest: 310, seedBottom: 73, bottomCrest: 240 },
-  { color: '#1a0730', ink: '#e879f9', seedTop: 89, topCrest: 260, seedBottom: 97, bottomCrest: 290 },
+const LAYERS = [
+  { color: '#141312', ink: '#000000', ...cloudBank(11) },
+  { color: '#3a3530', ink: '#1d1a17', ...cloudBank(23) },
+  { color: '#6e665c', ink: '#3d3832', ...cloudBank(37) },
+  { color: '#c9bfae', ink: '#857b6c', ...cloudBank(41) },
+  { color: '#ECE8DF', ink: '#a39b8d', ...cloudBank(59) },
 ];
 
-const PRECOMPUTED_GATES = GATE_LAYERS.map((cfg) => ({
-  ...cfg,
-  topPath: generateTopGatePath(cfg.seedTop, cfg.topCrest),
-  bottomPath: generateBottomGatePath(cfg.seedBottom, cfg.bottomCrest),
-}));
+function Clouds({ l, flip }) {
+  return (
+    <svg
+      viewBox="0 0 2000 1125"
+      preserveAspectRatio="xMidYMax slice"
+      className="block w-full h-screen pointer-events-none select-none"
+      style={{ transform: flip ? 'scaleY(-1)' : undefined }}
+    >
+      <path d={l.back} fill={l.color} stroke={l.ink} strokeWidth="5" vectorEffect="non-scaling-stroke" />
+      <path d={l.back} fill={l.color} />
+      <path d={l.front} fill={l.color} stroke={l.ink} strokeWidth="4" vectorEffect="non-scaling-stroke" />
+      <path d={l.front} fill={l.color} />
+    </svg>
+  );
+}
 
 export default function CelestialCurtain({
   onComplete,
   title = 'ELIXORA 2026',
-  subtitle = 'CELESTIAL ODYSSEY · A NIGHT TO REMEMBER',
+  subtitle = 'A NIGHT TO REMEMBER · CELESTIAL ODYSSEY',
 }) {
   const containerRef = useRef(null);
   const onCompleteRef = useRef(onComplete);
 
-  // Keep callback reference updated without triggering re-runs
   useEffect(() => {
     onCompleteRef.current = onComplete;
   });
@@ -110,16 +106,13 @@ export default function CelestialCurtain({
       }
     };
 
-    // Safety timeout: guarantee onComplete is called and curtain unmounts even if GSAP is throttled
+    // Safety timeout: guarantee onComplete is called even if backgrounded or throttled
     const safetyTimer = setTimeout(() => {
       completeOnce();
-    }, 1700);
+    }, 2400);
 
     const ctx = gsap.context(() => {
-      const topLayers = gsap.utils.toArray('.gate-top-layer');
-      const bottomLayers = gsap.utils.toArray('.gate-bottom-layer');
-      const backdrop = containerRef.current.querySelector('.gate-backdrop');
-      const centerChamber = containerRef.current.querySelector('.gate-center-chamber');
+      const layers = gsap.utils.toArray('.curtain-layer');
 
       const tl = gsap.timeline({
         onComplete: () => {
@@ -128,40 +121,16 @@ export default function CelestialCurtain({
         },
       });
 
-      // 1. Initial State: Curtains fully cover the viewport
-      tl.set(topLayers, { yPercent: 0, force3D: true })
-        .set(bottomLayers, { yPercent: 0, force3D: true })
-        .set(backdrop, { opacity: 1, force3D: true })
-        .set(centerChamber, { opacity: 1, scale: 1, force3D: true })
-
-        // 2. Brief 0.1s dramatic anticipation, then curtains part open
-        .to(topLayers, {
-          yPercent: -105,
-          duration: 0.85,
+      // 1. Initial State: Centered on the middle banner block (-33.333% of 300vh = -100vh)
+      tl.set(layers, { yPercent: -33.333, force3D: true })
+        // 2. Brief settle, then layers lift sequentially to reveal the page underneath
+        .to(layers, {
+          yPercent: -100,
+          duration: 1.5,
           ease: 'power3.inOut',
-          stagger: 0.035,
-          delay: 0.1,
-        })
-        .to(bottomLayers, {
-          yPercent: 105,
-          duration: 0.85,
-          ease: 'power3.inOut',
-          stagger: 0.035,
-          delay: 0.1,
-        }, '<')
-        .to(centerChamber, {
-          opacity: 0,
-          scale: 1.05,
-          duration: 0.5,
-          ease: 'power2.in',
-          delay: 0.05,
-        }, '<')
-        .to(backdrop, {
-          opacity: 0,
-          duration: 0.55,
-          ease: 'power2.inOut',
+          stagger: 0.075,
           delay: 0.15,
-        }, '<');
+        });
     }, containerRef);
 
     return () => {
@@ -175,106 +144,46 @@ export default function CelestialCurtain({
       ref={containerRef}
       className="fixed inset-0 z-[99999] overflow-hidden pointer-events-none select-none w-screen h-screen"
     >
-      {/* 0. Deep Cosmic Night Backdrop Veil */}
-      <div
-        className="gate-backdrop absolute inset-0 pointer-events-none will-change-opacity"
-        style={{
-          background: 'radial-gradient(ellipse at center, rgba(46, 16, 80, 0.6) 0%, rgba(13, 8, 30, 0.96) 65%, #05020c 100%)',
-        }}
-      />
+      {/* Underlying Solid Mask */}
+      <div className="absolute inset-0 bg-[#141312] pointer-events-none" />
 
-      {/* 1. Top Celestial Curtain Gate Banks (Billow upward off-screen) */}
-      {PRECOMPUTED_GATES.map((l, k) => (
+      {/* 5 Normal Celestial Cloud Curtain Banks */}
+      {LAYERS.map((l, k) => (
         <div
-          key={`top-${k}`}
-          className="gate-top-layer absolute top-0 left-0 w-full h-[56vh] will-change-transform pointer-events-none"
+          key={k}
+          className="curtain-layer absolute top-0 left-0 w-full h-[300vh] will-change-transform pointer-events-none"
+          style={{ transform: 'translateY(-33.333%)' }}
         >
-          <svg
-            viewBox="0 0 2000 550"
-            preserveAspectRatio="none"
-            className="block w-full h-full pointer-events-none select-none"
-          >
-            <path
-              d={l.topPath}
-              fill={l.color}
-              style={{ filter: `drop-shadow(0 4px 16px ${l.ink}55)` }}
+          {/* Top Cloud Skyline Bank */}
+          <Clouds l={l} />
+
+          {/* Middle Solid Banner Section */}
+          {k === LAYERS.length - 1 ? (
+            <div
+              className="relative h-[calc(100vh+4px)] -my-[2px] flex flex-col items-center justify-center gap-3 sm:gap-4 text-center px-4"
+              style={{ background: l.color }}
+            >
+              <span className="font-mono text-xs sm:text-sm font-bold tracking-[0.38em] text-[#5c5346] uppercase">
+                NOW ENTERING
+              </span>
+              <h1 className="font-outfit font-black text-4xl sm:text-7xl md:text-8xl tracking-tight text-[#141312] drop-shadow-sm uppercase">
+                {title}
+              </h1>
+              <span className="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-[#3d3832] uppercase">
+                {subtitle}
+              </span>
+            </div>
+          ) : (
+            <div
+              className="h-[calc(100vh+4px)] -my-[2px]"
+              style={{ background: l.color }}
             />
-            <path
-              d={l.topPath}
-              fill="none"
-              stroke={l.ink}
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              vectorEffect="non-scaling-stroke"
-            />
-          </svg>
+          )}
+
+          {/* Bottom Trailing Edge Cloud Bank (Flips to lift off the screen) */}
+          <Clouds l={l} flip />
         </div>
       ))}
-
-      {/* 2. Bottom Celestial Curtain Gate Banks (Billow downward off-screen) */}
-      {PRECOMPUTED_GATES.map((l, k) => (
-        <div
-          key={`bottom-${k}`}
-          className="gate-bottom-layer absolute bottom-0 left-0 w-full h-[56vh] will-change-transform pointer-events-none"
-        >
-          <svg
-            viewBox="0 0 2000 550"
-            preserveAspectRatio="none"
-            className="block w-full h-full pointer-events-none select-none"
-          >
-            <path
-              d={l.bottomPath}
-              fill={l.color}
-              style={{ filter: `drop-shadow(0 -4px 16px ${l.ink}55)` }}
-            />
-            <path
-              d={l.bottomPath}
-              fill="none"
-              stroke={l.ink}
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              vectorEffect="non-scaling-stroke"
-            />
-          </svg>
-        </div>
-      ))}
-
-      {/* 3. Glowing Center Chamber (Floating celestial beacon & portal insignia) */}
-      <div
-        className="gate-center-chamber absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 sm:gap-4 text-center px-4 overflow-hidden pointer-events-none will-change-opacity will-change-transform"
-      >
-        {/* Subtle Cosmic Starfield Overlay */}
-        <img
-          src="/assets/starfield.svg"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-screen pointer-events-none"
-        />
-
-        {/* Glowing Beacon Pill */}
-        <div className="relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-400/60 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.4)]">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-          <span className="font-mono text-[10px] sm:text-xs font-bold tracking-[0.35em] text-cyan-300 uppercase">
-            CELESTIAL GATEWAY · OPENING
-          </span>
-        </div>
-
-        {/* Grand Glowing Event Title */}
-        <h1 className="relative z-10 font-outfit font-black text-3xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-purple-200 drop-shadow-[0_0_40px_rgba(139,92,246,0.9)] uppercase">
-          {title}
-        </h1>
-
-        {/* Glowing Horizon Accent Divider */}
-        <div className="relative z-10 flex items-center gap-2.5 mt-1">
-          <span className="w-12 sm:w-24 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-purple-400" />
-          <span className="w-2 h-2 rounded-full bg-cyan-300 shadow-[0_0_12px_#00f2fe] animate-pulse" />
-          <span className="w-12 sm:w-24 h-0.5 bg-gradient-to-l from-transparent via-cyan-400 to-purple-400" />
-        </div>
-
-        {/* Subtitle Telemetry */}
-        <span className="relative z-10 font-mono text-[9px] sm:text-xs tracking-[0.3em] text-purple-200/90 uppercase mt-1">
-          {subtitle}
-        </span>
-      </div>
     </div>
   );
 }
