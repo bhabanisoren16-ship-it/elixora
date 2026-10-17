@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import Background from './components/Background';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
@@ -8,7 +8,7 @@ import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
 import CinematicIntro from './components/CinematicIntro';
-import { SciFiOrbitalLoader, CyberneticHud, initGlobalScrambleListener } from './innovission';
+import { SciFiOrbitalLoader, CelestialCurtain, CyberneticHud, initGlobalScrambleListener } from './innovission';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
@@ -93,6 +93,7 @@ export default function App() {
   const [initialLoad] = useState(detectInitialLoadState);
   const [showHomeLoadingPage, setShowHomeLoadingPage] = useState(initialLoad.isHomeLoading);
   const [showRefreshPage, setShowRefreshPage] = useState(initialLoad.isRefresh);
+  const [showCurtain, setShowCurtain] = useState(false);
 
   // Initialize global hover ScrambleText listener
   useEffect(() => {
@@ -210,17 +211,23 @@ export default function App() {
     scrollToTarget('#register');
   };
 
+  const handleCurtainComplete = useCallback(() => {
+    setShowCurtain(false);
+  }, []);
+
   // When user clicks the ENTER button on the Home Screen Loading Page:
   const handleHomeLoadingEnter = () => {
     try {
       sessionStorage.setItem('elixora_entered_homepage', 'true');
     } catch (e) {}
     setShowHomeLoadingPage(false);
+    setShowCurtain(true);
   };
 
   // When the Refresh Page finishes its telemetry synchronization:
   const handleRefreshComplete = () => {
     setShowRefreshPage(false);
+    setShowCurtain(true);
   };
 
   // Replaying intro from HUD replays the Home Screen Loading Page with the ENTER button:
@@ -244,6 +251,13 @@ export default function App() {
         <SciFiOrbitalLoader
           duration={1.2}
           onComplete={handleRefreshComplete}
+        />
+      )}
+
+      {/* 0.2. Celestial Curtains Reveal (Plays exclusively after loading the page) */}
+      {showCurtain && (
+        <CelestialCurtain
+          onComplete={handleCurtainComplete}
         />
       )}
 
