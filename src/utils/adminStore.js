@@ -428,18 +428,35 @@ export const adminStore = {
     return result;
   },
 
-  deleteRegistration(ticketId) {
+  deleteRegistration(ticketId, rollNo = null) {
     const list = this.getRegistrations();
-    const updated = list.filter((item) => item.ticketId !== ticketId);
+    const cleanRoll = rollNo ? (rollNo + '').trim().toUpperCase() : null;
+
+    const target = list.find((item) => 
+      (ticketId && item.ticketId === ticketId) || 
+      (cleanRoll && item.rollNo === cleanRoll) ||
+      (ticketId && item.rollNo === (ticketId + '').trim().toUpperCase())
+    );
+
+    const targetRoll = cleanRoll || target?.rollNo;
+    const targetTicket = ticketId || target?.ticketId;
+
+    const updated = list.filter((item) => {
+      if (targetTicket && item.ticketId === targetTicket) return false;
+      if (targetRoll && item.rollNo === targetRoll) return false;
+      return true;
+    });
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
 
-    // Sync delete to Supabase
+    // Sync delete to Supabase using student's roll number or id
     if (isSupabaseConfigured()) {
-      deleteRegistrationFromSupabase(ticketId).catch(() => {});
+      deleteRegistrationFromSupabase(targetRoll || targetTicket).catch((err) => {
+        console.warn('[ELIXORA Supabase] Delete error:', err);
+      });
     }
 
     // Sync delete to backend
-    fetch(`/api/registrations/${ticketId}`, {
+    fetch(`/api/registrations/${targetTicket || targetRoll}`, {
       method: 'DELETE',
     }).catch(() => {});
   },

@@ -217,14 +217,15 @@ export function updateRegistration(ticketId, updates) {
 /**
  * Delete a registration
  */
-export function deleteRegistration(ticketId) {
+export function deleteRegistration(identifier) {
   initDb();
   const current = getRegistrations();
-  const nextList = current.filter((r) => r.ticketId !== ticketId);
+  const cleanId = (identifier || '').trim().toUpperCase();
+  const nextList = current.filter((r) => r.ticketId !== identifier && (r.rollNo || '').trim().toUpperCase() !== cleanId);
 
   if (nextList.length !== current.length) {
     saveRegistrations(nextList);
-    broadcastSSE('delete_registration', { ticketId });
+    broadcastSSE('delete_registration', { ticketId: identifier });
     return true;
   }
   return false;

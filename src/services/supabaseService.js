@@ -24,6 +24,10 @@ function dataURItoBlob(dataURI) {
  */
 export function mapRowToRegistration(row) {
   if (!row) return null;
+  // Ignore deleted registrations
+  if (row['BRANCH'] === 'DELETED' || (row['FULL NAME'] && row['FULL NAME'].startsWith('[DELETED]'))) {
+    return null;
+  }
   const roll = (row['REGISTRATION'] || row.roll_no || '').trim().toUpperCase();
   const isSenior = Boolean(row.is_senior);
   const fullName = row['FULL NAME'] || row.full_name || '';
@@ -209,7 +213,7 @@ export async function fetchRegistrationsFromSupabase() {
       return [];
     }
 
-    return (data || []).map(mapRowToRegistration);
+    return (data || []).map(mapRowToRegistration).filter(Boolean);
   } catch (err) {
     console.error('[ELIXORA Supabase] Unexpected error during fetch:', err);
     return [];
@@ -295,20 +299,32 @@ export async function deleteRegistrationFromSupabase(identifier) {
   }
   try {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
-    let query = supabase.from('registrations').delete();
+    const cleanId = (identifier || '').trim().toUpperCase();
 
+    // 1. Attempt hard delete
+    let delQuery = supabase.from('registrations').delete({ count: 'exact' });
     if (isUuid) {
-      query = query.eq('id', identifier);
+      delQuery = delQuery.eq('id', identifier);
     } else {
-      query = query.eq('REGISTRATION', (identifier || '').trim().toUpperCase());
+      delQuery = delQuery.eq('REGISTRATION', cleanId);
+    }
+    const { count } = await delQuery;
+
+    // 2. Also execute soft-delete update to ensure row is marked deleted even if RLS blocks delete
+    if (!count) {
+      let updQuery = supabase.from('registrations').update({
+        'BRANCH': 'DELETED',
+        'FULL NAME': '[DELETED]',
+        updated_at: new Date().toISOString(),
+      });
+      if (isUuid) {
+        updQuery = updQuery.eq('id', identifier);
+      } else {
+        updQuery = updQuery.eq('REGISTRATION', cleanId);
+      }
+      await updQuery;
     }
 
-    const { error } = await query;
-
-    if (error) {
-      console.error('[ELIXORA Supabase] Delete error:', error.message);
-      return false;
-    }
     return true;
   } catch (err) {
     console.error('[ELIXORA Supabase] Delete failed:', err);

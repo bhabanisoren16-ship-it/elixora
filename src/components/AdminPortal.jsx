@@ -270,13 +270,11 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     }
   };
 
-  const handleDelete = (ticketId, name) => {
-    if (window.confirm(`Permanently remove registration for "${name}" (${ticketId})?`)) {
-      adminStore.deleteRegistration(ticketId);
-      setRegistrations(adminStore.getRegistrations());
-      notifySuccess(`Registration ${ticketId} deleted.`);
-      soundController.playClick?.();
-    }
+  const handleDelete = (ticketId, name, rollNo) => {
+    adminStore.deleteRegistration(ticketId, rollNo);
+    setRegistrations((prev) => prev.filter((r) => r.ticketId !== ticketId && (!rollNo || r.rollNo !== rollNo)));
+    notifySuccess(`Registration for "${name || ticketId}" deleted.`);
+    soundController.playClick?.();
   };
 
 
@@ -1310,9 +1308,12 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
                                     {/* Delete Button */}
                                     <button
-                                      onClick={() => handleDelete(item.ticketId, item.fullName)}
-                                      className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors"
-                                      title="Delete Registration"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(item.ticketId, item.fullName, item.rollNo);
+                                      }}
+                                      className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors cursor-pointer"
+                                      title="Delete Registration Row"
                                     >
                                       <Trash2 className="w-3.5 h-3.5" />
                                     </button>
