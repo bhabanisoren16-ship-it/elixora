@@ -317,13 +317,13 @@ export default function Background() {
           }}
         />
 
-        {/* Mobile Screen (< md): Native Portrait Fullscreen Cover with Organic Breathing */}
+        {/* Mobile Screen (< md): Native Portrait Fullscreen Cover completely frozen in place */}
         <img
           src={mobileBg}
           alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="block md:hidden w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.04] animate-mobile-breathe"
+          className="block md:hidden w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.04]"
           style={{
             position: 'absolute',
             top: 0,
@@ -332,6 +332,10 @@ export default function Background() {
             height: '100%',
             objectFit: 'cover',
             objectPosition: 'center center',
+            transform: 'none',
+            WebkitTransform: 'none',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
           }}
         />
 

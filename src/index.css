@@ -96,16 +96,19 @@ html, body {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    transform: none !important;
-    -webkit-transform: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    height: -webkit-fill-available !important;
+    transform: translate3d(0, 0, 0) !important;
+    -webkit-transform: translate3d(0, 0, 0) !important;
     will-change: auto !important;
     overflow: hidden !important;
     z-index: 0 !important;
     pointer-events: none !important;
     -webkit-touch-callout: none !important;
     user-select: none !important;
+    contain: strict !important;
   }
 
   .mobile-fixed-background img {
@@ -115,11 +118,20 @@ html, body {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    object-position: center 20% !important;
+    object-position: center center !important;
+    animation: none !important;
     transform: none !important;
     -webkit-transform: none !important;
     will-change: auto !important;
     pointer-events: none !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
+  }
+
+  .animate-mobile-breathe {
+    animation: none !important;
+    transform: none !important;
+    -webkit-transform: none !important;
   }
 }
 
