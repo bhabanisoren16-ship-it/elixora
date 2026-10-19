@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { adminStore } from '../utils/adminStore';
+import { scrambleText } from '../innovission/scrambleText';
 
 const TITLE_LETTERS = [
   { char: 'E', color: 'from-white via-[#dcf7ff] to-[#38bdf8]' },
@@ -23,6 +24,17 @@ export default function HeroSection({ onGrabPassClick }) {
   const [settings, setSettings] = useState(() => adminStore.getSettings());
   const lettersRef = useRef([]);
   const titleContainerRef = useRef(null);
+  const grabPassRef = useRef(null);
+
+  // Initial sci-fi decode scramble effect for the main CTA button
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (grabPassRef.current) {
+        scrambleText(grabPassRef.current, 'GRAB YOUR PASS', { duration: 0.55 });
+      }
+    }, 700);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Direct Tap / Click impulse for mobile & desktop
   const kickLetter = (idx) => {
@@ -266,8 +278,17 @@ export default function HeroSection({ onGrabPassClick }) {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 mt-1 sm:mt-2">
           <button
+            onMouseEnter={() => {
+              soundController.playHover?.();
+              if (grabPassRef.current) {
+                scrambleText(grabPassRef.current, 'GRAB YOUR PASS', { duration: 0.42 });
+              }
+            }}
             onClick={() => {
               soundController.playClick?.();
+              if (grabPassRef.current) {
+                scrambleText(grabPassRef.current, 'GRAB YOUR PASS', { duration: 0.35 });
+              }
               if (onGrabPassClick) {
                 onGrabPassClick();
               } else {
@@ -276,7 +297,14 @@ export default function HeroSection({ onGrabPassClick }) {
             }}
             className="w-full sm:w-auto px-5 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine cursor-pointer"
           >
-            <span>GRAB YOUR PASS</span>
+            <span
+              ref={grabPassRef}
+              data-scr
+              data-text="GRAB YOUR PASS"
+              className="inline-block select-none"
+            >
+              GRAB YOUR PASS
+            </span>
             <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
           </button>
 

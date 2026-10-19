@@ -97,8 +97,8 @@ export function initGlobalScrambleListener() {
   if (typeof window === 'undefined') return () => {};
 
   const handlePointerEnter = (e) => {
-    // Only scramble text elements within the navigation bar
-    const target = e.target.closest('header [data-scr], nav [data-scr]');
+    // Scramble text elements marked with [data-scr]
+    const target = e.target.closest('[data-scr]');
     if (!target) return;
 
     const text = target.getAttribute('data-text') || target.textContent;
