@@ -232,14 +232,14 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                     const textEl = e.currentTarget.querySelector('[data-scr]');
                     if (textEl) scrambleText(textEl, link.name, { duration: 0.38 });
                   }}
-                  className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 active:scale-95 group border ${
+                  className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 active:scale-95 group ${
                     isSelected
                       ? isSenior
-                        ? 'text-amber-300 border-amber-400 bg-amber-400/20 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
-                        : 'text-white border-[#c084fc] bg-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                        ? 'text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]'
+                        : 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]'
                       : isSenior
-                      ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
-                      : 'text-white/90 hover:text-white hover:bg-white/10 border-white/5 hover:border-white/20'
+                      ? 'text-amber-400/90 hover:text-amber-300'
+                      : 'text-white/70 hover:text-white'
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
@@ -298,14 +298,14 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                   scrambleText(textEl, link.name, { duration: 0.38 });
                 }
               }}
-              className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 border ${
+              className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 ${
                 isSelected
                   ? isSenior
-                    ? 'text-amber-300 border-amber-400 bg-amber-400/20 shadow-[0_0_15px_rgba(251,191,36,0.5)]'
-                    : 'text-white border-[#c084fc] bg-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.5)]'
+                    ? 'text-amber-300 font-bold drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]'
+                    : 'text-white font-bold drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]'
                   : isSenior
-                  ? 'text-amber-300 hover:text-amber-200 bg-amber-400/10 hover:bg-amber-400/20 border-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.25)]'
-                  : 'text-white/90 hover:text-white hover:bg-white/10 border-transparent'
+                  ? 'text-amber-400/90 hover:text-amber-300'
+                  : 'text-white/70 hover:text-white'
               }`}
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
