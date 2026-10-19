@@ -6,7 +6,6 @@ import {
   Download, 
   X, 
   CheckCircle2, 
-  ShieldCheck, 
   ArrowLeft,
   Lock,
   Check
@@ -395,50 +394,6 @@ export default function HolographicTicketModal({ passData, onClose }) {
                       {safeData.isSenior ? 'VIP Lounge' : 'Arena Floor'}
                     </span>
                   </div>
-                </div>
-
-              </div>
-
-              {/* LOWER ADMISSION QR & BARCODE SECTION */}
-              <div className="relative z-20 p-5 sm:p-6 pt-3.5 bg-obsidian-950/70 border-t border-amber-400/20">
-                
-                <div className="flex items-center justify-between gap-3">
-                  {/* Left: Ticket Pass ID & Verification info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[9px] font-mono text-amber-400 uppercase tracking-widest">
-                      TICKET PASS ID
-                    </div>
-                    
-                    {/* Ticket ID */}
-                    <div className="font-outfit font-black text-xl text-white tracking-widest mt-0.5 truncate">
-                      {safeData.ticketId}
-                    </div>
-
-                    <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      UTR: <span className="text-slate-300">{safeData.utrNumber ? `${safeData.utrNumber.slice(0, 6)}••••` : 'VERIFIED'}</span>
-                    </div>
-                  </div>
-
-                  {/* Right: High-Density Admission QR Code with Animated Scanline */}
-                  <div className="relative p-1.5 bg-white rounded-xl shadow-xl shrink-0 overflow-hidden border border-amber-400/40">
-                    {ticketQrUrl ? (
-                      <img src={ticketQrUrl} alt="Pass QR" className="w-16 h-16 sm:w-20 sm:h-20 block" />
-                    ) : (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-900 rounded" />
-                    )}
-
-                    {/* Animated Neon Cyan Laser Scan Beam */}
-                    <div className="absolute inset-x-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_#00f2fe] animate-laser-scan pointer-events-none" />
-                  </div>
-                </div>
-
-                {/* Security Hologram Strip at bottom */}
-                <div className="mt-2.5 pt-1.5 border-t border-white/5 flex items-center justify-between text-[8px] font-mono text-slate-400">
-                  <span className="flex items-center gap-1 text-amber-300">
-                    <ShieldCheck className="w-3 h-3 text-amber-400" />
-                    <span>AUTHENTICATED FESTIVAL PASS</span>
-                  </span>
-                  <span className="font-mono text-cyan-300">SEC-HASH #8942-ELX</span>
                 </div>
 
               </div>
