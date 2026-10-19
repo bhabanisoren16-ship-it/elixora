@@ -1,6 +1,6 @@
 // Central Store & State Manager for ELIXORA 2.0 Admin Portal
-import { EVENT_DETAILS } from './calendar';
-import { isSupabaseConfigured } from '../lib/supabase';
+import { EVENT_DETAILS } from './calendar.js';
+import { isSupabaseConfigured } from '../lib/supabase.js';
 import { 
   saveRegistrationToSupabase, 
   fetchRegistrationsFromSupabase, 
@@ -8,7 +8,7 @@ import {
   updateAttendanceInSupabase, 
   deleteRegistrationFromSupabase,
   subscribeToSupabaseRegistrations 
-} from '../services/supabaseService';
+} from '../services/supabaseService.js';
 
 // Initial official registered seniors roster (Verified from official college roster)
 export const DEFAULT_SENIOR_ROSTER = {
@@ -59,6 +59,7 @@ const INITIAL_SAMPLE_REGISTRATIONS = [];
 
 const STORAGE_KEYS = {
   REGISTRATIONS: 'elixora_registrations_v4',
+  DELETED_IDS: 'elixora_deleted_registrations_v1',
   ROSTER: 'elixora_senior_roster_v3',
   SETTINGS: 'elixora_admin_settings_v3',
   AUTH: 'elixora_admin_auth_v3',
@@ -101,6 +102,7 @@ const DEFAULT_SETTINGS = {
 // Safe storage utilities
 function safeGet(key, defaultVal) {
   try {
+    if (typeof localStorage === 'undefined') return defaultVal;
     const raw = localStorage.getItem(key);
     if (!raw) return defaultVal;
     return JSON.parse(raw);
@@ -112,8 +114,11 @@ function safeGet(key, defaultVal) {
 
 function safeSet(key, val) {
   try {
+    if (typeof localStorage === 'undefined') return;
     localStorage.setItem(key, JSON.stringify(val));
-    window.dispatchEvent(new CustomEvent('elixora_admin_update', { detail: { key } }));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('elixora_admin_update', { detail: { key } }));
+    }
   } catch (err) {
     console.warn('Storage write failed:', err);
   }
@@ -133,10 +138,19 @@ async function fetchRegistrationsFromBackend() {
       const supaList = await fetchRegistrationsFromSupabase();
       if (Array.isArray(supaList)) {
         const currentLocal = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+        const deletedIds = new Set(safeGet(STORAGE_KEYS.DELETED_IDS, []));
 
-        // Auto-sync any local items not yet in Supabase
+        // Filter out any deleted items from supaList
+        const activeSupaList = supaList.filter(
+          (s) => !deletedIds.has(s.ticketId) && !deletedIds.has(s.rollNo)
+        );
+
+        // Auto-sync any local items not yet in Supabase (excluding deleted items)
         const unSyncedLocal = currentLocal.filter((loc) => 
-          loc.rollNo && !supaList.some((s) => s.rollNo === loc.rollNo)
+          loc.rollNo && 
+          !deletedIds.has(loc.rollNo) && 
+          !deletedIds.has(loc.ticketId) &&
+          !activeSupaList.some((s) => s.rollNo === loc.rollNo)
         );
         if (unSyncedLocal.length > 0) {
           console.info(`[ELIXORA Supabase] Auto-syncing ${unSyncedLocal.length} local registration(s) to Supabase...`);
@@ -147,10 +161,14 @@ async function fetchRegistrationsFromBackend() {
           }
         }
 
-        // Merge: Supabase records take priority, plus any local ones pending sync
-        const merged = [...supaList];
+        // Merge: active Supabase records take priority, plus any local ones pending sync
+        const merged = [...activeSupaList];
         for (const loc of currentLocal) {
-          if (!merged.some((m) => (m.ticketId && m.ticketId === loc.ticketId) || (m.rollNo && m.rollNo === loc.rollNo))) {
+          if (
+            !deletedIds.has(loc.ticketId) && 
+            !deletedIds.has(loc.rollNo) &&
+            !merged.some((m) => (m.ticketId && m.ticketId === loc.ticketId) || (m.rollNo && m.rollNo === loc.rollNo))
+          ) {
             merged.push(loc);
           }
         }
@@ -286,6 +304,7 @@ function startRealTimeSync() {
 export const adminStore = {
   // Initialize storage with defaults if not present
   init() {
+    if (typeof localStorage === 'undefined') return;
     if (!localStorage.getItem(STORAGE_KEYS.REGISTRATIONS)) {
       safeSet(STORAGE_KEYS.REGISTRATIONS, INITIAL_SAMPLE_REGISTRATIONS);
     }
@@ -450,6 +469,11 @@ export const adminStore = {
     const targetRoll = cleanRoll || target?.rollNo;
     const targetTicket = ticketId || target?.ticketId;
 
+    // Track in DELETED_IDS so it is NEVER restored or re-synced
+    const deletedIds = safeGet(STORAGE_KEYS.DELETED_IDS, []);
+    const newDeleted = Array.from(new Set([...deletedIds, targetTicket, targetRoll].filter(Boolean)));
+    safeSet(STORAGE_KEYS.DELETED_IDS, newDeleted);
+
     const updated = list.filter((item) => {
       if (targetTicket && item.ticketId === targetTicket) return false;
       if (targetRoll && item.rollNo === targetRoll) return false;
@@ -532,9 +556,25 @@ export const adminStore = {
     safeSet(STORAGE_KEYS.ROSTER, updated);
   },
 
+  updateSeniorInRoster(oldRoll, newRoll, seniorData) {
+    const roster = this.getSeniorRoster();
+    const cleanOld = (oldRoll + '').trim().toUpperCase();
+    const cleanNew = (newRoll + '').trim().toUpperCase();
+    const updated = { ...roster };
+    if (cleanOld !== cleanNew) {
+      delete updated[cleanOld];
+    }
+    updated[cleanNew] = {
+      name: seniorData.name,
+      branch: seniorData.branch || 'Biotechnology',
+      batch: seniorData.batch || "Batch of '25 • Senior",
+    };
+    safeSet(STORAGE_KEYS.ROSTER, updated);
+  },
+
   deleteSeniorFromRoster(rollNo) {
     const roster = this.getSeniorRoster();
-    const cleanRoll = rollNo.trim().toUpperCase();
+    const cleanRoll = (rollNo + '').trim().toUpperCase();
     const updated = { ...roster };
     delete updated[cleanRoll];
     safeSet(STORAGE_KEYS.ROSTER, updated);

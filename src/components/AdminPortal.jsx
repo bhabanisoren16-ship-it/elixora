@@ -77,6 +77,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   const [rejectingItem, setRejectingItem] = useState(null); // ticketId for rejection prompt
   const [rejectionReason, setRejectionReason] = useState('');
   const [editingItem, setEditingItem] = useState(null); // Registration object being edited
+  const [editingSenior, setEditingSenior] = useState(null); // Senior roster object being edited
   const [copiedId, setCopiedId] = useState(null);
   const [actionSuccessMsg, setActionSuccessMsg] = useState('');
 
@@ -303,6 +304,25 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     setRoster(adminStore.getSeniorRoster());
     notifySuccess(`Senior "${name}" (${rollNo}) removed from roster.`);
     soundController.playClick?.();
+  };
+
+  const handleSaveSeniorEdit = (e) => {
+    e.preventDefault();
+    if (!editingSenior) return;
+    const cleanRoll = (editingSenior.rollNo || '').trim().toUpperCase();
+    if (!cleanRoll || !editingSenior.name?.trim()) {
+      alert('Please fill at least the Senior Name and Roll Number.');
+      return;
+    }
+    adminStore.updateSeniorInRoster(editingSenior.originalRollNo, cleanRoll, {
+      name: editingSenior.name.trim(),
+      branch: editingSenior.branch || 'Biotechnology',
+      batch: editingSenior.batch || "Batch of '25 • Senior",
+    });
+    setRoster(adminStore.getSeniorRoster());
+    setEditingSenior(null);
+    notifySuccess(`Updated senior "${editingSenior.name}" (${cleanRoll}).`);
+    soundController.playSuccess?.();
   };
 
 
@@ -1428,6 +1448,22 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                 UNREGISTERED
                               </span>
                             )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditingSenior({
+                                  originalRollNo: senior.rollNo,
+                                  rollNo: senior.rollNo,
+                                  name: senior.name,
+                                  branch: senior.branch,
+                                  batch: senior.batch,
+                                });
+                              }}
+                              className="p-1 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 border border-transparent hover:border-cyan-500/30 transition-colors cursor-pointer"
+                              title={`Edit details for ${senior.name}`}
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -2719,6 +2755,108 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                   >
                     <Save className="w-3.5 h-3.5" />
                     <span>Save & Sync</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* MODAL 6: EDIT SENIOR ROSTER ENTRY */}
+      {/* ===================================================================== */}
+      {editingSenior && (
+        <div className="fixed inset-0 z-[125] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-obsidian-900 border border-cyan-500/50 rounded-2xl shadow-2xl p-5 text-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+              <div>
+                <h3 className="font-outfit font-bold text-base text-white flex items-center gap-2">
+                  <Edit3 className="w-4 h-4 text-cyan-400" />
+                  Edit Senior Roster Member
+                </h3>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">
+                  Roll: <span className="text-cyan-300 font-bold">{editingSenior.originalRollNo}</span>
+                </p>
+              </div>
+              <button
+                onClick={() => setEditingSenior(null)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveSeniorEdit} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">Senior Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={editingSenior.name || ''}
+                  onChange={(e) => setEditingSenior({ ...editingSenior, name: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">Registration / Roll No *</label>
+                <input
+                  type="text"
+                  required
+                  value={editingSenior.rollNo || ''}
+                  onChange={(e) => setEditingSenior({ ...editingSenior, rollNo: e.target.value.toUpperCase() })}
+                  className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white font-mono uppercase focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">Branch / Department</label>
+                <input
+                  type="text"
+                  value={editingSenior.branch || 'Biotechnology'}
+                  onChange={(e) => setEditingSenior({ ...editingSenior, branch: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1">Batch / Cohort</label>
+                <input
+                  type="text"
+                  value={editingSenior.batch || "Batch of '25 • Senior"}
+                  onChange={(e) => setEditingSenior({ ...editingSenior, batch: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
+                />
+              </div>
+
+              <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleDeleteSenior(editingSenior.originalRollNo, editingSenior.name);
+                    setEditingSenior(null);
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Remove Senior</span>
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingSenior(null)}
+                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 text-white font-bold shadow-neon-cyan flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save Changes</span>
                   </button>
                 </div>
               </div>
