@@ -365,17 +365,19 @@ export const adminStore = {
 
   updateRegistration(ticketId, updates) {
     const list = this.getRegistrations();
+    let updatedRecord = null;
     const updated = list.map((item) => {
-      if (item.ticketId === ticketId) {
-        return { ...item, ...updates };
+      if (item.ticketId === ticketId || (item.rollNo && item.rollNo === ticketId)) {
+        updatedRecord = { ...item, ...updates };
+        return updatedRecord;
       }
       return item;
     });
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
 
-    // Sync update to Supabase
-    if (isSupabaseConfigured() && updates.status) {
-      updateRegistrationStatusInSupabase(ticketId, updates.status).catch(() => {});
+    // Sync update to Supabase Cloud
+    if (isSupabaseConfigured() && updatedRecord) {
+      saveRegistrationToSupabase(updatedRecord, updatedRecord.screenshot).catch(() => {});
     }
 
     // Sync update to backend
@@ -384,6 +386,13 @@ export const adminStore = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updates),
     }).catch(() => {});
+
+    return updatedRecord;
+  },
+
+  clearAllRegistrations() {
+    safeSet(STORAGE_KEYS.REGISTRATIONS, []);
+    fetch('/api/registrations', { method: 'DELETE' }).catch(() => {});
   },
 
   approveRegistration(ticketId) {

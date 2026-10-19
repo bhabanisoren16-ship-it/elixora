@@ -36,7 +36,8 @@ import {
   MapPin,
   Save,
   Users,
-  Settings
+  Settings,
+  Edit3
 } from 'lucide-react';
 import { adminStore } from '../utils/adminStore';
 import { soundController } from '../utils/audio';
@@ -75,6 +76,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   const [isAddSeniorOpen, setIsAddSeniorOpen] = useState(false);
   const [rejectingItem, setRejectingItem] = useState(null); // ticketId for rejection prompt
   const [rejectionReason, setRejectionReason] = useState('');
+  const [editingItem, setEditingItem] = useState(null); // Registration object being edited
   const [copiedId, setCopiedId] = useState(null);
   const [actionSuccessMsg, setActionSuccessMsg] = useState('');
 
@@ -274,6 +276,32 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     adminStore.deleteRegistration(ticketId, rollNo);
     setRegistrations((prev) => prev.filter((r) => r.ticketId !== ticketId && (!rollNo || r.rollNo !== rollNo)));
     notifySuccess(`Registration for "${name || ticketId}" deleted.`);
+    soundController.playClick?.();
+  };
+
+  const handleSaveEdit = (e) => {
+    e.preventDefault();
+    if (!editingItem) return;
+    const cleanRoll = (editingItem.rollNo || '').trim().toUpperCase();
+    const updatedData = {
+      ...editingItem,
+      rollNo: cleanRoll,
+      ticketPrice: Number(editingItem.ticketPrice) || (editingItem.isSenior ? 600 : 399),
+      role: editingItem.isSenior ? 'Senior VIP Pass' : 'VIP Fresher Access',
+      tier: editingItem.isSenior ? 'SENIOR VIP COUNCIL ACCESS' : 'VIP FRESHER ACCESS',
+      entryGate: editingItem.isSenior ? 'Gate 1 (Presidential Arch)' : 'Gate 2 (Aurora North Arch)',
+    };
+    adminStore.updateRegistration(editingItem.ticketId, updatedData);
+    setRegistrations(adminStore.getRegistrations());
+    setEditingItem(null);
+    notifySuccess(`Saved changes for ${editingItem.fullName} (${cleanRoll}).`);
+    soundController.playSuccess?.();
+  };
+
+  const handleDeleteSenior = (rollNo, name) => {
+    adminStore.deleteSeniorFromRoster(rollNo);
+    setRoster(adminStore.getSeniorRoster());
+    notifySuccess(`Senior "${name}" (${rollNo}) removed from roster.`);
     soundController.playClick?.();
   };
 
@@ -1297,10 +1325,22 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                       </button>
                                     )}
 
+                                    {/* Edit Registration Button */}
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEditingItem({ ...item });
+                                      }}
+                                      className="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 transition-colors cursor-pointer"
+                                      title="Edit Attendee Registration"
+                                    >
+                                      <Edit3 className="w-3.5 h-3.5" />
+                                    </button>
+
                                     {/* View 3D Holographic Pass */}
                                     <button
                                       onClick={() => onOpenTicket?.(item)}
-                                      className="p-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 transition-colors"
+                                      className="p-1.5 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/40 transition-colors cursor-pointer"
                                       title="Open Interactive 3D Holographic Ticket"
                                     >
                                       <Ticket className="w-3.5 h-3.5" />
@@ -1378,15 +1418,27 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                             </div>
                           </div>
 
-                          {senior.isRegistered ? (
-                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold">
-                              PASS MINTED
-                            </span>
-                          ) : (
-                            <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[10px]">
-                              UNREGISTERED
-                            </span>
-                          )}
+                          <div className="flex items-center gap-1.5">
+                            {senior.isRegistered ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold">
+                                PASS MINTED
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-[10px]">
+                                UNREGISTERED
+                              </span>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteSenior(senior.rollNo, senior.name);
+                              }}
+                              className="p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/30 transition-colors cursor-pointer"
+                              title={`Remove ${senior.name} from authorized roster`}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
 
                         {senior.isRegistered && (
@@ -2493,6 +2545,184 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 Confirm Reject
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* MODAL 5: EDIT ATTENDEE REGISTRATION */}
+      {/* ===================================================================== */}
+      {editingItem && (
+        <div className="fixed inset-0 z-[125] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg bg-obsidian-900 border border-cyan-500/50 rounded-2xl shadow-2xl p-5 text-slate-100 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+              <div>
+                <h3 className="font-outfit font-bold text-base text-white flex items-center gap-2">
+                  <Edit3 className="w-4 h-4 text-cyan-400" />
+                  Edit & Control Registration
+                </h3>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">
+                  Ticket ID: <span className="text-cyan-300 font-bold">{editingItem.ticketId}</span>
+                </p>
+              </div>
+              <button
+                onClick={() => setEditingItem(null)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingItem.fullName || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, fullName: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Registration / Roll No *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingItem.rollNo || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, rollNo: e.target.value.toUpperCase() })}
+                    className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white font-mono uppercase focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Mobile / WhatsApp No.</label>
+                  <input
+                    type="tel"
+                    value={editingItem.phone || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, phone: e.target.value })}
+                    placeholder="e.g. 9876543210"
+                    className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white font-mono focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">12-Digit UTR Number</label>
+                  <input
+                    type="text"
+                    value={editingItem.utrNumber || ''}
+                    onChange={(e) => setEditingItem({ ...editingItem, utrNumber: e.target.value })}
+                    placeholder="12-digit UPI reference"
+                    className="w-full px-3 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white font-mono focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Pass Category</label>
+                  <select
+                    value={editingItem.isSenior ? 'SENIOR' : 'FRESHER'}
+                    onChange={(e) => {
+                      const isSenior = e.target.value === 'SENIOR';
+                      setEditingItem({
+                        ...editingItem,
+                        isSenior,
+                        ticketPrice: isSenior ? 600 : 399,
+                        batch: isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher",
+                      });
+                    }}
+                    className="w-full px-2.5 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
+                  >
+                    <option value="FRESHER">Fresher (₹399)</option>
+                    <option value="SENIOR">Senior VIP (₹600)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Diet Preference</label>
+                  <select
+                    value={editingItem.diet || 'Veg'}
+                    onChange={(e) => setEditingItem({ ...editingItem, diet: e.target.value })}
+                    className="w-full px-2.5 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
+                  >
+                    <option value="Veg">Vegetarian</option>
+                    <option value="Non-Veg">Non-Vegetarian</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1">Status</label>
+                  <select
+                    value={editingItem.status || 'VERIFIED'}
+                    onChange={(e) => setEditingItem({ ...editingItem, status: e.target.value })}
+                    className="w-full px-2.5 py-2 rounded-xl bg-obsidian-950 border border-white/10 text-white focus:outline-none focus:border-cyan-400 cursor-pointer"
+                  >
+                    <option value="VERIFIED">VERIFIED</option>
+                    <option value="PENDING">PENDING</option>
+                    <option value="REJECTED">REJECTED</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Gate Attendance Toggle */}
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                <div>
+                  <div className="font-semibold text-white">Gate Attendance Check-In</div>
+                  <div className="text-[11px] text-slate-400">Mark attendee as entered through event security</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setEditingItem({
+                    ...editingItem,
+                    checkedIn: !editingItem.checkedIn,
+                    checkedInAt: !editingItem.checkedIn ? new Date().toLocaleTimeString('en-IN') : null
+                  })}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    editingItem.checkedIn
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/50'
+                      : 'bg-white/5 text-slate-400 border border-white/10'
+                  }`}
+                >
+                  {editingItem.checkedIn ? '✓ Checked In' : '○ Not At Gate'}
+                </button>
+              </div>
+
+              <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleDelete(editingItem.ticketId, editingItem.fullName, editingItem.rollNo);
+                    setEditingItem(null);
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete Pass</span>
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditingItem(null)}
+                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-600 text-white font-bold shadow-neon-cyan flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save & Sync</span>
+                  </button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       )}
