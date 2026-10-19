@@ -786,7 +786,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 title="Return to Festival Home Page"
               >
                 <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-300" />
-                <span>Back to Home</span>
+                <span className="uppercase tracking-wider">BACK TO HOME</span>
               </button>
             </div>
           </header>

@@ -225,11 +225,11 @@ export default function HolographicTicketModal({ passData, onClose }) {
             soundController.playClick?.();
             onClose();
           }}
-          className="group flex items-center gap-2 px-3.5 py-2 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-white/20 hover:border-amber-400/60 shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(245,158,11,0.2)] backdrop-blur-xl text-slate-200 hover:text-white text-xs font-outfit font-bold transition-all cursor-pointer hover:scale-105 active:scale-95"
+          className="group flex items-center gap-2 px-3.5 py-2 rounded-full bg-obsidian-950/90 hover:bg-obsidian-900 border border-white/20 hover:border-amber-400/60 shadow-[0_10px_25px_rgba(0,0,0,0.8),0_0_15px_rgba(245,158,11,0.2)] backdrop-blur-xl text-slate-200 hover:text-white text-xs font-outfit font-bold transition-all cursor-pointer hover:scale-105 active:scale-95 uppercase tracking-wider"
           title="Back to Festival Home"
         >
           <ArrowLeft className="w-4 h-4 text-amber-400 group-hover:-translate-x-0.5 transition-transform" />
-          <span>Back to Home</span>
+          <span>BACK TO HOME</span>
         </button>
       </div>
 
