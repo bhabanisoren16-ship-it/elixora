@@ -321,21 +321,6 @@ export default function App() {
           onPortalToggle={setIsSeniorPortalOpen}
         />
 
-        {/* 6. Footer */}
-        <footer className="relative py-8 px-4 text-center border-t border-white/10 bg-obsidian-950/80 backdrop-blur-md mt-12">
-          <div className="max-w-4xl mx-auto flex items-center justify-center text-xs text-slate-400 font-outfit">
-            <div className="flex items-center gap-2">
-              <span
-                className="font-extrabold text-white tracking-wider cursor-default select-none"
-                title="ELIXORA 2.0"
-                onDoubleClick={() => setIsAdminOpen(true)}
-              >
-                ELIXORA 2.0
-              </span>
-              <span>• Annual Biotechnology Freshers' Festival &amp; Concert</span>
-            </div>
-          </div>
-        </footer>
       </main>
 
       {/* 4. Interactive 3D Holographic Pass Modal */}
