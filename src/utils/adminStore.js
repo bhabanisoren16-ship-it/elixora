@@ -1,5 +1,13 @@
 // Central Store & State Manager for ELIXORA 2.0 Admin Portal
 import { EVENT_DETAILS } from './calendar';
+import { isSupabaseConfigured } from '../lib/supabase';
+import { 
+  saveRegistrationToSupabase, 
+  fetchRegistrationsFromSupabase, 
+  updateRegistrationStatusInSupabase, 
+  updateAttendanceInSupabase, 
+  subscribeToSupabaseRegistrations 
+} from '../services/supabaseService';
 
 // Initial official registered seniors roster (Verified from official college roster)
 export const DEFAULT_SENIOR_ROSTER = {
@@ -117,11 +125,28 @@ let sseConnection = null;
 async function fetchRegistrationsFromBackend() {
   if (typeof window === 'undefined') return;
   try {
-    const res = await fetch('/api/registrations');
-    if (!res.ok) return;
-    const json = await res.json();
-    if (json.success && Array.isArray(json.data)) {
-      const serverList = json.data;
+    let serverList = null;
+
+    // 1. Prioritize Cloud Supabase if configured
+    if (isSupabaseConfigured()) {
+      const supaList = await fetchRegistrationsFromSupabase();
+      if (Array.isArray(supaList) && supaList.length > 0) {
+        serverList = supaList;
+      }
+    }
+
+    // 2. Fall back to local Express backend if Supabase empty or not configured
+    if (!serverList) {
+      const res = await fetch('/api/registrations');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          serverList = json.data;
+        }
+      }
+    }
+
+    if (serverList) {
       const localList = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
 
       // Reconcile: preserve any local registrations not yet uploaded to server
@@ -144,6 +169,13 @@ async function fetchRegistrationsFromBackend() {
 async function sendRegistrationToBackend(record) {
   if (typeof window === 'undefined') return null;
   try {
+    // 1. Sync to Supabase Cloud if configured
+    if (isSupabaseConfigured()) {
+      const supaResult = await saveRegistrationToSupabase(record, record.screenshot);
+      if (supaResult) return supaResult;
+    }
+
+    // 2. Fall back to local Express server
     const res = await fetch('/api/registrations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -166,7 +198,29 @@ function startRealTimeSync() {
   // 1. Initial backend sync
   fetchRegistrationsFromBackend();
 
-  // 2. Connect to Server-Sent Events (SSE) for 0ms real-time push
+  // 2. Connect to Supabase Real-Time Broadcast if configured
+  if (isSupabaseConfigured()) {
+    try {
+      subscribeToSupabaseRegistrations(
+        (newRecord) => {
+          const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+          const exists = current.some((r) => r.ticketId === newRecord.ticketId || (newRecord.rollNo && r.rollNo === newRecord.rollNo));
+          if (!exists) {
+            safeSet(STORAGE_KEYS.REGISTRATIONS, [newRecord, ...current]);
+          }
+        },
+        (updatedRecord) => {
+          const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+          const updated = current.map((r) => (r.ticketId === updatedRecord.ticketId ? { ...r, ...updatedRecord } : r));
+          safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+        }
+      );
+    } catch (err) {
+      console.warn('[ELIXORA Supabase] Realtime listener error:', err);
+    }
+  }
+
+  // 3. Connect to Server-Sent Events (SSE) for local dev server
   try {
     if (typeof EventSource !== 'undefined') {
       sseConnection = new EventSource('/api/events');
@@ -208,7 +262,7 @@ function startRealTimeSync() {
     console.warn('[ELIXORA Real-Time] SSE not supported, using periodic polling:', err);
   }
 
-  // 3. Fallback periodic sync every 8 seconds
+  // 4. Fallback periodic sync every 8 seconds
   setInterval(() => {
     fetchRegistrationsFromBackend();
   }, 8000);
@@ -302,6 +356,11 @@ export const adminStore = {
     });
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
 
+    // Sync update to Supabase
+    if (isSupabaseConfigured() && updates.status) {
+      updateRegistrationStatusInSupabase(ticketId, updates.status).catch(() => {});
+    }
+
     // Sync update to backend
     fetch(`/api/registrations/${ticketId}`, {
       method: 'PUT',
@@ -343,6 +402,12 @@ export const adminStore = {
       return item;
     });
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+
+    // Sync check-in to Supabase
+    if (result && isSupabaseConfigured()) {
+      updateAttendanceInSupabase(ticketId, result.checkedIn).catch(() => {});
+    }
+
     return result;
   },
 
