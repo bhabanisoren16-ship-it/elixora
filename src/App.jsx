@@ -13,6 +13,7 @@ import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothS
 
 import HolographicTicketModal from './components/HolographicTicketModal';
 import AdminPortal from './components/AdminPortal';
+import { Lock } from 'lucide-react';
 
 function checkIsAdminRoute() {
   if (typeof window === 'undefined') return false;
@@ -320,6 +321,25 @@ export default function App() {
           onPassGenerated={handlePassGenerated}
           onPortalToggle={setIsSeniorPortalOpen}
         />
+
+        {/* 6. Footer & Organizer Password Access */}
+        <footer className="relative py-10 px-4 text-center border-t border-white/10 bg-obsidian-950/80 backdrop-blur-md mt-12">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-outfit">
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-white tracking-wider">ELIXORA 2.0</span>
+              <span>• Annual Biotechnology Freshers' Festival &amp; Concert</span>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => setIsAdminOpen(true)}
+              className="px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 hover:border-cyan-400/50 text-slate-400 hover:text-cyan-300 transition-all flex items-center gap-2 cursor-pointer font-mono"
+            >
+              <Lock className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Organizer &amp; Admin Access</span>
+            </button>
+          </div>
+        </footer>
       </main>
 
       {/* 4. Interactive 3D Holographic Pass Modal */}

@@ -523,7 +523,7 @@ export const adminStore = {
   // 6. Authentication
   isAuthenticated() {
     try {
-      const auth = sessionStorage.getItem(STORAGE_KEYS.AUTH) || localStorage.getItem(STORAGE_KEYS.AUTH);
+      const auth = sessionStorage.getItem(STORAGE_KEYS.AUTH);
       return auth === 'AUTHORIZED_ADMIN';
     } catch (e) {
       return false;

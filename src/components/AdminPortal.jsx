@@ -45,9 +45,10 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState(() => adminStore.isAuthenticated());
   const [passcode, setPasscode] = useState('');
+  const [showPasscode, setShowPasscode] = useState(false);
   const [authError, setAuthError] = useState('');
   const [isVerifyingAuth, setIsVerifyingAuth] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Active Tab: 'overview' | 'registrations' | 'roster' | 'settings'
   const [activeTab, setActiveTab] = useState('overview');
@@ -536,13 +537,21 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
               <div className="relative">
                 <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400/80" />
                 <input
-                  type="password"
+                  type={showPasscode ? "text" : "password"}
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter Master Passcode..."
-                  className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-obsidian-950 border border-cyan-500/40 focus:border-cyan-400 text-white placeholder-slate-500 font-mono tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+                  placeholder="Enter Admin Password..."
+                  className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-obsidian-950 border border-cyan-500/40 focus:border-cyan-400 text-white placeholder-slate-500 font-mono tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)]"
                   autoFocus
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPasscode(!showPasscode)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer p-1"
+                  title={showPasscode ? "Hide password" : "Show password"}
+                >
+                  <Eye className="w-4 h-4" />
+                </button>
               </div>
 
               {authError && (
@@ -562,16 +571,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                   />
                   <span>Keep Session Active</span>
                 </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPasscode('ELIXORA2026');
-                    soundController.playClick?.();
-                  }}
-                  className="text-cyan-400 hover:text-cyan-300 underline font-medium"
-                >
-                  Autofill Default PIN
-                </button>
+                <span className="text-slate-500 text-[11px]">Authorized Staff Only</span>
               </div>
 
               <button
@@ -582,12 +582,12 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 {isVerifyingAuth ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                    <span>AUTHENTICATING KEY...</span>
+                    <span>VERIFYING PASSWORD...</span>
                   </>
                 ) : (
                   <>
                     <Unlock className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                    <span>AUTHENTICATE PORTAL</span>
+                    <span>UNLOCK ADMIN PORTAL</span>
                   </>
                 )}
               </button>
@@ -595,7 +595,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
             <div className="mt-8 flex items-center gap-2 text-[11px] text-slate-500 font-mono">
               <ShieldAlert className="w-3.5 h-3.5 text-cyan-500/60" />
-              <span>Default Master Key: <code className="text-cyan-400/80 bg-cyan-950/40 px-1.5 py-0.5 rounded border border-cyan-800/40">ELIXORA2026</code></span>
+              <span>Restricted event management nexus. Authorized access logged.</span>
             </div>
           </div>
         ) : (
