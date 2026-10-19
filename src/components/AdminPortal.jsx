@@ -836,85 +836,12 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                     </div>
                   </div>
 
-                  {/* Mid Row: Action Quicklaunch & Live Broadcast Banner Preview */}
+                  {/* Mid Row: Broadcast & Capacity Preview */}
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left: Quick Actions Panel */}
-                    <div className="lg:col-span-2 p-5 rounded-2xl bg-obsidian-950/60 border border-white/10 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-outfit font-bold text-base text-white flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-cyan-400" />
-                            Event Operations Launchpad
-                          </h3>
-                          <span className="text-xs font-mono text-cyan-400 bg-cyan-950/50 px-2 py-0.5 rounded border border-cyan-800/40">
-                            Fast Access
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                          <button
-                            onClick={() => setIsAddPassOpen(true)}
-                            className="p-3.5 rounded-xl bg-gradient-to-br from-cyan-500/15 to-transparent border border-cyan-400/30 hover:border-cyan-400 text-left transition-all group cursor-pointer"
-                          >
-                            <UserPlus className="w-5 h-5 text-cyan-400 mb-2 group-hover:scale-110 transition-transform" />
-                            <div className="font-bold text-sm text-white font-outfit">Issue Manual Pass</div>
-                            <div className="text-[11px] text-slate-400 mt-0.5">Direct entry bypass</div>
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              setFilterStatus('PENDING');
-                              setActiveTab('registrations');
-                            }}
-                            className="p-3.5 rounded-xl bg-gradient-to-br from-amber-500/15 to-transparent border border-amber-400/30 hover:border-amber-400 text-left transition-all group cursor-pointer"
-                          >
-                            <Clock className="w-5 h-5 text-amber-400 mb-2 group-hover:scale-110 transition-transform" />
-                            <div className="font-bold text-sm text-white font-outfit">Review Pending ({stats.pending})</div>
-                            <div className="text-[11px] text-slate-400 mt-0.5">Approve UTR &amp; screenshots</div>
-                          </button>
-
-                          <button
-                            onClick={() => setActiveTab('roster')}
-                            className="p-3.5 rounded-xl bg-gradient-to-br from-purple-500/15 to-transparent border border-purple-400/30 hover:border-purple-400 text-left transition-all group cursor-pointer"
-                          >
-                            <GraduationCap className="w-5 h-5 text-purple-400 mb-2 group-hover:scale-110 transition-transform" />
-                            <div className="font-bold text-sm text-white font-outfit">Senior Roster</div>
-                            <div className="text-[11px] text-slate-400 mt-0.5">Authorized VIP senior slots</div>
-                          </button>
-
-                          {/* Quick Schedule & Venue Unlock / Lock Toggle */}
-                          <button
-                            onClick={handleToggleScheduleAnnounced}
-                            className={`p-3.5 rounded-xl border text-left transition-all group cursor-pointer ${
-                              settings.isDateVenueAnnounced
-                                ? 'bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-transparent border-emerald-400/40 hover:border-emerald-300 shadow-[0_0_16px_rgba(16,185,129,0.2)]'
-                                : 'bg-gradient-to-br from-amber-500/15 via-orange-500/10 to-transparent border-amber-400/40 hover:border-amber-300 shadow-[0_0_16px_rgba(245,158,11,0.2)]'
-                            }`}
-                            title="Toggle public release of Date, Time and Venue"
-                          >
-                            <div className="flex items-center justify-between mb-2">
-                              {settings.isDateVenueAnnounced ? (
-                                <Unlock className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
-                              ) : (
-                                <Lock className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
-                              )}
-                              <span className={`px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-wider uppercase ${
-                                settings.isDateVenueAnnounced 
-                                  ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/40' 
-                                  : 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
-                              }`}>
-                                {settings.isDateVenueAnnounced ? 'UNLOCKED' : 'LOCKED'}
-                              </span>
-                            </div>
-                            <div className="font-bold text-sm text-white font-outfit">Schedule &amp; Venue</div>
-                            <div className="text-[11px] text-slate-300 mt-0.5">
-                              {settings.isDateVenueAnnounced ? 'Public view active • Click to lock' : 'Teaser active • Click to unlock'}
-                            </div>
-                          </button>
-                        </div>
-                      </div>
-
+                    {/* Left: Broadcast & Status Panel */}
+                    <div className="lg:col-span-2 p-5 rounded-2xl bg-obsidian-950/60 border border-white/10 flex flex-col justify-between space-y-3">
                       {/* Live Broadcast Notice Preview */}
-                      <div className="mt-5 p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-between gap-3">
+                      <div className="p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5 overflow-hidden">
                           <Megaphone className="w-4 h-4 text-cyan-400 shrink-0" />
                           <div className="text-xs text-cyan-200 truncate">
@@ -931,7 +858,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                       </div>
 
                       {/* Live Schedule & Venue Status Ribbon */}
-                      <div className="mt-2.5 p-3.5 rounded-xl bg-obsidian-900/70 border border-white/10 flex items-center justify-between gap-3">
+                      <div className="p-3.5 rounded-xl bg-obsidian-900/70 border border-white/10 flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5 overflow-hidden">
                           <Calendar className={`w-4 h-4 shrink-0 ${settings.isDateVenueAnnounced ? 'text-emerald-400' : 'text-amber-400'}`} />
                           <div className="text-xs text-slate-200 truncate">
