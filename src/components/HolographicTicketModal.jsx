@@ -9,36 +9,12 @@ import {
   CheckCircle2, 
   ShieldCheck, 
   ArrowLeft,
-  Star,
   Lock,
   Check
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 
-/**
- * Luxury Gold Holographic Crest Stamp
- */
-function LuxuryTicketCrest({ className = "w-10 h-10" }) {
-  return (
-    <svg viewBox="0 0 44 44" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="crestGold" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#fef08a" />
-          <stop offset="30%" stopColor="#eab308" />
-          <stop offset="60%" stopColor="#ca8a04" />
-          <stop offset="85%" stopColor="#fef08a" />
-          <stop offset="100%" stopColor="#854d0e" />
-        </linearGradient>
-      </defs>
-      <circle cx="22" cy="22" r="20" stroke="url(#crestGold)" strokeWidth="1.2" strokeDasharray="3 2" />
-      <circle cx="22" cy="22" r="17" stroke="url(#crestGold)" strokeWidth="0.8" />
-      <polygon points="22,7 26,17 37,17 28,24 31,35 22,28 13,35 16,24 7,17 18,17" fill="url(#crestGold)" opacity="0.9" />
-      <circle cx="22" cy="22" r="4" fill="#090d16" />
-      <text x="22" y="24" fill="#fef08a" fontSize="5" fontFamily="monospace" fontWeight="bold" textAnchor="middle">★</text>
-    </svg>
-  );
-}
 
 export default function HolographicTicketModal({ passData, onClose }) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -321,41 +297,14 @@ export default function HolographicTicketModal({ passData, onClose }) {
               {/* ===================================================== */}
               <div className="relative z-20 p-5 sm:p-6 pb-4 flex flex-col justify-between flex-1">
                 
-                {/* 1. TOP HEADER & GOLD FOIL BRANDING */}
-                <div className="flex items-start justify-between border-b border-amber-400/20 pb-3">
-                  <div>
-                    <h1 className="font-innovision-serif text-2xl sm:text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400">
-                      ELIXORA 2.0
-                    </h1>
-                    <span className="text-[10px] font-outfit font-bold text-cyan-300 tracking-widest uppercase block mt-0.5">
-                      {passData.isSenior ? 'SENIOR VIP COUNCIL EDITION' : "ANNUAL FRESHERS' FESTIVAL"}
-                    </span>
-                  </div>
-
-                  {/* Luxury Gold Seal Crest */}
-                  <div className="flex flex-col items-center">
-                    <LuxuryTicketCrest className="w-11 h-11" />
-                    <span className="text-[7px] font-mono text-amber-300 tracking-wider uppercase mt-0.5">
-                      OFFICIAL VIP
-                    </span>
-                  </div>
-                </div>
-
-                {/* 2. ADMISSION TIER BANNER */}
-                <div className="my-2.5">
-                  <div className={`w-full py-1.5 px-3 rounded-lg border flex items-center justify-between text-xs font-outfit font-black tracking-widest uppercase ${
-                    passData.isSenior
-                      ? 'bg-gradient-to-r from-amber-500/20 via-purple-600/30 to-amber-500/20 border-amber-400/60 text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.25)]'
-                      : 'bg-gradient-to-r from-cyan-500/20 via-purple-600/30 to-cyan-500/20 border-cyan-400/50 text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.25)]'
-                  }`}>
-                    <span className="flex items-center gap-1.5">
-                      <Star className="w-3 h-3 fill-current" />
-                      {passData.isSenior ? 'SENIOR VIP COUNCIL PASS' : 'VIP ALL-ACCESS FESTIVAL PASS'}
-                    </span>
-                    <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-black/60 border border-white/20">
-                      ₹{EVENT_DETAILS.ticketPrice || 399}
-                    </span>
-                  </div>
+                {/* 1. TOP HEADER & BRANDING */}
+                <div className="border-b border-amber-400/20 pb-3">
+                  <h1 className="font-innovision-serif text-2xl sm:text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400">
+                    ELIXORA 2.0
+                  </h1>
+                  <span className="text-[10px] font-outfit font-bold text-cyan-300 tracking-widest uppercase block mt-0.5">
+                    {passData.isSenior ? 'SENIOR VIP COUNCIL EDITION' : "ANNUAL FRESHERS' FESTIVAL"}
+                  </span>
                 </div>
 
                 {/* 3. ATTENDEE BIOMETRIC SPOTLIGHT */}
@@ -441,34 +390,20 @@ export default function HolographicTicketModal({ passData, onClose }) {
               <div className="relative z-20 p-5 sm:p-6 pt-3.5 bg-obsidian-950/70 border-t border-amber-400/20">
                 
                 <div className="flex items-center justify-between gap-3">
-                  {/* Left: Barcode & Serial */}
+                  {/* Left: Ticket Pass ID & Verification info */}
                   <div className="flex-1 min-w-0">
-                    <div className="text-[8px] font-mono text-amber-400 uppercase tracking-widest flex items-center gap-1">
-                      <span>ADMIT ONE // SCAN AT GATE</span>
+                    <div className="text-[9px] font-mono text-amber-400 uppercase tracking-widest">
+                      TICKET PASS ID
                     </div>
                     
                     {/* Ticket ID */}
-                    <div className="font-outfit font-black text-lg text-white tracking-widest mt-0.5 truncate">
+                    <div className="font-outfit font-black text-xl text-white tracking-widest mt-0.5 truncate">
                       {passData.ticketId}
                     </div>
 
-                    <div className="text-[9px] font-mono text-slate-400">
-                      UTR: {passData.utrNumber ? `${passData.utrNumber.slice(0, 6)}••••` : 'VERIFIED'}
+                    <div className="text-[10px] font-mono text-slate-400 mt-1">
+                      UTR: <span className="text-slate-300">{passData.utrNumber ? `${passData.utrNumber.slice(0, 6)}••••` : 'VERIFIED'}</span>
                     </div>
-
-                    {/* Optical Barcode lines */}
-                    <div className="h-6 w-full flex items-center gap-[2px] opacity-80 mt-1.5 overflow-hidden">
-                      {[3,1,4,2,5,1,3,2,6,1,4,2,5,3,1,6,2,4,1,5,2,3,6,1,4,2,3,5,1,4,2,3,1].map((w, i) => (
-                        <div
-                          key={i}
-                          className="bg-white h-full shrink-0"
-                          style={{ width: `${w}px` }}
-                        />
-                      ))}
-                    </div>
-                    <span className="font-mono text-[8px] tracking-[0.25em] text-slate-500 block mt-0.5">
-                      *{passData.ticketId}*
-                    </span>
                   </div>
 
                   {/* Right: High-Density Admission QR Code with Animated Scanline */}
