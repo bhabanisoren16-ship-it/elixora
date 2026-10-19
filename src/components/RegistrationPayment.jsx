@@ -84,8 +84,33 @@ export default function RegistrationPayment({ onPassGenerated }) {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setScreenshotPreview(reader.result);
-        setErrors((prev) => ({ ...prev, screenshot: null }));
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 1200;
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressed = canvas.toDataURL('image/jpeg', 0.75);
+          setScreenshotPreview(compressed);
+          setErrors((prev) => ({ ...prev, screenshot: null }));
+        };
+        img.onerror = () => {
+          setScreenshotPreview(reader.result);
+          setErrors((prev) => ({ ...prev, screenshot: null }));
+        };
+        img.src = reader.result;
       };
       reader.readAsDataURL(file);
     }
