@@ -266,7 +266,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
             ref={cardRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className={`w-[320px] sm:w-[380px] h-[450px] sm:h-[470px] preserve-3d transition-transform duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
+            className={`w-[320px] sm:w-[380px] h-[370px] sm:h-[390px] preserve-3d transition-transform duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
               isFlipped ? 'rotate-y-180' : ''
             }`}
             style={{
@@ -374,26 +374,6 @@ export default function HolographicTicketModal({ passData, onClose }) {
                       "{safeData.seniorQuote}"
                     </p>
                   )}
-                </div>
-
-                {/* 4. CONCERT BOARDING SPECIFICATIONS GRID */}
-                <div className="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-obsidian-950/80 border border-amber-400/20 text-center text-xs mt-2">
-                  <div className="border-r border-white/10 pr-1">
-                    <span className="text-[8px] font-mono text-slate-400 block uppercase tracking-wider">DATE</span>
-                    <span className="font-bold text-white text-[11px] block mt-0.5">24 OCT 2026</span>
-                  </div>
-                  <div className="border-r border-white/10 pr-1">
-                    <span className="text-[8px] font-mono text-slate-400 block uppercase tracking-wider">GATE</span>
-                    <span className="font-bold text-cyan-300 text-[11px] block mt-0.5 truncate">
-                      {safeData.isSenior ? 'Gate 1 (VIP)' : 'Gate 2 (North)'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[8px] font-mono text-slate-400 block uppercase tracking-wider">ZONE</span>
-                    <span className="font-bold text-amber-300 text-[11px] block mt-0.5 truncate">
-                      {safeData.isSenior ? 'VIP Lounge' : 'Arena Floor'}
-                    </span>
-                  </div>
                 </div>
 
               </div>
