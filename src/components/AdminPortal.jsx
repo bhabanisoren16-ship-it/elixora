@@ -34,7 +34,9 @@ import {
   Zap,
   Calendar,
   MapPin,
-  Save
+  Save,
+  Users,
+  Settings
 } from 'lucide-react';
 import { adminStore } from '../utils/adminStore';
 import { soundController } from '../utils/audio';
