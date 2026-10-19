@@ -8,7 +8,7 @@ import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
 import CinematicIntro from './components/CinematicIntro';
-import { SciFiOrbitalLoader, CelestialCurtain, CyberneticHud, initGlobalScrambleListener } from './innovission';
+import { SciFiOrbitalLoader, CelestialCurtain, initGlobalScrambleListener } from './innovission';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
@@ -320,12 +320,7 @@ export default function App() {
         </Suspense>
       )}
 
-      {/* 6. Cybernetic Telemetry HUD with ScrambleText & Replay Trigger */}
-      <CyberneticHud
-        onReplayIntro={handleReplayIntro}
-        onOpenPass={() => setIsModalOpen(true)}
-        hasPass={!!passData}
-      />
+
 
       {/* 7. Quick Floating Back-to-Home Action */}
       <FloatingHomeButton />
