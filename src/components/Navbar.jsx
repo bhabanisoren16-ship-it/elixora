@@ -5,7 +5,6 @@ import {
   RealisticGraduationCap,
   RealisticTicket
 } from './RealisticIcons';
-import { ShieldCheck } from 'lucide-react';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { soundController } from '../utils/audio';
 import { scrambleText } from '../innovission/scrambleText';
@@ -266,20 +265,6 @@ export default function Navbar({ onOpenPass, onOpenAdmin, hasGeneratedPass }) {
                 <span>MY VIP PASS</span>
               </button>
             )}
-
-            {/* Admin Portal Organizer Access */}
-            <button
-              type="button"
-              onClick={() => {
-                soundController.playClick?.();
-                setMobileMenuOpen(false);
-                onOpenAdmin?.();
-              }}
-              className="w-full mt-0.5 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-white/5 hover:bg-white/10 border border-white/20 text-slate-300 hover:text-amber-300 flex items-center gap-2.5 transition-all cursor-pointer"
-            >
-              <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>ADMIN PORTAL</span>
-            </button>
           </nav>
         )}
       </div>
@@ -345,20 +330,6 @@ export default function Navbar({ onOpenPass, onOpenAdmin, hasGeneratedPass }) {
             <span>MY PASS</span>
           </button>
         )}
-
-        {/* Admin Portal Quick Access */}
-        <button
-          type="button"
-          onClick={() => {
-            soundController.playClick?.();
-            onOpenAdmin?.();
-          }}
-          title="Admin & Organizer Portal (Passcode Protected)"
-          className="px-2.5 py-1.5 rounded-xl text-xs font-mono font-bold uppercase tracking-wider bg-white/5 hover:bg-white/10 border border-white/20 hover:border-amber-400/50 text-slate-300 hover:text-amber-300 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer ml-1"
-        >
-          <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <span>ADMIN</span>
-        </button>
       </nav>
     </header>
   );
