@@ -4,16 +4,11 @@ import html2canvas from 'html2canvas';
 import QRCode from 'qrcode';
 import { 
   Download, 
-  Share2, 
   RotateCw, 
   X, 
   CheckCircle2, 
   ShieldCheck, 
-  Printer, 
   ArrowLeft,
-  Scissors,
-  Ticket,
-  Sparkles,
   Star,
   Lock,
   Check
@@ -253,37 +248,24 @@ export default function HolographicTicketModal({ passData, onClose }) {
       <div className="relative w-full max-w-4xl mx-auto my-auto z-10 flex flex-col items-center pt-8 sm:pt-4">
         
         {/* Top Floating Modal Bar */}
-        <div className="w-full flex items-center justify-between mb-3 px-2 max-w-[460px]">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping" />
-            <span className="font-mono text-xs sm:text-sm font-bold text-amber-300 tracking-wider flex items-center gap-1.5">
-              <Ticket className="w-3.5 h-3.5 text-amber-400" />
-              OFFICIAL VIP CONCERT TICKET ISSUED
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                soundController.playClick?.();
-                onClose();
-              }}
-              className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
-              title="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+        <div className="w-full flex items-center justify-end mb-2 px-2 max-w-[430px]">
+          <button
+            onClick={() => {
+              soundController.playClick?.();
+              onClose();
+            }}
+            className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
+            title="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Personalized Welcome Header */}
-        <div className="text-center mb-4">
+        <div className="text-center mb-3">
           <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl text-white tracking-tight">
             Welcome to the Stage, <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-100 to-cyan-300">{formattedName}</span>!
           </h2>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 font-mono">
-            Authentic Perforated Concert Ticket Stub with Gold Foil Stamping &amp; QR Admission.
-          </p>
         </div>
 
         {/* ========================================================= */}
@@ -342,11 +324,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                 {/* 1. TOP HEADER & GOLD FOIL BRANDING */}
                 <div className="flex items-start justify-between border-b border-amber-400/20 pb-3">
                   <div>
-                    <div className="flex items-center gap-1 text-[9px] font-mono tracking-[0.25em] text-amber-300 uppercase">
-                      <Sparkles className="w-3 h-3 text-amber-400" />
-                      <span>THE CELESTIAL STAGE // 2026</span>
-                    </div>
-                    <h1 className="font-innovision-serif text-2xl sm:text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400 mt-0.5">
+                    <h1 className="font-innovision-serif text-2xl sm:text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400">
                       ELIXORA 2.0
                     </h1>
                     <span className="text-[10px] font-outfit font-bold text-cyan-300 tracking-widest uppercase block mt-0.5">
@@ -459,31 +437,8 @@ export default function HolographicTicketModal({ passData, onClose }) {
 
               </div>
 
-              {/* ===================================================== */}
-              {/* PERFORATED DIVIDER LINE WITH CIRCULAR SIDE NOTCHES   */}
-              {/* ===================================================== */}
-              <div className="relative w-full z-20 flex items-center justify-between my-0">
-                {/* Left Semi-Circle Tear Notch */}
-                <div className="w-4 sm:w-5 h-8 bg-obsidian-950 rounded-r-full border-y border-r border-amber-400/40 shadow-inner -ml-[2px]" />
-                
-                {/* Perforation Dashes */}
-                <div className="flex-1 flex items-center justify-center gap-1.5 px-3">
-                  <div className="flex-1 border-b-2 border-dashed border-white/20" />
-                  <span className="text-[8px] font-mono text-slate-400 uppercase tracking-[0.2em] flex items-center gap-1 shrink-0 px-2">
-                    <Scissors className="w-2.5 h-2.5 text-amber-400 rotate-90" />
-                    <span>TEAR HERE // ENTRY STUB</span>
-                  </span>
-                  <div className="flex-1 border-b-2 border-dashed border-white/20" />
-                </div>
-
-                {/* Right Semi-Circle Tear Notch */}
-                <div className="w-4 sm:w-5 h-8 bg-obsidian-950 rounded-l-full border-y border-l border-amber-400/40 shadow-inner -mr-[2px]" />
-              </div>
-
-              {/* ===================================================== */}
-              {/* LOWER TEAR-OFF ADMISSION STUB (30% HEIGHT)            */}
-              {/* ===================================================== */}
-              <div className="relative z-20 p-5 sm:p-6 pt-3 bg-obsidian-950/70 border-t border-amber-400/10">
+              {/* LOWER ADMISSION QR & BARCODE SECTION */}
+              <div className="relative z-20 p-5 sm:p-6 pt-3.5 bg-obsidian-950/70 border-t border-amber-400/20">
                 
                 <div className="flex items-center justify-between gap-3">
                   {/* Left: Barcode & Serial */}
@@ -646,40 +601,6 @@ export default function HolographicTicketModal({ passData, onClose }) {
           >
             <Download className="w-4 h-4 text-slate-950" />
             <span>{isDownloading ? 'Exporting HD...' : 'Download Ticket (PNG)'}</span>
-          </button>
-        </div>
-
-        {/* Secondary Sharing Actions */}
-        <div className="mt-2.5 flex items-center gap-2.5 w-full max-w-md justify-center">
-          <button
-            onClick={shareOnWhatsApp}
-            className="flex-1 py-2 px-3.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-400 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Share2 className="w-3.5 h-3.5" />
-            <span>Share on WhatsApp</span>
-          </button>
-
-          <button
-            onClick={handlePrint}
-            className="flex-1 py-2 px-3.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Ticket / PDF</span>
-          </button>
-        </div>
-
-        {/* Back Option below actions */}
-        <div className="mt-3.5 w-full max-w-md">
-          <button
-            type="button"
-            onClick={() => {
-              soundController.playClick?.();
-              onClose();
-            }}
-            className="group w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 hover:border-amber-400/50 text-slate-300 hover:text-white font-outfit font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg hover:scale-[1.01] active:scale-95"
-          >
-            <ArrowLeft className="w-4 h-4 text-amber-400 group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Festival Home</span>
           </button>
         </div>
 
