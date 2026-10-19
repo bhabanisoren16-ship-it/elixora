@@ -4,7 +4,6 @@ import html2canvas from 'html2canvas';
 import QRCode from 'qrcode';
 import { 
   Download, 
-  X, 
   CheckCircle2, 
   ArrowLeft,
   Lock,
@@ -235,20 +234,6 @@ export default function HolographicTicketModal({ passData, onClose }) {
 
       <div className="relative w-full max-w-4xl mx-auto my-auto z-10 flex flex-col items-center pt-8 sm:pt-4">
         
-        {/* Top Floating Modal Bar */}
-        <div className="w-full flex items-center justify-end mb-1.5 px-1 max-w-[380px]">
-          <button
-            onClick={() => {
-              soundController.playClick?.();
-              onClose();
-            }}
-            className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
-            title="Close modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
         {/* Personalized Welcome Header */}
         <div className="text-center mb-3">
           <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl text-white tracking-tight">
