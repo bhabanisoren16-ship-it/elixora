@@ -10,7 +10,6 @@ import FloatingHomeButton from './components/FloatingHomeButton';
 import CinematicIntro from './components/CinematicIntro';
 import { SciFiOrbitalLoader, CelestialCurtain, initGlobalScrambleListener } from './innovission';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
-import { initScrollPopUp } from './utils/scrollPopUp';
 
 const HolographicTicketModal = lazy(() => import('./components/HolographicTicketModal'));
 const AdminPortal = lazy(() => import('./components/AdminPortal'));
@@ -110,13 +109,6 @@ export default function App() {
     };
   }, []);
 
-  // Initialize GPU-composited scroll pop-up transition for sections & cards
-  useEffect(() => {
-    if (!showHomeLoadingPage && !showRefreshPage) {
-      const cleanup = initScrollPopUp();
-      return () => cleanup?.();
-    }
-  }, [showHomeLoadingPage, showRefreshPage, showCurtain]);
 
   // Pause background smooth scroll when modals, admin portal, or loading screen are active
   useEffect(() => {
@@ -282,7 +274,7 @@ export default function App() {
 
       {/* 3. Main Content Flow */}
       <main className="relative z-10 flex flex-col">
-        {/* Hero Section with Celestial Disc & Orbiting Rings Parallax */}
+        {/* Hero Section */}
         <HeroSection 
           onGrabPassClick={handleScrollToRegister}
         />
