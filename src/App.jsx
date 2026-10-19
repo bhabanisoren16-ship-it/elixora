@@ -257,6 +257,7 @@ export default function App() {
       {/* 0.2. Celestial Curtains Reveal (Plays exclusively after loading the page) */}
       {showCurtain && (
         <CelestialCurtain
+          duration={0.85}
           onComplete={handleCurtainComplete}
         />
       )}
