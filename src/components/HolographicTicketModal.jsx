@@ -236,7 +236,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
       <div className="relative w-full max-w-4xl mx-auto my-auto z-10 flex flex-col items-center pt-8 sm:pt-4">
         
         {/* Top Floating Modal Bar */}
-        <div className="w-full flex items-center justify-end mb-2 px-2 max-w-[430px]">
+        <div className="w-full flex items-center justify-end mb-1.5 px-1 max-w-[380px]">
           <button
             onClick={() => {
               soundController.playClick?.();
@@ -266,7 +266,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
             ref={cardRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className={`w-[340px] sm:w-[420px] min-h-[640px] sm:min-h-[660px] preserve-3d transition-transform duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
+            className={`w-[320px] sm:w-[380px] h-[450px] sm:h-[470px] preserve-3d transition-transform duration-500 ease-out cursor-grab active:cursor-grabbing relative ${
               isFlipped ? 'rotate-y-180' : ''
             }`}
             style={{
@@ -305,9 +305,9 @@ export default function HolographicTicketModal({ passData, onClose }) {
               <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px]" />
 
               {/* ===================================================== */}
-              {/* UPPER MAIN SECTION: CONCERT PASS (70% HEIGHT)         */}
+              {/* MAIN SECTION: CONCERT PASS                             */}
               {/* ===================================================== */}
-              <div className="relative z-20 p-5 sm:p-6 pb-4 flex flex-col justify-between flex-1">
+              <div className="relative z-20 p-4 sm:p-5 flex flex-col justify-between h-full">
                 
                 {/* 1. TOP HEADER & BRANDING */}
                 <div className="border-b border-amber-400/20 pb-3">
@@ -403,13 +403,13 @@ export default function HolographicTicketModal({ passData, onClose }) {
             {/* ========================================================= */}
             {/* === BACK OF TICKET (CONCERT TERMS & GUIDELINES)         === */}
             {/* ========================================================= */}
-            <div className="absolute inset-0 w-full h-full rounded-3xl overflow-hidden border-2 border-amber-400/40 shadow-[0_25px_65px_rgba(0,0,0,0.9)] backface-hidden rotate-y-180 flex flex-col justify-between p-5 sm:p-6 bg-gradient-to-b from-[#140e28] via-[#0b0816] to-[#04020a]">
+            <div className="absolute inset-0 w-full h-full rounded-3xl overflow-hidden border-2 border-amber-400/40 shadow-[0_25px_65px_rgba(0,0,0,0.9)] backface-hidden rotate-y-180 flex flex-col justify-between p-4 sm:p-5 bg-gradient-to-b from-[#140e28] via-[#0b0816] to-[#04020a]">
               <div>
                 {/* Back Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-amber-400/20">
+                <div className="flex items-center justify-between pb-2 border-b border-amber-400/20">
                   <div className="flex items-center gap-2 text-amber-300">
-                    <Lock className="w-4 h-4 text-amber-400" />
-                    <span className="font-outfit font-extrabold text-xs uppercase tracking-wider text-white">
+                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="font-outfit font-extrabold text-[11px] sm:text-xs uppercase tracking-wider text-white">
                       ENTRY PROTOCOL &amp; VENUE TERMS
                     </span>
                   </div>
@@ -419,42 +419,42 @@ export default function HolographicTicketModal({ passData, onClose }) {
                 </div>
 
                 {/* 4 Concert Guidelines */}
-                <div className="mt-4 space-y-2.5 text-xs text-slate-300">
-                  <div className="p-2.5 rounded-xl bg-white/5 border border-amber-400/20 flex items-start gap-2.5">
+                <div className="mt-2.5 space-y-1.5 text-xs text-slate-300">
+                  <div className="p-2 rounded-xl bg-white/5 border border-amber-400/20 flex items-start gap-2">
                     <span className="font-mono font-black text-amber-400 text-xs mt-0.5">01</span>
                     <div>
                       <strong className="text-white block font-outfit text-xs">Mandatory ID Verification</strong>
-                      <span className="text-[11px] text-slate-300 leading-tight block">
+                      <span className="text-[10px] sm:text-[11px] text-slate-300 leading-tight block">
                         Present this digital pass alongside your original College Student ID or admission slip.
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-white/5 border border-cyan-400/20 flex items-start gap-2.5">
+                  <div className="p-2 rounded-xl bg-white/5 border border-cyan-400/20 flex items-start gap-2">
                     <span className="font-mono font-black text-cyan-400 text-xs mt-0.5">02</span>
                     <div>
                       <strong className="text-white block font-outfit text-xs">Dress Code Protocol</strong>
-                      <span className="text-[11px] text-slate-300 leading-tight block">
+                      <span className="text-[10px] sm:text-[11px] text-slate-300 leading-tight block">
                         Theme is Cyber Glam &amp; Ethereal Indo-Western Fusion. Comfortable footwear recommended.
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-white/5 border border-amber-400/20 flex items-start gap-2.5">
+                  <div className="p-2 rounded-xl bg-white/5 border border-amber-400/20 flex items-start gap-2">
                     <span className="font-mono font-black text-amber-400 text-xs mt-0.5">03</span>
                     <div>
                       <strong className="text-white block font-outfit text-xs">Non-Transferable Security</strong>
-                      <span className="text-[11px] text-slate-300 leading-tight block">
-                        QR token is strictly linked to Roll ID ({safeData.rollNo}). Permits one-time entry scan.
+                      <span className="text-[10px] sm:text-[11px] text-slate-300 leading-tight block">
+                        Pass token is strictly linked to Roll ID ({safeData.rollNo}). Permits one-time entry scan.
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-white/5 border border-cyan-400/20 flex items-start gap-2.5">
+                  <div className="p-2 rounded-xl bg-white/5 border border-cyan-400/20 flex items-start gap-2">
                     <span className="font-mono font-black text-cyan-400 text-xs mt-0.5">04</span>
                     <div>
                       <strong className="text-white block font-outfit text-xs">Safe Campus Directive</strong>
-                      <span className="text-[11px] text-slate-300 leading-tight block">
+                      <span className="text-[10px] sm:text-[11px] text-slate-300 leading-tight block">
                         Zero tolerance for prohibited substances. Event security concierge active at Gate 2.
                       </span>
                     </div>
@@ -463,8 +463,8 @@ export default function HolographicTicketModal({ passData, onClose }) {
               </div>
 
               {/* Bottom Stub Barcode */}
-              <div className="pt-3 border-t border-amber-400/10 text-center">
-                <div className="h-8 w-full flex items-center justify-center gap-1 opacity-80 px-4">
+              <div className="pt-2 border-t border-amber-400/10 text-center">
+                <div className="h-6 w-full flex items-center justify-center gap-1 opacity-80 px-4">
                   {[4,2,6,1,3,5,2,4,7,1,3,2,6,4,2,5,3,1,7,2,4,3,6,2,5,1,4,2,7,3].map((w, i) => (
                     <div
                       key={i}
@@ -473,7 +473,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                     />
                   ))}
                 </div>
-                <span className="font-mono text-[9px] tracking-[0.3em] text-amber-300 mt-1 block">
+                <span className="font-mono text-[9px] tracking-[0.3em] text-amber-300 mt-0.5 block">
                   *{safeData.ticketId}*
                 </span>
               </div>
@@ -486,12 +486,12 @@ export default function HolographicTicketModal({ passData, onClose }) {
         {/* ========================================================= */}
         {/* CONTROLS & ACTIONS BAR                                    */}
         {/* ========================================================= */}
-        <div className="mt-5 flex items-center justify-center w-full max-w-md">
+        <div className="mt-4 flex items-center justify-center w-full max-w-[380px]">
           {/* Download Ticket PNG via html2canvas */}
           <button
             onClick={downloadTicketPng}
             disabled={isDownloading}
-            className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-300 text-slate-950 font-black font-outfit text-sm hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 border border-white/30 cursor-pointer shadow-lg"
+            className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-300 text-slate-950 font-black font-outfit text-sm hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 border border-white/30 cursor-pointer shadow-lg"
           >
             <Download className="w-4 h-4 text-slate-950" />
             <span>{isDownloading ? 'Exporting HD...' : 'Download Ticket (PNG)'}</span>
