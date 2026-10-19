@@ -70,7 +70,7 @@ function detectInitialLoadState() {
     } else if (window.performance && window.performance.navigation) {
       isBrowserReload = window.performance.navigation.type === 1;
     }
-  } catch (e) {}
+  } catch (e) { }
 
   const hasEnteredHomepage = sessionStorage.getItem('elixora_entered_homepage') === 'true';
 
@@ -154,13 +154,13 @@ export default function App() {
       if (window.location.hash !== '#admin') {
         try {
           history.replaceState(null, '', window.location.pathname + window.location.search + '#admin');
-        } catch (e) {}
+        } catch (e) { }
       }
     } else {
       if (window.location.hash === '#admin') {
         try {
           history.replaceState(null, '', window.location.pathname + window.location.search);
-        } catch (e) {}
+        } catch (e) { }
       }
     }
   }, [isAdminOpen]);
@@ -185,7 +185,7 @@ export default function App() {
       if (hash && hash !== '#admin' && !hash.includes('senior')) {
         try {
           history.replaceState(null, '', window.location.pathname + window.location.search);
-        } catch (e) {}
+        } catch (e) { }
       }
 
       // Reset scroll position to absolute top
@@ -200,7 +200,7 @@ export default function App() {
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
       }
-    } catch (e) {}
+    } catch (e) { }
   }, []);
 
   const handlePassGenerated = (generatedPass) => {
@@ -220,7 +220,7 @@ export default function App() {
   const handleHomeLoadingEnter = () => {
     try {
       sessionStorage.setItem('elixora_entered_homepage', 'true');
-    } catch (e) {}
+    } catch (e) { }
     setShowHomeLoadingPage(false);
     setShowCurtain(true);
   };
@@ -238,7 +238,7 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
-      
+
       {/* 0. Home Screen Loading Page (Celestial Orbital Planetary Gateway from Screenshot - STRICTLY requires user to click/press ENTER to open homepage) */}
       {showHomeLoadingPage && (
         <CinematicIntro
@@ -275,7 +275,7 @@ export default function App() {
       {/* 3. Main Content Flow */}
       <main className="relative z-10 flex flex-col">
         {/* Hero Section */}
-        <HeroSection 
+        <HeroSection
           onGrabPassClick={handleScrollToRegister}
         />
 
