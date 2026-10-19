@@ -84,7 +84,14 @@ function detectInitialLoadState() {
 }
 
 export default function App() {
-  const [passData, setPassData] = useState(null);
+  const [passData, setPassData] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('elixora_last_generated_pass');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSeniorPortalOpen, setIsSeniorPortalOpen] = useState(checkIsSeniorPortalRoute);
   const [isAdminOpen, setIsAdminOpen] = useState(checkIsAdminRoute);
@@ -204,6 +211,9 @@ export default function App() {
   }, []);
 
   const handlePassGenerated = (generatedPass) => {
+    try {
+      sessionStorage.setItem('elixora_last_generated_pass', JSON.stringify(generatedPass));
+    } catch (e) {}
     setPassData(generatedPass);
     setIsModalOpen(true);
   };
@@ -268,7 +278,21 @@ export default function App() {
 
       {/* 2. Top Navigation Bar */}
       <Navbar
-        onOpenPass={() => setIsModalOpen(true)}
+        onOpenPass={() => {
+          if (!passData) {
+            try {
+              const saved = sessionStorage.getItem('elixora_last_generated_pass');
+              if (saved) {
+                setPassData(JSON.parse(saved));
+                setIsModalOpen(true);
+                return;
+              }
+            } catch (e) {}
+            scrollToTarget('#register');
+            return;
+          }
+          setIsModalOpen(true);
+        }}
         onOpenAdmin={() => setIsAdminOpen(true)}
         hasGeneratedPass={!!passData}
       />

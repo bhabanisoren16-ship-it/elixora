@@ -187,11 +187,16 @@ export default function RegistrationPayment({ onPassGenerated }) {
       };
 
       try {
+        sessionStorage.setItem('elixora_last_generated_pass', JSON.stringify(generatedPass));
+        localStorage.setItem('elixora_last_generated_pass', JSON.stringify(generatedPass));
+      } catch (e) {}
+
+      try {
         adminStore.addRegistration(generatedPass);
       } catch (storeErr) {
         console.warn('[ELIXORA] Storage notice:', storeErr);
       }
-      onPassGenerated(generatedPass);
+      onPassGenerated?.(generatedPass);
     }, 2800);
   };
 

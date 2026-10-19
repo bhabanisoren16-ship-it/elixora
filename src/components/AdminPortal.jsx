@@ -98,34 +98,34 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   });
 
   // Broadcast settings draft
-  const [broadcastDraft, setBroadcastDraft] = useState(settings.broadcastMessage || '');
-  const [broadcastActiveDraft, setBroadcastActiveDraft] = useState(settings.broadcastActive ?? false);
+  const [broadcastDraft, setBroadcastDraft] = useState(settings?.broadcastMessage || '');
+  const [broadcastActiveDraft, setBroadcastActiveDraft] = useState(settings?.broadcastActive ?? false);
 
   // Official Schedule & Venue Management Draft
   const [scheduleDraft, setScheduleDraft] = useState({
-    isDateVenueAnnounced: settings.isDateVenueAnnounced ?? false,
-    eventHumanDate: settings.eventHumanDate || 'Saturday, October 24, 2026',
-    eventDateIso: settings.eventDateIso || '2026-10-24T18:30:00+05:30',
-    eventTimeRange: settings.eventTimeRange || '06:30 PM - 07:45 PM',
-    eventTimingLabel: settings.eventTimingLabel || 'Entry & Red Carpet',
-    venueTitle: settings.venueTitle || 'Grand Aurora Arena',
-    venueSubtitle: settings.venueSubtitle || 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
-    venueSectorTag: settings.venueSectorTag || 'AURORA ARENA • SECTOR 4',
-    venueCoordinates: settings.venueCoordinates || '28.5355° N, 77.3910° E',
-    venueGateTag: settings.venueGateTag || 'NORTH GATE',
-    transitPoint1: settings.transitPoint1 || 'Metro Line 3',
-    transitPoint2: settings.transitPoint2 || 'Gate 2 Drop',
-    venueMapsUrl: settings.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
-    teaserBadge: settings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
-    teaserTitle: settings.teaserTitle || 'Yet to be announced',
-    teaserMessage: settings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
-    teaserPill: settings.teaserPill || 'Dropping Soon • Keep An Eye Out',
+    isDateVenueAnnounced: settings?.isDateVenueAnnounced ?? false,
+    eventHumanDate: settings?.eventHumanDate || 'Saturday, October 24, 2026',
+    eventDateIso: settings?.eventDateIso || '2026-10-24T18:30:00+05:30',
+    eventTimeRange: settings?.eventTimeRange || '06:30 PM - 07:45 PM',
+    eventTimingLabel: settings?.eventTimingLabel || 'Entry & Red Carpet',
+    venueTitle: settings?.venueTitle || 'Grand Aurora Arena',
+    venueSubtitle: settings?.venueSubtitle || 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
+    venueSectorTag: settings?.venueSectorTag || 'AURORA ARENA • SECTOR 4',
+    venueCoordinates: settings?.venueCoordinates || '28.5355° N, 77.3910° E',
+    venueGateTag: settings?.venueGateTag || 'NORTH GATE',
+    transitPoint1: settings?.transitPoint1 || 'Metro Line 3',
+    transitPoint2: settings?.transitPoint2 || 'Gate 2 Drop',
+    venueMapsUrl: settings?.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
+    teaserBadge: settings?.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
+    teaserTitle: settings?.teaserTitle || 'Yet to be announced',
+    teaserMessage: settings?.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+    teaserPill: settings?.teaserPill || 'Dropping Soon • Keep An Eye Out',
   });
   const [schedulePreviewTab, setSchedulePreviewTab] = useState('auto'); // 'auto' | 'unlocked' | 'locked'
 
   // Google Sheets & Excel Online Sync State
-  const [sheetsWebhookDraft, setSheetsWebhookDraft] = useState(settings.sheetsWebhookUrl || '');
-  const [sheetsSpreadsheetDraft, setSheetsSpreadsheetDraft] = useState(settings.sheetsSpreadsheetUrl || '');
+  const [sheetsWebhookDraft, setSheetsWebhookDraft] = useState(settings?.sheetsWebhookUrl || '');
+  const [sheetsSpreadsheetDraft, setSheetsSpreadsheetDraft] = useState(settings?.sheetsSpreadsheetUrl || '');
   const [isSyncingSheets, setIsSyncingSheets] = useState(false);
   const [showScriptModal, setShowScriptModal] = useState(false);
 

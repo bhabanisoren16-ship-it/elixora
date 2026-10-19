@@ -19,6 +19,20 @@ export default function HolographicTicketModal({ passData, onClose }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [ticketQrUrl, setTicketQrUrl] = useState('');
+
+  // Safe normalized fallback data
+  const safeData = {
+    ticketId: passData?.ticketId || 'ELX-PASS',
+    fullName: passData?.fullName || 'VIP Attendee',
+    rollNo: passData?.rollNo || 'N/A',
+    branch: passData?.branch || 'Biotechnology',
+    batch: passData?.batch || "Batch of '26 • Fresher",
+    seniorQuote: passData?.seniorQuote || '',
+    utrNumber: passData?.utrNumber || 'VERIFIED',
+    isSenior: Boolean(passData?.isSenior),
+    role: passData?.role || (passData?.isSenior ? 'Senior VIP Pass' : 'VIP Fresher Attendee'),
+    ...(passData || {}),
+  };
   
   // 3D Tilt State
   const [rotateX, setRotateX] = useState(0);
@@ -58,10 +72,10 @@ export default function HolographicTicketModal({ passData, onClose }) {
     // Generate dynamic QR code for ticket verification
     const qrData = JSON.stringify({
       event: 'ELIXORA-2.0',
-      ticketId: passData?.ticketId || 'ELX-PASS',
-      name: passData?.fullName || 'VIP Attendee',
-      roll: passData?.rollNo || 'N/A',
-      branch: passData?.branch || 'Biotechnology',
+      ticketId: safeData.ticketId,
+      name: safeData.fullName,
+      roll: safeData.rollNo,
+      branch: safeData.branch,
       status: 'VERIFIED_VIP'
     });
 
@@ -155,7 +169,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
       const image = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = image;
-      link.download = `ELIXORA-2.0-VIP-TICKET-${passData.rollNo || 'PASS'}.png`;
+      link.download = `ELIXORA-2.0-VIP-TICKET-${safeData.rollNo || 'PASS'}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -175,8 +189,8 @@ export default function HolographicTicketModal({ passData, onClose }) {
     soundController.playClick?.();
     const text = encodeURIComponent(
       `🎉 I just got my Official VIP Ticket for ELIXORA 2.0 Concert & Freshers' Night!\n\n` +
-      `👤 Attendee: ${passData.fullName}\n` +
-      `🎟️ Ticket ID: ${passData.ticketId}\n` +
+      `👤 Attendee: ${safeData.fullName}\n` +
+      `🎟️ Ticket ID: ${safeData.ticketId}\n` +
       `📅 Date: ${EVENT_DETAILS.humanDate}\n` +
       `📍 Venue: ${EVENT_DETAILS.location}\n\n` +
       `See you at the grand arena! Grab your pass: ${window.location.origin}`
@@ -190,8 +204,8 @@ export default function HolographicTicketModal({ passData, onClose }) {
   };
 
   // Format Attendee Name to Title Case if user typed lowercase
-  const formattedName = passData.fullName
-    ? passData.fullName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+  const formattedName = safeData.fullName
+    ? safeData.fullName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
     : 'VIP Attendee';
 
   return (
@@ -302,7 +316,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                     ELIXORA 2.0
                   </h1>
                   <span className="text-[10px] font-outfit font-bold text-cyan-300 tracking-widest uppercase block mt-0.5">
-                    {passData?.isSenior ? 'SENIOR VIP COUNCIL EDITION' : "ANNUAL FRESHERS' FESTIVAL"}
+                    {safeData.isSenior ? 'SENIOR VIP COUNCIL EDITION' : "ANNUAL FRESHERS' FESTIVAL"}
                   </span>
                 </div>
 
@@ -313,13 +327,13 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   <div className="flex justify-center mb-2.5">
                     <div className="relative">
                       <div className={`w-18 h-18 p-[2px] rounded-2xl shadow-xl ${
-                        passData.isSenior
+                        safeData.isSenior
                           ? 'bg-gradient-to-tr from-amber-400 via-yellow-200 to-purple-600 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
                           : 'bg-gradient-to-tr from-cyan-400 via-purple-500 to-amber-300 shadow-[0_0_20px_rgba(6,182,212,0.4)]'
                       }`}>
                         <div className="w-full h-full rounded-[14px] bg-obsidian-950 flex items-center justify-center font-outfit font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-white to-cyan-300">
-                          {passData.fullName
-                            ? passData.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                          {safeData.fullName
+                            ? safeData.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
                             : 'EX'}
                         </div>
                       </div>
@@ -339,26 +353,26 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   {/* Student Credentials Pill */}
                   <div className="mt-1 flex items-center justify-center gap-2 text-xs font-mono flex-wrap">
                     <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/40 font-bold tracking-wider">
-                      ROLL: {passData.rollNo}
+                      ROLL: {safeData.rollNo}
                     </span>
-                    {passData.branch && (
+                    {safeData.branch && (
                       <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-200 border border-cyan-500/30 text-[11px] truncate max-w-[190px]">
-                        {passData.branch}
+                        {safeData.branch}
                       </span>
                     )}
                   </div>
 
-                  {passData.batch && (
+                  {safeData.batch && (
                     <div className="mt-1">
                       <span className="text-[10px] font-mono text-slate-400">
-                        {passData.batch}
+                        {safeData.batch}
                       </span>
                     </div>
                   )}
 
-                  {passData.seniorQuote && (
+                  {safeData.seniorQuote && (
                     <p className="mt-2 text-[11px] text-amber-200/90 italic px-3 py-1 rounded-lg bg-white/5 border border-white/10 max-w-xs mx-auto line-clamp-1">
-                      "{passData.seniorQuote}"
+                      "{safeData.seniorQuote}"
                     </p>
                   )}
                 </div>
@@ -372,13 +386,13 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   <div className="border-r border-white/10 pr-1">
                     <span className="text-[8px] font-mono text-slate-400 block uppercase tracking-wider">GATE</span>
                     <span className="font-bold text-cyan-300 text-[11px] block mt-0.5 truncate">
-                      {passData.isSenior ? 'Gate 1 (VIP)' : 'Gate 2 (North)'}
+                      {safeData.isSenior ? 'Gate 1 (VIP)' : 'Gate 2 (North)'}
                     </span>
                   </div>
                   <div>
                     <span className="text-[8px] font-mono text-slate-400 block uppercase tracking-wider">ZONE</span>
                     <span className="font-bold text-amber-300 text-[11px] block mt-0.5 truncate">
-                      {passData.isSenior ? 'VIP Lounge' : 'Arena Floor'}
+                      {safeData.isSenior ? 'VIP Lounge' : 'Arena Floor'}
                     </span>
                   </div>
                 </div>
@@ -397,11 +411,11 @@ export default function HolographicTicketModal({ passData, onClose }) {
                     
                     {/* Ticket ID */}
                     <div className="font-outfit font-black text-xl text-white tracking-widest mt-0.5 truncate">
-                      {passData?.ticketId}
+                      {safeData.ticketId}
                     </div>
 
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      UTR: <span className="text-slate-300">{passData?.utrNumber ? `${passData.utrNumber.slice(0, 6)}••••` : 'VERIFIED'}</span>
+                      UTR: <span className="text-slate-300">{safeData.utrNumber ? `${safeData.utrNumber.slice(0, 6)}••••` : 'VERIFIED'}</span>
                     </div>
                   </div>
 
@@ -476,7 +490,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                     <div>
                       <strong className="text-white block font-outfit text-xs">Non-Transferable Security</strong>
                       <span className="text-[11px] text-slate-300 leading-tight block">
-                        QR token is strictly linked to Roll ID ({passData.rollNo}). Permits one-time entry scan.
+                        QR token is strictly linked to Roll ID ({safeData.rollNo}). Permits one-time entry scan.
                       </span>
                     </div>
                   </div>
@@ -505,7 +519,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                   ))}
                 </div>
                 <span className="font-mono text-[9px] tracking-[0.3em] text-amber-300 mt-1 block">
-                  *{passData.ticketId}*
+                  *{safeData.ticketId}*
                 </span>
               </div>
             </div>

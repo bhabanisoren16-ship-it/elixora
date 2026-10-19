@@ -584,6 +584,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       };
 
       try {
+        sessionStorage.setItem('elixora_last_generated_pass', JSON.stringify(seniorPass));
+        localStorage.setItem('elixora_last_generated_pass', JSON.stringify(seniorPass));
+      } catch (e) {}
+
+      try {
         adminStore.addRegistration(seniorPass);
       } catch (storeErr) {
         console.warn('[ELIXORA] Senior storage notice:', storeErr);
