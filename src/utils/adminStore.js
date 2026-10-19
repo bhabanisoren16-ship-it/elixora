@@ -132,8 +132,30 @@ async function fetchRegistrationsFromBackend() {
     if (isSupabaseConfigured()) {
       const supaList = await fetchRegistrationsFromSupabase();
       if (Array.isArray(supaList)) {
-        safeSet(STORAGE_KEYS.REGISTRATIONS, supaList);
-        return supaList;
+        const currentLocal = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+
+        // Auto-sync any local items not yet in Supabase
+        const unSyncedLocal = currentLocal.filter((loc) => 
+          loc.rollNo && !supaList.some((s) => s.rollNo === loc.rollNo)
+        );
+        if (unSyncedLocal.length > 0) {
+          console.info(`[ELIXORA Supabase] Auto-syncing ${unSyncedLocal.length} local registration(s) to Supabase...`);
+          for (const unsynced of unSyncedLocal) {
+            saveRegistrationToSupabase(unsynced, unsynced.screenshot).catch((err) => {
+              console.warn('[ELIXORA Supabase] Background auto-sync notice:', err);
+            });
+          }
+        }
+
+        // Merge: Supabase records take priority, plus any local ones pending sync
+        const merged = [...supaList];
+        for (const loc of currentLocal) {
+          if (!merged.some((m) => (m.ticketId && m.ticketId === loc.ticketId) || (m.rollNo && m.rollNo === loc.rollNo))) {
+            merged.push(loc);
+          }
+        }
+        safeSet(STORAGE_KEYS.REGISTRATIONS, merged);
+        return merged;
       }
     }
 

@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 
 /**
  * Convert base64 data URL to Blob for binary storage upload
@@ -20,27 +20,32 @@ function dataURItoBlob(dataURI) {
 }
 
 /**
- * Maps database snake_case row to frontend camelCase registration object
+ * Maps database schema row to frontend camelCase registration object
  */
 export function mapRowToRegistration(row) {
   if (!row) return null;
+  const roll = (row['REGISTRATION'] || row.roll_no || '').trim().toUpperCase();
+  const isSenior = Boolean(row.is_senior);
+  const fullName = row['FULL NAME'] || row.full_name || '';
+
   return {
-    ticketId: row.ticket_id,
-    fullName: row.full_name,
-    rollNo: row.roll_no,
-    phone: row.phone,
-    utrNumber: row.utr_number,
-    branch: row.branch,
-    batch: row.batch,
-    role: row.role,
-    seniorQuote: row.senior_quote,
-    isSenior: Boolean(row.is_senior),
-    ticketPrice: row.ticket_price,
-    screenshot: row.screenshot_url,
-    screenshotUrl: row.screenshot_url,
-    status: row.status,
+    id: row.id,
+    ticketId: row.ticket_id || `ELX-${isSenior ? 'SR' : '26'}-${roll ? roll.slice(-4) : Math.floor(1000 + Math.random() * 9000)}`,
+    fullName,
+    rollNo: roll,
+    phone: row['MOBILE NO.'] || row.phone || '',
+    utrNumber: row['UTR NO.'] || row.utr_number || '',
+    branch: row['BRANCH'] || row.branch || 'Biotechnology',
+    batch: row['BATCH'] || row.batch || (isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
+    role: isSenior ? 'Senior VIP Council' : 'VIP Fresher Attendee',
+    seniorQuote: row.senior_quote || '',
+    isSenior,
+    ticketPrice: Number(row.ticket_price) || (isSenior ? 600 : 399),
+    screenshot: row['SCREENSHOT'] || row.screenshot_url || null,
+    screenshotUrl: row['SCREENSHOT'] || row.screenshot_url || null,
+    status: row.status || 'VERIFIED',
     attendanceMarked: Boolean(row.attendance_marked),
-    attendanceMarkedAt: row.attendance_marked_at,
+    attendanceMarkedAt: row.attendance_marked_at || null,
     issuedAt: row.created_at ? new Date(row.created_at).toLocaleDateString('en-IN', {
       day: 'numeric',
       month: 'short',
@@ -48,36 +53,31 @@ export function mapRowToRegistration(row) {
       hour: '2-digit',
       minute: '2-digit',
     }) : new Date().toLocaleDateString('en-IN'),
-    createdAt: row.created_at,
+    createdAt: row.created_at || new Date().toISOString(),
   };
 }
 
 /**
- * Maps frontend camelCase registration object to database snake_case row
+ * Maps frontend registration object to the exact Supabase table column schema
  */
 export function mapRegistrationToRow(reg, screenshotUrl = null) {
   return {
-    ticket_id: reg.ticketId,
-    full_name: reg.fullName,
-    roll_no: reg.rollNo,
-    phone: reg.phone || null,
-    utr_number: reg.utrNumber,
-    branch: reg.branch || 'Biotechnology',
-    batch: reg.batch || "Batch of '26 • Fresher",
-    role: reg.role || (reg.isSenior ? 'VIP Senior Council' : 'VIP Fresher Attendee'),
-    senior_quote: reg.seniorQuote || null,
-    is_senior: Boolean(reg.isSenior),
-    ticket_price: reg.ticketPrice || 399,
-    screenshot_url: screenshotUrl || reg.screenshot || null,
-    status: reg.status || 'pending_verification',
-    attendance_marked: Boolean(reg.attendanceMarked),
+    'FULL NAME': reg.fullName || '',
+    'REGISTRATION': (reg.rollNo || '').trim().toUpperCase(),
+    'MOBILE NO.': reg.phone || null,
+    'UTR NO.': reg.utrNumber || '',
+    'BRANCH': reg.branch || 'Biotechnology',
+    'BATCH': reg.batch || (reg.isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
+    'is_senior': Boolean(reg.isSenior),
+    'ticket_price': Number(reg.ticketPrice) || (reg.isSenior ? 600 : 399),
+    'SCREENSHOT': screenshotUrl || reg.screenshot || null,
   };
 }
 
 /**
  * Upload payment screenshot receipt to Supabase Storage
  */
-export async function uploadReceipt(fileOrDataUrl, ticketId) {
+export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
   if (!isSupabaseConfigured() || !supabase || !fileOrDataUrl) {
     return typeof fileOrDataUrl === 'string' ? fileOrDataUrl : null;
   }
@@ -104,7 +104,7 @@ export async function uploadReceipt(fileOrDataUrl, ticketId) {
       return typeof fileOrDataUrl === 'string' ? fileOrDataUrl : null;
     }
 
-    const fileName = `${ticketId}-${Date.now()}.${ext}`;
+    const fileName = `${ticketOrRoll}-${Date.now()}.${ext}`;
     const filePath = `receipts/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
@@ -115,7 +115,7 @@ export async function uploadReceipt(fileOrDataUrl, ticketId) {
       });
 
     if (uploadError) {
-      console.warn('[ELIXORA Supabase] Storage upload failed, falling back:', uploadError.message);
+      console.warn('[ELIXORA Supabase] Storage notice:', uploadError.message);
       return typeof fileOrDataUrl === 'string' ? fileOrDataUrl : null;
     }
 
@@ -131,7 +131,7 @@ export async function uploadReceipt(fileOrDataUrl, ticketId) {
 }
 
 /**
- * Save new attendee registration to Supabase database
+ * Automatically save attendee registration to Supabase database
  */
 export async function saveRegistrationToSupabase(registration, fileOrDataUrl = null) {
   if (!isSupabaseConfigured() || !supabase) {
@@ -139,29 +139,53 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
   }
 
   try {
-    // 1. Upload receipt to Storage if provided
+    // 1. Upload receipt to Storage if base64 dataUrl is provided
     let publicReceiptUrl = registration.screenshot;
-    if (fileOrDataUrl) {
-      const uploadedUrl = await uploadReceipt(fileOrDataUrl, registration.ticketId);
+    if (fileOrDataUrl && typeof fileOrDataUrl === 'string' && fileOrDataUrl.startsWith('data:')) {
+      const uploadedUrl = await uploadReceipt(fileOrDataUrl, registration.rollNo || registration.ticketId);
       if (uploadedUrl) publicReceiptUrl = uploadedUrl;
     }
 
-    // 2. Insert or update record in database safely using upsert
+    // 2. Map fields to exact Supabase schema
     const row = mapRegistrationToRow(registration, publicReceiptUrl);
-    const { data, error } = await supabase
-      .from('registrations')
-      .upsert([row], { onConflict: 'ticket_id' })
-      .select()
-      .single();
+    const cleanRoll = (registration.rollNo || '').trim().toUpperCase();
 
-    if (error) {
-      console.error('[ELIXORA Supabase] Insert error:', error.message);
-      return null;
+    // 3. Upsert checking existing row by REGISTRATION
+    const { data: existing } = await supabase
+      .from('registrations')
+      .select('id')
+      .eq('REGISTRATION', cleanRoll)
+      .maybeSingle();
+
+    let resultData = null;
+    if (existing && existing.id) {
+      const { data, error } = await supabase
+        .from('registrations')
+        .update({
+          ...row,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      resultData = data;
+    } else {
+      const { data, error } = await supabase
+        .from('registrations')
+        .insert([row])
+        .select()
+        .single();
+
+      if (error) throw error;
+      resultData = data;
     }
 
-    return mapRowToRegistration(data);
+    console.info('[ELIXORA Supabase] Successfully synced to Supabase Cloud:', registration.fullName, registration.rollNo);
+    return mapRowToRegistration(resultData);
   } catch (err) {
-    console.error('[ELIXORA Supabase] Unexpected error during save:', err);
+    console.error('[ELIXORA Supabase] Unexpected error during save:', err.message || err);
     return null;
   }
 }
@@ -195,18 +219,24 @@ export async function fetchRegistrationsFromSupabase() {
 /**
  * Update registration verification status
  */
-export async function updateRegistrationStatusInSupabase(ticketId, status) {
-  if (!isSupabaseConfigured() || !supabase) {
+export async function updateRegistrationStatusInSupabase(ticketOrRoll, status) {
+  if (!isSupabaseConfigured() || !supabase || !ticketOrRoll) {
     return null;
   }
 
   try {
-    const { data, error } = await supabase
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ticketOrRoll);
+    let query = supabase
       .from('registrations')
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq('ticket_id', ticketId)
-      .select()
-      .single();
+      .update({ updated_at: new Date().toISOString() });
+
+    if (isUuid) {
+      query = query.eq('id', ticketOrRoll);
+    } else {
+      query = query.eq('REGISTRATION', (ticketOrRoll || '').trim().toUpperCase());
+    }
+
+    const { data, error } = await query.select().single();
 
     if (error) {
       console.error('[ELIXORA Supabase] Update status error:', error.message);
@@ -223,22 +253,26 @@ export async function updateRegistrationStatusInSupabase(ticketId, status) {
 /**
  * Toggle attendance marked status
  */
-export async function updateAttendanceInSupabase(ticketId, attendanceMarked) {
-  if (!isSupabaseConfigured() || !supabase) {
+export async function updateAttendanceInSupabase(ticketOrRoll, attendanceMarked) {
+  if (!isSupabaseConfigured() || !supabase || !ticketOrRoll) {
     return null;
   }
 
   try {
-    const { data, error } = await supabase
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ticketOrRoll);
+    let query = supabase
       .from('registrations')
       .update({
-        attendance_marked: attendanceMarked,
-        attendance_marked_at: attendanceMarked ? new Date().toISOString() : null,
         updated_at: new Date().toISOString(),
-      })
-      .eq('ticket_id', ticketId)
-      .select()
-      .single();
+      });
+
+    if (isUuid) {
+      query = query.eq('id', ticketOrRoll);
+    } else {
+      query = query.eq('REGISTRATION', (ticketOrRoll || '').trim().toUpperCase());
+    }
+
+    const { data, error } = await query.select().single();
 
     if (error) {
       console.error('[ELIXORA Supabase] Attendance update error:', error.message);
@@ -252,15 +286,24 @@ export async function updateAttendanceInSupabase(ticketId, attendanceMarked) {
   }
 }
 
-export async function deleteRegistrationFromSupabase(ticketId) {
-  if (!isSupabaseConfigured() || !supabase) {
+/**
+ * Delete registration from Supabase
+ */
+export async function deleteRegistrationFromSupabase(identifier) {
+  if (!isSupabaseConfigured() || !supabase || !identifier) {
     return false;
   }
   try {
-    const { error } = await supabase
-      .from('registrations')
-      .delete()
-      .eq('ticket_id', ticketId);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
+    let query = supabase.from('registrations').delete();
+
+    if (isUuid) {
+      query = query.eq('id', identifier);
+    } else {
+      query = query.eq('REGISTRATION', (identifier || '').trim().toUpperCase());
+    }
+
+    const { error } = await query;
 
     if (error) {
       console.error('[ELIXORA Supabase] Delete error:', error.message);
@@ -303,8 +346,9 @@ export function subscribeToSupabaseRegistrations(onInsert, onUpdate, onDelete) {
       'postgres_changes',
       { event: 'DELETE', schema: 'public', table: 'registrations' },
       (payload) => {
-        const ticketId = payload.old?.ticket_id;
-        if (ticketId && onDelete) onDelete(ticketId);
+        const roll = payload.old?.REGISTRATION;
+        const id = payload.old?.id;
+        if (onDelete) onDelete(roll || id);
       }
     )
     .subscribe();
