@@ -12,19 +12,55 @@ export default function Background() {
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef(null);
 
-  // Pause canvas while user is actively scrolling to free 100% of GPU for 120fps scrolling
+  const desktopBgRef = useRef(null);
+
+  // Pause canvas on mobile during scroll; keep 60fps lighting animations active on desktop
   useEffect(() => {
     const onScroll = () => {
-      isScrollingRef.current = true;
-      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 120);
+      if (window.innerWidth < 768) {
+        isScrollingRef.current = true;
+        if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = setTimeout(() => {
+          isScrollingRef.current = false;
+        }, 120);
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, []);
+
+  // Desktop-Only Smooth Scroll Parallax Effect
+  useEffect(() => {
+    let rafId = null;
+    let targetScrollY = 0;
+    let currentScrollY = 0;
+
+    const handleScroll = () => {
+      if (window.innerWidth >= 768) {
+        targetScrollY = window.pageYOffset || window.scrollY || 0;
+      }
+    };
+
+    const animateParallax = () => {
+      if (window.innerWidth >= 768 && desktopBgRef.current) {
+        // Silky smooth lerp interpolation (0.09)
+        currentScrollY += (targetScrollY - currentScrollY) * 0.09;
+        const translateY = currentScrollY * 0.18;
+        const subtleScale = 1.05 + Math.min(currentScrollY * 0.00008, 0.06);
+        desktopBgRef.current.style.transform = `translate3d(0, -${translateY}px, 0) scale(${subtleScale})`;
+      }
+      rafId = requestAnimationFrame(animateParallax);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    rafId = requestAnimationFrame(animateParallax);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -299,23 +335,23 @@ export default function Background() {
         }}
         aria-hidden="true"
       >
-        {/* Desktop Screen (≥ md): Native 16:9 Widescreen Concert Atmosphere (Perfect Edge-to-Edge Fit) */}
-        <img
-          src={desktopBg}
-          alt="ELIXORA 2.0 Concert Atmosphere"
-          decoding="async"
-          loading="eager"
-          className="hidden md:block w-full h-full object-cover object-center filter brightness-[1.03] contrast-[1.05]"
+        {/* Desktop Screen (≥ md): Native 16:9 Widescreen Concert Atmosphere with Depth Parallax */}
+        <div
+          ref={desktopBgRef}
+          className="hidden md:block absolute top-0 left-0 w-full h-[125%] pointer-events-none will-change-transform"
           style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center center',
+            transformOrigin: 'center top',
+            transform: 'translate3d(0, 0, 0) scale(1.05)',
           }}
-        />
+        >
+          <img
+            src={desktopBg}
+            alt="ELIXORA 2.0 Concert Atmosphere"
+            decoding="async"
+            loading="eager"
+            className="w-full h-full object-cover object-center filter brightness-[1.03] contrast-[1.05]"
+          />
+        </div>
 
         {/* Mobile Screen (< md): Native Portrait Fullscreen Cover completely frozen in place */}
         <img
