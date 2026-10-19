@@ -4,7 +4,6 @@ import html2canvas from 'html2canvas';
 import QRCode from 'qrcode';
 import { 
   Download, 
-  RotateCw, 
   X, 
   CheckCircle2, 
   ShieldCheck, 
@@ -518,21 +517,12 @@ export default function HolographicTicketModal({ passData, onClose }) {
         {/* ========================================================= */}
         {/* CONTROLS & ACTIONS BAR                                    */}
         {/* ========================================================= */}
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-3 w-full max-w-md">
-          {/* Flip Pass Toggle */}
-          <button
-            onClick={handleFlipCard}
-            className="flex-1 py-3 px-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 hover:border-amber-400/50 text-white font-medium text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-md"
-          >
-            <RotateCw className="w-4 h-4 text-amber-400" />
-            <span>{isFlipped ? 'View Front Ticket' : 'Flip to Guidelines'}</span>
-          </button>
-
+        <div className="mt-5 flex items-center justify-center w-full max-w-md">
           {/* Download Ticket PNG via html2canvas */}
           <button
             onClick={downloadTicketPng}
             disabled={isDownloading}
-            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-300 text-slate-950 font-black font-outfit text-xs sm:text-sm hover:shadow-[0_0_20px_rgba(245,158,11,0.5)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 border border-white/30 cursor-pointer"
+            className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-300 text-slate-950 font-black font-outfit text-sm hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 border border-white/30 cursor-pointer shadow-lg"
           >
             <Download className="w-4 h-4 text-slate-950" />
             <span>{isDownloading ? 'Exporting HD...' : 'Download Ticket (PNG)'}</span>
