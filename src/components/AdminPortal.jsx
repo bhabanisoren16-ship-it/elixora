@@ -510,9 +510,9 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
             {/* Glowing Cyber Shield */}
             <div className="relative mb-6">
-              <div className="w-24 h-24 rounded-3xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-cyber-violet p-[2px] shadow-[0_0_40px_rgba(6,182,212,0.4)] animate-pulse-glow">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-cyber-violet p-[2px] shadow-[0_0_40px_rgba(6,182,212,0.4)] animate-pulse-glow">
                 <div className="w-full h-full bg-obsidian-950 rounded-[22px] flex items-center justify-center">
-                  <ShieldCheck className="w-12 h-12 text-cyan-300" />
+                  <ShieldCheck className="w-10 h-10 text-cyan-300" />
                 </div>
               </div>
               <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-cyan-400 text-obsidian-950 flex items-center justify-center font-bold text-xs shadow-neon-cyan animate-bounce">
@@ -520,20 +520,8 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
               </div>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/40 text-cyan-300 text-xs font-outfit font-bold uppercase tracking-wider mb-2">
-              <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              <span>SECURITY LEVEL 4 • RESTRICTED ACCESS</span>
-            </div>
-
-            <h2 className="font-outfit font-extrabold text-3xl sm:text-4xl text-white tracking-tight">
-              ELIXORA 2.0 Command Nexus
-            </h2>
-            <p className="mt-2 text-slate-400 max-w-md text-sm font-outfit">
-              Enter authorized administrator passcode to access event ledger, approvals, gate check-in, and guest rosters.
-            </p>
-
             {/* Passcode Form */}
-            <form onSubmit={handleLogin} className="mt-8 w-full max-w-sm flex flex-col gap-4">
+            <form onSubmit={handleLogin} className="mt-2 w-full max-w-sm flex flex-col gap-4">
               <div className="relative">
                 <KeyRound className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400/80" />
                 <input
@@ -592,11 +580,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 )}
               </button>
             </form>
-
-            <div className="mt-8 flex items-center gap-2 text-[11px] text-slate-500 font-mono">
-              <ShieldAlert className="w-3.5 h-3.5 text-cyan-500/60" />
-              <span>Restricted event management nexus. Authorized access logged.</span>
-            </div>
           </div>
         ) : (
           /* ========================================================================= */
