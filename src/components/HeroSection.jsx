@@ -26,14 +26,24 @@ export default function HeroSection({ onGrabPassClick }) {
   const titleContainerRef = useRef(null);
   const grabPassRef = useRef(null);
 
-  // Initial sci-fi decode scramble effect for the main CTA button
+  // Dynamic sci-fi decode scramble effect for the main CTA button
   useEffect(() => {
     const timer = setTimeout(() => {
       if (grabPassRef.current) {
-        scrambleText(grabPassRef.current, 'GRAB YOUR PASS', { duration: 0.55 });
+        scrambleText(grabPassRef.current, 'GRAB YOUR PASS', { duration: 0.6 });
       }
     }, 700);
-    return () => clearTimeout(timer);
+
+    const interval = setInterval(() => {
+      if (grabPassRef.current && document.visibilityState === 'visible') {
+        scrambleText(grabPassRef.current, 'GRAB YOUR PASS', { duration: 0.48 });
+      }
+    }, 5500);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
   }, []);
 
   // Direct Tap / Click impulse for mobile & desktop

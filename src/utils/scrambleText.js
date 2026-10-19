@@ -1,17 +1,7 @@
-import gsap from 'gsap';
-import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
-
-// Register ScrambleTextPlugin with GSAP
-try {
-  gsap.registerPlugin(ScrambleTextPlugin);
-} catch (e) {
-  console.warn('ScrambleTextPlugin initialization notice:', e);
-}
-
 export const SCRAMBLE_CHARS = 'XYZXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!<>-_\\/[]{}—=+*^?#';
 
 /**
- * Scramble text effect on an element
+ * High-performance 60fps Scramble text effect on an element
  * @param {HTMLElement|string} target - DOM element or selector
  * @param {string} text - Final text to reveal
  * @param {object} options - Optional configuration
@@ -25,25 +15,8 @@ export function scrambleText(target, text, options = {}) {
     el.setAttribute('data-text', originalText);
   }
 
-  const duration = options.duration ?? 0.6;
+  const duration = options.duration ?? 0.5;
   const chars = options.chars ?? SCRAMBLE_CHARS;
-  const speed = options.speed ?? 0.55;
-
-  // Attempt GSAP ScrambleTextPlugin if registered
-  if (typeof gsap !== 'undefined' && gsap.plugins && gsap.plugins.scrambleText) {
-    try {
-      return gsap.to(el, {
-        duration,
-        scrambleText: {
-          text: originalText,
-          chars,
-          speed: options.speed ?? 0.55,
-        },
-        overwrite: true,
-        onComplete: options.onComplete,
-      });
-    } catch (err) {}
-  }
 
   // 60fps Precision RAF Scramble/Decode Engine
   if (el._scrambleRaf) {
