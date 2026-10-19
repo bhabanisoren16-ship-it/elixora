@@ -269,6 +269,7 @@ export default function App() {
       {/* 2. Top Navigation Bar */}
       <Navbar
         onOpenPass={() => setIsModalOpen(true)}
+        onOpenAdmin={() => setIsAdminOpen(true)}
         hasGeneratedPass={!!passData}
       />
 
@@ -299,7 +300,14 @@ export default function App() {
 
       {/* 4. Interactive 3D Holographic Pass Modal */}
       {isModalOpen && passData && (
-        <Suspense fallback={null}>
+        <Suspense fallback={
+          <div className="fixed inset-0 z-[120] flex items-center justify-center bg-obsidian-950/80 backdrop-blur-md">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs font-mono tracking-widest text-amber-300 uppercase">Rendering VIP Pass...</span>
+            </div>
+          </div>
+        }>
           <HolographicTicketModal
             passData={passData}
             onClose={() => setIsModalOpen(false)}
@@ -309,7 +317,14 @@ export default function App() {
 
       {/* 5. ELIXORA 2.0 Command Nexus & Admin Operations Portal */}
       {isAdminOpen && (
-        <Suspense fallback={null}>
+        <Suspense fallback={
+          <div className="fixed inset-0 z-[120] flex items-center justify-center bg-obsidian-950/80 backdrop-blur-md">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs font-mono tracking-widest text-amber-300 uppercase">Opening Command Nexus...</span>
+            </div>
+          </div>
+        }>
           <AdminPortal
             isOpen={isAdminOpen}
             onClose={() => setIsAdminOpen(false)}

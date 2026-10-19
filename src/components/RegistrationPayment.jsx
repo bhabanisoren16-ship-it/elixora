@@ -186,7 +186,11 @@ export default function RegistrationPayment({ onPassGenerated }) {
         role: 'VIP Fresher Attendee',
       };
 
-      adminStore.addRegistration(generatedPass);
+      try {
+        adminStore.addRegistration(generatedPass);
+      } catch (storeErr) {
+        console.warn('[ELIXORA] Storage notice:', storeErr);
+      }
       onPassGenerated(generatedPass);
     }, 2800);
   };

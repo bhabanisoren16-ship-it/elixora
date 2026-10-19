@@ -146,11 +146,11 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
       if (uploadedUrl) publicReceiptUrl = uploadedUrl;
     }
 
-    // 2. Insert record into database
+    // 2. Insert or update record in database safely using upsert
     const row = mapRegistrationToRow(registration, publicReceiptUrl);
     const { data, error } = await supabase
       .from('registrations')
-      .insert([row])
+      .upsert([row], { onConflict: 'ticket_id' })
       .select()
       .single();
 
@@ -252,10 +252,31 @@ export async function updateAttendanceInSupabase(ticketId, attendanceMarked) {
   }
 }
 
+export async function deleteRegistrationFromSupabase(ticketId) {
+  if (!isSupabaseConfigured() || !supabase) {
+    return false;
+  }
+  try {
+    const { error } = await supabase
+      .from('registrations')
+      .delete()
+      .eq('ticket_id', ticketId);
+
+    if (error) {
+      console.error('[ELIXORA Supabase] Delete error:', error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[ELIXORA Supabase] Delete failed:', err);
+    return false;
+  }
+}
+
 /**
  * Subscribe to real-time changes on the registrations table
  */
-export function subscribeToSupabaseRegistrations(onInsert, onUpdate) {
+export function subscribeToSupabaseRegistrations(onInsert, onUpdate, onDelete) {
   if (!isSupabaseConfigured() || !supabase) {
     return () => {};
   }
@@ -276,6 +297,14 @@ export function subscribeToSupabaseRegistrations(onInsert, onUpdate) {
       (payload) => {
         const item = mapRowToRegistration(payload.new);
         if (item && onUpdate) onUpdate(item);
+      }
+    )
+    .on(
+      'postgres_changes',
+      { event: 'DELETE', schema: 'public', table: 'registrations' },
+      (payload) => {
+        const ticketId = payload.old?.ticket_id;
+        if (ticketId && onDelete) onDelete(ticketId);
       }
     )
     .subscribe();

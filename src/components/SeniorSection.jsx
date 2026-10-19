@@ -583,7 +583,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         generatedAt: new Date().toISOString(),
       };
 
-      adminStore.addRegistration(seniorPass);
+      try {
+        adminStore.addRegistration(seniorPass);
+      } catch (storeErr) {
+        console.warn('[ELIXORA] Senior storage notice:', storeErr);
+      }
       onPassGenerated?.(seniorPass);
     }, 3600);
   };

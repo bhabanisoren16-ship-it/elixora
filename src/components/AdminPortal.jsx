@@ -176,6 +176,17 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     setStats(adminStore.getStats());
   }, [registrations]);
 
+  // On mount or auth, immediately fetch fresh live records from Supabase
+  useEffect(() => {
+    if (isOpen) {
+      adminStore.refreshFromBackend?.().then((liveList) => {
+        if (Array.isArray(liveList)) {
+          setRegistrations(liveList);
+        }
+      }).catch(() => {});
+    }
+  }, [isOpen, isAuthenticated]);
+
   // Flash action notification
   const notifySuccess = (msg) => {
     setActionSuccessMsg(msg);

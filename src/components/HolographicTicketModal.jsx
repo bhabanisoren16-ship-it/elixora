@@ -58,10 +58,10 @@ export default function HolographicTicketModal({ passData, onClose }) {
     // Generate dynamic QR code for ticket verification
     const qrData = JSON.stringify({
       event: 'ELIXORA-2.0',
-      ticketId: passData.ticketId,
-      name: passData.fullName,
-      roll: passData.rollNo,
-      branch: passData.branch || 'Biotechnology',
+      ticketId: passData?.ticketId || 'ELX-PASS',
+      name: passData?.fullName || 'VIP Attendee',
+      roll: passData?.rollNo || 'N/A',
+      branch: passData?.branch || 'Biotechnology',
       status: 'VERIFIED_VIP'
     });
 
@@ -302,7 +302,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                     ELIXORA 2.0
                   </h1>
                   <span className="text-[10px] font-outfit font-bold text-cyan-300 tracking-widest uppercase block mt-0.5">
-                    {passData.isSenior ? 'SENIOR VIP COUNCIL EDITION' : "ANNUAL FRESHERS' FESTIVAL"}
+                    {passData?.isSenior ? 'SENIOR VIP COUNCIL EDITION' : "ANNUAL FRESHERS' FESTIVAL"}
                   </span>
                 </div>
 
@@ -397,11 +397,11 @@ export default function HolographicTicketModal({ passData, onClose }) {
                     
                     {/* Ticket ID */}
                     <div className="font-outfit font-black text-xl text-white tracking-widest mt-0.5 truncate">
-                      {passData.ticketId}
+                      {passData?.ticketId}
                     </div>
 
                     <div className="text-[10px] font-mono text-slate-400 mt-1">
-                      UTR: <span className="text-slate-300">{passData.utrNumber ? `${passData.utrNumber.slice(0, 6)}••••` : 'VERIFIED'}</span>
+                      UTR: <span className="text-slate-300">{passData?.utrNumber ? `${passData.utrNumber.slice(0, 6)}••••` : 'VERIFIED'}</span>
                     </div>
                   </div>
 

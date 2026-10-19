@@ -6,6 +6,7 @@ import {
   fetchRegistrationsFromSupabase, 
   updateRegistrationStatusInSupabase, 
   updateAttendanceInSupabase, 
+  deleteRegistrationFromSupabase,
   subscribeToSupabaseRegistrations 
 } from '../services/supabaseService';
 
@@ -130,36 +131,20 @@ async function fetchRegistrationsFromBackend() {
     // 1. Prioritize Cloud Supabase if configured
     if (isSupabaseConfigured()) {
       const supaList = await fetchRegistrationsFromSupabase();
-      if (Array.isArray(supaList) && supaList.length > 0) {
-        serverList = supaList;
+      if (Array.isArray(supaList)) {
+        safeSet(STORAGE_KEYS.REGISTRATIONS, supaList);
+        return supaList;
       }
     }
 
-    // 2. Fall back to local Express backend if Supabase empty or not configured
-    if (!serverList) {
-      const res = await fetch('/api/registrations');
-      if (res.ok) {
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          serverList = json.data;
-        }
+    // 2. Fall back to local Express backend if Supabase not configured
+    const res = await fetch('/api/registrations');
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        safeSet(STORAGE_KEYS.REGISTRATIONS, json.data);
+        return json.data;
       }
-    }
-
-    if (serverList) {
-      const localList = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
-
-      // Reconcile: preserve any local registrations not yet uploaded to server
-      const serverIds = new Set(serverList.map((r) => r.ticketId));
-      const localUnsynced = localList.filter((r) => r.ticketId && !serverIds.has(r.ticketId));
-
-      // Push unsynced local items to server in background
-      for (const item of localUnsynced) {
-        sendRegistrationToBackend(item).catch(() => {});
-      }
-
-      const merged = [...localUnsynced, ...serverList];
-      safeSet(STORAGE_KEYS.REGISTRATIONS, merged);
     }
   } catch (err) {
     // Graceful offline fallback
@@ -207,11 +192,19 @@ function startRealTimeSync() {
           const exists = current.some((r) => r.ticketId === newRecord.ticketId || (newRecord.rollNo && r.rollNo === newRecord.rollNo));
           if (!exists) {
             safeSet(STORAGE_KEYS.REGISTRATIONS, [newRecord, ...current]);
+          } else {
+            const updated = current.map((r) => (r.ticketId === newRecord.ticketId ? { ...r, ...newRecord } : r));
+            safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
           }
         },
         (updatedRecord) => {
           const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
           const updated = current.map((r) => (r.ticketId === updatedRecord.ticketId ? { ...r, ...updatedRecord } : r));
+          safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
+        },
+        (deletedTicketId) => {
+          const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+          const updated = current.filter((r) => r.ticketId !== deletedTicketId);
           safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
         }
       );
@@ -341,6 +334,8 @@ export const adminStore = {
       if (saved && saved.screenshot && saved.screenshot !== record.screenshot) {
         this.updateRegistration(record.ticketId, { screenshot: saved.screenshot });
       }
+    }).catch((err) => {
+      console.warn('[ELIXORA] Background registration sync notice:', err);
     });
 
     return record;
@@ -416,10 +411,19 @@ export const adminStore = {
     const updated = list.filter((item) => item.ticketId !== ticketId);
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
 
+    // Sync delete to Supabase
+    if (isSupabaseConfigured()) {
+      deleteRegistrationFromSupabase(ticketId).catch(() => {});
+    }
+
     // Sync delete to backend
     fetch(`/api/registrations/${ticketId}`, {
       method: 'DELETE',
     }).catch(() => {});
+  },
+
+  async refreshFromBackend() {
+    return await fetchRegistrationsFromBackend();
   },
 
 
