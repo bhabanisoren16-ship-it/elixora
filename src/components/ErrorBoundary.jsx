@@ -12,16 +12,35 @@ export default class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('ELIXORA Caught Error in Boundary:', error, errorInfo);
+    const msg = String(error?.message || error);
+    // If user's browser attempts to fetch an old deployment chunk that was replaced
+    if (msg.includes('dynamically imported module') || msg.includes('Loading chunk')) {
+      const hasAutoReloaded = sessionStorage.getItem('elixora_chunk_reload_done');
+      if (!hasAutoReloaded) {
+        sessionStorage.setItem('elixora_chunk_reload_done', 'true');
+        const url = new URL(window.location.href);
+        url.searchParams.set('_v', Date.now());
+        window.location.replace(url.toString());
+      }
+    }
   }
 
   handleReload = () => {
-    window.location.reload();
+    try {
+      sessionStorage.removeItem('elixora_chunk_reload_done');
+    } catch (e) {}
+    const url = new URL(window.location.href);
+    url.searchParams.set('_v', Date.now());
+    window.location.replace(url.toString());
   };
 
   handleReset = () => {
     try {
       localStorage.clear();
       sessionStorage.clear();
+      if ('caches' in window) {
+        caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+      }
     } catch (e) {}
     window.location.href = window.location.origin + window.location.pathname;
   };
