@@ -248,19 +248,6 @@ export default function Navbar({ onOpenPass, onOpenAdmin, hasGeneratedPass }) {
                 </button>
               );
             })}
-
-            {/* Discreet Organizer Access */}
-            <button
-              type="button"
-              onClick={() => {
-                soundController.playClick?.();
-                setMobileMenuOpen(false);
-                onOpenAdmin?.();
-              }}
-              className="w-full mt-1.5 pt-2 border-t border-white/10 text-[11px] font-mono text-slate-400 hover:text-cyan-300 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <span>🔒 Admin Access</span>
-            </button>
           </nav>
         )}
       </div>
