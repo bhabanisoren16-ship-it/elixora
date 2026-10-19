@@ -141,9 +141,11 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
         setIsScrolledDown(true);
       }
       scrollToTarget(href);
-      try {
-        history.replaceState(null, '', href);
-      } catch (err) {}
+      if (window.location.hash) {
+        try {
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        } catch (err) {}
+      }
     }
   };
 
@@ -220,9 +222,9 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
               const isSelected = activeSection === link.name || activeBtn === link.name;
               const isSenior = link.name === 'SENIORS';
               return (
-                <a
+                <button
+                  type="button"
                   key={link.name}
-                  href={link.href}
                   onPointerDown={() => setActiveBtn(link.name)}
                   onClick={(e) => {
                     setActiveSection(link.name);
@@ -232,7 +234,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                     const textEl = e.currentTarget.querySelector('[data-scr]');
                     if (textEl) scrambleText(textEl, link.name, { duration: 0.38 });
                   }}
-                  className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 active:scale-95 group ${
+                  className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 active:scale-95 group cursor-pointer ${
                     isSelected
                       ? isSenior
                         ? 'text-amber-300 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]'
@@ -244,7 +246,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                 >
                   <Icon className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
                   <span data-scr data-text={link.name} className="inline-block select-none">{link.name}</span>
-                </a>
+                </button>
               );
             })}
 
@@ -278,9 +280,9 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
           const isSelected = activeSection === link.name || activeBtn === link.name;
           const isSenior = link.name === 'SENIORS';
           return (
-            <a
+            <button
+              type="button"
               key={link.name}
-              href={link.href}
               onPointerDown={() => setActiveBtn(link.name)}
               onMouseEnter={(e) => {
                 soundController.playHover?.();
@@ -298,7 +300,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                   scrambleText(textEl, link.name, { duration: 0.38 });
                 }
               }}
-              className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 ${
+              className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 cursor-pointer ${
                 isSelected
                   ? isSenior
                     ? 'text-amber-300 font-bold drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]'
@@ -310,7 +312,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
               <span data-scr data-text={link.name} className="inline-block select-none">{link.name}</span>
-            </a>
+            </button>
           );
         })}
       </nav>
