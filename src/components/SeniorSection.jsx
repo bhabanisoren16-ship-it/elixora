@@ -596,14 +596,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   return (
     <section id="seniors" className="relative py-8 sm:py-14 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       {/* Section Header */}
-      <div className="text-center mb-5 sm:mb-8">
+      <div className="text-center mb-5 sm:mb-8 scroll-pop-target">
         <h2 className="font-outfit font-extrabold text-2xl sm:text-4xl md:text-5xl text-white tracking-tight">
           Senior Registration &amp; Pass
         </h2>
       </div>
 
       {/* AUTHENTICATION GATEWAY (ENTER REGISTRATION NUMBER TO UNLOCK SENIOR PORTAL) */}
-      <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl p-4 sm:p-7 lg:p-9 border border-cyan-500/35 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(6,182,212,0.15)] relative overflow-hidden transition-all duration-300">
+      <div className="max-w-4xl mx-auto rounded-2xl sm:rounded-3xl p-4 sm:p-7 lg:p-9 border border-cyan-500/35 bg-obsidian-950/85 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_40px_rgba(6,182,212,0.15)] relative overflow-hidden transition-all duration-300 scroll-pop-target">
         
         {/* Subtle Background Poster Artwork */}
         <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">

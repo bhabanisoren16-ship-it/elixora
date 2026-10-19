@@ -11,7 +11,7 @@ export default function LineupSection() {
   return (
     <section id="contest" className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       {/* Section Header */}
-      <div className="text-center mb-6 sm:mb-8">
+      <div className="text-center mb-6 sm:mb-8 scroll-pop-target">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Mr. &amp; Ms. Fresher 2026
         </h2>
@@ -23,7 +23,7 @@ export default function LineupSection() {
       {/* Main Spotlight Box (Translucent Glass Screen with Light Spotlight) */}
       <div 
         onMouseMove={handleMouseMove}
-        className="rounded-3xl sm:rounded-[2rem] p-6 sm:p-8 lg:p-10 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300"
+        className="rounded-3xl sm:rounded-[2rem] p-6 sm:p-8 lg:p-10 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-pop-target"
       >
         <div className="light-spotlight-overlay" />
         <div className="light-spotlight-border" />

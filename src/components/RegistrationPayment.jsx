@@ -170,7 +170,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
     <section id="register" className="relative py-8 sm:py-12 px-3 sm:px-5 lg:px-6 max-w-[92rem] 2xl:max-w-[98rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       
       {/* Header */}
-      <div className="text-center mb-5 sm:mb-7">
+      <div className="text-center mb-5 sm:mb-7 scroll-pop-target">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Junior Registration &amp; Pass Checkout
         </h2>
@@ -180,7 +180,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
       </div>
 
       {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER (FULL WIDTH WITH COMPACT HEIGHT) */}
-      <div className="w-full max-w-[86rem] xl:max-w-[90rem] 2xl:max-w-[94rem] mx-auto rounded-3xl py-4 sm:py-5 px-5 sm:px-8 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden transition-all duration-300">
+      <div className="w-full max-w-[86rem] xl:max-w-[90rem] 2xl:max-w-[94rem] mx-auto rounded-3xl py-4 sm:py-5 px-5 sm:px-8 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden transition-all duration-300 scroll-pop-target">
         
         {/* Subtle Ambient Glow Blobs inside the card */}
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyber-cyan/15 rounded-full blur-3xl pointer-events-none" />
