@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   RealisticHome, 
   RealisticCalendar, 
-  RealisticGraduationCap,
-  RealisticTicket
+  RealisticGraduationCap
 } from './RealisticIcons';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { soundController } from '../utils/audio';
@@ -250,22 +249,6 @@ export default function Navbar({ onOpenPass, onOpenAdmin, hasGeneratedPass }) {
               );
             })}
 
-            {/* Quick View VIP Pass Button (If pass has been generated) */}
-            {hasGeneratedPass && (
-              <button
-                type="button"
-                onClick={() => {
-                  soundController.playClick?.();
-                  setMobileMenuOpen(false);
-                  onOpenPass?.();
-                }}
-                className="w-full mt-0.5 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-cyan-500/20 to-sky-500/20 hover:from-cyan-500/30 hover:to-sky-500/30 border border-cyan-400/50 text-cyan-300 shadow-neon-cyan flex items-center gap-2.5 transition-all active:scale-95 cursor-pointer"
-              >
-                <RealisticTicket className="w-4 h-4 shrink-0" />
-                <span>MY VIP PASS</span>
-              </button>
-            )}
-
             {/* Discreet Organizer Access */}
             <button
               type="button"
@@ -328,21 +311,6 @@ export default function Navbar({ onOpenPass, onOpenAdmin, hasGeneratedPass }) {
             </button>
           );
         })}
-
-        {/* Quick View VIP Pass Button (If pass has been generated) */}
-        {hasGeneratedPass && (
-          <button
-            type="button"
-            onClick={() => {
-              soundController.playClick?.();
-              onOpenPass?.();
-            }}
-            className="px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 text-cyan-300 shadow-neon-cyan flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer ml-1"
-          >
-            <RealisticTicket className="w-3.5 h-3.5 shrink-0" />
-            <span>MY PASS</span>
-          </button>
-        )}
       </nav>
     </header>
   );
