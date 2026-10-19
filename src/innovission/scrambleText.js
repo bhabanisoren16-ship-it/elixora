@@ -29,65 +29,81 @@ export function scrambleText(target, text, options = {}) {
   const chars = options.chars ?? SCRAMBLE_CHARS;
   const speed = options.speed ?? 0.55;
 
-  // Attempt GSAP ScrambleTextPlugin first
-  try {
-    return gsap.to(el, {
-      duration,
-      scrambleText: {
-        text: originalText,
-        chars,
-        speed,
-      },
-      overwrite: true,
-      onComplete: options.onComplete,
-    });
-  } catch (err) {
-    // Robust fallback if plugin is unavailable
-    let frame = 0;
-    const totalFrames = Math.round(duration * 60);
-    const len = originalText.length;
+  // Attempt GSAP ScrambleTextPlugin if registered
+  if (typeof gsap !== 'undefined' && gsap.plugins && gsap.plugins.scrambleText) {
+    try {
+      return gsap.to(el, {
+        duration,
+        scrambleText: {
+          text: originalText,
+          chars,
+          speed: options.speed ?? 0.55,
+        },
+        overwrite: true,
+        onComplete: options.onComplete,
+      });
+    } catch (err) {}
+  }
 
-    clearInterval(el._scrambleTimer);
-    el._scrambleTimer = setInterval(() => {
-      frame++;
-      const progress = frame / totalFrames;
-      const revealedCount = Math.floor(progress * len);
+  // 60fps Precision RAF Scramble/Decode Engine
+  if (el._scrambleRaf) {
+    cancelAnimationFrame(el._scrambleRaf);
+  }
 
-      let output = originalText.slice(0, revealedCount);
+  const startTime = performance.now();
+  const durationMs = duration * 1000;
+  const len = originalText.length;
+  let lastCharChange = 0;
+  let scrambledBuffer = '';
+
+  const animate = (now) => {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / durationMs, 1);
+    const revealedCount = Math.floor(progress * len);
+
+    // Refresh cyber glitch characters every ~32ms
+    if (now - lastCharChange > 32) {
+      lastCharChange = now;
+      let rand = '';
       for (let i = revealedCount; i < len; i++) {
         if (originalText[i] === ' ') {
-          output += ' ';
+          rand += ' ';
         } else {
-          output += chars[Math.floor(Math.random() * chars.length)];
+          rand += chars[Math.floor(Math.random() * chars.length)];
         }
       }
+      scrambledBuffer = rand;
+    }
 
-      el.textContent = output;
+    el.textContent = originalText.slice(0, revealedCount) + scrambledBuffer.slice(0, len - revealedCount);
 
-      if (frame >= totalFrames) {
-        clearInterval(el._scrambleTimer);
-        el.textContent = originalText;
-        if (options.onComplete) options.onComplete();
-      }
-    }, 1000 / 60);
+    if (progress < 1) {
+      el._scrambleRaf = requestAnimationFrame(animate);
+    } else {
+      el.textContent = originalText;
+      el._scrambleRaf = null;
+      if (options.onComplete) options.onComplete();
+    }
+  };
 
-    return null;
-  }
+  el._scrambleRaf = requestAnimationFrame(animate);
+  return el;
 }
 
 /**
- * Global hover handler for all elements with data-scr attribute
+ * Global hover handler restricted exclusively to Navbar navigation items
  */
 export function initGlobalScrambleListener() {
   if (typeof window === 'undefined') return () => {};
 
   const handlePointerEnter = (e) => {
-    const target = e.target.closest('[data-scr]');
+    // Only scramble text elements within the navigation bar
+    const target = e.target.closest('header [data-scr], nav [data-scr]');
     if (!target) return;
 
     const text = target.getAttribute('data-text') || target.textContent;
     target.setAttribute('data-text', text);
-    scrambleText(target, text, { duration: 0.5 });
+    scrambleText(target, text, { duration: 0.42 });
   };
 
   document.addEventListener('pointerenter', handlePointerEnter, true);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { soundController } from '../utils/audio';
-import { scrambleText } from './scrambleText';
 
 export default function CyberneticHud({ onReplayIntro, onOpenPass, hasPass }) {
   const [coords, setCoords] = useState('22.2500° N, 84.9000° E');
@@ -14,14 +13,6 @@ export default function CyberneticHud({ onReplayIntro, onOpenPass, hasPass }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleHover = (e) => {
-    const target = e.currentTarget.querySelector('[data-scr]') || e.currentTarget;
-    if (target) {
-      soundController.playHover?.();
-      scrambleText(target);
-    }
-  };
-
   return (
     <aside
       aria-label="Cybernetic Telemetry HUD"
@@ -30,7 +21,6 @@ export default function CyberneticHud({ onReplayIntro, onOpenPass, hasPass }) {
     >
       {/* Chamfered Coordinate & Status HUD Pill */}
       <div
-        onMouseEnter={handleHover}
         className="pointer-events-auto flex items-center gap-2.5 px-3.5 py-1.5 bg-black/70 backdrop-blur-xl border border-cyan-400/30 text-cyan-300 text-[10px] font-mono tracking-[0.2em] shadow-[0_0_20px_rgba(0,242,254,0.15)] group transition-all duration-300 hover:border-cyan-400 hover:text-white"
         style={{
           clipPath:
@@ -39,7 +29,7 @@ export default function CyberneticHud({ onReplayIntro, onOpenPass, hasPass }) {
       >
         <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00f2fe] animate-pulse" />
         <span className="text-white/60 font-black">SYS.NAV //</span>
-        <span data-scr data-text={coords}>
+        <span>
           {coords}
         </span>
       </div>
@@ -51,7 +41,6 @@ export default function CyberneticHud({ onReplayIntro, onOpenPass, hasPass }) {
             soundController.playClick?.();
             onReplayIntro();
           }}
-          onMouseEnter={handleHover}
           className="pointer-events-auto px-3 py-1.5 bg-purple-950/60 backdrop-blur-xl border border-purple-400/30 text-purple-300 hover:text-white hover:border-purple-400 text-[10px] font-mono tracking-[0.2em] uppercase transition-all duration-300 cursor-pointer shadow-[0_0_15px_rgba(168,85,247,0.2)]"
           style={{
             clipPath:
@@ -59,7 +48,7 @@ export default function CyberneticHud({ onReplayIntro, onOpenPass, hasPass }) {
           }}
           title="Replay Orbital Alignment & Curtain Sequence"
         >
-          <span data-scr data-text="REPLAY INTRO">
+          <span>
             REPLAY INTRO
           </span>
         </button>

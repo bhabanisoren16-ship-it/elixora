@@ -7,6 +7,7 @@ import {
 } from './RealisticIcons';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { soundController } from '../utils/audio';
+import { scrambleText } from '../innovission/scrambleText';
 
 export default function Navbar({ onOpenPass, hasGeneratedPass }) {
   const [isScrolledDown, setIsScrolledDown] = useState(false);
@@ -228,6 +229,8 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                     setActiveBtn(link.name);
                     handleNavLinkClick(e, link.href, link.name);
                     setMobileMenuOpen(false);
+                    const textEl = e.currentTarget.querySelector('[data-scr]');
+                    if (textEl) scrambleText(textEl, link.name, { duration: 0.38 });
                   }}
                   className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2.5 active:scale-95 group border ${
                     isSelected
@@ -240,7 +243,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
                   }`}
                 >
                   <Icon className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
-                  <span>{link.name}</span>
+                  <span data-scr data-text={link.name} className="inline-block select-none">{link.name}</span>
                 </a>
               );
             })}
@@ -279,10 +282,21 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
               key={link.name}
               href={link.href}
               onPointerDown={() => setActiveBtn(link.name)}
+              onMouseEnter={(e) => {
+                soundController.playHover?.();
+                const textEl = e.currentTarget.querySelector('[data-scr]');
+                if (textEl) {
+                  scrambleText(textEl, link.name, { duration: 0.38 });
+                }
+              }}
               onClick={(e) => {
                 setActiveSection(link.name);
                 setActiveBtn(link.name);
                 handleNavLinkClick(e, link.href, link.name);
+                const textEl = e.currentTarget.querySelector('[data-scr]');
+                if (textEl) {
+                  scrambleText(textEl, link.name, { duration: 0.38 });
+                }
               }}
               className={`px-3 sm:px-4 py-1.5 rounded-xl text-xs sm:text-sm font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 group whitespace-nowrap active:scale-95 border ${
                 isSelected
@@ -295,7 +309,7 @@ export default function Navbar({ onOpenPass, hasGeneratedPass }) {
               }`}
             >
               <Icon className="w-3.5 h-3.5 sm:w-4 h-4 shrink-0 transition-transform duration-200 group-hover:scale-110 drop-shadow-sm" />
-              <span>{link.name}</span>
+              <span data-scr data-text={link.name} className="inline-block select-none">{link.name}</span>
             </a>
           );
         })}
