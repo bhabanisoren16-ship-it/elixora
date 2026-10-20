@@ -49,7 +49,7 @@ export default function EventDetails() {
   };
 
   return (
-    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-3 sm:px-5 lg:px-8 max-w-[92rem] 2xl:max-w-[98rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
+    <section id="details" className="relative pt-3 sm:pt-12 pb-10 sm:pb-14 px-3 sm:px-5 lg:px-8 max-w-[92rem] 2xl:max-w-[98rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
