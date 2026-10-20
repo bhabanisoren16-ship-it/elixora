@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
+import { supabase, supabaseAdmin, isSupabaseConfigured } from '../lib/supabase.js';
 
 /**
  * Convert base64 data URL to Blob for binary storage upload
@@ -299,9 +299,10 @@ export async function updateAttendanceInSupabase(ticketOrRoll, attendanceMarked)
  * Delete registration from Supabase
  */
 export async function deleteRegistrationFromSupabase(identifierOrTarget) {
-  if (!isSupabaseConfigured() || !supabase || !identifierOrTarget) {
+  if (!isSupabaseConfigured() || (!supabase && !supabaseAdmin) || !identifierOrTarget) {
     return false;
   }
+  const client = supabaseAdmin || supabase;
   try {
     const isTargetObj = typeof identifierOrTarget === 'object' && identifierOrTarget !== null;
     const targetId = isTargetObj
@@ -320,15 +321,15 @@ export async function deleteRegistrationFromSupabase(identifierOrTarget) {
 
     // 1. Attempt hard delete by id if UUID is known
     if (targetId) {
-      await supabase.from('registrations').delete().eq('id', targetId);
+      await client.from('registrations').delete().eq('id', targetId);
     }
     // Attempt hard delete by REGISTRATION if roll is known
     if (cleanRoll) {
-      await supabase.from('registrations').delete().eq('REGISTRATION', cleanRoll);
+      await client.from('registrations').delete().eq('REGISTRATION', cleanRoll);
     }
     // Attempt hard delete by ticket_id if known
     if (targetTicket) {
-      await supabase.from('registrations').delete().eq('ticket_id', targetTicket);
+      await client.from('registrations').delete().eq('ticket_id', targetTicket);
     }
 
     // 2. Also execute soft-delete update to guarantee row is marked deleted even if RLS restricts DELETE
@@ -338,13 +339,13 @@ export async function deleteRegistrationFromSupabase(identifierOrTarget) {
       updated_at: new Date().toISOString(),
     };
     if (targetId) {
-      await supabase.from('registrations').update(softDeletePayload).eq('id', targetId);
+      await client.from('registrations').update(softDeletePayload).eq('id', targetId);
     }
     if (cleanRoll) {
-      await supabase.from('registrations').update(softDeletePayload).eq('REGISTRATION', cleanRoll);
+      await client.from('registrations').update(softDeletePayload).eq('REGISTRATION', cleanRoll);
     }
     if (targetTicket) {
-      await supabase.from('registrations').update(softDeletePayload).eq('ticket_id', targetTicket);
+      await client.from('registrations').update(softDeletePayload).eq('ticket_id', targetTicket);
     }
 
     return true;

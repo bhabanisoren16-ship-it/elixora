@@ -10,6 +10,8 @@ const envKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPA
 const supabaseUrl = envUrl || LIVE_SUPABASE_URL;
 const supabaseAnonKey = envKey || LIVE_SUPABASE_ANON_KEY;
 
+const envServiceKey = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_SERVICE_ROLE_KEY) || (typeof process !== 'undefined' && (process.env?.SUPABASE_SERVICE_ROLE_KEY || process.env?.VITE_SUPABASE_SERVICE_ROLE_KEY));
+
 export const isSupabaseConfigured = () => {
   return Boolean(
     supabaseUrl && 
@@ -24,6 +26,15 @@ export const supabase = isSupabaseConfigured()
       auth: {
         persistSession: true,
         autoRefreshToken: true,
+      },
+    })
+  : null;
+
+export const supabaseAdmin = (isSupabaseConfigured() && envServiceKey)
+  ? createClient(supabaseUrl, envServiceKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
       },
     })
   : null;

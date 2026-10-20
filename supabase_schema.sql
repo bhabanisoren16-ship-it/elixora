@@ -54,6 +54,12 @@ CREATE POLICY "Allow public update on registrations"
   USING (true)
   WITH CHECK (true);
 
+-- Allow delete (when admin removes a registration from Admin Portal)
+CREATE POLICY "Allow public delete on registrations"
+  ON public.registrations
+  FOR DELETE
+  USING (true);
+
 -- 3. Enable Real-Time Broadcast for registrations
 ALTER PUBLICATION supabase_realtime ADD TABLE public.registrations;
 
