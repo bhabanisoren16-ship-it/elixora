@@ -364,7 +364,11 @@ export default function Background() {
           aria-hidden="true"
         />
 
-        {/* Top Header Dark Vignette Removed for completely clear background behind text */}
+        {/* Top Header Atmosphere Vignette: gentle gradient so title & header text are crystal clear against background */}
+        <div 
+          className="absolute top-0 inset-x-0 h-[45vh] sm:h-[55vh] bg-gradient-to-b from-[#040508]/65 via-[#040508]/35 to-transparent pointer-events-none" 
+          aria-hidden="true"
+        />
 
         {/* Deep Bottom Vignette for Smooth Transition into Content and Cards */}
         <div 
