@@ -10,6 +10,7 @@ import {
   getStats,
   addSSEClient,
   removeSSEClient,
+  saveRegistrations,
 } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -107,6 +108,30 @@ router.put('/registrations/:ticketId', (req, res) => {
       message: 'Registration updated in real time',
       data: updated,
     });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+/**
+ * Delete all registrations
+ */
+router.delete('/registrations', async (req, res) => {
+  try {
+    saveRegistrations([]);
+    try {
+      const supaUrl = process.env.VITE_SUPABASE_URL || 'https://wpipjvudqumqwltrtrct.supabase.co';
+      const serviceKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwaXBqdnVkcXVtcXdsdHJ0cmN0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MjQ3Mjg1OCwiZXhwIjoyMTA4MDQ4ODU4fQ.x0a1qmSfzDC_KTBSdRf9kmauTSUkwcFIUWnlzMEKWi8';
+      await fetch(`${supaUrl}/rest/v1/registrations?id=neq.00000000-0000-0000-0000-000000000000`, {
+        method: 'DELETE',
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (e) {}
+    res.json({ success: true, message: 'All registrations cleared in real time' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

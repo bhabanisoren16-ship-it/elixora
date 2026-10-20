@@ -508,8 +508,19 @@ export const adminStore = {
     return updatedRecord;
   },
 
-  clearAllRegistrations() {
+  async clearAllRegistrations() {
     safeSet(STORAGE_KEYS.REGISTRATIONS, []);
+    safeSet(STORAGE_KEYS.DELETED_IDS, []);
+    if (isSupabaseConfigured()) {
+      const client = supabaseAdmin || supabase;
+      if (client) {
+        try {
+          await client.from('registrations').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        } catch (e) {
+          console.warn('[ELIXORA Supabase] Clear all warning:', e);
+        }
+      }
+    }
     fetch('/api/registrations', { method: 'DELETE' }).catch(() => {});
   },
 
@@ -652,8 +663,10 @@ export const adminStore = {
 
 
   // 3. Analytics / Statistics
-  getStats() {
-    const list = this.getRegistrations();
+  getStats(providedList = null) {
+    const list = Array.isArray(providedList) 
+      ? providedList 
+      : (typeof localStorage !== 'undefined' ? safeGet(STORAGE_KEYS.REGISTRATIONS, []) : []);
     const total = list.length;
     const seniors = list.filter((r) => r.isSenior).length;
     const freshers = total - seniors;

@@ -70,16 +70,18 @@ export function mapRowToRegistration(row) {
  * Maps frontend registration object to the exact Supabase table column schema
  */
 export function mapRegistrationToRow(reg, screenshotUrl = null) {
+  const cleanRoll = (reg.rollNo || reg.REGISTRATION || '').trim().toUpperCase();
+  const utr = (reg.utrNumber || reg['UTR NO.'] || '').trim();
   return {
-    'FULL NAME': reg.fullName || '',
-    'REGISTRATION': (reg.rollNo || '').trim().toUpperCase(),
-    'MOBILE NO.': reg.phone || null,
-    'UTR NO.': reg.utrNumber || '',
-    'BRANCH': reg.branch || 'Biotechnology',
-    'BATCH': reg.batch || (reg.isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
+    'FULL NAME': reg.fullName || reg['FULL NAME'] || 'VIP Attendee',
+    'REGISTRATION': cleanRoll || ('REG_' + Date.now()),
+    'MOBILE NO.': reg.phone || reg['MOBILE NO.'] || null,
+    'UTR NO.': utr || ('UTR_MANUAL_' + (reg.ticketId || Date.now())),
+    'BRANCH': reg.branch || reg['BRANCH'] || 'Biotechnology',
+    'BATCH': reg.batch || reg['BATCH'] || (reg.isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
     'is_senior': Boolean(reg.isSenior),
     'ticket_price': Number(reg.ticketPrice) || (reg.isSenior ? 600 : 399),
-    'SCREENSHOT': screenshotUrl || reg.screenshot || null,
+    'SCREENSHOT': screenshotUrl || reg.screenshot || reg['SCREENSHOT'] || null,
   };
 }
 
@@ -87,10 +89,11 @@ export function mapRegistrationToRow(reg, screenshotUrl = null) {
  * Upload payment screenshot receipt to Supabase Storage
  */
 export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
-  if (!isSupabaseConfigured() || !supabase || !fileOrDataUrl) {
+  if (!isSupabaseConfigured() || (!supabase && !supabaseAdmin) || !fileOrDataUrl) {
     return typeof fileOrDataUrl === 'string' ? fileOrDataUrl : null;
   }
 
+  const client = supabaseAdmin || supabase;
   try {
     let blob = null;
     let contentType = 'image/jpeg';
@@ -116,7 +119,7 @@ export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
     const fileName = `${ticketOrRoll}-${Date.now()}.${ext}`;
     const filePath = `receipts/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await client.storage
       .from('receipts')
       .upload(filePath, blob, {
         contentType,
@@ -128,7 +131,7 @@ export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
       return typeof fileOrDataUrl === 'string' ? fileOrDataUrl : null;
     }
 
-    const { data: urlData } = supabase.storage
+    const { data: urlData } = client.storage
       .from('receipts')
       .getPublicUrl(filePath);
 
@@ -143,10 +146,11 @@ export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
  * Automatically save attendee registration to Supabase database
  */
 export async function saveRegistrationToSupabase(registration, fileOrDataUrl = null) {
-  if (!isSupabaseConfigured() || !supabase) {
+  if (!isSupabaseConfigured() || (!supabase && !supabaseAdmin)) {
     return null;
   }
 
+  const client = supabaseAdmin || supabase;
   try {
     // 1. Upload receipt to Storage if base64 dataUrl is provided
     let publicReceiptUrl = registration.screenshot;
@@ -160,7 +164,7 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
     const cleanRoll = (registration.rollNo || '').trim().toUpperCase();
 
     // 3. Upsert checking existing row by REGISTRATION
-    const { data: existing } = await supabase
+    const { data: existing } = await client
       .from('registrations')
       .select('id')
       .eq('REGISTRATION', cleanRoll)
@@ -168,7 +172,7 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
 
     let resultData = null;
     if (existing && existing.id) {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('registrations')
         .update({
           ...row,
@@ -181,7 +185,7 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
       if (error) throw error;
       resultData = data;
     } else {
-      const { data, error } = await supabase
+      const { data, error } = await client
         .from('registrations')
         .insert([row])
         .select()
@@ -379,6 +383,16 @@ export function subscribeToSupabaseRegistrations(onInsert, onUpdate, onDelete) {
     return () => {};
   }
 
+  // Remove existing channels with same topic to avoid duplicate channel conflicts
+  try {
+    const existingChannels = supabase.getChannels?.() || [];
+    for (const ch of existingChannels) {
+      if (ch.topic?.includes('elixora-registrations-live')) {
+        supabase.removeChannel(ch);
+      }
+    }
+  } catch (e) {}
+
   const channel = supabase
     .channel('elixora-registrations-live')
     .on(
@@ -415,6 +429,8 @@ export function subscribeToSupabaseRegistrations(onInsert, onUpdate, onDelete) {
     .subscribe();
 
   return () => {
-    supabase.removeChannel(channel);
+    try {
+      supabase.removeChannel(channel);
+    } catch (e) {}
   };
 }

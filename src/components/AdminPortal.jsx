@@ -142,33 +142,41 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
       setCurrentTime(new Date().toLocaleTimeString('en-IN', { hour12: true }));
     }, 1000);
 
-    const handleStorageUpdate = () => {
-      setRegistrations(adminStore.getRegistrations());
-      setRoster(adminStore.getSeniorRoster());
-      const newSettings = adminStore.getSettings();
-      setSettings(newSettings);
-      setSheetsWebhookDraft(newSettings.sheetsWebhookUrl || '');
-      setSheetsSpreadsheetDraft(newSettings.sheetsSpreadsheetUrl || '');
-      setScheduleDraft({
-        isDateVenueAnnounced: newSettings.isDateVenueAnnounced ?? false,
-        eventHumanDate: newSettings.eventHumanDate || 'Saturday, October 24, 2026',
-        eventDateIso: newSettings.eventDateIso || '2026-10-24T18:30:00+05:30',
-        eventTimeRange: newSettings.eventTimeRange || '06:30 PM - 07:45 PM',
-        eventTimingLabel: newSettings.eventTimingLabel || 'Entry & Red Carpet',
-        venueTitle: newSettings.venueTitle || 'Grand Aurora Arena',
-        venueSubtitle: newSettings.venueSubtitle || 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
-        venueSectorTag: newSettings.venueSectorTag || 'AURORA ARENA • SECTOR 4',
-        venueCoordinates: newSettings.venueCoordinates || '28.5355° N, 77.3910° E',
-        venueGateTag: newSettings.venueGateTag || 'NORTH GATE',
-        transitPoint1: newSettings.transitPoint1 || 'Metro Line 3',
-        transitPoint2: newSettings.transitPoint2 || 'Gate 2 Drop',
-        venueMapsUrl: newSettings.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
-        teaserBadge: newSettings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
-        teaserTitle: newSettings.teaserTitle || 'Yet to be announced',
-        teaserMessage: newSettings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
-        teaserPill: newSettings.teaserPill || 'Dropping Soon • Keep An Eye Out',
-      });
-      setStats(adminStore.getStats());
+    const handleStorageUpdate = (e) => {
+      const key = e?.detail?.key;
+      if (!key || key === 'elixora_registrations_v4') {
+        const fresh = adminStore.getRegistrations();
+        setRegistrations(fresh);
+        setStats(adminStore.getStats(fresh));
+      }
+      if (!key || key === 'elixora_senior_roster_v3') {
+        setRoster(adminStore.getSeniorRoster());
+      }
+      if (!key || key === 'elixora_admin_settings_v3') {
+        const newSettings = adminStore.getSettings();
+        setSettings(newSettings);
+        setSheetsWebhookDraft(newSettings.sheetsWebhookUrl || '');
+        setSheetsSpreadsheetDraft(newSettings.sheetsSpreadsheetUrl || '');
+        setScheduleDraft({
+          isDateVenueAnnounced: newSettings.isDateVenueAnnounced ?? false,
+          eventHumanDate: newSettings.eventHumanDate || 'Saturday, October 24, 2026',
+          eventDateIso: newSettings.eventDateIso || '2026-10-24T18:30:00+05:30',
+          eventTimeRange: newSettings.eventTimeRange || '06:30 PM - 07:45 PM',
+          eventTimingLabel: newSettings.eventTimingLabel || 'Entry & Red Carpet',
+          venueTitle: newSettings.venueTitle || 'Grand Aurora Arena',
+          venueSubtitle: newSettings.venueSubtitle || 'Tech Campus Main Quadrangle & Open Air Amphitheatre.',
+          venueSectorTag: newSettings.venueSectorTag || 'AURORA ARENA • SECTOR 4',
+          venueCoordinates: newSettings.venueCoordinates || '28.5355° N, 77.3910° E',
+          venueGateTag: newSettings.venueGateTag || 'NORTH GATE',
+          transitPoint1: newSettings.transitPoint1 || 'Metro Line 3',
+          transitPoint2: newSettings.transitPoint2 || 'Gate 2 Drop',
+          venueMapsUrl: newSettings.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
+          teaserBadge: newSettings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
+          teaserTitle: newSettings.teaserTitle || 'Yet to be announced',
+          teaserMessage: newSettings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+          teaserPill: newSettings.teaserPill || 'Dropping Soon • Keep An Eye Out',
+        });
+      }
     };
 
     window.addEventListener('elixora_admin_update', handleStorageUpdate);
@@ -178,9 +186,9 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     };
   }, []);
 
-  // Update stats whenever registrations change
+  // Update stats whenever registrations change without triggering store mutations
   useEffect(() => {
-    setStats(adminStore.getStats());
+    setStats(adminStore.getStats(registrations));
   }, [registrations]);
 
   // On mount or auth, immediately fetch fresh live records from Supabase
@@ -491,11 +499,11 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   };
 
   // Reset all attendee and transaction data
-  const handleResetData = () => {
+  const handleResetData = async () => {
     if (window.confirm('⚠️ Are you sure you want to RESET ALL REGISTRATION DATA? All attendee tickets, check-in statuses, and revenue records will be wiped back to 0.')) {
-      adminStore.clearAllRegistrations();
+      await adminStore.clearAllRegistrations();
       setRegistrations([]);
-      setStats(adminStore.getStats());
+      setStats(adminStore.getStats([]));
       notifySuccess('All attendee data and revenue records have been wiped clean (0 registrations). Ready for live launch!');
     }
   };
