@@ -178,16 +178,16 @@ export default function HeroSection({ onGrabPassClick }) {
   }, [targetDate]);
 
   return (
-    <section id="hero" className="relative min-h-[75vh] sm:min-h-[85vh] pt-20 sm:pt-24 pb-4 sm:pb-6 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <section id="hero" className="relative min-h-[68vh] sm:min-h-[85vh] pt-12 sm:pt-24 pb-2 sm:pb-6 flex items-center justify-center px-3 sm:px-6 lg:px-8">
       {/* Transparent Hero Container so the artwork is 100% visible */}
-      <div className="max-w-4xl mx-auto text-center relative z-10 p-2 sm:p-4">
+      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 -translate-y-3 sm:translate-y-0">
         
         {/* Title Container with Exact Official Logo Graphic */}
-        <div className="relative my-1 sm:my-2 select-none flex flex-col items-center justify-center">
+        <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
           {/* Main Title: Exact Luxury High-Contrast Serif Typography with Celestial Tint & Interactive Proximity Shake */}
           <div
             ref={titleContainerRef}
-            className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full max-w-full px-1 py-1 overflow-hidden"
+            className="relative my-0.5 sm:my-1 select-none animate-hero-float flex items-center justify-center w-full max-w-full px-1 py-0.5 sm:py-1 overflow-hidden"
           >
             <h1 className="font-innovision-serif font-black text-[1.75rem] min-[360px]:text-[2.1rem] min-[400px]:text-4xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.02em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
               {TITLE_LETTERS.map((item, idx) => {
@@ -222,7 +222,7 @@ export default function HeroSection({ onGrabPassClick }) {
           </div>
 
           {/* Highlighted Subtitle (Clean without neon glow) */}
-          <div className="relative flex items-center justify-center gap-2.5 sm:gap-4 mt-2 sm:mt-2.5 mb-1 sm:mb-2 select-none">
+          <div className="relative flex items-center justify-center gap-2 sm:gap-4 mt-1.5 sm:mt-2.5 mb-1 sm:mb-2 select-none">
             {/* Left Accent Laser Beam */}
             <span className="hidden xs:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
             
@@ -244,7 +244,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* Real-time Countdown Timer Grid */}
-        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-3 max-w-xs sm:max-w-md mx-auto w-full px-2">
+        <div className="mt-2 sm:mt-4 mb-2.5 sm:mb-4 inline-grid grid-cols-4 gap-1.5 sm:gap-3 max-w-xs sm:max-w-md mx-auto w-full px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
             { label: 'HOURS', value: timeLeft.hours },
@@ -268,7 +268,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3.5 mt-1 sm:mt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-0.5 sm:mt-2">
           <button
             onMouseEnter={() => {
               soundController.playHover?.();
@@ -287,7 +287,18 @@ export default function HeroSection({ onGrabPassClick }) {
             <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
           </button>
 
-
+          {/* Secondary CTA: Explore Event Guide (Hidden on mobile, visible on desktop) */}
+          <a
+            href="#details"
+            onClick={(e) => {
+              e.preventDefault();
+              soundController.playClick?.();
+              scrollToTarget('#details');
+            }}
+            className="hidden sm:inline-flex px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-obsidian-900/80 border border-white/20 text-slate-200 font-outfit font-semibold text-xs sm:text-sm hover:bg-white/10 hover:border-cyan-400/50 hover:text-cyan-300 transition-all items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
+          >
+            <span>Explore Event Guide</span>
+          </a>
         </div>
 
 
