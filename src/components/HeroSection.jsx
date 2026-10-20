@@ -287,7 +287,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* Real-time Countdown Timer Grid */}
-        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-4 max-w-xs sm:max-w-md mx-auto w-full px-2">
+        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-3.5 max-w-sm sm:max-w-lg mx-auto w-full px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
             { label: 'HOURS', value: timeLeft.hours },
@@ -296,7 +296,7 @@ export default function HeroSection({ onGrabPassClick }) {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative p-2 sm:p-2.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.35)] group hover:border-cyan-400/50 hover:-translate-y-1 transition-all duration-300"
+              className="relative py-1.5 px-2.5 sm:py-2 sm:px-4 rounded-xl bg-black/40 backdrop-blur-md border border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.35)] group hover:border-cyan-400/50 hover:-translate-y-1 transition-all duration-300"
             >
               <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                 {String(item.value).padStart(2, '0')}

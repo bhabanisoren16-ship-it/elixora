@@ -49,7 +49,7 @@ export default function EventDetails() {
   };
 
   return (
-    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-3 sm:px-5 lg:px-8 max-w-[92rem] 2xl:max-w-[98rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
+    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-3 sm:px-5 lg:px-8 max-w-[98rem] 2xl:max-w-[108rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
       {/* Section Header */}
       <div className="text-center mb-6 sm:mb-8">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
@@ -264,7 +264,7 @@ export default function EventDetails() {
       <div 
         id="dress-code" 
         onMouseMove={handleMouseMove}
-        className="rounded-3xl sm:rounded-[2rem] p-5 sm:p-7 lg:p-8 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-mt-20 sm:scroll-mt-24 w-full"
+        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-5 lg:p-6 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-mt-20 sm:scroll-mt-24 w-full"
       >
         {/* Interactive pointer light overlay & illuminated border */}
         <div className="light-spotlight-overlay" />
@@ -279,7 +279,7 @@ export default function EventDetails() {
 
         <div className="relative z-10">
           {/* Header row */}
-          <div className="mb-4 sm:mb-5">
+          <div className="mb-2.5 sm:mb-3.5">
             <div>
               <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
                 Formal &amp; Indo-Western Fusion
@@ -289,7 +289,7 @@ export default function EventDetails() {
 
           {/* Costume Photo Space for Boys and Girls */}
           <div>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-outfit text-cyan-300 tracking-wider uppercase font-black flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                 ATTIRE INSPIRATION LOOKBOOK
@@ -299,19 +299,19 @@ export default function EventDetails() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-7 items-stretch w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch w-full">
               
               {/* Boys Costume Card (Translucent Glass Card) */}
               <div 
                 onMouseMove={handleMouseMove}
-                className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 translucent-glass-card light-spotlight-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden w-full"
+                className="rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 translucent-glass-card light-spotlight-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden w-full"
               >
                 <div className="light-spotlight-overlay" />
                 <div className="light-spotlight-border" />
                 <div className="card-top-light-beam" />
 
                 <div className="relative z-10 w-full">
-                  <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center justify-between mb-2.5">
                     <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)]" />
                       BOYS' ATTIRE LOOKBOOK
@@ -322,7 +322,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-[300px] sm:h-[360px] md:h-[340px] lg:h-[370px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-[210px] sm:h-[250px] md:h-[240px] lg:h-[260px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-boys.jpg"
@@ -336,14 +336,14 @@ export default function EventDetails() {
               {/* Girls Costume Card (Translucent Glass Card) */}
               <div 
                 onMouseMove={handleMouseMove}
-                className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden w-full"
+                className="rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden w-full"
               >
                 <div className="light-spotlight-overlay" />
                 <div className="light-spotlight-border" />
                 <div className="card-top-light-beam" />
 
                 <div className="relative z-10 w-full">
-                  <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center justify-between mb-2.5">
                     <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                       GIRLS' ATTIRE LOOKBOOK
@@ -354,7 +354,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-[300px] sm:h-[360px] md:h-[340px] lg:h-[370px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-[210px] sm:h-[250px] md:h-[240px] lg:h-[260px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-girls.jpg"
