@@ -434,6 +434,7 @@ export const adminStore = {
     );
 
     const record = {
+      _id: pass._id || generateStableId(pass),
       ticketId: pass.ticketId || `ELX-${pass.isSenior ? 'SR' : '26'}-${Math.floor(1000 + Math.random() * 9000)}`,
       fullName: pass.fullName || '',
       rollNo: cleanRoll,
