@@ -124,6 +124,56 @@ function safeSet(key, val) {
   }
 }
 
+function isValidIdentifier(val) {
+  if (!val || typeof val !== 'string') return false;
+  const s = val.trim();
+  if (!s || s === '-' || s === 'N/A' || s === 'null' || s === 'undefined' || s === '[DELETED]' || s === 'DELETED') return false;
+  return s.length >= 2;
+}
+
+function getCleanDeletedIds() {
+  const rawDeleted = safeGet(STORAGE_KEYS.DELETED_IDS, []);
+  if (!Array.isArray(rawDeleted)) return new Set();
+  return new Set(rawDeleted.filter(isValidIdentifier));
+}
+
+function generateStableId(item, idx = 0) {
+  if (item && item._id && isValidIdentifier(item._id) && item._id !== '-' && item._id !== 'N/A') {
+    return item._id;
+  }
+  if (item && isValidIdentifier(item.ticketId)) {
+    return item.ticketId.trim();
+  }
+  if (item && isValidIdentifier(item.id)) {
+    return item.id.trim();
+  }
+  if (item && isValidIdentifier(item.rollNo)) {
+    return 'reg_roll_' + item.rollNo.trim().toUpperCase();
+  }
+  const time = (item && item.issuedAt ? item.issuedAt.replace(/[^a-zA-Z0-9]/g, '_') : Date.now());
+  const price = (item && item.ticketPrice) || '';
+  const batch = (item && item.batch ? item.batch.replace(/[^a-zA-Z0-9]/g, '_') : '');
+  const nonce = (item && item.createdAt) ? item.createdAt.replace(/[^a-zA-Z0-9]/g, '_') : Math.random().toString(36).slice(2, 8);
+  return `reg_${idx}_${price}_${time}_${batch}_${nonce}`;
+}
+
+function sanitizeRegistrations(list) {
+  if (!Array.isArray(list)) return [];
+  const deletedIds = getCleanDeletedIds();
+  return list.filter((r) => {
+    if (!r || typeof r !== 'object') return false;
+    if (r.branch === 'DELETED' || r.fullName === '[DELETED]') return false;
+    if (r.fullName?.trim() === '[DELETED]') return false;
+
+    // Strictly check against deletedIds with valid identifiers
+    if (isValidIdentifier(r._id) && deletedIds.has(r._id)) return false;
+    if (isValidIdentifier(r.id) && deletedIds.has(r.id)) return false;
+    if (isValidIdentifier(r.ticketId) && deletedIds.has(r.ticketId)) return false;
+    if (isValidIdentifier(r.rollNo) && (deletedIds.has(r.rollNo) || deletedIds.has(r.rollNo.toUpperCase()))) return false;
+    return true;
+  });
+}
+
 // Real-time backend synchronization manager
 let isRealtimeStarted = false;
 let sseConnection = null;
@@ -138,11 +188,11 @@ async function fetchRegistrationsFromBackend() {
       const supaList = await fetchRegistrationsFromSupabase();
       if (Array.isArray(supaList)) {
         const currentLocal = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
-        const deletedIds = new Set(safeGet(STORAGE_KEYS.DELETED_IDS, []));
+        const deletedIds = getCleanDeletedIds();
 
         // Filter out any deleted items from supaList
         const activeSupaList = supaList.filter(
-          (s) => !deletedIds.has(s.ticketId) && !deletedIds.has(s.rollNo)
+          (s) => !deletedIds.has(s.ticketId) && !deletedIds.has(s.rollNo) && !deletedIds.has(s.id)
         );
 
         // Auto-sync any local items not yet in Supabase (excluding deleted items)
@@ -161,14 +211,21 @@ async function fetchRegistrationsFromBackend() {
           }
         }
 
-        // Merge: active Supabase records take priority, plus any local ones pending sync
+        // Merge: active Supabase records take priority, plus local records that haven't been deleted
         const merged = [...activeSupaList];
         for (const loc of currentLocal) {
-          if (
-            !deletedIds.has(loc.ticketId) && 
-            !deletedIds.has(loc.rollNo) &&
-            !merged.some((m) => (m.ticketId && m.ticketId === loc.ticketId) || (m.rollNo && m.rollNo === loc.rollNo))
-          ) {
+          if (loc._id && deletedIds.has(loc._id)) continue;
+          if (isValidIdentifier(loc.id) && deletedIds.has(loc.id)) continue;
+          if (isValidIdentifier(loc.ticketId) && deletedIds.has(loc.ticketId)) continue;
+          if (isValidIdentifier(loc.rollNo) && (deletedIds.has(loc.rollNo) || deletedIds.has(loc.rollNo.toUpperCase()))) continue;
+
+          const exists = merged.some((m) => 
+            (loc._id && m._id && loc._id === m._id) ||
+            (isValidIdentifier(m.ticketId) && m.ticketId === loc.ticketId) ||
+            (isValidIdentifier(m.rollNo) && m.rollNo === loc.rollNo) ||
+            (isValidIdentifier(m.id) && m.id === loc.id)
+          );
+          if (!exists) {
             merged.push(loc);
           }
         }
@@ -243,8 +300,14 @@ function startRealTimeSync() {
           safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
         },
         (deletedTicketId) => {
+          if (!isValidIdentifier(deletedTicketId)) return;
           const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
-          const updated = current.filter((r) => r.ticketId !== deletedTicketId);
+          const updated = current.filter((r) => 
+            r.ticketId !== deletedTicketId && 
+            r.rollNo !== deletedTicketId && 
+            r.id !== deletedTicketId && 
+            r._id !== deletedTicketId
+          );
           safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
         }
       );
@@ -314,13 +377,49 @@ export const adminStore = {
     if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
       safeSet(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS);
     }
+    // Clean out invalid entries like '-', 'N/A', '', '[DELETED]' from DELETED_IDS
+    const rawDeleted = safeGet(STORAGE_KEYS.DELETED_IDS, []);
+    if (Array.isArray(rawDeleted)) {
+      const cleanDeleted = rawDeleted.filter(isValidIdentifier);
+      if (cleanDeleted.length !== rawDeleted.length) {
+        safeSet(STORAGE_KEYS.DELETED_IDS, cleanDeleted);
+      }
+    }
     startRealTimeSync();
   },
 
   // 1. Registrations
   getRegistrations() {
     this.init();
-    return safeGet(STORAGE_KEYS.REGISTRATIONS, INITIAL_SAMPLE_REGISTRATIONS);
+    const raw = safeGet(STORAGE_KEYS.REGISTRATIONS, INITIAL_SAMPLE_REGISTRATIONS);
+    let mutated = false;
+    const withIds = raw.map((item, idx) => {
+      if (!item || typeof item !== 'object') return null;
+      if (!item._id || !isValidIdentifier(item._id) || item._id === '-' || item._id === 'N/A') {
+        item._id = generateStableId(item, idx);
+        mutated = true;
+      }
+      return item;
+    }).filter(Boolean);
+
+    const sanitized = sanitizeRegistrations(withIds);
+    if (mutated || sanitized.length !== raw.length) {
+      safeSet(STORAGE_KEYS.REGISTRATIONS, sanitized);
+    }
+    return sanitized;
+  },
+
+  purgeGhostRegistrations() {
+    this.init();
+    const raw = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+    const cleaned = raw.filter((r) => {
+      if (!r || typeof r !== 'object') return false;
+      const name = (r.fullName || '').trim();
+      const roll = (r.rollNo || '').trim();
+      return Boolean(name || roll) && name !== '[DELETED]' && r.branch !== 'DELETED';
+    });
+    safeSet(STORAGE_KEYS.REGISTRATIONS, cleaned);
+    return cleaned;
   },
 
   addRegistration(pass) {
@@ -456,42 +555,92 @@ export const adminStore = {
     return result;
   },
 
-  deleteRegistration(ticketId, rollNo = null) {
+  deleteRegistration(targetOrTicketId, rollNo = null, explicitIndex = -1) {
     const list = this.getRegistrations();
-    const cleanRoll = rollNo ? (rollNo + '').trim().toUpperCase() : null;
+    let targetIndex = -1;
 
-    const target = list.find((item) => 
-      (ticketId && item.ticketId === ticketId) || 
-      (cleanRoll && item.rollNo === cleanRoll) ||
-      (ticketId && item.rollNo === (ticketId + '').trim().toUpperCase())
-    );
+    // 1. If target is an object, match by unique _id first!
+    if (targetOrTicketId && typeof targetOrTicketId === 'object') {
+      const target = targetOrTicketId;
+      if (target._id && isValidIdentifier(target._id)) {
+        targetIndex = list.findIndex((item) => item._id === target._id);
+      }
+      if (targetIndex === -1 && isValidIdentifier(target.ticketId)) {
+        targetIndex = list.findIndex((item) => item.ticketId === target.ticketId);
+      }
+      if (targetIndex === -1 && isValidIdentifier(target.id)) {
+        targetIndex = list.findIndex((item) => item.id === target.id);
+      }
+      if (targetIndex === -1 && isValidIdentifier(target.rollNo)) {
+        const cleanRoll = target.rollNo.trim().toUpperCase();
+        targetIndex = list.findIndex((item) => item.rollNo && item.rollNo.trim().toUpperCase() === cleanRoll);
+      }
+      if (targetIndex === -1) {
+        targetIndex = list.findIndex((item) => 
+          item === target ||
+          (item.issuedAt && item.issuedAt === target.issuedAt && item.ticketPrice === target.ticketPrice && item.batch === target.batch)
+        );
+      }
+    }
 
-    const targetRoll = cleanRoll || target?.rollNo;
-    const targetTicket = ticketId || target?.ticketId;
+    // 2. If target is string (could be _id, ticketId, or rollNo)
+    if (targetIndex === -1 && typeof targetOrTicketId === 'string' && targetOrTicketId.trim()) {
+      const strId = targetOrTicketId.trim();
+      targetIndex = list.findIndex((item) => 
+        item._id === strId ||
+        (isValidIdentifier(item.ticketId) && item.ticketId === strId) ||
+        (isValidIdentifier(item.rollNo) && item.rollNo.trim().toUpperCase() === strId.toUpperCase()) ||
+        (isValidIdentifier(item.id) && item.id === strId)
+      );
+    }
 
-    // Track in DELETED_IDS so it is NEVER restored or re-synced
-    const deletedIds = safeGet(STORAGE_KEYS.DELETED_IDS, []);
-    const newDeleted = Array.from(new Set([...deletedIds, targetTicket, targetRoll].filter(Boolean)));
-    safeSet(STORAGE_KEYS.DELETED_IDS, newDeleted);
+    // 3. Fallback to explicit index if verified
+    if (targetIndex === -1 && typeof explicitIndex === 'number' && explicitIndex >= 0 && explicitIndex < list.length) {
+      targetIndex = explicitIndex;
+    }
 
-    const updated = list.filter((item) => {
-      if (targetTicket && item.ticketId === targetTicket) return false;
-      if (targetRoll && item.rollNo === targetRoll) return false;
-      return true;
-    });
+    if (targetIndex === -1) {
+      console.warn('[ELIXORA] deleteRegistration: Target not found', targetOrTicketId);
+      return false;
+    }
+
+    const itemToDelete = list[targetIndex];
+
+    // Add ONLY valid, unique keys to DELETED_IDS
+    const cleanDeleted = safeGet(STORAGE_KEYS.DELETED_IDS, []).filter(isValidIdentifier);
+    const keysToAdd = [
+      isValidIdentifier(itemToDelete._id) ? itemToDelete._id : null,
+      isValidIdentifier(itemToDelete.ticketId) ? itemToDelete.ticketId : null,
+      isValidIdentifier(itemToDelete.rollNo) ? itemToDelete.rollNo.trim().toUpperCase() : null,
+      isValidIdentifier(itemToDelete.id) ? itemToDelete.id : null,
+    ].filter(Boolean);
+
+    if (keysToAdd.length > 0) {
+      const newDeleted = Array.from(new Set([...cleanDeleted, ...keysToAdd]));
+      safeSet(STORAGE_KEYS.DELETED_IDS, newDeleted);
+    }
+
+    // Remove strictly ONLY this single item from list
+    const updated = [...list];
+    updated.splice(targetIndex, 1);
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
 
-    // Sync delete to Supabase using student's roll number or id
+    // Sync delete to Supabase Cloud
     if (isSupabaseConfigured()) {
-      deleteRegistrationFromSupabase(targetRoll || targetTicket).catch((err) => {
-        console.warn('[ELIXORA Supabase] Delete error:', err);
+      deleteRegistrationFromSupabase(itemToDelete).catch((err) => {
+        console.warn('[ELIXORA Supabase] Delete sync warning:', err);
       });
     }
 
     // Sync delete to backend
-    fetch(`/api/registrations/${targetTicket || targetRoll}`, {
-      method: 'DELETE',
-    }).catch(() => {});
+    const apiId = isValidIdentifier(itemToDelete.ticketId) 
+      ? itemToDelete.ticketId 
+      : (isValidIdentifier(itemToDelete.rollNo) ? itemToDelete.rollNo : itemToDelete.id);
+    if (apiId) {
+      fetch(`/api/registrations/${encodeURIComponent(apiId)}`, { method: 'DELETE' }).catch(() => {});
+    }
+
+    return true;
   },
 
   async refreshFromBackend() {

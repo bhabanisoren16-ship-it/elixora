@@ -273,10 +273,29 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     }
   };
 
-  const handleDelete = (ticketId, name, rollNo) => {
-    adminStore.deleteRegistration(ticketId, rollNo);
-    setRegistrations((prev) => prev.filter((r) => r.ticketId !== ticketId && (!rollNo || r.rollNo !== rollNo)));
-    notifySuccess(`Registration for "${name || ticketId}" deleted.`);
+  const handleDelete = (targetItemOrTicketId, rowIndex = -1, name = '', rollNo = '') => {
+    let target = targetItemOrTicketId;
+    if (typeof targetItemOrTicketId === 'string') {
+      target = registrations.find(
+        (r) => (r._id && r._id === targetItemOrTicketId) || r.ticketId === targetItemOrTicketId || (rollNo && r.rollNo === rollNo)
+      ) || {
+        _id: targetItemOrTicketId,
+        ticketId: targetItemOrTicketId,
+        fullName: name,
+        rollNo: rollNo,
+      };
+    }
+    if (!target) return;
+
+    adminStore.deleteRegistration(target, null, rowIndex);
+
+    // Refresh state directly from adminStore to guarantee 100% sync
+    const remaining = adminStore.getRegistrations();
+    setRegistrations(remaining);
+    setStats(adminStore.getStats());
+
+    const displayName = target.fullName || target.rollNo || (target.ticketId && target.ticketId !== '-' ? target.ticketId : 'Registration row');
+    notifySuccess(`Registration "${displayName}" deleted.`);
     soundController.playClick?.();
   };
 
@@ -1133,24 +1152,40 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                   </div>
 
                   {/* Summary bar */}
-                  <div className="flex items-center justify-between text-xs text-slate-400 px-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 px-1">
                     <span>
                       Showing <strong>{filteredRegistrations.length}</strong> of <strong>{registrations.length}</strong> registrations
                     </span>
-                    {filteredRegistrations.length < registrations.length && (
+                    <div className="flex items-center gap-3">
                       <button
                         onClick={() => {
-                          setSearchQuery('');
-                          setFilterType('ALL');
-                          setFilterStatus('ALL');
-                          setFilterCheckIn('ALL');
-                          setFilterDiet('ALL');
+                          const cleaned = adminStore.purgeGhostRegistrations();
+                          setRegistrations(cleaned);
+                          setStats(adminStore.getStats());
+                          notifySuccess('Purged any empty or ghost registrations.');
+                          soundController.playClick?.();
                         }}
-                        className="text-cyan-400 hover:underline"
+                        className="text-xs text-rose-400/80 hover:text-rose-300 transition-colors flex items-center gap-1 cursor-pointer"
+                        title="Remove any empty or corrupt ghost rows"
                       >
-                        Reset Filters
+                        <Trash2 className="w-3 h-3" />
+                        <span>Purge Ghost Rows</span>
                       </button>
-                    )}
+                      {filteredRegistrations.length < registrations.length && (
+                        <button
+                          onClick={() => {
+                            setSearchQuery('');
+                            setFilterType('ALL');
+                            setFilterStatus('ALL');
+                            setFilterCheckIn('ALL');
+                            setFilterDiet('ALL');
+                          }}
+                          className="text-cyan-400 hover:underline cursor-pointer"
+                        >
+                          Reset Filters
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Table View */}
@@ -1170,17 +1205,62 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
-                          {filteredRegistrations.length === 0 ? (
+                          {registrations.length === 0 ? (
+                            <tr>
+                              <td colSpan={8} className="py-16 text-center text-slate-400">
+                                <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+                                  <Ticket className="w-6 h-6" />
+                                </div>
+                                <p className="font-bold text-white text-sm">No Active Registrations</p>
+                                <p className="text-[11px] text-slate-400 mt-1 max-w-sm mx-auto">
+                                  All registrations have been removed or none have been submitted yet. New guest passes will appear here in real-time.
+                                </p>
+                                <div className="mt-4 flex items-center justify-center gap-2">
+                                  <button
+                                    onClick={() => setIsAddPassOpen(true)}
+                                    className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-extrabold text-xs flex items-center gap-1.5 shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:brightness-110 cursor-pointer"
+                                  >
+                                    <Plus className="w-3.5 h-3.5" />
+                                    <span>Issue Manual Pass</span>
+                                  </button>
+                                  <button
+                                    onClick={async () => {
+                                      const synced = await adminStore.refreshFromBackend();
+                                      if (synced) setRegistrations(synced);
+                                      notifySuccess('Synced with Supabase Cloud.');
+                                      soundController.playClick?.();
+                                    }}
+                                    className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 text-xs flex items-center gap-1.5 cursor-pointer"
+                                  >
+                                    <RefreshCw className="w-3.5 h-3.5" />
+                                    <span>Refresh Cloud</span>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : filteredRegistrations.length === 0 ? (
                             <tr>
                               <td colSpan={8} className="py-12 text-center text-slate-400">
                                 <Search className="w-8 h-8 mx-auto mb-2 text-slate-600" />
-                                <p className="font-semibold">No matching guest registrations found</p>
-                                <p className="text-[11px] text-slate-500 mt-1">Try relaxing search terms or filter criteria</p>
+                                <p className="font-semibold text-slate-200">No matching guest registrations found</p>
+                                <p className="text-[11px] text-slate-400 mt-1">Try relaxing search terms or reset your filter criteria.</p>
+                                <button
+                                  onClick={() => {
+                                    setSearchQuery('');
+                                    setFilterType('ALL');
+                                    setFilterStatus('ALL');
+                                    setFilterCheckIn('ALL');
+                                    setFilterDiet('ALL');
+                                  }}
+                                  className="mt-3 px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-semibold hover:bg-cyan-500/30 cursor-pointer"
+                                >
+                                  Reset Filters
+                                </button>
                               </td>
                             </tr>
                           ) : (
-                            filteredRegistrations.map((item) => (
-                              <tr key={item.ticketId} className="hover:bg-white/5 transition-colors group">
+                            filteredRegistrations.map((item, idx) => (
+                              <tr key={item._id || item.ticketId || item.id || `reg-row-${idx}`} className="hover:bg-white/5 transition-colors group">
                                 
                                 {/* 1. Student Name & Roll */}
                                 <td className="py-3 px-3.5">
@@ -1370,7 +1450,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                     <button
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDelete(item.ticketId, item.fullName, item.rollNo);
+                                        handleDelete(item, idx);
                                       }}
                                       className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors cursor-pointer"
                                       title="Delete Registration Row"
@@ -2732,7 +2812,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 <button
                   type="button"
                   onClick={() => {
-                    handleDelete(editingItem.ticketId, editingItem.fullName, editingItem.rollNo);
+                    handleDelete(editingItem);
                     setEditingItem(null);
                   }}
                   className="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center gap-1.5 cursor-pointer"

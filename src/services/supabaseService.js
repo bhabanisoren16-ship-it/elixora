@@ -25,12 +25,16 @@ function dataURItoBlob(dataURI) {
 export function mapRowToRegistration(row) {
   if (!row) return null;
   // Ignore deleted registrations
-  if (row['BRANCH'] === 'DELETED' || (row['FULL NAME'] && row['FULL NAME'].startsWith('[DELETED]'))) {
+  if (row['BRANCH'] === 'DELETED' || (row['FULL NAME'] && row['FULL NAME'].includes('[DELETED]'))) {
     return null;
   }
   const roll = (row['REGISTRATION'] || row.roll_no || '').trim().toUpperCase();
+  const fullName = (row['FULL NAME'] || row.full_name || '').trim();
+  // Ignore empty ghost entries
+  if (!roll && !fullName) {
+    return null;
+  }
   const isSenior = Boolean(row.is_senior);
-  const fullName = row['FULL NAME'] || row.full_name || '';
 
   return {
     id: row.id,
@@ -206,6 +210,7 @@ export async function fetchRegistrationsFromSupabase() {
     const { data, error } = await supabase
       .from('registrations')
       .select('*')
+      .neq('BRANCH', 'DELETED')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -293,36 +298,53 @@ export async function updateAttendanceInSupabase(ticketOrRoll, attendanceMarked)
 /**
  * Delete registration from Supabase
  */
-export async function deleteRegistrationFromSupabase(identifier) {
-  if (!isSupabaseConfigured() || !supabase || !identifier) {
+export async function deleteRegistrationFromSupabase(identifierOrTarget) {
+  if (!isSupabaseConfigured() || !supabase || !identifierOrTarget) {
     return false;
   }
   try {
-    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
-    const cleanId = (identifier || '').trim().toUpperCase();
+    const isTargetObj = typeof identifierOrTarget === 'object' && identifierOrTarget !== null;
+    const targetId = isTargetObj
+      ? identifierOrTarget.id
+      : (typeof identifierOrTarget === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifierOrTarget)
+        ? identifierOrTarget
+        : null);
+    const targetRoll = isTargetObj
+      ? identifierOrTarget.rollNo
+      : (!targetId && typeof identifierOrTarget === 'string' ? identifierOrTarget : null);
+    const cleanRoll = targetRoll ? (targetRoll + '').trim().toUpperCase() : null;
 
-    // 1. Attempt hard delete
-    let delQuery = supabase.from('registrations').delete({ count: 'exact' });
-    if (isUuid) {
-      delQuery = delQuery.eq('id', identifier);
-    } else {
-      delQuery = delQuery.eq('REGISTRATION', cleanId);
+    const targetTicket = isTargetObj
+      ? (identifierOrTarget.ticketId && identifierOrTarget.ticketId !== '-' ? identifierOrTarget.ticketId.trim() : null)
+      : null;
+
+    // 1. Attempt hard delete by id if UUID is known
+    if (targetId) {
+      await supabase.from('registrations').delete().eq('id', targetId);
     }
-    const { count } = await delQuery;
+    // Attempt hard delete by REGISTRATION if roll is known
+    if (cleanRoll) {
+      await supabase.from('registrations').delete().eq('REGISTRATION', cleanRoll);
+    }
+    // Attempt hard delete by ticket_id if known
+    if (targetTicket) {
+      await supabase.from('registrations').delete().eq('ticket_id', targetTicket);
+    }
 
-    // 2. Also execute soft-delete update to ensure row is marked deleted even if RLS blocks delete
-    if (!count) {
-      let updQuery = supabase.from('registrations').update({
-        'BRANCH': 'DELETED',
-        'FULL NAME': '[DELETED]',
-        updated_at: new Date().toISOString(),
-      });
-      if (isUuid) {
-        updQuery = updQuery.eq('id', identifier);
-      } else {
-        updQuery = updQuery.eq('REGISTRATION', cleanId);
-      }
-      await updQuery;
+    // 2. Also execute soft-delete update to guarantee row is marked deleted even if RLS restricts DELETE
+    const softDeletePayload = {
+      'BRANCH': 'DELETED',
+      'FULL NAME': '[DELETED]',
+      updated_at: new Date().toISOString(),
+    };
+    if (targetId) {
+      await supabase.from('registrations').update(softDeletePayload).eq('id', targetId);
+    }
+    if (cleanRoll) {
+      await supabase.from('registrations').update(softDeletePayload).eq('REGISTRATION', cleanRoll);
+    }
+    if (targetTicket) {
+      await supabase.from('registrations').update(softDeletePayload).eq('ticket_id', targetTicket);
     }
 
     return true;
@@ -355,7 +377,13 @@ export function subscribeToSupabaseRegistrations(onInsert, onUpdate, onDelete) {
       { event: 'UPDATE', schema: 'public', table: 'registrations' },
       (payload) => {
         const item = mapRowToRegistration(payload.new);
-        if (item && onUpdate) onUpdate(item);
+        if (item && onUpdate) {
+          onUpdate(item);
+        } else if (!item && onDelete) {
+          const roll = payload.new?.REGISTRATION || payload.old?.REGISTRATION;
+          const id = payload.new?.id || payload.old?.id;
+          onDelete(roll || id);
+        }
       }
     )
     .on(
