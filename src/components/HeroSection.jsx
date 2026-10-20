@@ -178,9 +178,9 @@ export default function HeroSection({ onGrabPassClick }) {
   }, [targetDate]);
 
   return (
-    <section id="hero" className="relative min-h-[68vh] sm:min-h-[85vh] pt-12 sm:pt-24 pb-2 sm:pb-6 flex items-center justify-center px-3 sm:px-6 lg:px-8">
+    <section id="hero" className="relative min-h-[62vh] sm:min-h-[85vh] pt-10 sm:pt-24 pb-2 sm:pb-6 flex items-center justify-center px-3 sm:px-6 lg:px-8">
       {/* Transparent Hero Container so the artwork is 100% visible */}
-      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 -translate-y-3 sm:translate-y-0">
+      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 -translate-y-5 sm:translate-y-0">
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
