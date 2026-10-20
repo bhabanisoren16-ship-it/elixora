@@ -364,6 +364,8 @@ export default function Background() {
           aria-hidden="true"
         />
 
+        {/* Top Header Dark Vignette Removed for completely clear background behind text */}
+
         {/* Deep Bottom Vignette for Smooth Transition into Content and Cards */}
         <div 
           className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040508]/25 to-[#040508]/85 pointer-events-none" 

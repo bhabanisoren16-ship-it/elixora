@@ -7,17 +7,17 @@ import { adminStore } from '../utils/adminStore';
 import { scrambleText } from '../innovission/scrambleText';
 
 const TITLE_LETTERS = [
-  { char: 'E', color: 'from-[#ffffff] via-[#38bdf8] to-[#0284c7]' },
-  { char: 'L', color: 'from-[#ffffff] via-[#60a5fa] to-[#1d4ed8]' },
-  { char: 'I', color: 'from-[#ffffff] via-[#a78bfa] to-[#6d28d9]' },
-  { char: 'X', color: 'from-[#ffffff] via-[#c084fc] to-[#9333ea]' },
-  { char: 'O', color: 'from-[#ffffff] via-[#e879f9] to-[#c026d3]' },
-  { char: 'R', color: 'from-[#ffffff] via-[#f472b6] to-[#db2777]' },
-  { char: 'A', color: 'from-[#ffffff] via-[#fb7185] to-[#e11d48]' },
+  { char: 'E', color: 'from-white via-[#dcf7ff] to-[#38bdf8]' },
+  { char: 'L', color: 'from-white via-[#e0f2fe] to-[#60a5fa]' },
+  { char: 'I', color: 'from-white via-[#ede9fe] to-[#a78bfa]' },
+  { char: 'X', color: 'from-white via-[#f3e8ff] to-[#c084fc]' },
+  { char: 'O', color: 'from-white via-[#fae8ff] to-[#e879f9]' },
+  { char: 'R', color: 'from-white via-[#fce7f3] to-[#f472b6]' },
+  { char: 'A', color: 'from-white via-[#ffe4e6] to-[#fb7185]' },
   { char: ' ', isSpace: true },
-  { char: '2', color: 'from-[#ffffff] via-[#fbbf24] to-[#d97706]' },
-  { char: '.', color: 'from-[#ffffff] via-[#34d399] to-[#059669]' },
-  { char: '0', color: 'from-[#ffffff] via-[#818cf8] to-[#4338ca]' },
+  { char: '2', color: 'from-white via-[#fef3c7] to-[#f59e0b]' },
+  { char: '.', color: 'from-white via-[#dcfce7] to-[#34d399]' },
+  { char: '0', color: 'from-white via-[#e0e7ff] to-[#818cf8]' },
 ];
 
 export default function HeroSection({ onGrabPassClick }) {
@@ -206,10 +206,10 @@ export default function HeroSection({ onGrabPassClick }) {
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
-          {/* Main Title: Exact Luxury High-Contrast Serif Typography with Deep Dark Contrast Drop-Shadows */}
+          {/* Main Title: Exact Luxury High-Contrast Serif Typography with Celestial Tint & Interactive Proximity Shake */}
           <div
             ref={titleContainerRef}
-            className="relative my-0.5 sm:my-1 select-none animate-hero-float flex items-center justify-center w-full max-w-full px-1 py-0.5 sm:py-1"
+            className="relative my-0.5 sm:my-1 select-none animate-hero-float flex items-center justify-center w-full max-w-full px-1 py-0.5 sm:py-1 overflow-hidden"
           >
             <h1 className="font-innovision-serif font-black text-[2.1rem] min-[360px]:text-[2.45rem] min-[400px]:text-[2.85rem] sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.02em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
               {TITLE_LETTERS.map((item, idx) => {
@@ -232,7 +232,7 @@ export default function HeroSection({ onGrabPassClick }) {
                     onTouchStart={() => kickLetter(idx)}
                     data-h-ch=""
                     data-attract=".22"
-                    className={`inline-block hero-letter-contrast transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent cursor-pointer select-none`}
+                    className={`inline-block transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(255,255,255,0.45)] cursor-pointer select-none`}
                     style={{ transformOrigin: '50% 70%' }}
                     title={item.char}
                   >
@@ -243,7 +243,7 @@ export default function HeroSection({ onGrabPassClick }) {
             </h1>
           </div>
 
-          {/* Highlighted Subtitle with Cybernetic Scramble Animation & Pure Text Contrast */}
+          {/* Highlighted Subtitle with Cybernetic Scramble Animation */}
           <div className="relative flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-2.5 mb-1 sm:mb-2 select-none">
             {/* Left Accent Laser Beam (Desktop only to prevent mobile artifact) */}
             <span className="hidden sm:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
@@ -252,14 +252,14 @@ export default function HeroSection({ onGrabPassClick }) {
               onClick={triggerSubtitleScramble}
               onTouchStart={triggerSubtitleScramble}
               onMouseEnter={triggerSubtitleScramble}
-              className="font-outfit text-[12px] min-[360px]:text-[13px] sm:text-sm md:text-base tracking-[0.18em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none"
+              className="font-outfit text-[13px] sm:text-sm md:text-base tracking-[0.18em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none"
               title="Click or tap to scramble"
             >
               <span
                 ref={bioRef}
                 data-scr
                 data-text="BIOTECHNOLOGY"
-                className="inline-block hero-subtitle-contrast text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300 transition-all active:scale-95"
+                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300 transition-all active:scale-95"
               >
                 BIOTECHNOLOGY
               </span>
@@ -267,7 +267,7 @@ export default function HeroSection({ onGrabPassClick }) {
                 ref={freshersRef}
                 data-scr
                 data-text="FRESHERS"
-                className="inline-block hero-subtitle-contrast text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-rose-300 transition-all active:scale-95"
+                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-purple-300 transition-all active:scale-95"
               >
                 FRESHERS
               </span>
@@ -275,7 +275,7 @@ export default function HeroSection({ onGrabPassClick }) {
                 ref={batchRef}
                 data-scr
                 data-text="'26"
-                className="inline-block hero-subtitle-contrast text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400 transition-all active:scale-95"
+                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400 transition-all active:scale-95"
               >
                 '26
               </span>
@@ -286,7 +286,7 @@ export default function HeroSection({ onGrabPassClick }) {
           </div>
         </div>
 
-        {/* Real-time Countdown Timer Grid: Transparent Cards with High-Contrast Text Ink Outlines */}
+        {/* Real-time Countdown Timer Grid */}
         <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-4 max-w-xs sm:max-w-md mx-auto w-full px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
@@ -298,10 +298,10 @@ export default function HeroSection({ onGrabPassClick }) {
               key={idx}
               className="relative p-1.5 sm:p-2 rounded-xl bg-transparent border-transparent shadow-none group hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider hero-timer-contrast">
+              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 mt-0.5 hero-label-contrast">
+              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 mt-0.5">
                 {item.label}
               </div>
             </div>
