@@ -310,7 +310,7 @@ export default function Background() {
           alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="hidden md:block absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[0.62] contrast-[1.22] pointer-events-none"
+          className="hidden md:block absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[1.02] contrast-[1.04] pointer-events-none"
           style={{
             position: 'absolute',
             top: 0,
@@ -331,7 +331,7 @@ export default function Background() {
           alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="block md:hidden absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[0.62] contrast-[1.22] pointer-events-none"
+          className="block md:hidden absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[1.02] contrast-[1.04] pointer-events-none"
           style={{
             position: 'absolute',
             top: 0,
@@ -346,27 +346,21 @@ export default function Background() {
           }}
         />
 
-        {/* Universal Concert Atmosphere Contrast Layer */}
+        {/* Stage Atmosphere Top Glow */}
         <div 
-          className="absolute inset-0 bg-[#040508]/40 pointer-events-none" 
+          className="absolute top-0 inset-x-0 h-[30vh] sm:h-[40vh] bg-gradient-to-b from-cyan-500/10 via-purple-600/5 to-transparent pointer-events-none"
           aria-hidden="true"
         />
 
-        {/* Dynamic Rhythmic Beat Pulse Glow (Concert Lighting Heartbeat, soft) */}
+        {/* Dynamic Rhythmic Beat Pulse Glow (Concert Lighting Heartbeat) */}
         <div 
-          className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] sm:w-[900px] sm:h-[450px] bg-gradient-to-tr from-cyan-500/10 via-purple-600/10 to-sky-400/10 rounded-full blur-[90px] sm:blur-[140px] pointer-events-none animate-stage-pulse" 
+          className="absolute top-[22%] sm:top-[26%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] sm:w-[900px] sm:h-[450px] bg-gradient-to-tr from-cyan-500/20 via-purple-600/15 to-sky-400/20 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none animate-stage-pulse" 
           aria-hidden="true"
         />
 
         {/* Soft Ambient Concert Atmosphere Haze */}
         <div 
-          className="absolute top-[8%] inset-x-0 h-[45%] bg-gradient-to-b from-cyan-500/8 via-purple-500/5 to-transparent blur-3xl pointer-events-none animate-stage-haze" 
-          aria-hidden="true"
-        />
-
-        {/* Top Header Atmosphere Vignette: Deep rich gradient ensuring all header & title text is 100% visible */}
-        <div 
-          className="absolute top-0 inset-x-0 h-[65vh] sm:h-[75vh] bg-gradient-to-b from-[#040508]/92 via-[#040508]/65 to-transparent pointer-events-none" 
+          className="absolute top-[8%] inset-x-0 h-[45%] bg-gradient-to-b from-cyan-500/10 via-purple-500/8 to-transparent blur-3xl pointer-events-none animate-stage-haze" 
           aria-hidden="true"
         />
 

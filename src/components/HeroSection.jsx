@@ -203,11 +203,6 @@ export default function HeroSection({ onGrabPassClick }) {
     >
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 my-auto">
-        {/* Soft Radial Backlight Filter for Entire Hero (Title + Subtitle + Timer) */}
-        <div 
-          className="absolute inset-0 -inset-x-8 sm:-inset-x-20 -inset-y-8 sm:-inset-y-14 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.48)_55%,transparent_80%)] blur-2xl pointer-events-none -z-10"
-          aria-hidden="true"
-        />
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
@@ -216,12 +211,6 @@ export default function HeroSection({ onGrabPassClick }) {
             ref={titleContainerRef}
             className="relative my-0.5 sm:my-1 select-none animate-hero-float flex items-center justify-center w-full max-w-full px-1 py-0.5 sm:py-1"
           >
-            {/* Seamless Optical Contrast Aura: softens background brightness specifically behind the letters without any rigid box */}
-            <div 
-              className="absolute -inset-x-8 -inset-y-4 sm:-inset-x-20 sm:-inset-y-10 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.78)_0%,rgba(0,0,0,0.45)_50%,transparent_75%)] blur-xl pointer-events-none -z-10"
-              aria-hidden="true"
-            />
-
             <h1 className="font-innovision-serif font-black text-[2.1rem] min-[360px]:text-[2.45rem] min-[400px]:text-[2.85rem] sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.02em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
               {TITLE_LETTERS.map((item, idx) => {
                 if (item.isSpace) {
@@ -254,52 +243,50 @@ export default function HeroSection({ onGrabPassClick }) {
             </h1>
           </div>
 
-          {/* Highlighted Subtitle with Cybernetic Scramble Animation & Frosted Contrast Pill */}
+          {/* Highlighted Subtitle with Cybernetic Scramble Animation & Pure Text Contrast */}
           <div className="relative flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-2.5 mb-1 sm:mb-2 select-none">
             {/* Left Accent Laser Beam (Desktop only to prevent mobile artifact) */}
             <span className="hidden sm:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
             
-            <div className="px-3.5 sm:px-5 py-1 sm:py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.7)] flex items-center">
-              <h2
-                onClick={triggerSubtitleScramble}
-                onTouchStart={triggerSubtitleScramble}
-                onMouseEnter={triggerSubtitleScramble}
-                className="font-outfit text-[12px] min-[360px]:text-[13px] sm:text-sm md:text-base tracking-[0.18em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none"
-                title="Click or tap to scramble"
+            <h2
+              onClick={triggerSubtitleScramble}
+              onTouchStart={triggerSubtitleScramble}
+              onMouseEnter={triggerSubtitleScramble}
+              className="font-outfit text-[12px] min-[360px]:text-[13px] sm:text-sm md:text-base tracking-[0.18em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none"
+              title="Click or tap to scramble"
+            >
+              <span
+                ref={bioRef}
+                data-scr
+                data-text="BIOTECHNOLOGY"
+                className="inline-block hero-subtitle-contrast text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300 transition-all active:scale-95"
               >
-                <span
-                  ref={bioRef}
-                  data-scr
-                  data-text="BIOTECHNOLOGY"
-                  className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] transition-all active:scale-95"
-                >
-                  BIOTECHNOLOGY
-                </span>
-                <span
-                  ref={freshersRef}
-                  data-scr
-                  data-text="FRESHERS"
-                  className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-rose-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] transition-all active:scale-95"
-                >
-                  FRESHERS
-                </span>
-                <span
-                  ref={batchRef}
-                  data-scr
-                  data-text="'26"
-                  className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400 drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] transition-all active:scale-95"
-                >
-                  '26
-                </span>
-              </h2>
-            </div>
+                BIOTECHNOLOGY
+              </span>
+              <span
+                ref={freshersRef}
+                data-scr
+                data-text="FRESHERS"
+                className="inline-block hero-subtitle-contrast text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-rose-300 transition-all active:scale-95"
+              >
+                FRESHERS
+              </span>
+              <span
+                ref={batchRef}
+                data-scr
+                data-text="'26"
+                className="inline-block hero-subtitle-contrast text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400 transition-all active:scale-95"
+              >
+                '26
+              </span>
+            </h2>
 
             {/* Right Accent Laser Beam (Desktop only) */}
             <span className="hidden sm:block h-[2px] w-8 sm:w-16 bg-gradient-to-l from-transparent via-amber-400 to-orange-400 shadow-[0_0_10px_#fbbf24]" />
           </div>
         </div>
 
-        {/* Real-time Countdown Timer Grid */}
+        {/* Real-time Countdown Timer Grid: Transparent Cards with High-Contrast Text Ink Outlines */}
         <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-4 max-w-xs sm:max-w-md mx-auto w-full px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
@@ -309,12 +296,12 @@ export default function HeroSection({ onGrabPassClick }) {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative p-1.5 sm:p-2 rounded-xl bg-black/45 backdrop-blur-md border border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.6)] group hover:-translate-y-1 transition-all duration-300"
+              className="relative p-1.5 sm:p-2 rounded-xl bg-transparent border-transparent shadow-none group hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)]">
+              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider hero-timer-contrast">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 mt-0.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 mt-0.5 hero-label-contrast">
                 {item.label}
               </div>
             </div>
