@@ -232,7 +232,7 @@ export default function HeroSection({ onGrabPassClick }) {
                     onTouchStart={() => kickLetter(idx)}
                     data-h-ch=""
                     data-attract=".22"
-                    className={`inline-block transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent drop-shadow-[0_6px_35px_rgba(0,0,0,0.98)] drop-shadow-[0_0_25px_rgba(255,255,255,0.22)] cursor-pointer select-none`}
+                    className={`inline-block transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(255,255,255,0.45)] cursor-pointer select-none`}
                     style={{ transformOrigin: '50% 70%' }}
                     title={item.char}
                   >
@@ -298,10 +298,10 @@ export default function HeroSection({ onGrabPassClick }) {
               key={idx}
               className="relative p-1.5 sm:p-2 rounded-xl bg-transparent border-transparent shadow-none group hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)]">
+              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 drop-shadow-[0_1px_8px_rgba(0,0,0,0.95)] mt-0.5">
+              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 mt-0.5">
                 {item.label}
               </div>
             </div>

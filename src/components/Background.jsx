@@ -364,11 +364,7 @@ export default function Background() {
           aria-hidden="true"
         />
 
-        {/* Top Header Dark Vignette for Crystal Clear Navbar & Header Readability */}
-        <div 
-          className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-[#040508]/75 via-[#040508]/35 to-transparent pointer-events-none" 
-          aria-hidden="true"
-        />
+        {/* Top Header Dark Vignette Removed for completely clear background behind text */}
 
         {/* Deep Bottom Vignette for Smooth Transition into Content and Cards */}
         <div 
