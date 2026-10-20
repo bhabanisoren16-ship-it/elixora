@@ -178,9 +178,12 @@ export default function HeroSection({ onGrabPassClick }) {
   }, [targetDate]);
 
   return (
-    <section id="hero" className="relative min-h-0 sm:min-h-[85vh] pt-12 sm:pt-24 pb-3 sm:pb-6 flex items-center justify-center px-3 sm:px-6 lg:px-8">
+    <section
+      id="hero"
+      className="relative h-screen h-[100dvh] min-h-[100dvh] sm:h-auto sm:min-h-[85vh] pt-14 sm:pt-24 pb-6 sm:pb-6 flex flex-col items-center justify-center px-3 sm:px-6 lg:px-8"
+    >
       {/* Transparent Hero Container so the artwork is 100% visible */}
-      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4">
+      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 my-auto">
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
@@ -244,7 +247,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* Real-time Countdown Timer Grid */}
-        <div className="mt-2 sm:mt-4 mb-2.5 sm:mb-4 inline-grid grid-cols-4 gap-1.5 sm:gap-3 max-w-xs sm:max-w-md mx-auto w-full px-2">
+        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-1.5 sm:gap-3 max-w-xs sm:max-w-md mx-auto w-full px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
             { label: 'HOURS', value: timeLeft.hours },
@@ -253,16 +256,16 @@ export default function HeroSection({ onGrabPassClick }) {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative p-1 sm:p-2.5 rounded-xl bg-transparent sm:bg-obsidian-950/50 backdrop-blur-none sm:backdrop-blur-lg border border-transparent sm:border-white/20 shadow-none sm:shadow-glass group hover:border-cyan-400/60 hover:-translate-y-1 hover:shadow-neon-cyan transition-all duration-300"
+              className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-cyan-400/60 hover:-translate-y-1 hover:shadow-neon-cyan transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-cyan-300 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]">
+              <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-cyan-300">
                 {item.label}
               </div>
-              {/* Corner accents (Desktop only) */}
-              <div className="hidden sm:block absolute top-1 right-1 w-1 h-1 rounded-full bg-cyan-400/80 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
+              {/* Corner accents */}
+              <div className="absolute top-1 right-1 w-1 h-1 rounded-full bg-cyan-400/80 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
             </div>
           ))}
         </div>
