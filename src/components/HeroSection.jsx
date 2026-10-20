@@ -192,13 +192,13 @@ export default function HeroSection({ onGrabPassClick }) {
             ref={titleContainerRef}
             className="relative my-0.5 sm:my-1 select-none animate-hero-float flex items-center justify-center w-full max-w-full px-1 py-0.5 sm:py-1 overflow-hidden"
           >
-            <h1 className="font-innovision-serif font-black text-[1.75rem] min-[360px]:text-[2.1rem] min-[400px]:text-4xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.02em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
+            <h1 className="font-innovision-serif font-black text-[2.1rem] min-[360px]:text-[2.45rem] min-[400px]:text-[2.85rem] sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.02em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
               {TITLE_LETTERS.map((item, idx) => {
                 if (item.isSpace) {
                   return (
                     <span
                       key={idx}
-                      className="inline-block w-2.5 sm:w-5 md:w-7 select-none"
+                      className="inline-block w-3 sm:w-5 md:w-7 select-none"
                       aria-hidden="true"
                     >
                       &nbsp;
@@ -225,11 +225,11 @@ export default function HeroSection({ onGrabPassClick }) {
           </div>
 
           {/* Highlighted Subtitle (Clean without neon glow) */}
-          <div className="relative flex items-center justify-center gap-2 sm:gap-4 mt-1.5 sm:mt-2.5 mb-1 sm:mb-2 select-none">
+          <div className="relative flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-2.5 mb-1 sm:mb-2 select-none">
             {/* Left Accent Laser Beam */}
             <span className="hidden xs:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
             
-            <h2 className="font-outfit text-xs sm:text-sm md:text-base tracking-[0.20em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2">
+            <h2 className="font-outfit text-[13px] sm:text-sm md:text-base tracking-[0.18em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300">
                 BIOTECHNOLOGY
               </span>
@@ -247,7 +247,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* Real-time Countdown Timer Grid */}
-        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-1.5 sm:gap-3 max-w-xs sm:max-w-md mx-auto w-full px-2">
+        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-3 max-w-xs sm:max-w-md mx-auto w-full px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
             { label: 'HOURS', value: timeLeft.hours },
@@ -258,10 +258,10 @@ export default function HeroSection({ onGrabPassClick }) {
               key={idx}
               className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-cyan-400/60 hover:-translate-y-1 hover:shadow-neon-cyan transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
+              <div className="font-outfit font-extrabold text-2xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-cyan-300">
+              <div className="text-[10px] sm:text-[10px] font-outfit font-bold tracking-widest text-cyan-300">
                 {item.label}
               </div>
               {/* Corner accents */}
@@ -271,7 +271,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-0.5 sm:mt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-1 sm:mt-2">
           <button
             onMouseEnter={() => {
               soundController.playHover?.();
@@ -284,7 +284,7 @@ export default function HeroSection({ onGrabPassClick }) {
                 scrollToTarget('#register');
               }
             }}
-            className="w-full sm:w-auto px-5 py-2.5 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine cursor-pointer"
+            className="w-full sm:w-auto px-6 py-3 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-sm sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine cursor-pointer"
           >
             <span>GRAB YOUR PASS</span>
             <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
