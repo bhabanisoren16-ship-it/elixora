@@ -304,14 +304,14 @@ export default function EventDetails() {
               {/* Boys Costume Card (Translucent Glass Card) */}
               <div 
                 onMouseMove={handleMouseMove}
-                className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card light-spotlight-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden"
+                className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 translucent-glass-card light-spotlight-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden"
               >
                 <div className="light-spotlight-overlay" />
                 <div className="light-spotlight-border" />
                 <div className="card-top-light-beam" />
 
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)]" />
                       BOYS' ATTIRE LOOKBOOK
@@ -322,7 +322,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-[420px] sm:h-[520px] md:h-[460px] lg:h-[480px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-[260px] sm:h-[320px] md:h-[290px] lg:h-[310px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-boys.jpg"
@@ -336,14 +336,14 @@ export default function EventDetails() {
               {/* Girls Costume Card (Translucent Glass Card) */}
               <div 
                 onMouseMove={handleMouseMove}
-                className="rounded-2xl sm:rounded-3xl p-5 sm:p-6 translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden"
+                className="rounded-2xl sm:rounded-3xl p-4 sm:p-5 translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden"
               >
                 <div className="light-spotlight-overlay" />
                 <div className="light-spotlight-border" />
                 <div className="card-top-light-beam" />
 
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-3.5">
+                  <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                       GIRLS' ATTIRE LOOKBOOK
@@ -354,7 +354,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-[420px] sm:h-[520px] md:h-[460px] lg:h-[480px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-[260px] sm:h-[320px] md:h-[290px] lg:h-[310px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-girls.jpg"
