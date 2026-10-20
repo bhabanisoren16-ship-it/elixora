@@ -938,6 +938,19 @@ body {
   }
 }
 
+/* High-Contrast Hero Typography Outlines & Multi-Layer Ink Shadows */
+.hero-letter-contrast {
+  -webkit-text-stroke: 1.5px rgba(0, 0, 0, 0.95);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0 1px #000) drop-shadow(0 0 3px #000) drop-shadow(0 3px 8px rgba(0, 0, 0, 0.98)) drop-shadow(0 10px 24px rgba(0, 0, 0, 0.9));
+}
+
+@media (max-width: 640px) {
+  .hero-letter-contrast {
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.95);
+  }
+}
+
 /* 3. Subtle Button Shimmer Sweep */
 @keyframes shimmerSweep {
 

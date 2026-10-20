@@ -203,6 +203,11 @@ export default function HeroSection({ onGrabPassClick }) {
     >
       {/* Transparent Hero Container so the artwork is 100% visible */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 my-auto">
+        {/* Soft Radial Backlight Filter for Entire Hero (Title + Subtitle + Timer) */}
+        <div 
+          className="absolute inset-0 -inset-x-8 sm:-inset-x-20 -inset-y-8 sm:-inset-y-14 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.82)_0%,rgba(0,0,0,0.48)_55%,transparent_80%)] blur-2xl pointer-events-none -z-10"
+          aria-hidden="true"
+        />
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
@@ -213,7 +218,7 @@ export default function HeroSection({ onGrabPassClick }) {
           >
             {/* Seamless Optical Contrast Aura: softens background brightness specifically behind the letters without any rigid box */}
             <div 
-              className="absolute -inset-x-8 -inset-y-4 sm:-inset-x-20 sm:-inset-y-10 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.72)_0%,rgba(0,0,0,0.40)_50%,transparent_75%)] blur-xl pointer-events-none -z-10"
+              className="absolute -inset-x-8 -inset-y-4 sm:-inset-x-20 sm:-inset-y-10 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.78)_0%,rgba(0,0,0,0.45)_50%,transparent_75%)] blur-xl pointer-events-none -z-10"
               aria-hidden="true"
             />
 
@@ -238,7 +243,7 @@ export default function HeroSection({ onGrabPassClick }) {
                     onTouchStart={() => kickLetter(idx)}
                     data-h-ch=""
                     data-attract=".22"
-                    className={`inline-block transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent drop-shadow-[0_2px_4px_rgba(0,0,0,0.98)] drop-shadow-[0_6px_16px_rgba(0,0,0,0.92)] drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)] drop-shadow-[0_0_2px_rgba(0,0,0,1)] cursor-pointer select-none`}
+                    className={`inline-block hero-letter-contrast transition-transform duration-75 will-change-transform bg-gradient-to-b ${item.color} bg-clip-text text-transparent cursor-pointer select-none`}
                     style={{ transformOrigin: '50% 70%' }}
                     title={item.char}
                   >
