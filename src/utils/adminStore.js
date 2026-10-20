@@ -302,12 +302,18 @@ function startRealTimeSync() {
         (deletedTicketId) => {
           if (!isValidIdentifier(deletedTicketId)) return;
           const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+          const cleanDeleted = (deletedTicketId + '').trim().toUpperCase();
           const updated = current.filter((r) => 
             r.ticketId !== deletedTicketId && 
-            r.rollNo !== deletedTicketId && 
+            (r.rollNo || '').trim().toUpperCase() !== cleanDeleted && 
             r.id !== deletedTicketId && 
             r._id !== deletedTicketId
           );
+          // Persist to DELETED_IDS so background fetches never resurrect it
+          const oldDeleted = safeGet(STORAGE_KEYS.DELETED_IDS, []);
+          if (!oldDeleted.includes(deletedTicketId)) {
+            safeSet(STORAGE_KEYS.DELETED_IDS, [...oldDeleted, deletedTicketId]);
+          }
           safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
         }
       );
@@ -556,7 +562,7 @@ export const adminStore = {
     return result;
   },
 
-  deleteRegistration(targetOrTicketId, rollNo = null, explicitIndex = -1) {
+  async deleteRegistration(targetOrTicketId, rollNo = null, explicitIndex = -1) {
     const list = this.getRegistrations();
     let targetIndex = -1;
 
@@ -626,11 +632,14 @@ export const adminStore = {
     updated.splice(targetIndex, 1);
     safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
 
-    // Sync delete to Supabase Cloud
+    // Sync delete to Supabase Cloud in real time
     if (isSupabaseConfigured()) {
-      deleteRegistrationFromSupabase(itemToDelete).catch((err) => {
-        console.warn('[ELIXORA Supabase] Delete sync warning:', err);
-      });
+      try {
+        await deleteRegistrationFromSupabase(itemToDelete);
+        console.info('[ELIXORA Real-Time] Deleted registration from Supabase:', itemToDelete.fullName || itemToDelete.rollNo);
+      } catch (err) {
+        console.warn('[ELIXORA Supabase] Real-time delete sync warning:', err);
+      }
     }
 
     // Sync delete to backend

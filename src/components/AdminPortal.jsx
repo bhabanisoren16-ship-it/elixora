@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import { adminStore } from '../utils/adminStore';
 import { soundController } from '../utils/audio';
+import { deleteRegistrationFromSupabase } from '../services/supabaseService';
 
 export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   // Authentication State
@@ -273,7 +274,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     }
   };
 
-  const handleDelete = (targetItemOrTicketId, rowIndex = -1, name = '', rollNo = '') => {
+  const handleDelete = async (targetItemOrTicketId, rowIndex = -1, name = '', rollNo = '') => {
     let target = targetItemOrTicketId;
     if (typeof targetItemOrTicketId === 'string') {
       target = registrations.find(
@@ -287,6 +288,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     }
     if (!target) return;
 
+    // 1. Immediately remove from local store & UI for instant reactivity
     adminStore.deleteRegistration(target, null, rowIndex);
 
     // Refresh state directly from adminStore to guarantee 100% sync
@@ -297,6 +299,13 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     const displayName = target.fullName || target.rollNo || (target.ticketId && target.ticketId !== '-' ? target.ticketId : 'Registration row');
     notifySuccess(`Registration "${displayName}" deleted.`);
     soundController.playClick?.();
+
+    // 2. Guarantee direct real-time deletion from Supabase
+    try {
+      await deleteRegistrationFromSupabase(target);
+    } catch (err) {
+      console.warn('[ELIXORA Admin] Real-time Supabase delete note:', err);
+    }
   };
 
   const handleSaveEdit = (e) => {

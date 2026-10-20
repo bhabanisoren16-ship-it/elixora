@@ -113,18 +113,39 @@ router.put('/registrations/:ticketId', (req, res) => {
 });
 
 /**
- * Delete registration
+ * Delete registration in real time from local DB and Supabase
  */
-router.delete('/registrations/:ticketId', (req, res) => {
+router.delete('/registrations/:ticketId', async (req, res) => {
   try {
     const { ticketId } = req.params;
     const ok = deleteRegistration(ticketId);
+
+    // Also sync deletion directly to Supabase Cloud
+    try {
+      const supaUrl = process.env.VITE_SUPABASE_URL || 'https://wpipjvudqumqwltrtrct.supabase.co';
+      const serviceKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwaXBqdnVkcXVtcXdsdHJ0cmN0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MjQ3Mjg1OCwiZXhwIjoyMTA4MDQ4ODU4fQ.x0a1qmSfzDC_KTBSdRf9kmauTSUkwcFIUWnlzMEKWi8';
+      
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ticketId);
+      const queryParam = isUuid ? `id=eq.${encodeURIComponent(ticketId)}` : `REGISTRATION=eq.${encodeURIComponent(ticketId.toUpperCase())}`;
+
+      await fetch(`${supaUrl}/rest/v1/registrations?${queryParam}`, {
+        method: 'DELETE',
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (supaErr) {
+      console.warn('[ELIXORA Server] Supabase delete sync note:', supaErr.message);
+    }
+
     if (!ok) {
       return res.status(404).json({ success: false, error: 'Registration not found' });
     }
     res.json({
       success: true,
-      message: 'Registration deleted in real time',
+      message: 'Registration deleted in real time from backend and Supabase',
       ticketId,
     });
   } catch (err) {

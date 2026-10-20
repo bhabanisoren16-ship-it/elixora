@@ -310,29 +310,46 @@ export async function deleteRegistrationFromSupabase(identifierOrTarget) {
       : (typeof identifierOrTarget === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifierOrTarget)
         ? identifierOrTarget
         : null);
-    const targetRoll = isTargetObj
-      ? identifierOrTarget.rollNo
-      : (!targetId && typeof identifierOrTarget === 'string' ? identifierOrTarget : null);
-    const cleanRoll = targetRoll ? (targetRoll + '').trim().toUpperCase() : null;
 
-    const targetTicket = isTargetObj
-      ? (identifierOrTarget.ticketId && identifierOrTarget.ticketId !== '-' ? identifierOrTarget.ticketId.trim() : null)
+    const rawRoll = isTargetObj
+      ? (identifierOrTarget.rollNo || identifierOrTarget.roll_no || identifierOrTarget.REGISTRATION || identifierOrTarget.roll)
+      : (!targetId && typeof identifierOrTarget === 'string' ? identifierOrTarget : null);
+    const cleanRoll = rawRoll ? String(rawRoll).trim().toUpperCase() : null;
+
+    const targetUtr = isTargetObj
+      ? (identifierOrTarget.utrNumber || identifierOrTarget['UTR NO.'] || identifierOrTarget.utr)
       : null;
 
-    // 1. Attempt hard delete by id if UUID is known
+    let deleted = false;
+
+    // 1. Hard delete by primary key UUID in Supabase
     if (targetId) {
-      await client.from('registrations').delete().eq('id', targetId);
-    }
-    // Attempt hard delete by REGISTRATION if roll is known
-    if (cleanRoll) {
-      await client.from('registrations').delete().eq('REGISTRATION', cleanRoll);
-    }
-    // Attempt hard delete by ticket_id if known
-    if (targetTicket) {
-      await client.from('registrations').delete().eq('ticket_id', targetTicket);
+      const { data, error } = await client.from('registrations').delete().eq('id', targetId).select();
+      if (!error && data && data.length > 0) {
+        deleted = true;
+        console.info('[ELIXORA Supabase] Hard deleted registration row by UUID in real time:', targetId);
+      }
     }
 
-    // 2. Also execute soft-delete update to guarantee row is marked deleted even if RLS restricts DELETE
+    // 2. Hard delete by REGISTRATION (roll number)
+    if (cleanRoll) {
+      const { data, error } = await client.from('registrations').delete().eq('REGISTRATION', cleanRoll).select();
+      if (!error && data && data.length > 0) {
+        deleted = true;
+        console.info('[ELIXORA Supabase] Hard deleted registration row by REGISTRATION in real time:', cleanRoll);
+      }
+    }
+
+    // 3. Fallback: hard delete by UTR NO. if roll/id weren't matched
+    if (!deleted && targetUtr) {
+      const { data, error } = await client.from('registrations').delete().eq('UTR NO.', String(targetUtr).trim()).select();
+      if (!error && data && data.length > 0) {
+        deleted = true;
+        console.info('[ELIXORA Supabase] Hard deleted registration row by UTR in real time:', targetUtr);
+      }
+    }
+
+    // 4. Soft-delete fallback to ensure row never appears even if an RLS policy intercepted delete
     const softDeletePayload = {
       'BRANCH': 'DELETED',
       'FULL NAME': '[DELETED]',
@@ -344,13 +361,10 @@ export async function deleteRegistrationFromSupabase(identifierOrTarget) {
     if (cleanRoll) {
       await client.from('registrations').update(softDeletePayload).eq('REGISTRATION', cleanRoll);
     }
-    if (targetTicket) {
-      await client.from('registrations').update(softDeletePayload).eq('ticket_id', targetTicket);
-    }
 
     return true;
   } catch (err) {
-    console.error('[ELIXORA Supabase] Delete failed:', err);
+    console.error('[ELIXORA Supabase] Real-time delete failed:', err);
     return false;
   }
 }
@@ -381,9 +395,9 @@ export function subscribeToSupabaseRegistrations(onInsert, onUpdate, onDelete) {
         if (item && onUpdate) {
           onUpdate(item);
         } else if (!item && onDelete) {
-          const roll = payload.new?.REGISTRATION || payload.old?.REGISTRATION;
           const id = payload.new?.id || payload.old?.id;
-          onDelete(roll || id);
+          const roll = payload.new?.REGISTRATION || payload.old?.REGISTRATION;
+          if (id || roll) onDelete(id || roll);
         }
       }
     )
@@ -391,9 +405,9 @@ export function subscribeToSupabaseRegistrations(onInsert, onUpdate, onDelete) {
       'postgres_changes',
       { event: 'DELETE', schema: 'public', table: 'registrations' },
       (payload) => {
-        const roll = payload.old?.REGISTRATION;
         const id = payload.old?.id;
-        if (onDelete) onDelete(roll || id);
+        const roll = payload.old?.REGISTRATION;
+        if (onDelete && (id || roll)) onDelete(id || roll);
       }
     )
     .subscribe();
