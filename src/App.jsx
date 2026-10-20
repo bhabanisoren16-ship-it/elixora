@@ -247,7 +247,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
+    <div className="relative min-h-screen w-full max-w-full overflow-x-hidden bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
 
       {/* 0. Home Screen Loading Page (Celestial Orbital Planetary Gateway from Screenshot - STRICTLY requires user to click/press ENTER to open homepage) */}
       {showHomeLoadingPage && (
@@ -298,7 +298,7 @@ export default function App() {
       />
 
       {/* 3. Main Content Flow */}
-      <main className="relative z-10 flex flex-col">
+      <main className="relative z-10 flex flex-col w-full max-w-full overflow-x-hidden">
         {/* Hero Section */}
         <HeroSection
           onGrabPassClick={handleScrollToRegister}

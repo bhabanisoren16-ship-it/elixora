@@ -1,6 +1,8 @@
 import { createPortal } from 'react-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
+import partyBg from '../assets/party-background.jpg';
+import desktopBg from '../assets/desktop-background.jpg';
 import { 
   Crown, 
   CheckCircle2, 

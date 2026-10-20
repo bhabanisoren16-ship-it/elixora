@@ -38,8 +38,12 @@ export default function HeroSection({ onGrabPassClick }) {
       .to(el, { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.6, ease: 'elastic.out(1.2, 0.38)' });
   };
 
-  // Innovision Proximity Physics: Magnetic attraction towards cursor (data-attract=".22")
+  // Innovision Proximity Physics: Magnetic attraction towards cursor (Desktop fine pointer only)
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+    if (!isFinePointer) return;
+
     const EFFECT_RADIUS = 180; // Proximity threshold in pixels
     let lastSoundTime = 0;
 
@@ -183,9 +187,9 @@ export default function HeroSection({ onGrabPassClick }) {
           {/* Main Title: Exact Luxury High-Contrast Serif Typography with Celestial Tint & Interactive Proximity Shake */}
           <div
             ref={titleContainerRef}
-            className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full px-2 py-1"
+            className="relative my-1 select-none animate-hero-float flex items-center justify-center w-full max-w-full px-1 py-1 overflow-hidden"
           >
-            <h1 className="font-innovision-serif font-black text-4xl min-[380px]:text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.06em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
+            <h1 className="font-innovision-serif font-black text-[1.75rem] min-[360px]:text-[2.1rem] min-[400px]:text-4xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-[0.02em] sm:tracking-[0.09em] md:tracking-[0.12em] uppercase whitespace-nowrap leading-none flex items-baseline justify-center">
               {TITLE_LETTERS.map((item, idx) => {
                 if (item.isSpace) {
                   return (

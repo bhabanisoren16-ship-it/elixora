@@ -45,9 +45,23 @@ export default function Background() {
     let height = window.innerHeight;
     let dpr = 1;
 
-    const resize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
+    let lastWidth = window.innerWidth;
+    let lastHeight = window.innerHeight;
+
+    const resize = (isInitial = false) => {
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+
+      // On mobile, scrolling hides/shows the address bar, altering height by ~60-120px.
+      // Ignore mobile address-bar height adjustments so the canvas never resets or flickers during scroll!
+      if (!isInitial && newWidth === lastWidth && Math.abs(newHeight - lastHeight) < 160) {
+        return;
+      }
+
+      lastWidth = newWidth;
+      lastHeight = newHeight;
+      width = newWidth;
+      height = newHeight;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = Math.floor(width * dpr);
@@ -58,8 +72,9 @@ export default function Background() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
+    resize(true);
+    const handleResize = () => resize(false);
+    window.addEventListener('resize', handleResize, { passive: true });
 
     let lastFrameTime = performance.now();
 
@@ -107,7 +122,7 @@ export default function Background() {
 
         for (let i = 0; i < beamConfigs.length; i++) {
           const b = beamConfigs[i];
-          const sweep = Math.sin(now * b.speed + b.phase) * (isDesktop ? 80 : 35);
+          const sweep = isDesktop ? Math.sin(now * b.speed + b.phase) * 80 : 0;
           const topX = w * b.originFrac + parallaxX * 0.4;
           const topY = 0;
           const bottomX = w * b.targetFrac + sweep + parallaxX;
@@ -155,7 +170,7 @@ export default function Background() {
 
         for (let i = 0; i < laserConfigs.length; i++) {
           const l = laserConfigs[i];
-          const sweep = Math.sin(now * l.speed + l.phase) * (isDesktop ? 120 : 50);
+          const sweep = isDesktop ? Math.sin(now * l.speed + l.phase) * 120 : 0;
           const lx1 = w * l.originFrac + parallaxX * 0.4;
           const ly1 = 0;
           const lx2 = w * l.targetFrac + sweep + parallaxX;
@@ -264,7 +279,7 @@ export default function Background() {
     animFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener('resize', resize);
+      window.removeEventListener('resize', handleResize);
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     };
   }, []);
