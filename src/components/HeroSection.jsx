@@ -253,16 +253,16 @@ export default function HeroSection({ onGrabPassClick }) {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative p-2 sm:p-2.5 rounded-xl bg-obsidian-950/50 backdrop-blur-lg border border-white/20 shadow-glass group hover:border-cyan-400/60 hover:-translate-y-1 hover:shadow-neon-cyan transition-all duration-300"
+              className="relative p-1 sm:p-2.5 rounded-xl bg-transparent sm:bg-obsidian-950/50 backdrop-blur-none sm:backdrop-blur-lg border border-transparent sm:border-white/20 shadow-none sm:shadow-glass group hover:border-cyan-400/60 hover:-translate-y-1 hover:shadow-neon-cyan transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
+              <div className="font-outfit font-extrabold text-xl sm:text-3xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-cyan-300">
+              <div className="text-[9px] sm:text-[10px] font-outfit font-bold tracking-widest text-cyan-300 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)]">
                 {item.label}
               </div>
-              {/* Corner accents */}
-              <div className="absolute top-1 right-1 w-1 h-1 rounded-full bg-cyan-400/80 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
+              {/* Corner accents (Desktop only) */}
+              <div className="hidden sm:block absolute top-1 right-1 w-1 h-1 rounded-full bg-cyan-400/80 shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
             </div>
           ))}
         </div>
