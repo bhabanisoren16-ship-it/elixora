@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrollToTarget } from '../utils/smoothScroll';
 import { adminStore } from '../utils/adminStore';
+import { scrambleText } from '../innovission/scrambleText';
 
 const TITLE_LETTERS = [
   { char: 'E', color: 'from-white via-[#dcf7ff] to-[#38bdf8]' },
@@ -23,6 +24,24 @@ export default function HeroSection({ onGrabPassClick }) {
   const [settings, setSettings] = useState(() => adminStore.getSettings());
   const lettersRef = useRef([]);
   const titleContainerRef = useRef(null);
+  const bioRef = useRef(null);
+  const freshersRef = useRef(null);
+  const batchRef = useRef(null);
+
+  // Cybernetic Scramble Text Effect on Subtitle
+  const triggerSubtitleScramble = () => {
+    soundController.playHover?.();
+    if (bioRef.current) scrambleText(bioRef.current, 'BIOTECHNOLOGY', { duration: 0.45 });
+    if (freshersRef.current) scrambleText(freshersRef.current, 'FRESHERS', { duration: 0.45 });
+    if (batchRef.current) scrambleText(batchRef.current, "'26", { duration: 0.45 });
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      triggerSubtitleScramble();
+    }, 700);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Direct Tap / Click impulse for mobile & desktop
   const kickLetter = (idx) => {
@@ -224,25 +243,46 @@ export default function HeroSection({ onGrabPassClick }) {
             </h1>
           </div>
 
-          {/* Highlighted Subtitle (Clean without neon glow) */}
+          {/* Highlighted Subtitle with Cybernetic Scramble Animation */}
           <div className="relative flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-2.5 mb-1 sm:mb-2 select-none">
-            {/* Left Accent Laser Beam */}
-            <span className="hidden xs:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
+            {/* Left Accent Laser Beam (Desktop only to prevent mobile artifact) */}
+            <span className="hidden sm:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
             
-            <h2 className="font-outfit text-[13px] sm:text-sm md:text-base tracking-[0.18em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300">
+            <h2
+              onClick={triggerSubtitleScramble}
+              onTouchStart={triggerSubtitleScramble}
+              onMouseEnter={triggerSubtitleScramble}
+              className="font-outfit text-[13px] sm:text-sm md:text-base tracking-[0.18em] sm:tracking-[0.28em] font-black uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer select-none"
+              title="Click or tap to scramble"
+            >
+              <span
+                ref={bioRef}
+                data-scr
+                data-text="BIOTECHNOLOGY"
+                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-300 to-teal-300 transition-all active:scale-95"
+              >
                 BIOTECHNOLOGY
               </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-purple-300">
+              <span
+                ref={freshersRef}
+                data-scr
+                data-text="FRESHERS"
+                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-200 via-pink-300 to-purple-300 transition-all active:scale-95"
+              >
                 FRESHERS
               </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400">
+              <span
+                ref={batchRef}
+                data-scr
+                data-text="'26"
+                className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-orange-400 transition-all active:scale-95"
+              >
                 '26
               </span>
             </h2>
 
-            {/* Right Accent Laser Beam */}
-            <span className="hidden xs:block h-[2px] w-8 sm:w-16 bg-gradient-to-l from-transparent via-amber-400 to-orange-400 shadow-[0_0_10px_#fbbf24]" />
+            {/* Right Accent Laser Beam (Desktop only) */}
+            <span className="hidden sm:block h-[2px] w-8 sm:w-16 bg-gradient-to-l from-transparent via-amber-400 to-orange-400 shadow-[0_0_10px_#fbbf24]" />
           </div>
         </div>
 
