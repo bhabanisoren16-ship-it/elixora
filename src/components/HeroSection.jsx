@@ -296,12 +296,12 @@ export default function HeroSection({ onGrabPassClick }) {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="relative p-1.5 sm:p-2 rounded-xl bg-transparent border-transparent shadow-none group hover:-translate-y-1 transition-all duration-300"
+              className="relative p-2 sm:p-2.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/15 shadow-[0_4px_20px_rgba(0,0,0,0.35)] group hover:border-cyan-400/50 hover:-translate-y-1 transition-all duration-300"
             >
-              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider">
+              <div className="font-outfit font-extrabold text-2xl sm:text-4xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-cyan-300 tracking-wider drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                 {String(item.value).padStart(2, '0')}
               </div>
-              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 mt-0.5">
+              <div className="text-[10px] sm:text-xs font-outfit font-bold tracking-widest text-cyan-300 mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
                 {item.label}
               </div>
             </div>
