@@ -85,10 +85,7 @@ export default function Background() {
 
         ctx.clearRect(0, 0, w, h);
 
-        const m = mousePosRef.current;
-        m.x += (m.targetX - m.x) * 0.05;
-        m.y += (m.targetY - m.y) * 0.05;
-        const parallaxX = isDesktop ? m.x * 6.0 : 0;
+        const parallaxX = 0; // 100% stationary background, zero parallax shifting
 
         // 1. DYNAMIC CONCERT SPOTLIGHT BEAMS (Sweeping down through atmosphere)
         ctx.save();
@@ -274,7 +271,7 @@ export default function Background() {
 
   return (
     <>
-      {/* 1. Desktop & Mobile Background Container - 100% Rock-Solid Fixed to Viewport */}
+      {/* 1. Desktop & Mobile Background Container - 100% Rock-Solid Fixed to Viewport (Stationary During Scroll) */}
       <div
         className="fixed-concert-background mobile-fixed-background"
         style={{
@@ -283,9 +280,12 @@ export default function Background() {
           left: 0,
           right: 0,
           bottom: 0,
-          width: '100%',
-          height: '100%',
+          width: '100vw',
+          height: '100vh',
           zIndex: 0,
+          pointerEvents: 'none',
+          transform: 'none',
+          WebkitTransform: 'none',
         }}
         aria-hidden="true"
       >
@@ -296,6 +296,18 @@ export default function Background() {
           decoding="async"
           loading="eager"
           className="hidden md:block absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[1.02] contrast-[1.04] pointer-events-none"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center top',
+            transform: 'none',
+            WebkitTransform: 'none',
+            pointerEvents: 'none',
+          }}
         />
 
         {/* Mobile Screen (< md): Native Portrait Fullscreen Cover */}
@@ -305,6 +317,18 @@ export default function Background() {
           decoding="async"
           loading="eager"
           className="block md:hidden absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[1.02] contrast-[1.04] pointer-events-none"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center top',
+            transform: 'none',
+            WebkitTransform: 'none',
+            pointerEvents: 'none',
+          }}
         />
 
         {/* Stage Atmosphere Top Glow */}
@@ -345,19 +369,19 @@ export default function Background() {
       {/* 2. Fullscreen Canvas: Dynamic Stage Spotlights, Lasers & Festival Light Motes */}
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 z-0 pointer-events-none gpu-accelerated"
+        className="fixed inset-0 z-0 pointer-events-none"
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          width: '100%',
-          height: '100%',
+          width: '100vw',
+          height: '100vh',
           zIndex: 0,
           pointerEvents: 'none',
-          transform: 'translate3d(0, 0, 0)',
-          WebkitTransform: 'translate3d(0, 0, 0)',
+          transform: 'none',
+          WebkitTransform: 'none',
         }}
         aria-hidden="true"
       />

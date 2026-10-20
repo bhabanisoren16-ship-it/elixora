@@ -107,61 +107,54 @@ body {
   scrollbar-width: none;
 }
 
-/* Universal Hardware-Composited Fixed Concert Background (Desktop & Mobile) */
-.fixed-concert-background {
+/* Universal Rock-Solid Fixed Concert Background (Desktop & Mobile) - 100% Stationary During Scroll */
+.fixed-concert-background,
+.mobile-fixed-background {
   position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100lvh !important;
+  min-height: -webkit-fill-available !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  will-change: auto !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+/* Ensure background picture is 100% frozen, completely stationary, and does NOT move, jump, zoom, or shift while scrolling */
+.fixed-concert-background img,
+.mobile-fixed-background img {
+  position: absolute !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  overflow: hidden !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  animation: none !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  will-change: auto !important;
   pointer-events: none !important;
-  z-index: 0 !important;
-  transform: translate3d(0, 0, 0) !important;
-  -webkit-transform: translate3d(0, 0, 0) !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
   backface-visibility: hidden !important;
   -webkit-backface-visibility: hidden !important;
 }
 
-/* Ensure background picture is 100% frozen and does NOT jump or resize while scrolling in mobile view */
 @media (max-width: 767px) {
-  .mobile-fixed-background {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    transform: translate3d(0, 0, 0) !important;
-    -webkit-transform: translate3d(0, 0, 0) !important;
-    overflow: hidden !important;
-    z-index: 0 !important;
-    pointer-events: none !important;
-    -webkit-touch-callout: none !important;
-    user-select: none !important;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-  }
-
-  .mobile-fixed-background img {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center top !important;
-    animation: none !important;
-    transform: none !important;
-    -webkit-transform: none !important;
-    pointer-events: none !important;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-  }
-
   .animate-mobile-breathe {
     animation: none !important;
     transform: none !important;
@@ -699,25 +692,22 @@ body {
   will-change: transform;
 }
 
-/* 1c. Rhythmic Concert Stage Beat Pulse */
+/* 1c. Rhythmic Concert Stage Beat Pulse (Opacity-only pulse, completely stationary) */
 @keyframes stagePulse {
 
   0%,
   100% {
     opacity: 0.35;
-    transform: scale(0.97);
   }
 
   50% {
-    opacity: 0.75;
-    transform: scale(1.06);
+    opacity: 0.70;
   }
 }
 
 .animate-stage-pulse {
   animation: stagePulse 4s ease-in-out infinite;
-  transform-origin: center top;
-  will-change: transform, opacity;
+  will-change: opacity;
 }
 
 /* 1d. Sweeping Neon Laser Beams */
@@ -871,24 +861,22 @@ body {
   will-change: transform, opacity;
 }
 
-/* 1e. Drifting Atmospheric Concert Haze */
+/* 1e. Drifting Atmospheric Concert Haze (Stationary opacity breathing) */
 @keyframes stageHaze {
 
   0%,
   100% {
     opacity: 0.2;
-    transform: translate3d(-3%, 0, 0) scale(1);
   }
 
   50% {
     opacity: 0.42;
-    transform: translate3d(3%, -1.5%, 0) scale(1.04);
   }
 }
 
 .animate-stage-haze {
   animation: stageHaze 12s ease-in-out infinite;
-  will-change: transform, opacity;
+  will-change: opacity;
 }
 
 /* 2. Hero Title Micro-Float (100% GPU Composited translate3d) */
