@@ -115,7 +115,13 @@ function safeGet(key, defaultVal) {
 function safeSet(key, val) {
   try {
     if (typeof localStorage === 'undefined') return;
-    localStorage.setItem(key, JSON.stringify(val));
+    const newJson = JSON.stringify(val);
+    const existingJson = localStorage.getItem(key);
+    if (existingJson === newJson) {
+      // Data is unchanged; do not dispatch redundant events or trigger re-render loops
+      return;
+    }
+    localStorage.setItem(key, newJson);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('elixora_admin_update', { detail: { key } }));
     }
@@ -150,11 +156,10 @@ function generateStableId(item, idx = 0) {
   if (item && isValidIdentifier(item.rollNo)) {
     return 'reg_roll_' + item.rollNo.trim().toUpperCase();
   }
-  const time = (item && item.issuedAt ? item.issuedAt.replace(/[^a-zA-Z0-9]/g, '_') : Date.now());
-  const price = (item && item.ticketPrice) || '';
-  const batch = (item && item.batch ? item.batch.replace(/[^a-zA-Z0-9]/g, '_') : '');
-  const nonce = (item && item.createdAt) ? item.createdAt.replace(/[^a-zA-Z0-9]/g, '_') : Math.random().toString(36).slice(2, 8);
-  return `reg_${idx}_${price}_${time}_${batch}_${nonce}`;
+  const name = (item && item.fullName ? item.fullName.trim().toLowerCase().replace(/[^a-z0-9]/g, '_') : 'guest');
+  const price = (item && item.ticketPrice) || '0';
+  const time = (item && item.issuedAt ? item.issuedAt.replace(/[^a-zA-Z0-9]/g, '_') : 'time');
+  return `reg_${idx}_${name}_${price}_${time}`;
 }
 
 function sanitizeRegistrations(list) {
@@ -179,58 +184,25 @@ let isRealtimeStarted = false;
 let sseConnection = null;
 
 async function fetchRegistrationsFromBackend() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return [];
   try {
-    let serverList = null;
-
     // 1. Prioritize Cloud Supabase if configured
     if (isSupabaseConfigured()) {
       const supaList = await fetchRegistrationsFromSupabase();
       if (Array.isArray(supaList)) {
-        const currentLocal = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
         const deletedIds = getCleanDeletedIds();
 
         // Filter out any deleted items from supaList
         const activeSupaList = supaList.filter(
-          (s) => !deletedIds.has(s.ticketId) && !deletedIds.has(s.rollNo) && !deletedIds.has(s.id)
+          (s) => !deletedIds.has(s.ticketId) && 
+                 !deletedIds.has(s.rollNo) && 
+                 !(s.rollNo && deletedIds.has(s.rollNo.toUpperCase())) && 
+                 !deletedIds.has(s.id) &&
+                 !deletedIds.has(s._id)
         );
 
-        // Auto-sync any local items not yet in Supabase (excluding deleted items)
-        const unSyncedLocal = currentLocal.filter((loc) => 
-          loc.rollNo && 
-          !deletedIds.has(loc.rollNo) && 
-          !deletedIds.has(loc.ticketId) &&
-          !activeSupaList.some((s) => s.rollNo === loc.rollNo)
-        );
-        if (unSyncedLocal.length > 0) {
-          console.info(`[ELIXORA Supabase] Auto-syncing ${unSyncedLocal.length} local registration(s) to Supabase...`);
-          for (const unsynced of unSyncedLocal) {
-            saveRegistrationToSupabase(unsynced, unsynced.screenshot).catch((err) => {
-              console.warn('[ELIXORA Supabase] Background auto-sync notice:', err);
-            });
-          }
-        }
-
-        // Merge: active Supabase records take priority, plus local records that haven't been deleted
-        const merged = [...activeSupaList];
-        for (const loc of currentLocal) {
-          if (loc._id && deletedIds.has(loc._id)) continue;
-          if (isValidIdentifier(loc.id) && deletedIds.has(loc.id)) continue;
-          if (isValidIdentifier(loc.ticketId) && deletedIds.has(loc.ticketId)) continue;
-          if (isValidIdentifier(loc.rollNo) && (deletedIds.has(loc.rollNo) || deletedIds.has(loc.rollNo.toUpperCase()))) continue;
-
-          const exists = merged.some((m) => 
-            (loc._id && m._id && loc._id === m._id) ||
-            (isValidIdentifier(m.ticketId) && m.ticketId === loc.ticketId) ||
-            (isValidIdentifier(m.rollNo) && m.rollNo === loc.rollNo) ||
-            (isValidIdentifier(m.id) && m.id === loc.id)
-          );
-          if (!exists) {
-            merged.push(loc);
-          }
-        }
-        safeSet(STORAGE_KEYS.REGISTRATIONS, merged);
-        return merged;
+        safeSet(STORAGE_KEYS.REGISTRATIONS, activeSupaList);
+        return activeSupaList;
       }
     }
 
@@ -244,8 +216,9 @@ async function fetchRegistrationsFromBackend() {
       }
     }
   } catch (err) {
-    // Graceful offline fallback
+    console.warn('[ELIXORA Real-Time] Backend sync notice:', err.message);
   }
+  return safeGet(STORAGE_KEYS.REGISTRATIONS, []);
 }
 
 async function sendRegistrationToBackend(record) {
@@ -285,18 +258,38 @@ function startRealTimeSync() {
     try {
       subscribeToSupabaseRegistrations(
         (newRecord) => {
+          if (!newRecord) return;
           const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
-          const exists = current.some((r) => r.ticketId === newRecord.ticketId || (newRecord.rollNo && r.rollNo === newRecord.rollNo));
+          const cleanRoll = (newRecord.rollNo || '').trim().toUpperCase();
+          const exists = current.some((r) => 
+            (r.id && newRecord.id && r.id === newRecord.id) ||
+            (cleanRoll && r.rollNo && r.rollNo.trim().toUpperCase() === cleanRoll) ||
+            (r.ticketId && newRecord.ticketId && r.ticketId === newRecord.ticketId)
+          );
           if (!exists) {
             safeSet(STORAGE_KEYS.REGISTRATIONS, [newRecord, ...current]);
           } else {
-            const updated = current.map((r) => (r.ticketId === newRecord.ticketId ? { ...r, ...newRecord } : r));
+            const updated = current.map((r) => 
+              (r.id && newRecord.id && r.id === newRecord.id) ||
+              (cleanRoll && r.rollNo && r.rollNo.trim().toUpperCase() === cleanRoll) ||
+              (r.ticketId && newRecord.ticketId && r.ticketId === newRecord.ticketId)
+                ? { ...r, ...newRecord }
+                : r
+            );
             safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
           }
         },
         (updatedRecord) => {
+          if (!updatedRecord) return;
           const current = safeGet(STORAGE_KEYS.REGISTRATIONS, []);
-          const updated = current.map((r) => (r.ticketId === updatedRecord.ticketId ? { ...r, ...updatedRecord } : r));
+          const cleanRoll = (updatedRecord.rollNo || '').trim().toUpperCase();
+          const updated = current.map((r) => 
+            (r.id && updatedRecord.id && r.id === updatedRecord.id) ||
+            (cleanRoll && r.rollNo && r.rollNo.trim().toUpperCase() === cleanRoll) ||
+            (r.ticketId && updatedRecord.ticketId && r.ticketId === updatedRecord.ticketId)
+              ? { ...r, ...updatedRecord }
+              : r
+          );
           safeSet(STORAGE_KEYS.REGISTRATIONS, updated);
         },
         (deletedTicketId) => {

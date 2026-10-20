@@ -38,7 +38,8 @@ export function mapRowToRegistration(row) {
 
   return {
     id: row.id,
-    ticketId: row.ticket_id || `ELX-${isSenior ? 'SR' : '26'}-${roll ? roll.slice(-4) : Math.floor(1000 + Math.random() * 9000)}`,
+    _id: row.id || (roll ? `reg_roll_${roll}` : `reg_${row.ticket_id || Date.now()}`),
+    ticketId: row.ticket_id || `ELX-${isSenior ? 'SR' : '26'}-${roll ? roll.slice(-4) : (row.id ? row.id.slice(0, 4).toUpperCase() : 'PASS')}`,
     fullName,
     rollNo: roll,
     phone: row['MOBILE NO.'] || row.phone || '',
@@ -202,12 +203,13 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
  * Fetch all registrations from Supabase
  */
 export async function fetchRegistrationsFromSupabase() {
-  if (!isSupabaseConfigured() || !supabase) {
+  if (!isSupabaseConfigured() || (!supabase && !supabaseAdmin)) {
     return [];
   }
 
+  const client = supabaseAdmin || supabase;
   try {
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('registrations')
       .select('*')
       .neq('BRANCH', 'DELETED')
