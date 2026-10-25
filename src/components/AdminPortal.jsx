@@ -136,6 +136,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   const [sheetsWebhookDraft, setSheetsWebhookDraft] = useState(settings?.sheetsWebhookUrl || '');
   const [sheetsSpreadsheetDraft, setSheetsSpreadsheetDraft] = useState(settings?.sheetsSpreadsheetUrl || '');
   const [isSyncingSheets, setIsSyncingSheets] = useState(false);
+  const [isSyncingSupabase, setIsSyncingSupabase] = useState(false);
   const [showScriptModal, setShowScriptModal] = useState(false);
 
   // Sync with storage changes and tick clock
@@ -500,6 +501,20 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     notifySuccess(`Sync signal sent! Processed ${count} attendee registrations to online sheet.`);
   };
 
+  const handleSyncAllToSupabase = async () => {
+    setIsSyncingSupabase(true);
+    soundController.playClick?.();
+    try {
+      const count = await adminStore.syncAllToSupabase();
+      notifySuccess(`⚡ Successfully synced ${count} attendee registrations to Supabase database!`);
+      soundController.playSuccess?.();
+    } catch (err) {
+      notifySuccess(`⚠️ Supabase sync notice: ${err.message || err}`);
+    } finally {
+      setIsSyncingSupabase(false);
+    }
+  };
+
   // Reset all attendee and transaction data
   const handleResetData = async () => {
     if (window.confirm('⚠️ Are you sure you want to RESET ALL REGISTRATION DATA? All attendee tickets, check-in statuses, and revenue records will be wiped back to 0.')) {
@@ -708,6 +723,16 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 >
                   <FileSpreadsheet className="w-3.5 h-3.5 text-cyan-400" />
                   <span className="hidden sm:inline">Export CSV</span>
+                </button>
+
+                <button
+                  onClick={handleSyncAllToSupabase}
+                  disabled={isSyncingSupabase}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/50 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(16,185,129,0.2)] cursor-pointer disabled:opacity-50"
+                  title="Update and sync all Admin Portal registrations directly to live Supabase database"
+                >
+                  <Zap className={`w-3.5 h-3.5 text-emerald-400 ${isSyncingSupabase ? 'animate-spin' : ''}`} />
+                  <span className="hidden sm:inline">{isSyncingSupabase ? 'Syncing...' : 'Sync Supabase'}</span>
                 </button>
 
                 <button

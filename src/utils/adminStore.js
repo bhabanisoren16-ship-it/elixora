@@ -7,7 +7,8 @@ import {
   updateRegistrationStatusInSupabase, 
   updateAttendanceInSupabase, 
   deleteRegistrationFromSupabase,
-  subscribeToSupabaseRegistrations 
+  subscribeToSupabaseRegistrations,
+  syncAllRegistrationsToSupabase 
 } from '../services/supabaseService.js';
 
 // Initial official registered seniors roster (Verified from official college roster)
@@ -858,6 +859,12 @@ export const adminStore = {
       if (ok) count++;
     }
     return count;
+  },
+
+  async syncAllToSupabase() {
+    const list = this.getRegistrations();
+    const result = await syncAllRegistrationsToSupabase(list);
+    return result.synced || 0;
   },
 
   // 8. Excel & CSV Export (Exact requested columns)

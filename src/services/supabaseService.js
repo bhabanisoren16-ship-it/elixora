@@ -163,22 +163,35 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
     const row = mapRegistrationToRow(registration, publicReceiptUrl);
     const cleanRoll = (registration.rollNo || '').trim().toUpperCase();
 
-    // 3. Upsert checking existing row by REGISTRATION
-    const { data: existing } = await client
-      .from('registrations')
-      .select('id')
-      .eq('REGISTRATION', cleanRoll)
-      .maybeSingle();
+    // 3. Upsert checking existing row by UUID id, then REGISTRATION (roll number), then UTR NO.
+    let existingId = registration.id || null;
+    if (!existingId && cleanRoll) {
+      const { data: existingByRoll } = await client
+        .from('registrations')
+        .select('id')
+        .eq('REGISTRATION', cleanRoll)
+        .maybeSingle();
+      if (existingByRoll?.id) existingId = existingByRoll.id;
+    }
+    const cleanUtr = (registration.utrNumber || registration['UTR NO.'] || '').trim();
+    if (!existingId && cleanUtr) {
+      const { data: existingByUtr } = await client
+        .from('registrations')
+        .select('id')
+        .eq('UTR NO.', cleanUtr)
+        .maybeSingle();
+      if (existingByUtr?.id) existingId = existingByUtr.id;
+    }
 
     let resultData = null;
-    if (existing && existing.id) {
+    if (existingId) {
       const { data, error } = await client
         .from('registrations')
         .update({
           ...row,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', existing.id)
+        .eq('id', existingId)
         .select()
         .single();
 
@@ -201,6 +214,22 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
     console.error('[ELIXORA Supabase] Unexpected error during save:', err.message || err);
     return null;
   }
+}
+
+/**
+ * Batch sync all registrations to Supabase database without creating extra tables
+ */
+export async function syncAllRegistrationsToSupabase(list = []) {
+  if (!isSupabaseConfigured() || (!supabase && !supabaseAdmin)) {
+    return { success: false, synced: 0, error: 'Supabase is not configured' };
+  }
+  let count = 0;
+  for (const item of list) {
+    if (!item) continue;
+    const res = await saveRegistrationToSupabase(item, item.screenshot);
+    if (res) count++;
+  }
+  return { success: true, synced: count };
 }
 
 /**
