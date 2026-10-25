@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import desktopBg from '../assets/desktop-background.jpg'; // Widescreen 16:9 desktop concert atmosphere
-import mobileBg from '../assets/party-background.jpg'; // Portrait mobile concert atmosphere
+import desktopBg from '../assets/desktop-background.jpg'; // Official concert atmosphere
+import mobileBg from '../assets/desktop-background.jpg'; // Concert stage atmosphere for mobile
 
 export default function Background() {
   const canvasRef = useRef(null);
@@ -114,11 +114,7 @@ export default function Background() {
               { originFrac: 0.85, targetFrac: 0.62, speed: 0.0006, width: 150, color: 'rgba(192, 132, 252, 0.26)', phase: 3.8 },
               { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: 160, color: 'rgba(56, 189, 248, 0.25)', phase: 4.5 },
             ]
-          : [
-              { originFrac: 0.22, targetFrac: 0.36, speed: 0.0007, width: 85, color: 'rgba(0, 229, 255, 0.28)', phase: 0 },
-              { originFrac: 0.78, targetFrac: 0.64, speed: 0.0006, width: 90, color: 'rgba(56, 189, 248, 0.28)', phase: 2.0 },
-              { originFrac: 0.50, targetFrac: 0.50, speed: 0.0009, width: 95, color: 'rgba(192, 132, 252, 0.22)', phase: 4.1 },
-            ];
+          : [];
 
         for (let i = 0; i < beamConfigs.length; i++) {
           const b = beamConfigs[i];
@@ -155,7 +151,7 @@ export default function Background() {
           ctx.fill();
         }
 
-        // 2. CONCERT LASER BEAMS (Crisp, vibrant neon lasers slicing the sky)
+        // 2. CONCERT LASER BEAMS (Crisp, vibrant neon lasers slicing the sky on desktop)
         const laserConfigs = isDesktop
           ? [
               { originFrac: 0.28, targetFrac: 0.15, speed: 0.0012, color: '#00e5ff', phase: 0.5 },
@@ -163,10 +159,7 @@ export default function Background() {
               { originFrac: 0.62, targetFrac: 0.32, speed: 0.0011, color: '#38bdf8', phase: 3.4 },
               { originFrac: 0.72, targetFrac: 0.86, speed: 0.0013, color: '#00e5ff', phase: 5.0 },
             ]
-          : [
-              { originFrac: 0.32, targetFrac: 0.18, speed: 0.0012, color: '#00e5ff', phase: 0.5 },
-              { originFrac: 0.68, targetFrac: 0.82, speed: 0.0011, color: '#c084fc', phase: 3.2 },
-            ];
+          : [];
 
         for (let i = 0; i < laserConfigs.length; i++) {
           const l = laserConfigs[i];
@@ -325,13 +318,13 @@ export default function Background() {
           }}
         />
 
-        {/* Mobile Screen (< md): Native Portrait Fullscreen Cover */}
+        {/* Mobile Screen (< md): Native Portrait Fullscreen Concert Cover */}
         <img
-          src={mobileBg}
+          src={desktopBg}
           alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="block md:hidden absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[1.02] contrast-[1.04] pointer-events-none"
+          className="block md:hidden absolute inset-0 w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.04] pointer-events-none"
           style={{
             position: 'absolute',
             top: 0,
@@ -339,7 +332,7 @@ export default function Background() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            objectPosition: 'center top',
+            objectPosition: 'center center',
             transform: 'none',
             WebkitTransform: 'none',
             pointerEvents: 'none',
