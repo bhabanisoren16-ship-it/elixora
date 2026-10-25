@@ -289,6 +289,23 @@ export default function HolographicTicketModal({ passData, onClose }) {
               {/* Subtle Gold Dust Grid Watermark */}
               <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px]" />
 
+              {/* Celestial Moon Atmosphere in Background of Pass */}
+              <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden">
+                {/* Luminous Lunar Ambient Aura */}
+                <div className="absolute w-[220px] h-[220px] rounded-full bg-gradient-to-tr from-amber-400/20 via-cyan-400/15 to-purple-600/20 blur-2xl pointer-events-none" />
+
+                {/* Detailed Moon Visual */}
+                <img
+                  src="/assets/planet-moon.webp"
+                  alt="Celestial Moon"
+                  crossOrigin="anonymous"
+                  className="w-[215px] h-[215px] sm:w-[240px] sm:h-[240px] object-contain opacity-60 mix-blend-screen filter drop-shadow-[0_0_30px_rgba(251,191,36,0.35)] select-none pointer-events-none -translate-y-2 animate-pulse-slow"
+                />
+
+                {/* Soft Vignette Mask to keep text crisp and highly legible */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#090d1a]/25 to-[#04060d]/75 pointer-events-none" />
+              </div>
+
               {/* ===================================================== */}
               {/* MAIN SECTION: CONCERT PASS                             */}
               {/* ===================================================== */}
@@ -369,7 +386,18 @@ export default function HolographicTicketModal({ passData, onClose }) {
             {/* === BACK OF TICKET (CONCERT TERMS & GUIDELINES)         === */}
             {/* ========================================================= */}
             <div className="absolute inset-0 w-full h-full rounded-3xl overflow-hidden border-2 border-amber-400/40 shadow-[0_25px_65px_rgba(0,0,0,0.9)] backface-hidden rotate-y-180 flex flex-col justify-between p-4 sm:p-5 bg-gradient-to-b from-[#140e28] via-[#0b0816] to-[#04020a]">
-              <div>
+              
+              {/* Subtle Moon Watermark on Back */}
+              <div className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden opacity-15">
+                <img
+                  src="/assets/planet-moon.webp"
+                  alt="Celestial Moon"
+                  crossOrigin="anonymous"
+                  className="w-[210px] h-[210px] object-contain mix-blend-screen filter blur-[0.5px]"
+                />
+              </div>
+
+              <div className="relative z-10 flex flex-col justify-between h-full">
                 {/* Back Header */}
                 <div className="flex items-center justify-between pb-2 border-b border-amber-400/20">
                   <div className="flex items-center gap-2 text-amber-300">
