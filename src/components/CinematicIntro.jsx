@@ -289,8 +289,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
           3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE (Exact Match to Screenshot)
          ========================================================================= */}
       <div
-        className="relative my-auto flex items-center justify-center"
-        style={{ width: DISC_SIZE, height: DISC_SIZE }}
+        className="relative my-auto flex items-center justify-center w-[86vw] h-[86vw] max-w-[360px] max-h-[360px] sm:w-[440px] sm:h-[440px] sm:max-w-[50vmin] sm:max-h-[50vmin] scale-[1.14] sm:scale-100 transition-transform duration-300"
       >
         {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
         <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
