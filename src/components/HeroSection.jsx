@@ -47,7 +47,7 @@ export default function HeroSection({ onGrabPassClick }) {
   const kickLetter = (idx) => {
     const el = lettersRef.current[idx];
     if (!el) return;
-    soundController.playHover?.();
+    soundController.playClick?.(idx);
     const sx = (Math.random() > 0.5 ? 1 : -1) * 14;
     const sy = -18;
     const sr = (Math.random() > 0.5 ? 1 : -1) * 10;
