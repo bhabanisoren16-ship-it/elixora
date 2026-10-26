@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import desktopBg from '../assets/desktop-background.jpg'; // Official concert atmosphere
 import mobileBg from '../assets/desktop-background.jpg'; // Concert stage atmosphere for mobile
 
@@ -8,6 +8,24 @@ export default function Background() {
   const mousePosRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
   const isVisibleRef = useRef(true);
   const animFrameRef = useRef(null);
+  const [fixedHeightPx, setFixedHeightPx] = useState(null);
+
+  // Lock mobile viewport height to physical screen dimension once on mount so address bar collapse NEVER resizes background
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const computeMaxHeight = () => {
+      const screenH = (window.screen && window.screen.height) ? window.screen.height : window.innerHeight;
+      const maxH = Math.max(window.innerHeight, screenH, 850);
+      setFixedHeightPx(maxH);
+      document.documentElement.style.setProperty('--locked-screen-height', `${maxH}px`);
+    };
+    computeMaxHeight();
+    const onOrientationChange = () => {
+      setTimeout(computeMaxHeight, 200);
+    };
+    window.addEventListener('orientationchange', onOrientationChange);
+    return () => window.removeEventListener('orientationchange', onOrientationChange);
+  }, []);
 
   // Desktop smooth micro-parallax tracking on mouse move (only for mouse/trackpad pointer)
   useEffect(() => {
@@ -50,24 +68,29 @@ export default function Background() {
 
     const resize = (isInitial = false) => {
       const newWidth = window.innerWidth;
-      const newHeight = window.innerHeight;
 
-      // On mobile, scrolling hides/shows the address bar, altering height by ~60-120px.
-      // Ignore mobile address-bar height adjustments so the canvas never resets or flickers during scroll!
-      if (!isInitial && newWidth === lastWidth && Math.abs(newHeight - lastHeight) < 160) {
+      // On mobile, scrolling down/up hides or shows the address bar, altering window.innerHeight.
+      // If width hasn't changed, NEVER recompute or re-scale the canvas during scroll to prevent any jumping or zooming!
+      if (!isInitial && newWidth === lastWidth) {
         return;
       }
 
       lastWidth = newWidth;
-      lastHeight = newHeight;
       width = newWidth;
-      height = newHeight;
+
+      const maxScreenH = Math.max(
+        window.innerHeight,
+        (window.screen && window.screen.height) ? window.screen.height : window.innerHeight,
+        850
+      );
+      height = maxScreenH;
+      lastHeight = maxScreenH;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+      canvas.style.width = '100vw';
+      canvas.style.height = `${maxScreenH}px`;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
@@ -86,8 +109,8 @@ export default function Background() {
       }
 
       const delta = currentTime - lastFrameTime;
-      // Cap at ~45fps to ensure buttery fluidity while keeping GPU and battery usage minimal
-      if (delta < 22) {
+      // Cap at ~65fps for buttery 60Hz/120Hz fluidity while keeping GPU and battery usage minimal
+      if (delta < 15) {
         return;
       }
       lastFrameTime = currentTime;
@@ -102,37 +125,36 @@ export default function Background() {
 
         const parallaxX = 0; // 100% stationary background, zero parallax shifting
 
-        // 1. DYNAMIC CONCERT SPOTLIGHT BEAMS (Sweeping down through atmosphere)
+        // 1. DYNAMIC CONCERT SPOTLIGHT BEAMS (Sweeping down through atmosphere - Active on Both Desktop & Mobile)
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
 
-        const beamConfigs = isDesktop
-          ? [
-              { originFrac: 0.15, targetFrac: 0.35, speed: 0.0007, width: 140, color: 'rgba(0, 229, 255, 0.32)', phase: 0 },
-              { originFrac: 0.30, targetFrac: 0.52, speed: 0.0009, width: 125, color: 'rgba(56, 189, 248, 0.28)', phase: 1.2 },
-              { originFrac: 0.70, targetFrac: 0.45, speed: 0.0008, width: 135, color: 'rgba(0, 229, 255, 0.30)', phase: 2.5 },
-              { originFrac: 0.85, targetFrac: 0.62, speed: 0.0006, width: 150, color: 'rgba(192, 132, 252, 0.26)', phase: 3.8 },
-              { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: 160, color: 'rgba(56, 189, 248, 0.25)', phase: 4.5 },
-            ]
-          : [];
+        const beamConfigs = [
+          { originFrac: 0.15, targetFrac: 0.35, speed: 0.0007, width: isDesktop ? 140 : Math.max(76, Math.round(w * 0.22)), color: 'rgba(0, 229, 255, 0.42)', phase: 0 },
+          { originFrac: 0.30, targetFrac: 0.52, speed: 0.0009, width: isDesktop ? 125 : Math.max(72, Math.round(w * 0.20)), color: 'rgba(56, 189, 248, 0.36)', phase: 1.2 },
+          { originFrac: 0.70, targetFrac: 0.45, speed: 0.0008, width: isDesktop ? 135 : Math.max(74, Math.round(w * 0.21)), color: 'rgba(0, 229, 255, 0.38)', phase: 2.5 },
+          { originFrac: 0.85, targetFrac: 0.62, speed: 0.0006, width: isDesktop ? 150 : Math.max(82, Math.round(w * 0.24)), color: 'rgba(192, 132, 252, 0.34)', phase: 3.8 },
+          { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: isDesktop ? 160 : Math.max(86, Math.round(w * 0.25)), color: 'rgba(56, 189, 248, 0.32)', phase: 4.5 },
+        ];
 
         for (let i = 0; i < beamConfigs.length; i++) {
           const b = beamConfigs[i];
-          const sweep = isDesktop ? Math.sin(now * b.speed + b.phase) * 80 : 0;
+          const sweepAmp = isDesktop ? 80 : Math.max(45, Math.round(w * 0.15));
+          const sweep = Math.sin(now * b.speed + b.phase) * sweepAmp;
           const topX = w * b.originFrac + parallaxX * 0.4;
           const topY = 0;
           const bottomX = w * b.targetFrac + sweep + parallaxX;
           const bottomY = h * 0.95;
 
           const grad = ctx.createLinearGradient(topX, topY, bottomX, bottomY);
-          grad.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+          grad.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
           grad.addColorStop(0.18, b.color);
-          grad.addColorStop(0.65, b.color.replace(/0\.\d+\)/, '0.10)'));
+          grad.addColorStop(0.65, b.color.replace(/0\.\d+\)/, '0.12)'));
           grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
           ctx.beginPath();
-          ctx.moveTo(topX - 8, topY);
-          ctx.lineTo(topX + 8, topY);
+          ctx.moveTo(topX - (isDesktop ? 8 : 6), topY);
+          ctx.lineTo(topX + (isDesktop ? 8 : 6), topY);
           ctx.lineTo(bottomX + b.width, bottomY);
           ctx.lineTo(bottomX - b.width, bottomY);
           ctx.closePath();
@@ -140,10 +162,10 @@ export default function Background() {
           ctx.fill();
 
           // Glowing lens flare spotlight fixture head
-          const flareRadius = isDesktop ? 18 : 12;
+          const flareRadius = isDesktop ? 18 : 14;
           const flareGrad = ctx.createRadialGradient(topX, topY, 0, topX, topY, flareRadius);
-          flareGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-          flareGrad.addColorStop(0.35, 'rgba(0, 229, 255, 0.85)');
+          flareGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+          flareGrad.addColorStop(0.35, 'rgba(0, 229, 255, 0.95)');
           flareGrad.addColorStop(1, 'rgba(0, 229, 255, 0)');
           ctx.beginPath();
           ctx.arc(topX, topY, flareRadius, 0, Math.PI * 2);
@@ -151,33 +173,32 @@ export default function Background() {
           ctx.fill();
         }
 
-        // 2. CONCERT LASER BEAMS (Crisp, vibrant neon lasers slicing the sky on desktop)
-        const laserConfigs = isDesktop
-          ? [
-              { originFrac: 0.28, targetFrac: 0.15, speed: 0.0012, color: '#00e5ff', phase: 0.5 },
-              { originFrac: 0.38, targetFrac: 0.68, speed: 0.0009, color: '#c084fc', phase: 2.1 },
-              { originFrac: 0.62, targetFrac: 0.32, speed: 0.0011, color: '#38bdf8', phase: 3.4 },
-              { originFrac: 0.72, targetFrac: 0.86, speed: 0.0013, color: '#00e5ff', phase: 5.0 },
-            ]
-          : [];
+        // 2. CONCERT LASER BEAMS (Crisp, vibrant neon lasers slicing the sky - Active on Both Desktop & Mobile)
+        const laserConfigs = [
+          { originFrac: 0.28, targetFrac: 0.15, speed: 0.0012, color: '#00e5ff', phase: 0.5 },
+          { originFrac: 0.38, targetFrac: 0.68, speed: 0.0009, color: '#c084fc', phase: 2.1 },
+          { originFrac: 0.62, targetFrac: 0.32, speed: 0.0011, color: '#38bdf8', phase: 3.4 },
+          { originFrac: 0.72, targetFrac: 0.86, speed: 0.0013, color: '#00e5ff', phase: 5.0 },
+        ];
 
         for (let i = 0; i < laserConfigs.length; i++) {
           const l = laserConfigs[i];
-          const sweep = isDesktop ? Math.sin(now * l.speed + l.phase) * 120 : 0;
+          const laserSweepAmp = isDesktop ? 120 : Math.max(55, Math.round(w * 0.18));
+          const sweep = Math.sin(now * l.speed + l.phase) * laserSweepAmp;
           const lx1 = w * l.originFrac + parallaxX * 0.4;
           const ly1 = 0;
           const lx2 = w * l.targetFrac + sweep + parallaxX;
           const ly2 = h * 0.95;
 
-          const laserPulse = 0.35 + 0.3 * Math.sin(now * 0.0025 + l.phase);
+          const laserPulse = 0.42 + 0.36 * Math.sin(now * 0.0025 + l.phase);
 
           // Outer diffused laser glow
           ctx.beginPath();
           ctx.moveTo(lx1, ly1);
           ctx.lineTo(lx2, ly2);
           ctx.strokeStyle = l.color;
-          ctx.lineWidth = isDesktop ? 3.5 : 2.4;
-          ctx.globalAlpha = laserPulse * 0.45;
+          ctx.lineWidth = isDesktop ? 3.5 : 2.8;
+          ctx.globalAlpha = laserPulse * 0.55;
           ctx.stroke();
 
           // Incandescent laser core
@@ -185,24 +206,24 @@ export default function Background() {
           ctx.moveTo(lx1, ly1);
           ctx.lineTo(lx2, ly2);
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.0;
-          ctx.globalAlpha = laserPulse * 0.95;
+          ctx.lineWidth = isDesktop ? 1.0 : 1.2;
+          ctx.globalAlpha = laserPulse * 0.98;
           ctx.stroke();
         }
 
         // 3. RHYTHMIC STAGE BASS PULSE (Stage center glow beating in music tempo)
         const bassBeat = Math.pow(Math.max(0, Math.sin(now * 0.0028)), 3);
-        const stagePulseRadius = isDesktop ? w * 0.28 : w * 0.45;
+        const stagePulseRadius = isDesktop ? w * 0.28 : w * 0.50;
         const stageCenterX = w * 0.5 + parallaxX * 0.3;
-        const stageCenterY = isDesktop ? h * 0.26 : h * 0.22;
+        const stageCenterY = isDesktop ? h * 0.26 : h * 0.24;
 
         const pulseGrad = ctx.createRadialGradient(
           stageCenterX, stageCenterY, 5,
           stageCenterX, stageCenterY, stagePulseRadius
         );
-        pulseGrad.addColorStop(0, `rgba(0, 229, 255, ${0.16 + bassBeat * 0.22})`);
-        pulseGrad.addColorStop(0.35, `rgba(168, 85, 247, ${0.09 + bassBeat * 0.14})`);
-        pulseGrad.addColorStop(0.7, `rgba(245, 158, 11, ${0.04 + bassBeat * 0.07})`);
+        pulseGrad.addColorStop(0, `rgba(0, 229, 255, ${0.20 + bassBeat * 0.26})`);
+        pulseGrad.addColorStop(0.35, `rgba(168, 85, 247, ${0.11 + bassBeat * 0.16})`);
+        pulseGrad.addColorStop(0.7, `rgba(245, 158, 11, ${0.05 + bassBeat * 0.08})`);
         pulseGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         ctx.beginPath();
@@ -211,8 +232,8 @@ export default function Background() {
         ctx.fill();
 
         // 4. TOP STAGE PYRO & LIGHTING TRUSS WARMTH BREATH
-        const pyroBreath = 0.12 + 0.06 * Math.sin(now * 0.0015);
-        const topGrad = ctx.createRadialGradient(w * 0.5, 0, 10, w * 0.5, 0, h * 0.42);
+        const pyroBreath = 0.14 + 0.07 * Math.sin(now * 0.0015);
+        const topGrad = ctx.createRadialGradient(w * 0.5, 0, 10, w * 0.5, 0, h * 0.45);
         topGrad.addColorStop(0, `rgba(255, 120, 20, ${pyroBreath * 1.2})`);
         topGrad.addColorStop(0.4, `rgba(245, 158, 11, ${pyroBreath * 0.6})`);
         topGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
@@ -220,7 +241,7 @@ export default function Background() {
         ctx.fillRect(0, 0, w, h * 0.45);
 
         // 5. ATMOSPHERIC CONCERT SPARKS & LIGHT MOTES (Rising from crowd)
-        const maxSparks = isDesktop ? 40 : 22;
+        const maxSparks = isDesktop ? 40 : 28;
         if (Math.random() < 0.35 && sparksRef.current.length < maxSparks) {
           const sparkColors = ['#00e5ff', '#38bdf8', '#fbbf24', '#ffedd5', '#f472b6'];
           sparksRef.current.push({
@@ -286,12 +307,12 @@ export default function Background() {
           position: 'fixed',
           top: 0,
           left: 0,
-          right: 0,
-          bottom: 0,
-          width: '100vw',
-          height: '100vh',
+          width: '100%',
+          height: fixedHeightPx ? `${fixedHeightPx}px` : 'var(--locked-screen-height, 100lvh)',
+          bottom: 'auto',
           zIndex: 0,
           pointerEvents: 'none',
+          overflow: 'hidden',
           transform: 'none',
           WebkitTransform: 'none',
         }}
@@ -324,7 +345,7 @@ export default function Background() {
           alt="ELIXORA 2.0 Concert Atmosphere"
           decoding="async"
           loading="eager"
-          className="block md:hidden absolute inset-0 w-full h-full object-cover object-center filter brightness-[1.02] contrast-[1.04] pointer-events-none"
+          className="block md:hidden absolute inset-0 w-full h-full object-cover object-[center_top] filter brightness-[1.02] contrast-[1.04] pointer-events-none"
           style={{
             position: 'absolute',
             top: 0,
@@ -332,7 +353,7 @@ export default function Background() {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            objectPosition: 'center center',
+            objectPosition: 'center top',
             transform: 'none',
             WebkitTransform: 'none',
             pointerEvents: 'none',
@@ -373,15 +394,14 @@ export default function Background() {
       {/* 2. Fullscreen Canvas: Dynamic Stage Spotlights, Lasers & Festival Light Motes */}
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 z-0 pointer-events-none"
+        className="fixed inset-0 z-0 pointer-events-none fixed-background-canvas"
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
-          right: 0,
-          bottom: 0,
-          width: '100vw',
-          height: '100vh',
+          width: '100%',
+          height: fixedHeightPx ? `${fixedHeightPx}px` : 'var(--locked-screen-height, 100lvh)',
+          bottom: 'auto',
           zIndex: 0,
           pointerEvents: 'none',
           transform: 'none',
