@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import desktopBg from '../assets/desktop-background.jpg'; // Official concert atmosphere
-import mobileBg from '../assets/desktop-background.jpg'; // Concert stage atmosphere for mobile
 
 export default function Background() {
   const canvasRef = useRef(null);

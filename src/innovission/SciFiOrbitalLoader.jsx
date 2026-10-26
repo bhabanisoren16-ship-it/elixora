@@ -228,8 +228,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       .to(containerRef.current, { opacity: 0, duration: exitDuration }, exitDuration * 0.2);
   };
 
-  const DISC_SIZE = 'min(56vmin, 480px)';
-
   return (
     <div
       ref={containerRef}

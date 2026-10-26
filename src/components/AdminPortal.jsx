@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   ShieldCheck, 
-  ShieldAlert, 
   Lock, 
   Unlock, 
   Search, 
@@ -23,7 +22,6 @@ import {
   Copy, 
   Sparkles, 
   ChevronRight, 
-  Radio, 
   Megaphone, 
   BadgeCheck, 
   SlidersHorizontal,

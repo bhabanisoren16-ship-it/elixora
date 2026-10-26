@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { scrambleText } from '../innovission/scrambleText';
 import { soundController } from '../utils/audio';
 
@@ -238,8 +238,6 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  const DISC_SIZE = 'min(50vmin, 440px)';
 
   return (
     <div

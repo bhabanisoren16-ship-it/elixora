@@ -6,7 +6,6 @@ import {
   Download, 
   CheckCircle2, 
   ArrowLeft,
-  Lock,
   Check
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
