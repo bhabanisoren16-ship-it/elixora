@@ -9,7 +9,6 @@ import {
   XCircle, 
   Clock, 
   CreditCard, 
-  UserCheck, 
   AlertTriangle, 
   ExternalLink, 
   Plus, 
@@ -842,7 +841,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
               {activeTab === 'overview' && (
                 <div className="space-y-6">
                   {/* Top Stats Cards Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                     {/* 1. Total Revenue */}
                     <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/30 relative overflow-hidden">
                       <div className="flex items-center justify-between text-emerald-400 text-xs font-semibold mb-1">
@@ -899,21 +898,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                       </p>
                     </div>
 
-                    {/* 5. Gate Attendance */}
-                    <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/30 relative overflow-hidden">
-                      <div className="flex items-center justify-between text-purple-400 text-xs font-semibold mb-1">
-                        <span>Gate Check-Ins</span>
-                        <UserCheck className="w-4 h-4" />
-                      </div>
-                      <div className="text-xl sm:text-2xl font-extrabold text-white font-outfit">
-                        {stats.checkedIn}
-                      </div>
-                      <p className="text-[10px] text-purple-300/80 mt-1 font-mono">
-                        {stats.total - stats.checkedIn} yet to arrive
-                      </p>
-                    </div>
-
-                    {/* 6. Food Catering */}
+                    {/* 5. Food Catering */}
                     <div className="p-4 rounded-2xl bg-gradient-to-br from-pink-500/10 to-transparent border border-pink-500/30 relative overflow-hidden">
                       <div className="flex items-center justify-between text-pink-400 text-xs font-semibold mb-1">
                         <span>Food Count</span>
