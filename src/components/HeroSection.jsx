@@ -199,10 +199,10 @@ export default function HeroSection({ onGrabPassClick }) {
   return (
     <section
       id="hero"
-      className="relative min-h-[100svh] min-h-screen sm:min-h-[85vh] pt-12 min-[380px]:pt-14 sm:pt-20 pb-6 sm:pb-8 flex flex-col items-center justify-start sm:justify-center px-3 sm:px-6 lg:px-8"
+      className="relative h-screen h-[100dvh] min-h-[100dvh] sm:h-auto sm:min-h-[85vh] pt-14 sm:pt-24 pb-6 sm:pb-6 flex flex-col items-center justify-center px-3 sm:px-6 lg:px-8"
     >
       {/* Transparent Hero Container so the artwork is 100% visible */}
-      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 mt-1.5 min-[380px]:mt-3 sm:my-auto">
+      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 my-auto">
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
@@ -245,8 +245,8 @@ export default function HeroSection({ onGrabPassClick }) {
 
           {/* Highlighted Subtitle with Cybernetic Scramble Animation */}
           <div className="relative flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-2.5 mb-1 sm:mb-2 select-none">
-            {/* Left Accent Laser Beam (Active on Mobile & Desktop) */}
-            <span className="inline-block h-[2px] w-5 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
+            {/* Left Accent Laser Beam (Desktop only to prevent mobile artifact) */}
+            <span className="hidden sm:block h-[2px] w-8 sm:w-16 bg-gradient-to-r from-transparent via-cyan-400 to-cyan-300 shadow-[0_0_10px_#00e5ff]" />
             
             <h2
               onClick={triggerSubtitleScramble}
@@ -281,8 +281,8 @@ export default function HeroSection({ onGrabPassClick }) {
               </span>
             </h2>
 
-            {/* Right Accent Laser Beam (Active on Mobile & Desktop) */}
-            <span className="inline-block h-[2px] w-5 sm:w-16 bg-gradient-to-l from-transparent via-amber-400 to-orange-400 shadow-[0_0_10px_#fbbf24]" />
+            {/* Right Accent Laser Beam (Desktop only) */}
+            <span className="hidden sm:block h-[2px] w-8 sm:w-16 bg-gradient-to-l from-transparent via-amber-400 to-orange-400 shadow-[0_0_10px_#fbbf24]" />
           </div>
         </div>
 

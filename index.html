@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ELIXORA 2.0 | Biotechnology Freshers '26</title>
     <!-- Preload 3D Cyber Gateway Tunnel Loading Screen Background -->
     <link rel="preload" as="image" href="/elixora-3d-tunnel-bg.jpg" fetchpriority="high" />
@@ -23,18 +23,10 @@
         }
       } catch (e) {}
       window.scrollTo(0, 0);
-
-      // Prevent accidental pinch-to-zoom and gesture zooming during scroll
-      document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
-      document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
-      document.addEventListener('gestureend', function(e) { e.preventDefault(); }, { passive: false });
-      document.addEventListener('wheel', function(e) {
-        if (e.ctrlKey) { e.preventDefault(); }
-      }, { passive: false });
     </script>
   </head>
   <body class="bg-obsidian-950 text-slate-100 font-outfit selection:bg-cyber-violet selection:text-white">
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx?v=lightning-strike-20261026b"></script>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

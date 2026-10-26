@@ -1,5 +1,7 @@
 import { createPortal } from 'react-dom';
 import React, { useState, useEffect, useRef } from 'react';
+import QRCode from 'qrcode';
+import partyBg from '../assets/party-background.jpg';
 import desktopBg from '../assets/desktop-background.jpg';
 import { 
   Crown, 
@@ -614,11 +616,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         
         {/* Subtle Background Poster Artwork */}
         <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
-          <img 
-            src={desktopBg} 
-            alt="Concert Backdrop" 
-            className="w-full h-full object-cover object-[center_top] filter brightness-75 contrast-125" 
-          />
+          <picture className="w-full h-full block">
+            <source media="(min-width: 768px)" srcSet={desktopBg} />
+            <img src={partyBg} alt="" className="w-full h-full object-cover object-center filter brightness-75 contrast-125" />
+          </picture>
           <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/80 to-obsidian-950/70" />
         </div>
 
@@ -728,11 +729,14 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         >
           {/* Fullscreen Backdrop Poster Background with Ambient Cyber Lighting */}
           <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-            <img 
-              src={desktopBg} 
-              alt="Senior Portal Backdrop" 
-              className="w-full h-full object-cover object-[center_top] filter brightness-[0.30] contrast-[1.18] saturate-[1.20]" 
-            />
+            <picture className="w-full h-full block">
+              <source media="(min-width: 768px)" srcSet={desktopBg} />
+              <img 
+                src={partyBg} 
+                alt="Senior Portal Backdrop" 
+                className="w-full h-full object-cover object-center filter brightness-[0.30] contrast-[1.18] saturate-[1.20]" 
+              />
+            </picture>
             {/* Multi-layered dark gradient & vignette overlay to guarantee maximum readability and contrast */}
             <div className="absolute inset-0 bg-gradient-to-b from-obsidian-950/92 via-obsidian-950/75 to-obsidian-950/95" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(10,10,18,0.75)_100%)]" />
