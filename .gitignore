@@ -27,3 +27,9 @@ dist-ssr
 !.env.example
 
 .vercel
+
+# Security: Exclude attendee database, personal info & payment receipts
+data/receipts/*
+data/*.tmp.*
+!data/receipts/.gitkeep
+data/registrations.json

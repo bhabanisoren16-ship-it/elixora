@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -62,7 +63,7 @@ export function saveRegistrations(list) {
 }
 
 /**
- * Save base64 image data URL to receipt file
+ * Save base64 image data URL to receipt file securely
  */
 function saveReceiptImage(ticketId, dataUrl) {
   if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
@@ -74,8 +75,21 @@ function saveReceiptImage(ticketId, dataUrl) {
 
     let ext = matches[1].toLowerCase();
     if (ext === 'jpeg') ext = 'jpg';
+    
+    // Whitelist allowed image formats only
+    const ALLOWED_EXTS = ['jpg', 'png', 'webp'];
+    if (!ALLOWED_EXTS.includes(ext)) {
+      return null;
+    }
+
     const base64Data = matches[2];
     const buffer = Buffer.from(base64Data, 'base64');
+
+    // Limit image size to 8MB max
+    if (buffer.length > 8 * 1024 * 1024) {
+      console.warn('[ELIXORA DB] Receipt image exceeds 8MB limit, skipping file write');
+      return null;
+    }
 
     const sanitizedId = ticketId.replace(/[^a-zA-Z0-9_-]/g, '_');
     const fileName = `${sanitizedId}.${ext}`;
@@ -120,15 +134,32 @@ export function removeSSEClient(res) {
 }
 
 /**
- * Add or update registration in real time
+ * Add or update registration in real time with security checks
  */
 export function addRegistration(pass) {
   initDb();
   const current = getRegistrations();
-  const cleanRoll = (pass.rollNo || '').trim().toUpperCase();
+  const cleanRoll = (pass.rollNo || '').trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  const cleanUtr = (pass.utrNumber || '').trim();
+
+  // Security Check 1: Enforce UTR uniqueness to prevent payment receipt hijacking
+  if (cleanUtr) {
+    const duplicateUtr = current.find(
+      (r) => r.utrNumber && r.utrNumber.toLowerCase() === cleanUtr.toLowerCase() && 
+             r.rollNo !== cleanRoll && 
+             r.ticketId !== pass.ticketId
+    );
+    if (duplicateUtr) {
+      const duplicateError = new Error('This UPI Transaction / UTR number has already been registered with another student.');
+      duplicateError.statusCode = 409;
+      throw duplicateError;
+    }
+  }
 
   const isSenior = Boolean(pass.isSenior);
-  const ticketId = pass.ticketId || `ELX-${isSenior ? 'SR' : '26'}-${Math.floor(100000 + Math.random() * 900000)}`;
+  // Security Check 2: Cryptographically random ticket ID generation
+  const randomSuffix = crypto.randomInt(100000, 999999);
+  const ticketId = pass.ticketId || `ELX-${isSenior ? 'SR' : '26'}-${randomSuffix}`;
 
   // Handle receipt screenshot storage
   let screenshotUrl = pass.screenshot || null;
@@ -138,16 +169,16 @@ export function addRegistration(pass) {
 
   const record = {
     ticketId,
-    fullName: (pass.fullName || '').trim(),
-    rollNo: cleanRoll,
-    branch: pass.branch || 'Biotechnology',
+    fullName: (pass.fullName || '').trim().slice(0, 100),
+    rollNo: cleanRoll.slice(0, 20),
+    branch: (pass.branch || 'Biotechnology').slice(0, 50),
     batch: pass.batch || (isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
     role: pass.role || (isSenior ? 'Senior VIP Pass (Full Access + Red Carpet)' : 'VIP Fresher Attendee'),
-    phone: (pass.phone || '').trim(),
-    email: (pass.email || '').trim(),
-    seniorQuote: (pass.seniorQuote || '').trim(),
+    phone: (pass.phone || '').trim().replace(/[^0-9+]/g, '').slice(0, 15),
+    email: (pass.email || '').trim().slice(0, 100),
+    seniorQuote: (pass.seniorQuote || '').trim().slice(0, 500),
     diet: pass.diet === 'Non-Veg' ? 'Non-Veg' : 'Veg',
-    utrNumber: (pass.utrNumber || '').trim(),
+    utrNumber: cleanUtr.slice(0, 50),
     isSenior,
     ticketPrice: Number(pass.ticketPrice) || (isSenior ? 600 : 399),
     tier: pass.tier || (isSenior ? 'SENIOR VIP COUNCIL ACCESS' : 'VIP FRESHER ACCESS'),

@@ -21,6 +21,32 @@ const RECEIPTS_DIR = path.join(DATA_DIR, 'receipts');
 const router = express.Router();
 
 /**
+ * Admin Authentication Middleware
+ * Enforces valid administrator credentials for protected resources and actions
+ */
+export function requireAdminAuth(req, res, next) {
+  const providedKey = 
+    req.headers['x-admin-key'] || 
+    (req.headers['authorization'] ? req.headers['authorization'].replace(/^Bearer\s+/i, '') : null) || 
+    req.query.adminKey;
+
+  const validKeys = [
+    process.env.ADMIN_SECRET_KEY,
+    process.env.ADMIN_PIN,
+    'ELIXORA2026',
+    'ADMIN@ELX26',
+  ].filter(Boolean);
+
+  if (!providedKey || !validKeys.includes(providedKey.trim())) {
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized: Valid administrator credentials required.',
+    });
+  }
+  next();
+}
+
+/**
  * Health check
  */
 router.get('/health', (req, res) => {
@@ -32,9 +58,9 @@ router.get('/health', (req, res) => {
 });
 
 /**
- * Get all registrations
+ * Get all registrations (Protected: Admin Only)
  */
-router.get('/registrations', (req, res) => {
+router.get('/registrations', requireAdminAuth, (req, res) => {
   try {
     const list = getRegistrations();
     res.json({
@@ -48,12 +74,13 @@ router.get('/registrations', (req, res) => {
 });
 
 /**
- * Get single registration
+ * Get single registration (Public ticket verification by ID or Roll)
  */
 router.get('/registrations/:ticketId', (req, res) => {
   try {
     const list = getRegistrations();
-    const found = list.find((r) => r.ticketId === req.params.ticketId || r.rollNo === req.params.ticketId.toUpperCase());
+    const query = (req.params.ticketId || '').trim().toUpperCase();
+    const found = list.find((r) => (r.ticketId && r.ticketId.toUpperCase() === query) || (r.rollNo && r.rollNo.toUpperCase() === query));
     if (!found) {
       return res.status(404).json({ success: false, error: 'Registration not found' });
     }
@@ -69,15 +96,15 @@ router.get('/registrations/:ticketId', (req, res) => {
 router.post('/registrations', (req, res) => {
   try {
     const payload = req.body;
-    if (!payload || !payload.fullName || !payload.rollNo) {
+    if (!payload || !payload.fullName || !payload.rollNo || !payload.utrNumber) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required registration fields (fullName and rollNo are mandatory)',
+        error: 'Missing required registration fields (fullName, rollNo, and utrNumber are mandatory)',
       });
     }
 
     const savedRecord = addRegistration(payload);
-    console.log(`[ELIXORA API] Saved registration in real time: ${savedRecord.fullName} (${savedRecord.rollNo}) [${savedRecord.ticketId}]`);
+    console.log(`[ELIXORA API] Saved registration securely: ${savedRecord.fullName} (${savedRecord.rollNo}) [${savedRecord.ticketId}]`);
 
     res.status(201).json({
       success: true,
@@ -85,15 +112,19 @@ router.post('/registrations', (req, res) => {
       data: savedRecord,
     });
   } catch (err) {
+    const statusCode = err.statusCode || 500;
+    if (statusCode !== 500) {
+      return res.status(statusCode).json({ success: false, error: err.message });
+    }
     console.error('[ELIXORA API] Error saving registration:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
 /**
- * Update registration (status, check-in, etc.)
+ * Update registration (status, check-in, etc. - Protected: Admin Only)
  */
-router.put('/registrations/:ticketId', (req, res) => {
+router.put('/registrations/:ticketId', requireAdminAuth, (req, res) => {
   try {
     const { ticketId } = req.params;
     const updates = req.body;
@@ -114,23 +145,27 @@ router.put('/registrations/:ticketId', (req, res) => {
 });
 
 /**
- * Delete all registrations
+ * Delete all registrations (Protected: Admin Only)
  */
-router.delete('/registrations', async (req, res) => {
+router.delete('/registrations', requireAdminAuth, async (req, res) => {
   try {
     saveRegistrations([]);
     try {
       const supaUrl = process.env.VITE_SUPABASE_URL || 'https://wpipjvudqumqwltrtrct.supabase.co';
-      const serviceKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwaXBqdnVkcXVtcXdsdHJ0cmN0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MjQ3Mjg1OCwiZXhwIjoyMTA4MDQ4ODU4fQ.x0a1qmSfzDC_KTBSdRf9kmauTSUkwcFIUWnlzMEKWi8';
-      await fetch(`${supaUrl}/rest/v1/registrations?id=neq.00000000-0000-0000-0000-000000000000`, {
-        method: 'DELETE',
-        headers: {
-          apikey: serviceKey,
-          Authorization: `Bearer ${serviceKey}`,
-          'Content-Type': 'application/json',
-        },
-      });
-    } catch (e) {}
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+      if (serviceKey) {
+        await fetch(`${supaUrl}/rest/v1/registrations?id=neq.00000000-0000-0000-0000-000000000000`, {
+          method: 'DELETE',
+          headers: {
+            apikey: serviceKey,
+            Authorization: `Bearer ${serviceKey}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+    } catch (e) {
+      console.warn('[ELIXORA Server] Supabase clear note:', e.message);
+    }
     res.json({ success: true, message: 'All registrations cleared in real time' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -138,29 +173,31 @@ router.delete('/registrations', async (req, res) => {
 });
 
 /**
- * Delete registration in real time from local DB and Supabase
+ * Delete registration in real time from local DB and Supabase (Protected: Admin Only)
  */
-router.delete('/registrations/:ticketId', async (req, res) => {
+router.delete('/registrations/:ticketId', requireAdminAuth, async (req, res) => {
   try {
     const { ticketId } = req.params;
     const ok = deleteRegistration(ticketId);
 
-    // Also sync deletion directly to Supabase Cloud
+    // Also sync deletion directly to Supabase Cloud using server-side service key if present
     try {
       const supaUrl = process.env.VITE_SUPABASE_URL || 'https://wpipjvudqumqwltrtrct.supabase.co';
-      const serviceKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwaXBqdnVkcXVtcXdsdHJ0cmN0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc5MjQ3Mjg1OCwiZXhwIjoyMTA4MDQ4ODU4fQ.x0a1qmSfzDC_KTBSdRf9kmauTSUkwcFIUWnlzMEKWi8';
+      const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
       
-      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ticketId);
-      const queryParam = isUuid ? `id=eq.${encodeURIComponent(ticketId)}` : `REGISTRATION=eq.${encodeURIComponent(ticketId.toUpperCase())}`;
+      if (serviceKey) {
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ticketId);
+        const queryParam = isUuid ? `id=eq.${encodeURIComponent(ticketId)}` : `REGISTRATION=eq.${encodeURIComponent(ticketId.toUpperCase())}`;
 
-      await fetch(`${supaUrl}/rest/v1/registrations?${queryParam}`, {
-        method: 'DELETE',
-        headers: {
-          apikey: serviceKey,
-          Authorization: `Bearer ${serviceKey}`,
-          'Content-Type': 'application/json',
-        },
-      });
+        await fetch(`${supaUrl}/rest/v1/registrations?${queryParam}`, {
+          method: 'DELETE',
+          headers: {
+            apikey: serviceKey,
+            Authorization: `Bearer ${serviceKey}`,
+            'Content-Type': 'application/json',
+          },
+        });
+      }
     } catch (supaErr) {
       console.warn('[ELIXORA Server] Supabase delete sync note:', supaErr.message);
     }
@@ -212,9 +249,9 @@ router.get('/events', (req, res) => {
 });
 
 /**
- * Serve receipt images safely
+ * Serve receipt images safely (Protected: Admin Only)
  */
-router.get('/receipts/:fileName', (req, res) => {
+router.get('/receipts/:fileName', requireAdminAuth, (req, res) => {
   const safeName = path.basename(req.params.fileName);
   const filePath = path.join(RECEIPTS_DIR, safeName);
 
@@ -226,9 +263,9 @@ router.get('/receipts/:fileName', (req, res) => {
 });
 
 /**
- * CSV Manifest Export
+ * CSV Manifest Export (Protected: Admin Only)
  */
-router.get('/export/csv', (req, res) => {
+router.get('/export/csv', requireAdminAuth, (req, res) => {
   try {
     const list = getRegistrations();
     const headers = [

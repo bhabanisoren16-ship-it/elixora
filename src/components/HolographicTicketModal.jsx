@@ -427,7 +427,7 @@ export default function HolographicTicketModal({ passData, onClose }) {
                     <div>
                       <strong className="text-white block font-outfit text-xs">Dress Code Protocol</strong>
                       <span className="text-[10px] sm:text-[11px] text-slate-300 leading-tight block">
-                        Theme is Cyber Glam &amp; Ethereal Indo-Western Fusion. Comfortable footwear recommended.
+                        Theme is Cyber Glam &amp; Ethereal Fusion. Boys: Formal &amp; Indo-Western • Girls: Western Formal Gowns.
                       </span>
                     </div>
                   </div>

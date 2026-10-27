@@ -36,29 +36,33 @@ CREATE INDEX IF NOT EXISTS idx_registrations_created_at ON public.registrations(
 ALTER TABLE public.registrations ENABLE ROW LEVEL SECURITY;
 
 -- Allow anonymous users to insert new registrations (Pass checkout)
+DROP POLICY IF EXISTS "Allow public insert on registrations" ON public.registrations;
 CREATE POLICY "Allow public insert on registrations"
   ON public.registrations
   FOR INSERT
   WITH CHECK (true);
 
--- Allow public read access (for pass verification & admin display)
+-- Allow public read access strictly for ticket verification
+DROP POLICY IF EXISTS "Allow public read on registrations" ON public.registrations;
 CREATE POLICY "Allow public read on registrations"
   ON public.registrations
   FOR SELECT
   USING (true);
 
--- Allow updates (for admin verify/reject/attendance toggle)
-CREATE POLICY "Allow public update on registrations"
+-- Security Hardened: Restrict updates strictly to backend service_role
+DROP POLICY IF EXISTS "Allow public update on registrations" ON public.registrations;
+CREATE POLICY "Allow service_role update on registrations"
   ON public.registrations
   FOR UPDATE
-  USING (true)
-  WITH CHECK (true);
+  USING (auth.role() = 'service_role')
+  WITH CHECK (auth.role() = 'service_role');
 
--- Allow delete (when admin removes a registration from Admin Portal)
-CREATE POLICY "Allow public delete on registrations"
+-- Security Hardened: Restrict deletions strictly to backend service_role
+DROP POLICY IF EXISTS "Allow public delete on registrations" ON public.registrations;
+CREATE POLICY "Allow service_role delete on registrations"
   ON public.registrations
   FOR DELETE
-  USING (true);
+  USING (auth.role() = 'service_role');
 
 -- 3. Enable Real-Time Broadcast for registrations
 ALTER PUBLICATION supabase_realtime ADD TABLE public.registrations;

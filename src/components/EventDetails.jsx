@@ -349,7 +349,7 @@ export default function EventDetails() {
                       GIRLS' ATTIRE LOOKBOOK
                     </span>
                     <span className="text-[10px] font-outfit bg-cyan-500/25 text-cyan-200 px-3 py-1 rounded-full border border-cyan-400/50 font-black uppercase tracking-wider backdrop-blur-md">
-                      ELEGANT GOWNS &amp; ETHNIC GLAM
+                      WESTERN FORMAL DRESS
                     </span>
                   </div>
 
@@ -357,8 +357,8 @@ export default function EventDetails() {
                   <div className="relative rounded-2xl overflow-hidden h-[210px] sm:h-[250px] md:h-[240px] lg:h-[260px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
-                      src="/costume-girls.jpg"
-                      alt="Girls Cyber Costume Style"
+                      src="/costume-girls-western.jpg?v=20261027b"
+                      alt="Girls Elegant Western Formal Gown Attire"
                       className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
                   </div>

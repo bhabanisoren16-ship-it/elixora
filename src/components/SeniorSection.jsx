@@ -1268,7 +1268,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </h4>
                       </div>
                       <span className="text-[9px] sm:text-[10px] font-outfit font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 backdrop-blur-md">
-                        ETHNIC GLAM &amp; GOWNS
+                        WESTERN FORMAL GOWNS
                       </span>
                     </div>
 
@@ -1276,8 +1276,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[520px] md:h-[460px] lg:h-[480px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
-                        src="/costume-girls.jpg"
-                        alt="Senior Girls Glamorous Ethnic Sarees and Gowns"
+                        src="/costume-girls-western.jpg?v=20261027b"
+                        alt="Senior Girls Glamorous Western Formal Gowns"
                         className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>

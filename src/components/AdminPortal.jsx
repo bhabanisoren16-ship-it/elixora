@@ -2415,13 +2415,13 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
                     <div className="flex items-center gap-3 text-xs font-mono">
                       <span className="text-slate-400">Master Passcode:</span>
-                      <code className="px-2 py-1 rounded bg-black/40 border border-cyan-500/30 text-cyan-300 font-bold">
-                        {settings.adminPin}
+                      <code className="px-2 py-1 rounded bg-black/40 border border-cyan-500/30 text-cyan-300 font-bold tracking-wider">
+                        •••••••• (Protected)
                       </code>
                       <span className="text-slate-500">•</span>
                       <span className="text-slate-400">Emergency Backup:</span>
-                      <code className="px-2 py-1 rounded bg-black/40 border border-purple-500/30 text-purple-300 font-bold">
-                        {settings.backupPin}
+                      <code className="px-2 py-1 rounded bg-black/40 border border-purple-500/30 text-purple-300 font-bold tracking-wider">
+                        •••••••• (Protected)
                       </code>
                     </div>
                   </div>

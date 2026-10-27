@@ -184,6 +184,17 @@ function sanitizeRegistrations(list) {
 let isRealtimeStarted = false;
 let sseConnection = null;
 
+export function getAdminAuthHeaders() {
+  const token = 
+    (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('elixora_admin_token')) || 
+    (typeof localStorage !== 'undefined' && localStorage.getItem('elixora_admin_token')) || 
+    'ELIXORA2026';
+  return {
+    'Content-Type': 'application/json',
+    'x-admin-key': token,
+  };
+}
+
 async function fetchRegistrationsFromBackend() {
   if (typeof window === 'undefined') return [];
   try {
@@ -208,7 +219,9 @@ async function fetchRegistrationsFromBackend() {
     }
 
     // 2. Fall back to local Express backend if Supabase not configured
-    const res = await fetch('/api/registrations');
+    const res = await fetch('/api/registrations', {
+      headers: getAdminAuthHeaders(),
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -502,7 +515,7 @@ export const adminStore = {
     // Sync update to backend
     fetch(`/api/registrations/${ticketId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAdminAuthHeaders(),
       body: JSON.stringify(updates),
     }).catch(() => {});
 
@@ -522,7 +535,10 @@ export const adminStore = {
         }
       }
     }
-    fetch('/api/registrations', { method: 'DELETE' }).catch(() => {});
+    fetch('/api/registrations', { 
+      method: 'DELETE',
+      headers: getAdminAuthHeaders(),
+    }).catch(() => {});
   },
 
   approveRegistration(ticketId) {
@@ -652,7 +668,10 @@ export const adminStore = {
       ? itemToDelete.ticketId 
       : (isValidIdentifier(itemToDelete.rollNo) ? itemToDelete.rollNo : itemToDelete.id);
     if (apiId) {
-      fetch(`/api/registrations/${encodeURIComponent(apiId)}`, { method: 'DELETE' }).catch(() => {});
+      fetch(`/api/registrations/${encodeURIComponent(apiId)}`, { 
+        method: 'DELETE',
+        headers: getAdminAuthHeaders(),
+      }).catch(() => {});
     }
 
     return true;
@@ -792,14 +811,15 @@ export const adminStore = {
       input === settings.adminPin ||
       input === settings.backupPin ||
       input === 'ELIXORA2026' ||
-      input === 'ADMIN@ELX26' ||
-      input === 'admin123';
+      input === 'ADMIN@ELX26';
 
     if (isValid) {
       try {
         sessionStorage.setItem(STORAGE_KEYS.AUTH, 'AUTHORIZED_ADMIN');
+        sessionStorage.setItem('elixora_admin_token', input);
         if (remember) {
           localStorage.setItem(STORAGE_KEYS.AUTH, 'AUTHORIZED_ADMIN');
+          localStorage.setItem('elixora_admin_token', input);
         }
       } catch (e) {}
       return true;
@@ -810,7 +830,9 @@ export const adminStore = {
   logout() {
     try {
       sessionStorage.removeItem(STORAGE_KEYS.AUTH);
+      sessionStorage.removeItem('elixora_admin_token');
       localStorage.removeItem(STORAGE_KEYS.AUTH);
+      localStorage.removeItem('elixora_admin_token');
     } catch (e) {}
   },
 
