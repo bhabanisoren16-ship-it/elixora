@@ -858,8 +858,15 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <div id="senior-box-1" className="flex flex-col justify-between scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-xl p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-cyan-400/30 transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
-                      <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <RealisticUser className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] shrink-0" />
+                      <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-purple-400/40 shadow-[0_0_12px_rgba(168,85,247,0.4)] shrink-0">
+                          <img
+                            src="/badge-user-hyperrealistic.jpg"
+                            alt="Senior Details"
+                            className="w-full h-full object-cover"
+                            loading="eager"
+                          />
+                        </div>
                         <span>Senior Personal Details</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
@@ -1000,8 +1007,15 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <div id="senior-box-2" className="flex flex-col justify-between scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-xl p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-cyan-400/30 transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
-                      <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <RealisticCreditCard className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] shrink-0" />
+                      <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-purple-400/40 shadow-[0_0_12px_rgba(168,85,247,0.4)] shrink-0">
+                          <img
+                            src="/badge-payment-hyperrealistic.jpg"
+                            alt="Pay on Barcode"
+                            className="w-full h-full object-cover"
+                            loading="eager"
+                          />
+                        </div>
                         <span>Pay on Barcode</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
