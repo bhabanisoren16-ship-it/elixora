@@ -27,8 +27,9 @@ export default function HeroSection({ onGrabPassClick }) {
   const bioRef = useRef(null);
   const freshersRef = useRef(null);
   const batchRef = useRef(null);
+  const passBtnTextRef = useRef(null);
 
-  // Cybernetic Scramble Text Effect on Subtitle
+  // Cybernetic Scramble Text Effect on Subtitle & CTA Button
   const triggerSubtitleScramble = () => {
     soundController.playHover?.();
     if (bioRef.current) scrambleText(bioRef.current, 'BIOTECHNOLOGY', { duration: 0.45 });
@@ -36,9 +37,17 @@ export default function HeroSection({ onGrabPassClick }) {
     if (batchRef.current) scrambleText(batchRef.current, "'26", { duration: 0.45 });
   };
 
+  const triggerPassBtnScramble = () => {
+    soundController.playHover?.();
+    if (passBtnTextRef.current) {
+      scrambleText(passBtnTextRef.current, 'GRAB YOUR PASS', { duration: 0.45 });
+    }
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       triggerSubtitleScramble();
+      triggerPassBtnScramble();
     }, 700);
     return () => clearTimeout(timer);
   }, []);
@@ -312,19 +321,25 @@ export default function HeroSection({ onGrabPassClick }) {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-1 sm:mt-2">
           <button
             onMouseEnter={() => {
-              soundController.playHover?.();
+              triggerPassBtnScramble();
+            }}
+            onTouchStart={() => {
+              triggerPassBtnScramble();
             }}
             onClick={() => {
               soundController.playClick?.();
+              triggerPassBtnScramble();
               if (onGrabPassClick) {
                 onGrabPassClick();
               } else {
                 scrollToTarget('#register');
               }
             }}
-            className="w-full sm:w-auto px-6 py-3 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-sm sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine cursor-pointer"
+            className="w-full sm:w-auto px-6 py-3 sm:px-7 sm:py-3 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-500 to-cyber-violet text-white font-outfit font-extrabold tracking-wide text-sm sm:text-sm hover:scale-105 active:scale-95 transition-all shadow-[0_0_25px_rgba(6,182,212,0.5)] flex items-center justify-center gap-2.5 border border-white/20 group shimmer-shine cursor-pointer select-none"
           >
-            <span>GRAB YOUR PASS</span>
+            <span ref={passBtnTextRef} data-text="GRAB YOUR PASS" className="inline-block font-outfit font-black tracking-wider">
+              GRAB YOUR PASS
+            </span>
             <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
           </button>
         </div>
