@@ -372,70 +372,70 @@ export function RealisticUser({ className = "w-4 h-4", ...props }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
       <defs>
-        {/* Spherical Head Gradient with Specular Light */}
-        <radialGradient id="userHeadGrad" cx="35%" cy="30%" r="65%">
+        {/* Spherical Head with 3D Specular Highlight & Warm Radiant Gold */}
+        <radialGradient id="userHeadGoldGrad" cx="35%" cy="28%" r="65%">
           <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="20%" stopColor="#f5d0fe" />
-          <stop offset="45%" stopColor="#d8b4fe" />
-          <stop offset="70%" stopColor="#a855f7" />
-          <stop offset="90%" stopColor="#7e22ce" />
-          <stop offset="100%" stopColor="#4c1d95" />
+          <stop offset="22%" stopColor="#fef08a" />
+          <stop offset="52%" stopColor="#f59e0b" />
+          <stop offset="80%" stopColor="#b45309" />
+          <stop offset="100%" stopColor="#78350f" />
         </radialGradient>
 
-        {/* Neck Gradient with Depth Shadow */}
-        <linearGradient id="userNeckGrad" x1="12" y1="10" x2="12" y2="14" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#581c87" />
-          <stop offset="60%" stopColor="#7e22ce" />
-          <stop offset="100%" stopColor="#9333ea" />
+        {/* Anatomical Neck Cylinder with Ambient Jaw Shadow */}
+        <linearGradient id="userNeckShadowGrad" x1="12" y1="10" x2="12" y2="15" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#78350f" />
+          <stop offset="60%" stopColor="#b45309" />
+          <stop offset="100%" stopColor="#f59e0b" />
         </linearGradient>
 
-        {/* Torso / Bust 3D Curved Gradient */}
-        <linearGradient id="userTorsoGrad" x1="12" y1="13" x2="12" y2="23" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#f5d0fe" />
-          <stop offset="15%" stopColor="#e879f9" />
-          <stop offset="45%" stopColor="#a855f7" />
-          <stop offset="75%" stopColor="#6b21a8" />
-          <stop offset="100%" stopColor="#3b0764" />
+        {/* Torso / Shoulders Royal Velvet & Gold Trim */}
+        <linearGradient id="userTorsoRoyalGrad" x1="12" y1="13.5" x2="12" y2="23" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#fde047" />
+          <stop offset="14%" stopColor="#c084fc" />
+          <stop offset="50%" stopColor="#7e22ce" />
+          <stop offset="85%" stopColor="#3b0764" />
+          <stop offset="100%" stopColor="#1e1b4b" />
         </linearGradient>
 
         {/* Specular Rim / Rimlight */}
-        <linearGradient id="userRimLight" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+        <linearGradient id="userRimLightGold" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="40%" stopColor="#f0abfc" stopOpacity="0.5" />
-          <stop offset="70%" stopColor="#818cf8" stopOpacity="0.7" />
-          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.9" />
+          <stop offset="40%" stopColor="#fef08a" stopOpacity="0.6" />
+          <stop offset="75%" stopColor="#38bdf8" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.9" />
         </linearGradient>
 
-        {/* Base Pedestal / Shadow */}
-        <radialGradient id="userBaseShadow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#090d16" stopOpacity="0.75" />
-          <stop offset="100%" stopColor="#090d16" stopOpacity="0" />
+        {/* Ground Occlusion Shadow */}
+        <radialGradient id="userBaseOcclusion" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#020617" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#020617" stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      {/* Soft Drop Shadow under Bust */}
-      <ellipse cx="12" cy="22.2" rx="7.8" ry="1.5" fill="url(#userBaseShadow)" />
+      {/* Soft Ground Shadow */}
+      <ellipse cx="12" cy="22.2" rx="8" ry="1.6" fill="url(#userBaseOcclusion)" />
 
-      {/* 3D Contoured Neck */}
+      {/* 3D Contoured Neck with Jaw Shadow */}
       <path
-        d="M10.2 11.2C10.2 11.2 10.4 14 9.8 14.8C10.6 15.2 13.4 15.2 14.2 14.8C13.6 14 13.8 11.2 13.8 11.2Z"
-        fill="url(#userNeckGrad)"
+        d="M10.2 11.2C10.2 11.2 10.4 14 9.6 14.8C10.6 15.2 13.4 15.2 14.4 14.8C13.6 14 13.8 11.2 13.8 11.2Z"
+        fill="url(#userNeckShadowGrad)"
+        stroke="#78350f"
+        strokeWidth="0.3"
       />
 
-      {/* 3D Torso / Shoulders with Smooth Ergonomic Arc */}
+      {/* 3D Torso / Shoulders with Smooth Curved Arc */}
       <path
         d="M3.8 21.2C3.8 17.2 7.4 14.2 12 14.2C16.6 14.2 20.2 17.2 20.2 21.2C20.2 21.8 19.7 22.2 19.1 22.2H4.9C4.3 22.2 3.8 21.8 3.8 21.2Z"
-        fill="url(#userTorsoGrad)"
-        stroke="url(#userRimLight)"
+        fill="url(#userTorsoRoyalGrad)"
+        stroke="url(#userRimLightGold)"
         strokeWidth="0.6"
       />
 
-      {/* Torso Top Collar Bevel Accent */}
+      {/* Torso Top Lapel / Gold Bevel Line */}
       <path
-        d="M8.5 16C9.6 14.8 11 14.4 12 14.4C13 14.4 14.4 14.8 15.5 16"
-        stroke="#ffffff"
-        strokeOpacity="0.8"
-        strokeWidth="0.7"
+        d="M8.2 16.2C9.4 14.8 11 14.3 12 14.3C13 14.3 14.6 14.8 15.8 16.2"
+        stroke="#fef08a"
+        strokeWidth="0.8"
         strokeLinecap="round"
       />
 
@@ -444,12 +444,12 @@ export function RealisticUser({ className = "w-4 h-4", ...props }) {
         cx="12"
         cy="7.6"
         r="4.7"
-        fill="url(#userHeadGrad)"
-        stroke="url(#userRimLight)"
+        fill="url(#userHeadGoldGrad)"
+        stroke="url(#userRimLightGold)"
         strokeWidth="0.6"
       />
 
-      {/* Specular Glint Highlight on Head */}
+      {/* Primary Specular Glint Oval on Head */}
       <ellipse
         cx="9.8"
         cy="5.6"
@@ -459,8 +459,51 @@ export function RealisticUser({ className = "w-4 h-4", ...props }) {
         fill="#ffffff"
         fillOpacity="0.9"
       />
-      {/* Secondary micro-glint */}
-      <circle cx="13.8" cy="9.2" r="0.5" fill="#ffffff" fillOpacity="0.4" />
+      {/* Secondary Cyan Ambient Bounce Reflection */}
+      <path
+        d="M15.5 8.5C15.8 9.5 15.2 10.8 14.2 11.5"
+        stroke="#38bdf8"
+        strokeWidth="0.5"
+        strokeLinecap="round"
+        fill="none"
+        strokeOpacity="0.75"
+      />
+    </svg>
+  );
+}
+
+export function RealisticUpload({ className = "w-4 h-4", ...props }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+      <defs>
+        <linearGradient id="cloudBodyGrad" x1="12" y1="8" x2="12" y2="21" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="50%" stopColor="#f1f5f9" />
+          <stop offset="100%" stopColor="#cbd5e1" />
+        </linearGradient>
+        <linearGradient id="arrowUpCyanGrad" x1="12" y1="3" x2="12" y2="15" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#38bdf8" />
+          <stop offset="50%" stopColor="#06b6d4" />
+          <stop offset="100%" stopColor="#0284c7" />
+        </linearGradient>
+      </defs>
+      {/* Cloud Base with 3D Curvature */}
+      <path
+        d="M6.5 19H17.5C19.4 19 21 17.4 21 15.5C21 13.8 19.8 12.3 18.1 12.1C17.7 8.7 14.8 6 11.2 6C8.5 6 6.1 7.7 5.2 10.3C3.4 10.8 2 12.5 2 14.5C2 17 4 19 6.5 19Z"
+        fill="url(#cloudBodyGrad)"
+        stroke="#94a3b8"
+        strokeWidth="0.5"
+      />
+      {/* 3D Ascending Arrow */}
+      <path
+        d="M12 3.5L7.2 9H10.2V16.5H13.8V9H16.8L12 3.5Z"
+        fill="url(#arrowUpCyanGrad)"
+        stroke="#ffffff"
+        strokeWidth="0.6"
+        strokeLinejoin="round"
+      />
+      {/* Specular Highlight along Arrow */}
+      <polyline points="12,4.8 8.8,8.5 10.8,8.5V15.5" stroke="#ffffff" strokeOpacity="0.8" strokeWidth="0.5" fill="none" />
     </svg>
   );
 }

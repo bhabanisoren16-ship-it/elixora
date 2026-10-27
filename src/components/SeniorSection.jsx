@@ -21,7 +21,7 @@ import {
   X, 
   Shirt 
 } from 'lucide-react';
-import { RealisticLock, RealisticShieldCheck, RealisticKey, RealisticUser, RealisticCreditCard } from './RealisticIcons';
+import { RealisticLock, RealisticShieldCheck, RealisticKey, RealisticUser, RealisticCreditCard, RealisticUpload, RealisticCrown } from './RealisticIcons';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -859,13 +859,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-purple-400/40 shadow-[0_0_12px_rgba(168,85,247,0.4)] shrink-0">
-                          <img
-                            src="/badge-user-hyperrealistic.jpg"
-                            alt="Senior Details"
-                            className="w-full h-full object-cover"
-                            loading="eager"
-                          />
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-purple-500/30 via-purple-950/70 to-obsidian-950 border border-purple-400/40 flex items-center justify-center shadow-[0_4px_14px_rgba(168,85,247,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] shrink-0">
+                          <RealisticUser className="w-4.5 h-4.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
                         </div>
                         <span>Senior Personal Details</span>
                       </h4>
@@ -1008,13 +1003,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg overflow-hidden border border-purple-400/40 shadow-[0_0_12px_rgba(168,85,247,0.4)] shrink-0">
-                          <img
-                            src="/badge-payment-hyperrealistic.jpg"
-                            alt="Pay on Barcode"
-                            className="w-full h-full object-cover"
-                            loading="eager"
-                          />
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-purple-500/30 via-purple-950/70 to-obsidian-950 border border-purple-400/40 flex items-center justify-center shadow-[0_4px_14px_rgba(168,85,247,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] shrink-0">
+                          <RealisticCreditCard className="w-4.5 h-4.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
                         </div>
                         <span>Pay on Barcode</span>
                       </h4>
@@ -1087,8 +1077,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 <div id="senior-box-3" className="flex flex-col justify-between scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-xl p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:border-cyan-400/30 transition-all">
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
-                      <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <Upload className="w-4 h-4 text-sky-400" />
+                      <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-cyan-500/30 via-cyan-950/70 to-obsidian-950 border border-cyan-400/40 flex items-center justify-center shadow-[0_4px_14px_rgba(6,182,212,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] shrink-0">
+                          <RealisticUpload className="w-4.5 h-4.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
+                        </div>
                         <span>Proof &amp; Mint Pass</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
@@ -1197,7 +1189,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </>
                       ) : (
                         <>
-                          <Crown className="w-4 h-4 text-amber-300 fill-amber-300/30" />
+                          <RealisticCrown className="w-4.5 h-4.5 drop-shadow-sm shrink-0" />
                           <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
                         </>
                       )}
