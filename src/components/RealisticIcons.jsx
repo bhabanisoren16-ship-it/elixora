@@ -512,35 +512,137 @@ export function RealisticCreditCard({ className = "w-4 h-4", ...props }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
       <defs>
-        <linearGradient id="cardGrad" x1="2" y1="4" x2="22" y2="20" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#38bdf8" />
-          <stop offset="35%" stopColor="#818cf8" />
-          <stop offset="70%" stopColor="#c084fc" />
-          <stop offset="100%" stopColor="#7e22ce" />
+        {/* Soft Ambient Ground Shadow under Card */}
+        <radialGradient id="ccDropShadow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#020617" stopOpacity="0.9" />
+          <stop offset="70%" stopColor="#020617" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#020617" stopOpacity="0" />
+        </radialGradient>
+
+        {/* Brushed Obsidian Titanium Body */}
+        <linearGradient id="ccBodyGrad" x1="2" y1="4" x2="22" y2="19" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#312e81" />
+          <stop offset="25%" stopColor="#1e1b4b" />
+          <stop offset="55%" stopColor="#0f172a" />
+          <stop offset="85%" stopColor="#1e293b" />
+          <stop offset="100%" stopColor="#090d16" />
         </linearGradient>
-        <linearGradient id="chipGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#fef08a" />
-          <stop offset="50%" stopColor="#facc15" />
-          <stop offset="100%" stopColor="#ca8a04" />
+
+        {/* Polished Metallic Bevel / Rim Light */}
+        <linearGradient id="ccRimGrad" x1="1" y1="4" x2="23" y2="20" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="30%" stopColor="#c084fc" stopOpacity="0.7" />
+          <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#e0e7ff" stopOpacity="0.9" />
         </linearGradient>
-        <linearGradient id="cardGloss" x1="2" y1="4" x2="14" y2="19" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
+
+        {/* Diagonal Specular Anisotropic Sheen */}
+        <linearGradient id="ccSheenGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
+          <stop offset="35%" stopColor="#ffffff" stopOpacity="0.1" />
           <stop offset="50%" stopColor="#ffffff" stopOpacity="0" />
+          <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.05" />
+        </linearGradient>
+
+        {/* Gold EMV Microchip Gradients */}
+        <linearGradient id="ccChipGold" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#fef08a" />
+          <stop offset="35%" stopColor="#facc15" />
+          <stop offset="70%" stopColor="#eab308" />
+          <stop offset="100%" stopColor="#a16207" />
+        </linearGradient>
+
+        {/* Holographic Prismatic Badge */}
+        <linearGradient id="ccHoloGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.85" />
+          <stop offset="33%" stopColor="#fbbf24" stopOpacity="0.85" />
+          <stop offset="66%" stopColor="#34d399" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.85" />
         </linearGradient>
       </defs>
-      {/* Base Drop Shadow */}
-      <rect x="2" y="5.5" width="20" height="14" rx="2.5" fill="#090d16" fillOpacity="0.4" />
-      {/* Card Body */}
-      <rect x="2" y="4.5" width="20" height="15" rx="2.5" fill="url(#cardGrad)" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="0.6" />
-      {/* Specular Diagonal Reflection */}
-      <path d="M2 7L13 4.5H17L6 19.5H2V7Z" fill="url(#cardGloss)" />
-      {/* Magnetic Stripe */}
-      <rect x="2" y="8" width="20" height="3" fill="#090d16" fillOpacity="0.8" />
-      {/* Metallic Chip */}
-      <rect x="4.5" y="12.5" width="3.4" height="2.6" rx="0.5" fill="url(#chipGrad)" stroke="#854d0e" strokeWidth="0.3" />
-      {/* Embossed Card Numbers */}
-      <line x1="9.5" y1="13.2" x2="18.5" y2="13.2" stroke="#ffffff" strokeOpacity="0.85" strokeWidth="0.8" strokeLinecap="round" />
-      <line x1="9.5" y1="14.8" x2="15.5" y2="14.8" stroke="#ffffff" strokeOpacity="0.6" strokeWidth="0.6" strokeLinecap="round" />
+
+      {/* Realistic Ground Shadow */}
+      <ellipse cx="12" cy="20.8" rx="8.5" ry="1.6" fill="url(#ccDropShadow)" />
+
+      {/* Card 3D Thickness Edge (Bottom Bevel) */}
+      <rect x="2" y="6.8" width="20" height="12.8" rx="2.2" fill="#030712" />
+
+      {/* Card Main Face */}
+      <rect
+        x="2"
+        y="5.2"
+        width="20"
+        height="13.2"
+        rx="2.2"
+        fill="url(#ccBodyGrad)"
+        stroke="url(#ccRimGrad)"
+        strokeWidth="0.65"
+      />
+
+      {/* Diagonal Light Streak Reflection */}
+      <path
+        d="M2 9.5L12 5.2H16L5 18.4H2V9.5Z"
+        fill="url(#ccSheenGrad)"
+      />
+      <path
+        d="M10 5.2L20 17.5V18.4H17.5L7.5 5.2H10Z"
+        fill="#ffffff"
+        fillOpacity="0.08"
+      />
+
+      {/* EMV Gold Smart Chip with Contact Micro-Grooves */}
+      <g transform="translate(4.2, 7.8)">
+        {/* Chip Body */}
+        <rect x="0" y="0" width="4.4" height="3.5" rx="0.6" fill="url(#ccChipGold)" stroke="#78350f" strokeWidth="0.3" />
+        {/* Chip Circuit Grooves */}
+        <line x1="0" y1="1.75" x2="4.4" y2="1.75" stroke="#854d0e" strokeWidth="0.25" />
+        <line x1="2.2" y1="0" x2="2.2" y2="3.5" stroke="#854d0e" strokeWidth="0.25" />
+        <rect x="1.4" y="0.8" width="1.6" height="1.9" rx="0.3" fill="none" stroke="#713f12" strokeWidth="0.25" />
+        {/* Specular Glint on Chip */}
+        <circle cx="0.8" cy="0.6" r="0.35" fill="#ffffff" fillOpacity="0.85" />
+      </g>
+
+      {/* Contactless Waves Symbol ))) */}
+      <g stroke="#ffffff" strokeOpacity="0.85" strokeLinecap="round" fill="none">
+        <path d="M10.2 8.3C10.6 8.7 10.6 9.3 10.2 9.7" strokeWidth="0.45" />
+        <path d="M11.2 7.6C12 8.4 12 9.6 11.2 10.4" strokeWidth="0.45" />
+        <path d="M12.2 6.9C13.4 8.1 13.4 9.9 12.2 11.1" strokeWidth="0.45" />
+      </g>
+
+      {/* VIP Hologram Badge */}
+      <rect x="17.8" y="7.5" width="2.6" height="2.2" rx="0.4" fill="url(#ccHoloGrad)" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="0.25" />
+
+      {/* Embossed Card Numbers (•••• •••• •••• 2026) */}
+      <g fill="#ffffff" fillOpacity="0.95" filter="drop-shadow(0 0.5px 0.5px rgba(0,0,0,0.9))">
+        {/* Dot Clusters */}
+        <circle cx="4.8" cy="13.2" r="0.55" />
+        <circle cx="6.2" cy="13.2" r="0.55" />
+        <circle cx="7.6" cy="13.2" r="0.55" />
+        <circle cx="9.0" cy="13.2" r="0.55" />
+
+        <circle cx="10.8" cy="13.2" r="0.55" />
+        <circle cx="12.2" cy="13.2" r="0.55" />
+        <circle cx="13.6" cy="13.2" r="0.55" />
+        <circle cx="15.0" cy="13.2" r="0.55" />
+
+        {/* 26 Micro-digits */}
+        <text x="17" y="13.8" fontFamily="monospace" fontSize="2.2" fontWeight="900" fill="#ffffff" letterSpacing="-0.2">
+          26
+        </text>
+      </g>
+
+      {/* Cardholder Name & Expiry Subline */}
+      <g fill="#ffffff" fillOpacity="0.65">
+        <rect x="4.5" y="15.8" width="5.5" height="0.7" rx="0.35" />
+        <rect x="11" y="15.8" width="3" height="0.7" rx="0.35" />
+      </g>
+
+      {/* Interlocking Translucent Payment Network Circles (Mastercard / VIP style) */}
+      <g transform="translate(17.2, 14.8)">
+        <circle cx="1" cy="1" r="1.4" fill="#ef4444" fillOpacity="0.9" />
+        <circle cx="2.6" cy="1" r="1.4" fill="#f59e0b" fillOpacity="0.9" />
+      </g>
     </svg>
   );
 }
