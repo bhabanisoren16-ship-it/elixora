@@ -16,6 +16,7 @@ import {
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
+import { RealisticUser, RealisticCreditCard } from './RealisticIcons';
 
 export default function RegistrationPayment({ onPassGenerated }) {
   // Form State
@@ -227,8 +228,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
               {/* Step 1 Header */}
               <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/25 border border-purple-400/40 flex items-center justify-center text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.35)] shrink-0">
-                    <User className="w-3.5 h-3.5" />
+                  <div className="relative group/step1 shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-purple-500/35 via-purple-900/40 to-obsidian-950/80 border border-purple-300/40 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.4),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-transform group-hover/step1:scale-105">
+                      <RealisticUser className="w-4 h-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                    </div>
                   </div>
                   <div>
                     <span className="text-[10px] font-outfit font-extrabold text-cyan-300 uppercase tracking-wider block leading-tight">STEP 1 OF 2</span>
@@ -329,8 +332,10 @@ export default function RegistrationPayment({ onPassGenerated }) {
               {/* Step 2 Header */}
               <div className="flex items-center justify-between pb-2 mb-3 border-b border-white/10">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/25 border border-purple-400/40 flex items-center justify-center text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.25)] shrink-0">
-                    <CreditCard className="w-3.5 h-3.5" />
+                  <div className="relative group/step2 shrink-0">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-purple-500/35 via-purple-900/40 to-obsidian-950/80 border border-purple-300/40 flex items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.35),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-transform group-hover/step2:scale-105">
+                      <RealisticCreditCard className="w-4 h-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                    </div>
                   </div>
                   <div>
                     <span className="text-[10px] font-outfit font-extrabold text-cyan-300 uppercase tracking-wider block leading-tight">STEP 2 OF 2</span>

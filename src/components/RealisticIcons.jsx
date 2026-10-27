@@ -368,4 +368,138 @@ export function RealisticTrophy({ className = "w-4 h-4", ...props }) {
   );
 }
 
+export function RealisticUser({ className = "w-4 h-4", ...props }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+      <defs>
+        {/* Spherical Head Gradient with Specular Light */}
+        <radialGradient id="userHeadGrad" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="20%" stopColor="#f5d0fe" />
+          <stop offset="45%" stopColor="#d8b4fe" />
+          <stop offset="70%" stopColor="#a855f7" />
+          <stop offset="90%" stopColor="#7e22ce" />
+          <stop offset="100%" stopColor="#4c1d95" />
+        </radialGradient>
+
+        {/* Neck Gradient with Depth Shadow */}
+        <linearGradient id="userNeckGrad" x1="12" y1="10" x2="12" y2="14" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#581c87" />
+          <stop offset="60%" stopColor="#7e22ce" />
+          <stop offset="100%" stopColor="#9333ea" />
+        </linearGradient>
+
+        {/* Torso / Bust 3D Curved Gradient */}
+        <linearGradient id="userTorsoGrad" x1="12" y1="13" x2="12" y2="23" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#f5d0fe" />
+          <stop offset="15%" stopColor="#e879f9" />
+          <stop offset="45%" stopColor="#a855f7" />
+          <stop offset="75%" stopColor="#6b21a8" />
+          <stop offset="100%" stopColor="#3b0764" />
+        </linearGradient>
+
+        {/* Specular Rim / Rimlight */}
+        <linearGradient id="userRimLight" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="40%" stopColor="#f0abfc" stopOpacity="0.5" />
+          <stop offset="70%" stopColor="#818cf8" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.9" />
+        </linearGradient>
+
+        {/* Base Pedestal / Shadow */}
+        <radialGradient id="userBaseShadow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#090d16" stopOpacity="0.75" />
+          <stop offset="100%" stopColor="#090d16" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Soft Drop Shadow under Bust */}
+      <ellipse cx="12" cy="22.2" rx="7.8" ry="1.5" fill="url(#userBaseShadow)" />
+
+      {/* 3D Contoured Neck */}
+      <path
+        d="M10.2 11.2C10.2 11.2 10.4 14 9.8 14.8C10.6 15.2 13.4 15.2 14.2 14.8C13.6 14 13.8 11.2 13.8 11.2Z"
+        fill="url(#userNeckGrad)"
+      />
+
+      {/* 3D Torso / Shoulders with Smooth Ergonomic Arc */}
+      <path
+        d="M3.8 21.2C3.8 17.2 7.4 14.2 12 14.2C16.6 14.2 20.2 17.2 20.2 21.2C20.2 21.8 19.7 22.2 19.1 22.2H4.9C4.3 22.2 3.8 21.8 3.8 21.2Z"
+        fill="url(#userTorsoGrad)"
+        stroke="url(#userRimLight)"
+        strokeWidth="0.6"
+      />
+
+      {/* Torso Top Collar Bevel Accent */}
+      <path
+        d="M8.5 16C9.6 14.8 11 14.4 12 14.4C13 14.4 14.4 14.8 15.5 16"
+        stroke="#ffffff"
+        strokeOpacity="0.8"
+        strokeWidth="0.7"
+        strokeLinecap="round"
+      />
+
+      {/* 3D Spherical Head */}
+      <circle
+        cx="12"
+        cy="7.6"
+        r="4.7"
+        fill="url(#userHeadGrad)"
+        stroke="url(#userRimLight)"
+        strokeWidth="0.6"
+      />
+
+      {/* Specular Glint Highlight on Head */}
+      <ellipse
+        cx="9.8"
+        cy="5.6"
+        rx="1.6"
+        ry="0.9"
+        transform="rotate(-28 9.8 5.6)"
+        fill="#ffffff"
+        fillOpacity="0.9"
+      />
+      {/* Secondary micro-glint */}
+      <circle cx="13.8" cy="9.2" r="0.5" fill="#ffffff" fillOpacity="0.4" />
+    </svg>
+  );
+}
+
+export function RealisticCreditCard({ className = "w-4 h-4", ...props }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+      <defs>
+        <linearGradient id="cardGrad" x1="2" y1="4" x2="22" y2="20" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#38bdf8" />
+          <stop offset="35%" stopColor="#818cf8" />
+          <stop offset="70%" stopColor="#c084fc" />
+          <stop offset="100%" stopColor="#7e22ce" />
+        </linearGradient>
+        <linearGradient id="chipGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#fef08a" />
+          <stop offset="50%" stopColor="#facc15" />
+          <stop offset="100%" stopColor="#ca8a04" />
+        </linearGradient>
+        <linearGradient id="cardGloss" x1="2" y1="4" x2="14" y2="19" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.4" />
+          <stop offset="50%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {/* Base Drop Shadow */}
+      <rect x="2" y="5.5" width="20" height="14" rx="2.5" fill="#090d16" fillOpacity="0.4" />
+      {/* Card Body */}
+      <rect x="2" y="4.5" width="20" height="15" rx="2.5" fill="url(#cardGrad)" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="0.6" />
+      {/* Specular Diagonal Reflection */}
+      <path d="M2 7L13 4.5H17L6 19.5H2V7Z" fill="url(#cardGloss)" />
+      {/* Magnetic Stripe */}
+      <rect x="2" y="8" width="20" height="3" fill="#090d16" fillOpacity="0.8" />
+      {/* Metallic Chip */}
+      <rect x="4.5" y="12.5" width="3.4" height="2.6" rx="0.5" fill="url(#chipGrad)" stroke="#854d0e" strokeWidth="0.3" />
+      {/* Embossed Card Numbers */}
+      <line x1="9.5" y1="13.2" x2="18.5" y2="13.2" stroke="#ffffff" strokeOpacity="0.85" strokeWidth="0.8" strokeLinecap="round" />
+      <line x1="9.5" y1="14.8" x2="15.5" y2="14.8" stroke="#ffffff" strokeOpacity="0.6" strokeWidth="0.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 

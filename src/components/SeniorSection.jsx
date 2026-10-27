@@ -21,7 +21,7 @@ import {
   X, 
   Shirt 
 } from 'lucide-react';
-import { RealisticLock, RealisticShieldCheck, RealisticKey } from './RealisticIcons';
+import { RealisticLock, RealisticShieldCheck, RealisticKey, RealisticUser, RealisticCreditCard } from './RealisticIcons';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -859,7 +859,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <User className="w-4 h-4 text-sky-400" />
+                        <RealisticUser className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] shrink-0" />
                         <span>Senior Personal Details</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
@@ -1001,7 +1001,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                   <div>
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2">
-                        <CreditCard className="w-4 h-4 text-indigo-400" />
+                        <RealisticCreditCard className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] shrink-0" />
                         <span>Pay on Barcode</span>
                       </h4>
                       <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/15 px-2 py-0.5 rounded border border-cyan-500/30 font-bold">
