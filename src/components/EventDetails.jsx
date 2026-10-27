@@ -294,9 +294,6 @@ export default function EventDetails() {
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
                 ATTIRE INSPIRATION LOOKBOOK
               </span>
-              <span className="text-xs font-outfit text-white font-bold subheading-readable">
-                Recommended Styling for Fresher Night
-              </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch w-full">

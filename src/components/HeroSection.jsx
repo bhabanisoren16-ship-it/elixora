@@ -327,19 +327,6 @@ export default function HeroSection({ onGrabPassClick }) {
             <span>GRAB YOUR PASS</span>
             <ArrowRight className="w-4 h-4 text-cyan-100 group-hover:translate-x-1.5 transition-transform" />
           </button>
-
-          {/* Secondary CTA: Explore Event Guide (Hidden on mobile, visible on desktop) */}
-          <a
-            href="#details"
-            onClick={(e) => {
-              e.preventDefault();
-              soundController.playClick?.();
-              scrollToTarget('#details');
-            }}
-            className="hidden sm:inline-flex px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-slate-200 font-outfit font-semibold text-xs sm:text-sm hover:border-cyan-400/50 hover:text-cyan-300 transition-all items-center justify-center gap-2 backdrop-blur-md cursor-pointer shadow-md"
-          >
-            <span>Explore Event Guide</span>
-          </a>
         </div>
 
 

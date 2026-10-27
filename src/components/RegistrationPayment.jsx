@@ -208,9 +208,6 @@ export default function RegistrationPayment({ onPassGenerated }) {
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Junior Registration &amp; Pass Checkout
         </h2>
-        <p className="mt-1.5 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
-          Fill your student details, complete payment via dynamic UPI QR, and your personalized 3D VIP pass will be rendered instantly.
-        </p>
       </div>
 
       {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER (FULL WIDTH WITH COMPACT HEIGHT) */}
