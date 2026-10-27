@@ -375,39 +375,39 @@ export function RealisticUser({ className = "w-4 h-4", ...props }) {
         {/* Spherical Head with 3D Specular Highlight & Warm Radiant Gold */}
         <radialGradient id="userHeadGoldGrad" cx="35%" cy="28%" r="65%">
           <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="22%" stopColor="#fef08a" />
-          <stop offset="52%" stopColor="#f59e0b" />
-          <stop offset="80%" stopColor="#b45309" />
-          <stop offset="100%" stopColor="#78350f" />
+          <stop offset="25%" stopColor="#fef08a" />
+          <stop offset="55%" stopColor="#f59e0b" />
+          <stop offset="85%" stopColor="#d97706" />
+          <stop offset="100%" stopColor="#92400e" />
         </radialGradient>
 
-        {/* Anatomical Neck Cylinder with Ambient Jaw Shadow */}
+        {/* Anatomical Neck Cylinder with Warm Ambient Jaw Shadow */}
         <linearGradient id="userNeckShadowGrad" x1="12" y1="10" x2="12" y2="15" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#78350f" />
-          <stop offset="60%" stopColor="#b45309" />
-          <stop offset="100%" stopColor="#f59e0b" />
+          <stop offset="0%" stopColor="#b45309" />
+          <stop offset="60%" stopColor="#d97706" />
+          <stop offset="100%" stopColor="#fde047" />
         </linearGradient>
 
-        {/* Torso / Shoulders Royal Velvet & Gold Trim */}
+        {/* Torso / Shoulders Radiant Royal Velvet & Bright Gold Trim */}
         <linearGradient id="userTorsoRoyalGrad" x1="12" y1="13.5" x2="12" y2="23" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#fde047" />
-          <stop offset="14%" stopColor="#c084fc" />
-          <stop offset="50%" stopColor="#7e22ce" />
-          <stop offset="85%" stopColor="#3b0764" />
-          <stop offset="100%" stopColor="#1e1b4b" />
+          <stop offset="0%" stopColor="#fef08a" />
+          <stop offset="18%" stopColor="#e879f9" />
+          <stop offset="50%" stopColor="#a855f7" />
+          <stop offset="80%" stopColor="#7e22ce" />
+          <stop offset="100%" stopColor="#581c87" />
         </linearGradient>
 
         {/* Specular Rim / Rimlight */}
         <linearGradient id="userRimLightGold" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="40%" stopColor="#fef08a" stopOpacity="0.6" />
-          <stop offset="75%" stopColor="#38bdf8" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.9" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+          <stop offset="40%" stopColor="#fef08a" stopOpacity="0.85" />
+          <stop offset="75%" stopColor="#38bdf8" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
         </linearGradient>
 
         {/* Ground Occlusion Shadow */}
         <radialGradient id="userBaseOcclusion" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#020617" stopOpacity="0.85" />
+          <stop offset="0%" stopColor="#020617" stopOpacity="0.8" />
           <stop offset="100%" stopColor="#020617" stopOpacity="0" />
         </radialGradient>
       </defs>
@@ -419,7 +419,7 @@ export function RealisticUser({ className = "w-4 h-4", ...props }) {
       <path
         d="M10.2 11.2C10.2 11.2 10.4 14 9.6 14.8C10.6 15.2 13.4 15.2 14.4 14.8C13.6 14 13.8 11.2 13.8 11.2Z"
         fill="url(#userNeckShadowGrad)"
-        stroke="#78350f"
+        stroke="#92400e"
         strokeWidth="0.3"
       />
 
@@ -428,14 +428,14 @@ export function RealisticUser({ className = "w-4 h-4", ...props }) {
         d="M3.8 21.2C3.8 17.2 7.4 14.2 12 14.2C16.6 14.2 20.2 17.2 20.2 21.2C20.2 21.8 19.7 22.2 19.1 22.2H4.9C4.3 22.2 3.8 21.8 3.8 21.2Z"
         fill="url(#userTorsoRoyalGrad)"
         stroke="url(#userRimLightGold)"
-        strokeWidth="0.6"
+        strokeWidth="0.75"
       />
 
       {/* Torso Top Lapel / Gold Bevel Line */}
       <path
         d="M8.2 16.2C9.4 14.8 11 14.3 12 14.3C13 14.3 14.6 14.8 15.8 16.2"
-        stroke="#fef08a"
-        strokeWidth="0.8"
+        stroke="#ffffff"
+        strokeWidth="0.9"
         strokeLinecap="round"
       />
 
@@ -519,46 +519,45 @@ export function RealisticCreditCard({ className = "w-4 h-4", ...props }) {
           <stop offset="100%" stopColor="#020617" stopOpacity="0" />
         </radialGradient>
 
-        {/* Brushed Obsidian Titanium Body */}
+        {/* Luminous Electric Sapphire & Royal Violet Titanium Body */}
         <linearGradient id="ccBodyGrad" x1="2" y1="4" x2="22" y2="19" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#312e81" />
-          <stop offset="25%" stopColor="#1e1b4b" />
-          <stop offset="55%" stopColor="#0f172a" />
-          <stop offset="85%" stopColor="#1e293b" />
-          <stop offset="100%" stopColor="#090d16" />
+          <stop offset="0%" stopColor="#38bdf8" />
+          <stop offset="30%" stopColor="#6366f1" />
+          <stop offset="65%" stopColor="#a855f7" />
+          <stop offset="100%" stopColor="#6b21a8" />
         </linearGradient>
 
         {/* Polished Metallic Bevel / Rim Light */}
         <linearGradient id="ccRimGrad" x1="1" y1="4" x2="23" y2="20" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="30%" stopColor="#c084fc" stopOpacity="0.7" />
-          <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#e0e7ff" stopOpacity="0.9" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+          <stop offset="30%" stopColor="#f0abfc" stopOpacity="0.85" />
+          <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
         </linearGradient>
 
         {/* Diagonal Specular Anisotropic Sheen */}
         <linearGradient id="ccSheenGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
-          <stop offset="35%" stopColor="#ffffff" stopOpacity="0.1" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+          <stop offset="35%" stopColor="#ffffff" stopOpacity="0.15" />
           <stop offset="50%" stopColor="#ffffff" stopOpacity="0" />
-          <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.05" />
+          <stop offset="70%" stopColor="#38bdf8" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.1" />
         </linearGradient>
 
         {/* Gold EMV Microchip Gradients */}
         <linearGradient id="ccChipGold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#fef08a" />
-          <stop offset="35%" stopColor="#facc15" />
-          <stop offset="70%" stopColor="#eab308" />
-          <stop offset="100%" stopColor="#a16207" />
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="25%" stopColor="#fef08a" />
+          <stop offset="60%" stopColor="#facc15" />
+          <stop offset="100%" stopColor="#ca8a04" />
         </linearGradient>
 
         {/* Holographic Prismatic Badge */}
         <linearGradient id="ccHoloGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.85" />
-          <stop offset="33%" stopColor="#fbbf24" stopOpacity="0.85" />
-          <stop offset="66%" stopColor="#34d399" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.85" />
+          <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.9" />
+          <stop offset="33%" stopColor="#fbbf24" stopOpacity="0.9" />
+          <stop offset="66%" stopColor="#34d399" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#38bdf8" stopOpacity="0.9" />
         </linearGradient>
       </defs>
 
@@ -566,7 +565,7 @@ export function RealisticCreditCard({ className = "w-4 h-4", ...props }) {
       <ellipse cx="12" cy="20.8" rx="8.5" ry="1.6" fill="url(#ccDropShadow)" />
 
       {/* Card 3D Thickness Edge (Bottom Bevel) */}
-      <rect x="2" y="6.8" width="20" height="12.8" rx="2.2" fill="#030712" />
+      <rect x="2" y="6.8" width="20" height="12.8" rx="2.2" fill="#3b0764" />
 
       {/* Card Main Face */}
       <rect
@@ -577,7 +576,7 @@ export function RealisticCreditCard({ className = "w-4 h-4", ...props }) {
         rx="2.2"
         fill="url(#ccBodyGrad)"
         stroke="url(#ccRimGrad)"
-        strokeWidth="0.65"
+        strokeWidth="0.8"
       />
 
       {/* Diagonal Light Streak Reflection */}
