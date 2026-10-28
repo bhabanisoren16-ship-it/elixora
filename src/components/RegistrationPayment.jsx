@@ -83,6 +83,17 @@ export default function RegistrationPayment({ onPassGenerated }) {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Security: Whitelist image formats and limit raw size
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrors((prev) => ({ ...prev, screenshot: 'Invalid file format. Only JPG, PNG, or WEBP images allowed.' }));
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setErrors((prev) => ({ ...prev, screenshot: 'File size too large. Maximum allowed size is 10MB.' }));
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const img = new Image();
@@ -131,6 +142,19 @@ export default function RegistrationPayment({ onPassGenerated }) {
       newErrors.utrNumber = 'UPI Reference / UTR Number is compulsory to proceed';
     } else if (formData.utrNumber.trim().length < 8) {
       newErrors.utrNumber = 'Please enter a valid 12-digit UPI UTR / Ref Number';
+    } else {
+      // Security: Duplicate UTR verification against known registered passes
+      try {
+        const existing = adminStore.getRegistrations();
+        const cleanUtr = formData.utrNumber.trim().toUpperCase();
+        const cleanRoll = formData.rollNo.trim().toUpperCase();
+        const isDup = existing.some(
+          (r) => r.utrNumber && r.utrNumber.trim().toUpperCase() === cleanUtr && r.rollNo && r.rollNo.trim().toUpperCase() !== cleanRoll
+        );
+        if (isDup) {
+          newErrors.utrNumber = 'This UPI UTR number has already been registered with another student pass.';
+        }
+      } catch (e) {}
     }
     if (!screenshotPreview) {
       newErrors.screenshot = 'Payment screenshot is compulsory to proceed. Please upload receipt proof.';
@@ -205,14 +229,14 @@ export default function RegistrationPayment({ onPassGenerated }) {
     <section id="register" className="relative py-8 sm:py-12 px-3 sm:px-5 lg:px-6 max-w-[92rem] 2xl:max-w-[98rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
 
       {/* Header */}
-      <div className="text-center mb-5 sm:mb-7 scroll-pop-target">
+      <div data-reveal className="text-center mb-5 sm:mb-7 scroll-pop-target">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Junior Registration &amp; Pass Checkout
         </h2>
       </div>
 
       {/* UNIFIED WIDESCREEN RECTANGLE CARD CONTAINER (FULL WIDTH WITH COMPACT HEIGHT) */}
-      <div className="w-full max-w-[86rem] xl:max-w-[90rem] 2xl:max-w-[94rem] mx-auto rounded-3xl py-4 sm:py-5 px-5 sm:px-8 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden transition-all duration-300 scroll-pop-target">
+      <div data-reveal className="w-full max-w-[86rem] xl:max-w-[90rem] 2xl:max-w-[94rem] mx-auto rounded-3xl py-4 sm:py-5 px-5 sm:px-8 border border-white/20 bg-obsidian-950/60 backdrop-blur-2xl shadow-[0_25px_60px_rgba(0,0,0,0.6),0_0_40px_rgba(6,182,212,0.12)] relative overflow-hidden transition-all duration-300 scroll-pop-target">
 
         {/* Subtle Ambient Glow Blobs inside the card */}
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyber-cyan/15 rounded-full blur-3xl pointer-events-none" />

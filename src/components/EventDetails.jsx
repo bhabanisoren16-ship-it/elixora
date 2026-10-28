@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Navigation, ExternalLink, Download, Compass, Info } from 'lucide-react';
-import { RealisticCalendar, RealisticClock, RealisticMapPin } from './RealisticIcons';
+import { RealisticCalendar, RealisticClock, RealisticMapPin, RealisticCompass, RealisticNavigation, RealisticCalendarLogoBadge, RealisticLocationLogoBadge } from './RealisticIcons';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';
@@ -49,9 +49,12 @@ export default function EventDetails() {
   };
 
   return (
-    <section id="details" className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-3 sm:px-5 lg:px-8 max-w-[98rem] 2xl:max-w-[108rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24">
+    <section 
+      id="details" 
+      className="relative pt-8 sm:pt-12 pb-10 sm:pb-14 px-3 sm:px-5 lg:px-8 max-w-[98rem] 2xl:max-w-[108rem] mx-auto z-10 scroll-mt-20 sm:scroll-mt-24"
+    >
       {/* Section Header */}
-      <div className="text-center mb-6 sm:mb-8">
+      <div data-reveal className="text-center mb-6 sm:mb-8">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           Event Details &amp; Blueprint
         </h2>
@@ -62,6 +65,7 @@ export default function EventDetails() {
 
       {/* Box 1: Schedule & Venue Blueprint (Translucent Glass Screen with Light Spotlight) */}
       <div 
+        data-reveal
         onMouseMove={handleMouseMove}
         className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-6 lg:p-7 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 mb-12 sm:mb-20"
       >
@@ -91,8 +95,8 @@ export default function EventDetails() {
             <div className="card-top-light-beam" />
 
             <div className="relative z-10">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
-                <RealisticCalendar className="w-6 h-6 drop-shadow-md" />
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] backdrop-blur-xl p-1 mb-3 group-hover:scale-105 transition-all">
+                <RealisticCalendar className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
               </div>
 
               <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase block mb-1">
@@ -104,7 +108,9 @@ export default function EventDetails() {
 
               <div className="space-y-2 mb-3.5">
                 <div className="flex items-center gap-3 p-2.5 sm:p-3 rounded-xl bg-white/[0.08] backdrop-blur-md border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
-                  <RealisticClock className="w-4 h-4 shrink-0 drop-shadow-sm" />
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-b from-cyan-500/30 via-cyan-950/60 to-obsidian-950 border border-cyan-400/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+                    <RealisticClock className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
+                  </div>
                   <div>
                     <div className="text-xs text-cyan-200 font-outfit font-bold tracking-wide">{timingLabel}</div>
                     <div className="text-sm sm:text-base font-outfit font-black text-white">{timeRange}</div>
@@ -122,7 +128,7 @@ export default function EventDetails() {
                 onClick={() => soundController.playClick()}
                 className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500/40 via-sky-500/35 to-violet-500/35 hover:from-cyan-500/60 hover:to-sky-500/60 border border-cyan-300/60 text-white font-outfit font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_18px_rgba(0,229,255,0.3)] backdrop-blur-md"
               >
-                <RealisticCalendar className="w-4 h-4" />
+                <RealisticCalendar className="w-4 h-4 drop-shadow-sm" />
                 <span>Add to Google Calendar</span>
                 <ExternalLink className="w-3.5 h-3.5 opacity-90" />
               </a>
@@ -151,8 +157,8 @@ export default function EventDetails() {
             <div className="card-top-light-beam" />
 
             <div className="relative z-10">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-cyan-400/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 mb-3 shadow-[0_0_18px_rgba(0,229,255,0.35)] backdrop-blur-md">
-                <RealisticMapPin className="w-6 h-6 drop-shadow-md" />
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] backdrop-blur-xl p-1 mb-3 group-hover:scale-105 transition-all">
+                <RealisticMapPin className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
               </div>
 
               <span className="text-xs font-outfit text-cyan-300 font-black tracking-widest uppercase block mb-1">
@@ -175,8 +181,8 @@ export default function EventDetails() {
                 <div className="relative z-10 flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
                   <div className="relative flex items-center justify-center shrink-0">
                     <span className="absolute w-5 h-5 rounded-full bg-cyan-400/50 animate-ping" />
-                    <div className="w-7 h-7 rounded-full bg-cyan-500/40 border-2 border-cyan-300 flex items-center justify-center text-cyan-200 shadow-[0_0_14px_rgba(6,182,212,0.8)]">
-                      <MapPin className="w-3.5 h-3.5 animate-bounce" />
+                    <div className="w-7 h-7 rounded-full bg-cyan-500/40 border-2 border-cyan-300 flex items-center justify-center shadow-[0_0_14px_rgba(6,182,212,0.8)]">
+                      <RealisticMapPin className="w-4 h-4 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
                     </div>
                   </div>
                   <div className="min-w-0">
@@ -191,7 +197,7 @@ export default function EventDetails() {
 
                 {/* Compass marker */}
                 <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-mono text-cyan-200 bg-white/[0.12] px-2 sm:px-2.5 py-1 rounded-lg border border-white/25 backdrop-blur-md font-bold shadow-sm shrink-0 whitespace-nowrap">
-                  <Compass className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <RealisticCompass className="w-3.5 h-3.5 shrink-0 drop-shadow-sm" />
                   <span>{venueGateTag}</span>
                 </div>
               </div>
@@ -199,7 +205,7 @@ export default function EventDetails() {
               {/* Navigation Pointers */}
               <div className="grid grid-cols-2 gap-2 sm:gap-2.5 text-xs">
                 <div className="flex items-center gap-2 text-white bg-white/[0.08] backdrop-blur-md p-2 rounded-xl border border-white/20 font-outfit font-bold shadow-sm">
-                  <Navigation className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <RealisticNavigation className="w-3.5 h-3.5 text-cyan-400 shrink-0 drop-shadow-sm" />
                   <span className="truncate">{transitPoint1}</span>
                 </div>
                 <div className="flex items-center gap-2 text-white bg-white/[0.08] backdrop-blur-md p-2 rounded-xl border border-white/20 font-outfit font-bold shadow-sm">
@@ -217,7 +223,7 @@ export default function EventDetails() {
                 onClick={() => soundController.playClick()}
                 className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500/40 via-sky-500/35 to-violet-500/35 hover:from-cyan-500/60 hover:to-violet-500/60 border border-cyan-300/60 text-white font-outfit font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] shadow-[0_4px_18px_rgba(0,229,255,0.3)] backdrop-blur-md"
               >
-                <Navigation className="w-4 h-4 text-cyan-200" />
+                <RealisticNavigation className="w-4 h-4 text-cyan-200 drop-shadow-sm" />
                 <span>Open in Google Maps Navigation</span>
                 <ExternalLink className="w-3.5 h-3.5 opacity-90" />
               </a>
@@ -254,7 +260,7 @@ export default function EventDetails() {
       </div>
 
       {/* Gap Header: For Juniors Only */}
-      <div className="text-center pt-12 sm:pt-24 pb-3 sm:pb-4 relative z-10">
+      <div data-reveal className="text-center pt-12 sm:pt-24 pb-3 sm:pb-4 relative z-10">
         <h2 className="font-outfit font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
           For Juniors Only
         </h2>
@@ -262,6 +268,7 @@ export default function EventDetails() {
 
       {/* Box 2: Dedicated Dress Costume Box (Translucent Glass Screen with Light Spotlight) */}
       <div 
+        data-reveal
         id="dress-code" 
         onMouseMove={handleMouseMove}
         className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-5 lg:p-6 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-mt-20 sm:scroll-mt-24 w-full"

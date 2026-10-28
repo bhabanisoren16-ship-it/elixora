@@ -20,7 +20,6 @@ import {
   X, 
   Check, 
   Copy, 
-  Sparkles, 
   ChevronRight, 
   Megaphone, 
   BadgeCheck, 
@@ -41,6 +40,7 @@ import {
 import { adminStore } from '../utils/adminStore';
 import { soundController } from '../utils/audio';
 import { deleteRegistrationFromSupabase } from '../services/supabaseService';
+import { RealisticCalendar, RealisticClock, RealisticMapPin, RealisticCompass, RealisticNavigation, RealisticCalendarLogoBadge, RealisticLocationLogoBadge } from './RealisticIcons';
 
 export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   // Authentication State
@@ -50,6 +50,20 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   const [authError, setAuthError] = useState('');
   const [isVerifyingAuth, setIsVerifyingAuth] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [lockout, setLockout] = useState(() => adminStore.getLockoutStatus?.() || { isLocked: false, remainingSeconds: 0, attemptsLeft: 5 });
+
+  useEffect(() => {
+    if (!lockout.isLocked) return;
+    const interval = setInterval(() => {
+      const status = adminStore.getLockoutStatus?.() || { isLocked: false, remainingSeconds: 0, attemptsLeft: 5 };
+      setLockout(status);
+      if (!status.isLocked) {
+        clearInterval(interval);
+        setAuthError('');
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockout.isLocked]);
 
   // Active Tab: 'overview' | 'registrations' | 'roster' | 'settings'
   const [activeTab, setActiveTab] = useState('overview');
@@ -208,9 +222,17 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     setTimeout(() => setActionSuccessMsg(''), 3000);
   };
 
-  // Login handler
+  // Login handler with brute-force lockout guard
   const handleLogin = (e) => {
     e?.preventDefault();
+    const currentLockout = adminStore.getLockoutStatus?.() || { isLocked: false };
+    if (currentLockout.isLocked) {
+      setLockout(currentLockout);
+      setAuthError(`Security Lockout Active: Too many failed attempts. Try again in ${Math.ceil(currentLockout.remainingSeconds / 60)} minute(s).`);
+      soundController.playError?.();
+      return;
+    }
+
     if (!passcode.trim()) {
       setAuthError('Please enter the administrative master passcode.');
       return;
@@ -221,13 +243,16 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
     setTimeout(() => {
       setIsVerifyingAuth(false);
-      const ok = adminStore.login(passcode, rememberMe);
-      if (ok) {
+      const res = adminStore.login(passcode, rememberMe);
+      if (res && res.success) {
         setIsAuthenticated(true);
         soundController.playSuccess?.();
         notifySuccess('Authenticated successfully. Welcome to Command Nexus!');
       } else {
-        setAuthError('Invalid Master Passcode. Access Denied.');
+        const status = adminStore.getLockoutStatus?.() || { isLocked: false };
+        setLockout(status);
+        const errMsg = res?.message || 'Invalid Master Passcode. Access Denied.';
+        setAuthError(errMsg);
         soundController.playError?.();
       }
     }, 400);
@@ -624,9 +649,10 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                   type={showPasscode ? "text" : "password"}
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
-                  placeholder="Enter Admin Password..."
-                  className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-obsidian-950 border border-cyan-500/40 focus:border-cyan-400 text-white placeholder-slate-500 font-mono tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)]"
-                  autoFocus
+                  disabled={lockout.isLocked}
+                  placeholder={lockout.isLocked ? `Locked (${lockout.remainingSeconds}s remaining)` : "Enter Admin Password..."}
+                  className="w-full pl-12 pr-12 py-3.5 rounded-xl bg-obsidian-950 border border-cyan-500/40 focus:border-cyan-400 text-white placeholder-slate-500 font-mono tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-all shadow-[0_0_15px_rgba(6,182,212,0.15)] disabled:opacity-40 disabled:cursor-not-allowed"
+                  autoFocus={!lockout.isLocked}
                 />
                 <button
                   type="button"
@@ -660,10 +686,15 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
               <button
                 type="submit"
-                disabled={isVerifyingAuth}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-cyber-violet hover:from-cyan-400 hover:to-purple-500 text-white font-outfit font-bold text-sm tracking-wider uppercase transition-all shadow-neon-cyan flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-50"
+                disabled={isVerifyingAuth || lockout.isLocked}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-500 to-cyber-violet hover:from-cyan-400 hover:to-purple-500 text-white font-outfit font-bold text-sm tracking-wider uppercase transition-all shadow-neon-cyan flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {isVerifyingAuth ? (
+                {lockout.isLocked ? (
+                  <>
+                    <Lock className="w-4 h-4 text-rose-400" />
+                    <span>LOCKED ({Math.ceil(lockout.remainingSeconds)}S REMAINING)</span>
+                  </>
+                ) : isVerifyingAuth ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin text-white" />
                     <span>VERIFYING PASSWORD...</span>
@@ -898,9 +929,8 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
                     {/* 5. Food Catering */}
                     <div className="p-4 rounded-2xl bg-gradient-to-br from-pink-500/10 to-transparent border border-pink-500/30 relative overflow-hidden">
-                      <div className="flex items-center justify-between text-pink-400 text-xs font-semibold mb-1">
+                      <div className="text-pink-400 text-xs font-semibold mb-1">
                         <span>Food Count</span>
-                        <Sparkles className="w-4 h-4" />
                       </div>
                       <div className="text-xl sm:text-2xl font-extrabold text-white font-outfit">
                         {stats.veg} <span className="text-xs text-slate-400 font-normal">Veg</span> / {stats.nonVeg} <span className="text-xs text-slate-400 font-normal">Non</span>
@@ -935,7 +965,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                       {/* Live Schedule & Venue Status Ribbon */}
                       <div className="p-3.5 rounded-xl bg-obsidian-900/70 border border-white/10 flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5 overflow-hidden">
-                          <Calendar className={`w-4 h-4 shrink-0 ${settings.isDateVenueAnnounced ? 'text-emerald-400' : 'text-amber-400'}`} />
+                          <RealisticCalendar className="w-5 h-5 shrink-0 drop-shadow-sm" />
                           <div className="text-xs text-slate-200 truncate">
                             <span className="font-bold text-white mr-2">SCHEDULE &amp; VENUE STATUS:</span>
                             {settings.isDateVenueAnnounced ? (
@@ -1031,7 +1061,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                             <th className="py-2.5 px-3">Ticket ID</th>
                             <th className="py-2.5 px-3">Photo</th>
                             <th className="py-2.5 px-3">Status</th>
-                            <th className="py-2.5 px-3">Gate</th>
                             <th className="py-2.5 px-3 text-right">Actions</th>
                           </tr>
                         </thead>
@@ -1096,13 +1125,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                     <XCircle className="w-3.5 h-3.5" />
                                     Rejected
                                   </span>
-                                )}
-                              </td>
-                              <td className="py-3 px-3">
-                                {item.checkedIn ? (
-                                  <span className="text-emerald-400 font-mono text-[11px] font-bold">Checked In</span>
-                                ) : (
-                                  <span className="text-slate-500 font-mono text-[11px]">Pending Entry</span>
                                 )}
                               </td>
                               <td className="py-3 px-3 text-right">
@@ -1261,14 +1283,13 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                             <th className="py-3 px-3.5">Payment &amp; UTR</th>
                             <th className="py-3 px-3.5">Diet</th>
                             <th className="py-3 px-3.5">Approval Status</th>
-                            <th className="py-3 px-3.5">Gate Entry</th>
                             <th className="py-3 px-3.5 text-right">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                           {registrations.length === 0 ? (
                             <tr>
-                              <td colSpan={9} className="py-16 text-center text-slate-400">
+                              <td colSpan={8} className="py-16 text-center text-slate-400">
                                 <div className="w-12 h-12 mx-auto mb-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.15)]">
                                   <Ticket className="w-6 h-6" />
                                 </div>
@@ -1476,24 +1497,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                         </span>
                                       )}
                                     </div>
-                                  )}
-                                </td>
-
-                                {/* 7. Gate Entry */}
-                                <td className="py-3 px-3.5">
-                                  <button
-                                    onClick={() => handleToggleCheckIn(item.ticketId)}
-                                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                                      item.checkedIn
-                                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
-                                        : 'bg-white/5 text-slate-400 border border-white/10 hover:text-white hover:bg-white/10'
-                                    }`}
-                                  >
-                                    <Check className={`w-3 h-3 ${item.checkedIn ? 'text-emerald-400' : 'text-slate-500'}`} />
-                                    <span>{item.checkedIn ? 'Checked In' : 'Check In'}</span>
-                                  </button>
-                                  {item.checkedInAt && (
-                                    <span className="text-[10px] text-slate-400 block mt-0.5 font-mono">{item.checkedInAt}</span>
                                   )}
                                 </td>
 
@@ -1752,8 +1755,8 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                     <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/70 border border-white/10 space-y-4">
                       <div className="flex items-center justify-between pb-3 border-b border-white/10">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300">
-                            <Calendar className="w-4 h-4" />
+                          <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center p-1 shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+                            <RealisticCalendar className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
                           </div>
                           <div>
                             <h3 className="font-outfit font-bold text-base text-white">Event Date &amp; Timing Schedule</h3>
@@ -1837,8 +1840,8 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                     <div className="p-5 sm:p-6 rounded-2xl bg-obsidian-950/70 border border-white/10 space-y-4">
                       <div className="flex items-center justify-between pb-3 border-b border-white/10">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-xl bg-violet-500/20 border border-violet-400/40 flex items-center justify-center text-violet-300">
-                            <MapPin className="w-4 h-4" />
+                          <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center p-1 shadow-[0_0_12px_rgba(6,182,212,0.4)]">
+                            <RealisticMapPin className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
                           </div>
                           <div>
                             <h3 className="font-outfit font-bold text-base text-white">Venue Location, Arena &amp; Navigation</h3>
@@ -1969,7 +1972,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                       <div className="flex items-center justify-between pb-3 border-b border-white/10">
                         <div className="flex items-center gap-2.5">
                           <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
-                            <Sparkles className="w-4 h-4" />
+                            <SlidersHorizontal className="w-4 h-4" />
                           </div>
                           <div>
                             <h3 className="font-outfit font-bold text-base text-white">Locked Teaser Screen Customization</h3>
@@ -2122,57 +2125,111 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                           : !settings.isDateVenueAnnounced;
 
                       return (
-                        <div className="relative rounded-2xl p-4 sm:p-6 bg-obsidian-900/90 border border-white/15 overflow-hidden">
+                        <div className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 translucent-glass-screen light-spotlight-card border border-white/20 shadow-[0_12px_45px_0_rgba(0,0,0,0.4),0_0_35px_rgba(0,229,255,0.2)] overflow-hidden">
+                          <div className="light-spotlight-overlay" />
+                          <div className="light-spotlight-border" />
+                          <div className="card-top-light-beam" />
+                          <div className="light-glint-sweep" />
+
+                          {/* Ambient glowing aurora light beacons */}
+                          <div className="absolute -top-20 -left-20 w-72 h-72 bg-cyan-400/20 rounded-full blur-[80px] pointer-events-none" />
+                          <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-purple-500/20 rounded-full blur-[80px] pointer-events-none" />
+
                           {/* Cards underneath */}
-                          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${
-                            isSimulatedLocked ? 'filter blur-[7px] opacity-70 pointer-events-none select-none max-h-[280px] overflow-hidden' : ''
+                          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 relative z-10 ${
+                            isSimulatedLocked ? 'filter blur-[7px] opacity-70 pointer-events-none select-none max-h-[320px] overflow-hidden' : ''
                           }`}>
                             {/* Date Card Preview */}
-                            <div className="p-4 rounded-xl bg-white/[0.05] border border-cyan-400/30 flex flex-col justify-between">
-                              <div>
-                                <div className="w-8 h-8 rounded-lg bg-cyan-400/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 mb-2">
-                                  <Calendar className="w-4 h-4" />
+                            <div className="rounded-2xl p-4 sm:p-5 flex flex-col justify-between translucent-glass-card light-spotlight-card border border-cyan-400/40 hover:border-cyan-300/60 bg-white/[0.06] backdrop-blur-xl relative overflow-hidden transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.35)] group">
+                              <div className="light-spotlight-overlay" />
+                              <div className="light-spotlight-border" />
+                              <div className="card-top-light-beam" />
+
+                              <div className="relative z-10">
+                                {/* 3D Realistic Icon Badge Container */}
+                                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_18px_rgba(6,182,212,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] mb-3 p-1 transition-transform group-hover:scale-105">
+                                  <RealisticCalendar className="w-7 h-7 sm:w-7.5 sm:h-7.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                                 </div>
-                                <span className="text-[10px] text-cyan-300 font-mono font-bold uppercase tracking-wider block">WHEN TO ARRIVE</span>
-                                <h4 className="font-outfit font-black text-lg text-white mt-0.5 mb-2">{scheduleDraft.eventHumanDate}</h4>
-                                <div className="p-2.5 rounded-lg bg-white/[0.08] border border-white/10 flex items-center gap-2 text-xs">
-                                  <Clock className="w-3.5 h-3.5 text-cyan-400" />
-                                  <div>
-                                    <div className="text-[10px] text-cyan-200">{scheduleDraft.eventTimingLabel}</div>
-                                    <div className="font-bold text-white text-xs">{scheduleDraft.eventTimeRange}</div>
+
+                                <span className="text-[10px] sm:text-xs text-cyan-300 font-outfit font-black uppercase tracking-widest block mb-1">
+                                  WHEN TO ARRIVE
+                                </span>
+                                <h4 className="font-outfit font-black text-xl sm:text-2xl text-white tracking-tight mb-2.5">
+                                  {scheduleDraft.eventHumanDate}
+                                </h4>
+
+                                <div className="space-y-2 mb-3.5">
+                                  <div className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white/[0.08] backdrop-blur-md border border-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-b from-cyan-500/30 via-cyan-950/60 to-obsidian-950 border border-cyan-400/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(6,182,212,0.3)]">
+                                      <RealisticClock className="w-5 h-5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
+                                    </div>
+                                    <div>
+                                      <div className="text-[10px] sm:text-xs text-cyan-200 font-outfit font-bold tracking-wide">{scheduleDraft.eventTimingLabel}</div>
+                                      <div className="font-outfit font-black text-white text-xs sm:text-sm">{scheduleDraft.eventTimeRange}</div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                              <div className="mt-4 pt-3 border-t border-white/10 space-y-1.5 text-xs">
-                                <div className="py-1.5 px-3 rounded-lg bg-cyan-500/30 border border-cyan-400/40 text-center text-cyan-200 font-bold text-[11px]">
-                                  + Add to Google Calendar
+
+                              <div className="relative z-10 mt-auto pt-3 border-t border-white/15">
+                                <div className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500/40 via-sky-500/35 to-violet-500/35 hover:from-cyan-500/60 hover:to-sky-500/60 border border-cyan-300/60 text-white font-outfit font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_4px_18px_rgba(0,229,255,0.3)] backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02]">
+                                  <RealisticCalendar className="w-4 h-4 drop-shadow-sm" />
+                                  <span>+ Add to Google Calendar</span>
                                 </div>
                               </div>
                             </div>
 
                             {/* Venue Card Preview */}
-                            <div className="p-4 rounded-xl bg-white/[0.05] border border-cyan-400/30 flex flex-col justify-between">
-                              <div>
-                                <div className="w-8 h-8 rounded-lg bg-cyan-400/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 mb-2">
-                                  <MapPin className="w-4 h-4" />
+                            <div className="rounded-2xl p-4 sm:p-5 flex flex-col justify-between translucent-glass-card light-spotlight-card border border-cyan-400/40 hover:border-cyan-300/60 bg-white/[0.06] backdrop-blur-xl relative overflow-hidden transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.35)] group">
+                              <div className="light-spotlight-overlay" />
+                              <div className="light-spotlight-border" />
+                              <div className="card-top-light-beam" />
+
+                              <div className="relative z-10">
+                                {/* 3D Realistic Icon Badge Container */}
+                                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_18px_rgba(6,182,212,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] mb-3 p-1 transition-transform group-hover:scale-105">
+                                  <RealisticMapPin className="w-7 h-7 sm:w-7.5 sm:h-7.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                                 </div>
-                                <span className="text-[10px] text-cyan-300 font-mono font-bold uppercase tracking-wider block">LOCATION &amp; BLUEPRINT</span>
-                                <h4 className="font-outfit font-black text-lg text-white mt-0.5 leading-tight">{scheduleDraft.venueTitle}</h4>
-                                <p className="text-xs text-slate-300 mt-1 mb-2">{scheduleDraft.venueSubtitle}</p>
+
+                                <span className="text-[10px] sm:text-xs text-cyan-300 font-outfit font-black uppercase tracking-widest block mb-1">
+                                  LOCATION &amp; BLUEPRINT
+                                </span>
+                                <h4 className="font-outfit font-black text-xl sm:text-2xl text-white tracking-tight mb-1 leading-snug">
+                                  {scheduleDraft.venueTitle}
+                                </h4>
+                                <p className="text-xs sm:text-sm text-slate-200 font-outfit font-bold mb-3 subheading-readable leading-relaxed">
+                                  {scheduleDraft.venueSubtitle}
+                                </p>
                                 
-                                <div className="p-2.5 rounded-lg bg-white/[0.08] border border-white/10 flex items-center justify-between text-xs font-mono">
-                                  <div>
-                                    <div className="text-white font-bold text-[11px]">{scheduleDraft.venueSectorTag}</div>
-                                    <div className="text-cyan-300 text-[10px]">{scheduleDraft.venueCoordinates}</div>
+                                {/* Radar Location Box */}
+                                <div className="relative rounded-xl overflow-hidden border border-cyan-400/50 bg-white/[0.08] backdrop-blur-md p-2.5 sm:p-3 mb-3 flex items-center justify-between gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]">
+                                  <div className="absolute inset-0 cyber-grid opacity-25 pointer-events-none" />
+                                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-950/30 via-transparent to-transparent pointer-events-none" />
+
+                                  <div className="relative z-10 flex items-center gap-2.5 min-w-0">
+                                    <div className="relative flex items-center justify-center shrink-0">
+                                      <span className="absolute w-5 h-5 rounded-full bg-cyan-400/50 animate-ping" />
+                                      <div className="w-7 h-7 rounded-full bg-cyan-500/40 border-2 border-cyan-300 flex items-center justify-center shadow-[0_0_14px_rgba(6,182,212,0.8)]">
+                                        <RealisticMapPin className="w-4 h-4 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                                      </div>
+                                    </div>
+                                    <div className="min-w-0">
+                                      <div className="text-white font-outfit font-black text-xs sm:text-sm truncate">{scheduleDraft.venueSectorTag}</div>
+                                      <div className="text-cyan-300 text-[10px] sm:text-xs font-mono font-bold tracking-wide mt-0.5">{scheduleDraft.venueCoordinates}</div>
+                                    </div>
                                   </div>
-                                  <div className="px-2 py-0.5 rounded bg-white/10 text-cyan-200 text-[10px]">
-                                    {scheduleDraft.venueGateTag}
+
+                                  <div className="relative z-10 flex items-center gap-1.5 text-[10px] font-mono text-cyan-200 bg-white/[0.12] px-2 py-1 rounded-lg border border-white/25 backdrop-blur-md font-bold shrink-0">
+                                    <RealisticCompass className="w-3.5 h-3.5 shrink-0 drop-shadow-sm" />
+                                    <span>{scheduleDraft.venueGateTag}</span>
                                   </div>
                                 </div>
                               </div>
-                              <div className="mt-4 pt-3 border-t border-white/10 text-xs">
-                                <div className="py-1.5 px-3 rounded-lg bg-white/10 border border-white/15 text-center text-slate-200 font-bold text-[11px]">
-                                  Open in Google Maps Navigation
+
+                              <div className="relative z-10 mt-auto pt-3 border-t border-white/15">
+                                <div className="py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500/30 via-slate-800/80 to-obsidian-950 hover:from-cyan-500/50 hover:to-slate-800/90 border border-cyan-400/40 text-white font-outfit font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(0,0,0,0.5)] backdrop-blur-md cursor-pointer transition-all hover:scale-[1.02]">
+                                  <RealisticNavigation className="w-4 h-4 drop-shadow-sm text-cyan-200" />
+                                  <span>Open in Google Maps Navigation</span>
                                 </div>
                               </div>
                             </div>
@@ -2192,7 +2249,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                 {scheduleDraft.teaserMessage}
                               </p>
                               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/[0.08] border border-white/20 text-white font-outfit font-bold text-[11px]">
-                                <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
                                 <span className="text-cyan-200">{scheduleDraft.teaserPill}</span>
                               </div>
                             </div>
@@ -2322,7 +2378,6 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                           onClick={() => setShowScriptModal(true)}
                           className="text-cyan-400 hover:text-cyan-300 underline font-semibold flex items-center gap-1 cursor-pointer"
                         >
-                          <Sparkles className="w-3.5 h-3.5" />
                           <span>How to set up Google Sheets Webhook in 2 minutes (Click for Code)</span>
                         </button>
 

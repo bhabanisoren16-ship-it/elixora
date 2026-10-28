@@ -8,7 +8,7 @@ import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
 import CinematicIntro from './components/CinematicIntro';
-import { SciFiOrbitalLoader, CelestialCurtain, initGlobalScrambleListener } from './innovission';
+import { SciFiOrbitalLoader, CelestialCurtain, initGlobalScrambleListener, initInnovisionScroll, destroyInnovisionScroll, refreshInnovisionScroll } from './innovission';
 import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
 
 import HolographicTicketModal from './components/HolographicTicketModal';
@@ -108,13 +108,13 @@ export default function App() {
     return () => cleanupScramble?.();
   }, []);
 
-  // Initialize high-performance buttery smooth scrolling (Lenis)
+  // Initialize exact INNOVISION 2026 Scroll Engine (smooth inertia wheel + hero scrub parallax + data-reveal card transitions)
   useEffect(() => {
-    const lenis = initSmoothScroll();
-    return () => {
-      destroySmoothScroll();
-    };
-  }, []);
+    if (!showHomeLoadingPage && !showRefreshPage) {
+      const cleanup = initInnovisionScroll();
+      return () => cleanup?.();
+    }
+  }, [showHomeLoadingPage, showRefreshPage, showCurtain]);
 
 
   // Pause background smooth scroll when modals, admin portal, or loading screen are active
@@ -224,6 +224,7 @@ export default function App() {
 
   const handleCurtainComplete = useCallback(() => {
     setShowCurtain(false);
+    refreshInnovisionScroll();
   }, []);
 
   // When user clicks the ENTER button on the Home Screen Loading Page:
@@ -247,7 +248,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen w-full max-w-full overflow-x-hidden bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
+    <div className="relative min-h-screen w-full max-w-full overflow-x-clip bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
 
       {/* 0. Home Screen Loading Page (Celestial Orbital Planetary Gateway from Screenshot - STRICTLY requires user to click/press ENTER to open homepage) */}
       {showHomeLoadingPage && (
@@ -298,7 +299,7 @@ export default function App() {
       />
 
       {/* 3. Main Content Flow */}
-      <main className="relative z-10 flex flex-col w-full max-w-full overflow-x-hidden">
+      <main className="relative z-10 flex flex-col w-full max-w-full overflow-x-clip">
         {/* Hero Section */}
         <HeroSection
           onGrabPassClick={handleScrollToRegister}

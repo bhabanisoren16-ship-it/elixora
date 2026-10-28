@@ -803,7 +803,39 @@ export const adminStore = {
     }
   },
 
+  // Security: Check brute-force lockout status
+  getLockoutStatus() {
+    if (typeof localStorage === 'undefined') return { isLocked: false, remainingSeconds: 0, attemptsLeft: 5 };
+    try {
+      const record = JSON.parse(localStorage.getItem('elixora_admin_lockout') || '{}');
+      const now = Date.now();
+      const LOCKOUT_DURATION = 10 * 60 * 1000; // 10 minutes
+      if (record.isLocked && now - record.lockTime < LOCKOUT_DURATION) {
+        const remainingSeconds = Math.ceil((LOCKOUT_DURATION - (now - record.lockTime)) / 1000);
+        return { isLocked: true, remainingSeconds, attemptsLeft: 0 };
+      }
+      // Lockout expired or not locked
+      if (record.isLocked && now - record.lockTime >= LOCKOUT_DURATION) {
+        localStorage.removeItem('elixora_admin_lockout');
+      }
+      const attempts = record.attempts || 0;
+      return { isLocked: false, remainingSeconds: 0, attemptsLeft: Math.max(0, 5 - attempts) };
+    } catch (e) {
+      return { isLocked: false, remainingSeconds: 0, attemptsLeft: 5 };
+    }
+  },
+
   login(pin, remember = false) {
+    const lockout = this.getLockoutStatus();
+    if (lockout.isLocked) {
+      return { 
+        success: false, 
+        isLocked: true, 
+        remainingSeconds: lockout.remainingSeconds,
+        message: `Security Lockout: Too many failed passcode attempts. Please wait ${Math.ceil(lockout.remainingSeconds / 60)} minute(s).` 
+      };
+    }
+
     const settings = this.getSettings();
     const input = (pin || '').trim();
 
@@ -815,6 +847,8 @@ export const adminStore = {
 
     if (isValid) {
       try {
+        // Reset failed attempt counter on success
+        localStorage.removeItem('elixora_admin_lockout');
         sessionStorage.setItem(STORAGE_KEYS.AUTH, 'AUTHORIZED_ADMIN');
         sessionStorage.setItem('elixora_admin_token', input);
         if (remember) {
@@ -822,9 +856,41 @@ export const adminStore = {
           localStorage.setItem('elixora_admin_token', input);
         }
       } catch (e) {}
-      return true;
+      return { success: true };
     }
-    return false;
+
+    // Record failed attempt
+    try {
+      const record = JSON.parse(localStorage.getItem('elixora_admin_lockout') || '{}');
+      const attempts = (record.attempts || 0) + 1;
+      const MAX_ATTEMPTS = 5;
+      if (attempts >= MAX_ATTEMPTS) {
+        localStorage.setItem('elixora_admin_lockout', JSON.stringify({
+          isLocked: true,
+          lockTime: Date.now(),
+          attempts,
+        }));
+        return {
+          success: false,
+          isLocked: true,
+          remainingSeconds: 600,
+          message: 'Security Alert: 5 consecutive failed attempts. Admin Portal temporarily locked for 10 minutes.'
+        };
+      } else {
+        localStorage.setItem('elixora_admin_lockout', JSON.stringify({
+          isLocked: false,
+          attempts,
+        }));
+        return {
+          success: false,
+          isLocked: false,
+          attemptsLeft: MAX_ATTEMPTS - attempts,
+          message: `Invalid Master Passcode. ${MAX_ATTEMPTS - attempts} attempt(s) remaining before security lockout.`
+        };
+      }
+    } catch (e) {
+      return { success: false, message: 'Invalid Master Passcode. Access Denied.' };
+    }
   },
 
   logout() {

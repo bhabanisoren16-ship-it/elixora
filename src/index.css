@@ -64,7 +64,7 @@
 html {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden !important;
+  overflow-x: clip;
   scroll-padding-top: 6.5rem;
   /* Extra clearance for 2-row mobile fixed header */
   -webkit-text-size-adjust: 100%;
@@ -83,7 +83,7 @@ body {
   width: 100%;
   max-width: 100%;
   min-height: 100%;
-  overflow-x: hidden !important;
+  overflow-x: clip;
   position: relative;
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
@@ -92,7 +92,7 @@ body {
 #root {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   touch-action: pan-y;
 }
