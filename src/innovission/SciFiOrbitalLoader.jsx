@@ -270,7 +270,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE
          ========================================================================= */}
       <div
-        className="relative my-auto flex items-center justify-center w-[86vw] h-[86vw] max-w-[360px] max-h-[360px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] scale-[1.14] sm:scale-100 transition-transform duration-300"
+        className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[245px] max-h-[245px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] transition-transform duration-300"
       >
         {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
         <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
@@ -394,11 +394,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           <div className="relative z-10 flex flex-col items-center justify-center text-center">
             <span
               ref={countRef}
-              className="font-outfit font-black text-3xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]"
+              className="font-outfit font-black text-2xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]"
             >
               000
             </span>
-            <span className="mt-1 font-mono text-[9px] sm:text-[10px] tracking-[0.35em] text-cyan-300 font-bold uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
+            <span className="mt-0.5 sm:mt-1 font-mono text-[8px] sm:text-[10px] tracking-[0.28em] sm:tracking-[0.35em] text-cyan-300 font-bold uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
               PERCENT
             </span>
           </div>
