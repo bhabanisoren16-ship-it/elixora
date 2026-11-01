@@ -398,7 +398,9 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
 
         {/* Center Cosmic Starfield Disc with Live Numeric Counter */}
         <div
-          className="loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10"
+          onClick={handleEnterHomepage}
+          className="loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10 cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+          title="Click to enter ELIXORA 2.0"
           style={{
             background: 'radial-gradient(circle at center, #180e38 0%, #0a0718 70%, #040508 100%)',
           }}
