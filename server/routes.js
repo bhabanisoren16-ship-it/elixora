@@ -16,7 +16,9 @@ import {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DATA_DIR = path.resolve(__dirname, '..', 'data');
+const isVercel = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const ROOT_DIR = path.resolve(__dirname, '..');
+const DATA_DIR = isVercel ? path.join('/tmp', 'elixora_data') : path.resolve(__dirname, '..', 'data');
 const RECEIPTS_DIR = path.join(DATA_DIR, 'receipts');
 
 const router = express.Router();
@@ -57,8 +59,8 @@ function createRateLimiter({ windowMs, maxRequests, message }) {
   };
 }
 
-// Clean up stale rate limiter buckets every 5 minutes
-setInterval(() => {
+// Clean up stale rate limiter buckets every 5 minutes (unref'd to prevent blocking process exit / serverless freeze)
+const rateLimiterCleanupTimer = setInterval(() => {
   const now = Date.now();
   for (const [key, bucket] of rateLimitBuckets.entries()) {
     if (now - bucket.resetTime > 15 * 60 * 1000) {
@@ -66,6 +68,9 @@ setInterval(() => {
     }
   }
 }, 5 * 60 * 1000);
+if (typeof rateLimiterCleanupTimer.unref === 'function') {
+  rateLimiterCleanupTimer.unref();
+}
 
 // Rate Limiters
 export const registrationSubmitLimiter = createRateLimiter({
