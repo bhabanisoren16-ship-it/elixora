@@ -7,8 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Root data directories
+const isVercel = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
 const ROOT_DIR = path.resolve(__dirname, '..');
-const DATA_DIR = path.join(ROOT_DIR, 'data');
+const DATA_DIR = isVercel ? path.join('/tmp', 'elixora_data') : path.join(ROOT_DIR, 'data');
 const RECEIPTS_DIR = path.join(DATA_DIR, 'receipts');
 const DB_FILE = path.join(DATA_DIR, 'registrations.json');
 
@@ -19,14 +20,18 @@ const sseClients = new Set();
  * Ensure database file and receipt directories exist
  */
 export function initDb() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(RECEIPTS_DIR)) {
-    fs.mkdirSync(RECEIPTS_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(DB_FILE, JSON.stringify([], null, 2), 'utf8');
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(RECEIPTS_DIR)) {
+      fs.mkdirSync(RECEIPTS_DIR, { recursive: true });
+    }
+    if (!fs.existsSync(DB_FILE)) {
+      fs.writeFileSync(DB_FILE, JSON.stringify([], null, 2), 'utf8');
+    }
+  } catch (err) {
+    console.warn('[ELIXORA DB] initDb storage note:', err.message);
   }
 }
 
