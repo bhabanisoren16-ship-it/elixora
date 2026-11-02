@@ -1,10 +1,10 @@
-// Web Audio API Synthesizer & Tactile Audio Engine - ELIXORA 2.0
-// Ultra-Aesthetic, Soft, Smooth UI Click & Interactive Sound Architecture
+// Web Audio API Synthesizer & Celestial Audio Engine - ELIXORA 2.0
+// Ultra-Aesthetic, Luminous Crystal Glass & Celestial UI Sound Architecture
 
 const SOUND_DATA = {
-  softClick: 'data:audio/wav;base64,UklGRkQHAABXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAAZGF0YSAHAAAAAHMAHgFIAxYFGwdhCsAMlw6HEmwSHxPyFAIVjhTnEhQPnA0oBz0EG//1/Dv4mvA67GfoceV+4Fnc1thM2KDUCNNq1SrWMNSy2NnaZ9zi4szmvu0K9vX7cARGDQsYRSXDKtQz2j3dRNdIjVFkUjJTR1E6TsJHS0IDONssWR/vEOEGPfZp6hjfUtSzyp7DHrz+uHS25rIPtJe0K7eiu0XCQscyzRDU7dy55GXuA/Uj/vQF2w+PFvwcVySkKz4xJDWjOjo9W0CiP+BAZkCqPqs66jaRMXcrPSOfG0gUnwrfAJj4wu+r5mvfsdd10bDLqcc3xMfCN8IdwhTDuMUfynrOrdMi2ZnfEOY17FLzsPrpAFsHSQ6UE1YZVR67Iukm8CouLe8vlzH6MUIy3TEhMbcufCwsKUIl9CAGHHsWchA0CkYEnv2S92Xxr+sP5sfgkNy32E7VHNNY0U/QW9AY0VXSe9T21unZod2S4ezlrup171b0Gfku/ucCvgdGDIIQexRSGLcbsh5OIW0jOSWoJm8n6yfQJ/8m1iVNJAIigx9fHPsYQxUwEQgNkQg1BL//Ovvb9sLy5+4z6w7oEeWr4n/g8N663QTd09z03I7dcd7E33LhZ+Oq5S3o5+rT7eLwE/Rc96b6Ef50AcYEEwhGC1wOOxHsE0sWfhhnGvcbPx0iHqwe3x6wHigeRR0PHIwarhihFmAU5hFAD4cMugnWBuwDEwE9/nf7xfg39tXzkPF8743t3eth6hnpCOgv55zmReYq5kvmquZO5yXoOemL6gzsuO2V75XxtPPx9T/4nPr//GL/uwENBEYGbAhxClUMFA6qDxcRVRJpE0oU+xR4FcwV7hXjFasVRhW1FP0THRMYEvAQpQ8/DrwMIQtyCbQH5gUPBDYCWgCE/rX88Po7+Zr3EPag9E3zGvII8RfwTO+l7iTux+2O7Xrth+247Qnueu4I77LvevBY8U/yWvN69Kv17PY7+JP59fpc/Mj9NP+dAAMCYgO3BAAGOwdlCH0JgApsC0EM/gyiDSwOnA7yDi4PUQ9ZD0kPIg/kDpAOJg6oDRcNdAzAC/0KKwpMCWIIbQdvBmoFXwRQAz4CLAEaAA3/A/7//AP8EPsn+kr5evi49wX3YfbN9Ur11/R29CX05fO385nzi/OO86HzwvPz8zP0gfTd9EX1u/U79sf2Xff996T4VPkK+sX6hftI/A391P2a/mD/IgDiAJ8BVwIJA7UDWwT5BJAFHgajBiAHkwf8B1wIsgj9CD8JdgmiCcQJ2wnoCeoJ4gnQCbMJjQleCSUJ4wiaCEkI8AeQBysHwAZQBtsFYwXnBGkE6QNmA+MCXwLaAVYB0gBPAM7/Tv/Q/lX+3P1n/fX8h/we/Lj7WPv9+qj6WPoN+sn5i/lS+SH59fjP+LD4l/iD+Hb4bvht+HD4efiI+Jv4tPjR+PP4GflE+XP5pvnc+Rb6VPqV+tj6Hvtn+7L7/vtM/Jz87Pw+/ZD94v01/of+2f4q/3v/y/8ZAGYAswD+AEcBjwHVARgCWgKaAtgCEwNMA4IDtgPnAxUEQARpBI4EsQTRBO4ECAUfBTMFRAVTBV8FaAVvBXMFdAVzBXAFagViBVgFTAU9BS0FGgUGBfAE2AS+BKMEhgRoBEgEKAQGBOMDvwOaA3QDTgMnA/8C1wKvAoYCXgI1AgsC4gG5AZABZgE9ARQB7ADEAJwAdABNACYAAADb/7b/kv9v/0z/Kv8J/+j+yf6q/oz+b/5T/jj+Hf4E/uv90/28/ab9kf19/Wr9WP1G/Tb9Jv0X/Qn9/Pzw/OX82/zR/Mj8wPy5/LP8rfyo/KT8ofye/Jz8mvyZ/Jn8mfya/Jv8nfyg/KP8pvyq/K78s/y4/L78xPzL/NH82Pzg/Oj88Pz4/AD9Cf0S/Rv9JP0u/Tf9Qf1L/VX9X/1p/XP9fv2I/ZP9nf2o/bL9vf3I/dL93f3o/fL9/f0H/hL+HP4n/jH+O/5F/k/+Wf5j/m3+dv6A/on+kv6c/qX+rv63/r/+yP7R/tn+4f7p/vH++f4B/wj/D/8X/x7/Jf8s/zL/Of8//0X/S/9R/1f/Xf9i/2j/bf9y/3f/fP+B/4X/iv+O/5L/lv+a/57/ov+l/6n/rP+v/7L/tf+4/7r/vf+//8L/xP/G/8j/yv/M/87/z//R/9L/0//V/9b/1//X/9j/2f/a/9r/2//b/9v/2//b/9v/2//b/9v/2//a/9r/2f/Z/9j/2P/X/9b/1f/U/9P/0v/R/8//zv/N/8v/yv/I/8f/xf/D/8H/wP++/7z/uv+4/7b/tP+y/7D/rv+r/6n/p/+k/6L/oP+d/5v/mP+W/5P/kf+O/4v/if+G/4T/gf9+/3z/ef92/3P/cf9u/2v/aP9m/2P/YP9e/1v/WP9V/1P/UP9N/0v/SP9G/0P/Qf8+/zz/Of8=',
-  pebblePop: 'data:audio/wav;base64,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',
-  glass: 'data:audio/wav;base64,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',
+  aestheticClick: 'data:audio/wav;base64,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',
+  stardustDroplet: 'data:audio/wav;base64,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',
+  visionTap: 'data:audio/wav;base64,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',
 };
 
 /**
@@ -13,7 +13,7 @@ const SOUND_DATA = {
  * even during initial user gestures while Web Audio AudioContext is suspended.
  */
 class AudioPool {
-  constructor(dataUri, size = 6, volume = 0.65) {
+  constructor(dataUri, size = 8, volume = 0.72) {
     this.pool = [];
     this.index = 0;
     this.volume = volume;
@@ -58,7 +58,7 @@ class SoundController {
     this.ctx = null;
     this.lastClickTime = 0;
     this.muted = false;
-    this.masterVolume = 0.75;
+    this.masterVolume = 0.85;
     this.buffers = {};
     this.bufferLoading = false;
 
@@ -71,10 +71,10 @@ class SoundController {
       } catch (e) {}
     }
 
-    // Initialize HTML5 Audio pools with soft, velvety sound profile
-    this.softClickPool = new AudioPool(SOUND_DATA.softClick, 8, 0.65);
-    this.popPool = new AudioPool(SOUND_DATA.pebblePop, 4, 0.60);
-    this.glassPool = new AudioPool(SOUND_DATA.glass, 4, 0.55);
+    // Initialize HTML5 Audio pools with ultra-aesthetic crystal sound profile
+    this.aestheticClickPool = new AudioPool(SOUND_DATA.aestheticClick, 8, 0.75);
+    this.dropletPool = new AudioPool(SOUND_DATA.stardustDroplet, 4, 0.70);
+    this.visionPool = new AudioPool(SOUND_DATA.visionTap, 4, 0.70);
 
     // Register eager unlock listeners across common user interaction events
     this.initEagerUnlock();
@@ -82,7 +82,7 @@ class SoundController {
     this.initGlobalListener();
   }
 
-  // Pre-unlock Web Audio on the earliest user interaction (pointerdown, touchstart, keydown)
+  // Pre-unlock Web Audio on earliest user interaction (pointerdown, touchstart, keydown)
   initEagerUnlock() {
     if (typeof window === 'undefined') return;
 
@@ -136,12 +136,12 @@ class SoundController {
       }
     };
 
-    decodeBase64ToBuffer('softClick', SOUND_DATA.softClick);
-    decodeBase64ToBuffer('pebblePop', SOUND_DATA.pebblePop);
-    decodeBase64ToBuffer('glass', SOUND_DATA.glass);
+    decodeBase64ToBuffer('aestheticClick', SOUND_DATA.aestheticClick);
+    decodeBase64ToBuffer('stardustDroplet', SOUND_DATA.stardustDroplet);
+    decodeBase64ToBuffer('visionTap', SOUND_DATA.visionTap);
   }
 
-  // Global listener ensures every button, link, and interactive click plays the soft click sound
+  // Global listener ensures every button, link, and interactive click plays the aesthetic click sound
   initGlobalListener() {
     if (typeof window === 'undefined') return;
 
@@ -198,12 +198,12 @@ class SoundController {
   }
 
   /**
-   * Soft, Aesthetic UI Click Sound
-   * Dual-engine architecture with warm, rounded acoustic profile:
-   * - Smooth, rounded 2.5ms attack removes harsh clicks and clicks
-   * - Warm fundamental (560Hz -> 260Hz) with gentle velvet damping
-   * - Gentle volume level for comfortable, satisfying haptic feel
-   * - Organic micro-pitch drift (±2%) so repetitive clicks feel natural
+   * Ultra-Aesthetic Celestial Crystal UI Click Sound
+   * Designed specifically for ELIXORA 2.0's luxury cosmic theme:
+   * - Pure crystal quartz bell ping (1480Hz) with shimmering 5th harmonic (2220Hz)
+   * - Whisper of starlight sparkle (3700Hz) & grounded warm resonance (520Hz)
+   * - Dual-engine: Instant AudioPool + Web Audio AudioBuffer / Synthesizer
+   * - Organic micro-pitch drift (±2%) keeps repetitive clicks sounding alive
    */
   playClick(variation = 0) {
     if (this.muted) return;
@@ -212,21 +212,21 @@ class SoundController {
     if (now - this.lastClickTime < 25) return;
     this.lastClickTime = now;
 
-    // Organic micro-pitch variation (±2%) for natural tactile response
+    // Organic micro-pitch variation (±2%) for natural celestial shimmer
     const pitchMod = (1 + (Math.sin(now * 0.05) * 0.02)) * (variation ? (1 + (variation % 6) * 0.03) : 1);
 
     // Initialize or resume Web Audio context
     this.init();
 
     // Strategy A: If Web Audio context is fully running and buffer decoded, play high-res buffer
-    if (this.ctx && this.ctx.state === 'running' && this.buffers.softClick) {
+    if (this.ctx && this.ctx.state === 'running' && this.buffers.aestheticClick) {
       try {
         const source = this.ctx.createBufferSource();
-        source.buffer = this.buffers.softClick;
+        source.buffer = this.buffers.aestheticClick;
         source.playbackRate.setValueAtTime(pitchMod, this.ctx.currentTime);
 
         const gainNode = this.ctx.createGain();
-        gainNode.gain.setValueAtTime(0.45 * this.masterVolume, this.ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.55 * this.masterVolume, this.ctx.currentTime);
 
         source.connect(gainNode);
         gainNode.connect(this.ctx.destination);
@@ -235,78 +235,109 @@ class SoundController {
       } catch (e) {}
     }
 
-    // Strategy B: If context is running but buffer not decoded yet, run soft synthesized click
+    // Strategy B: If context is running but buffer not decoded yet, synthesize real-time crystal shimmer
     if (this.ctx && this.ctx.state === 'running') {
-      this._playSynthesizedSoftClick(pitchMod);
+      this._playSynthesizedAestheticClick(pitchMod);
       return;
     }
 
     // Strategy C: Instant HTML5 AudioPool fallback (plays synchronously on user gesture)
-    this.softClickPool.play(pitchMod);
+    this.aestheticClickPool.play(pitchMod);
   }
 
-  // Synthesizes a soft, velvety UI tap with rounded attack and warm body
-  _playSynthesizedSoftClick(pitchMod = 1) {
+  // Synthesizes a shimmering crystal glass tap with multi-layered celestial harmonics
+  _playSynthesizedAestheticClick(pitchMod = 1) {
     try {
       if (!this.ctx || this.ctx.state !== 'running') return;
       const t = this.ctx.currentTime;
 
-      // 1. Soft Rounded Body (Smooth sine sweep 560Hz -> 260Hz)
+      // 1. Crystal Bell Core (1480Hz pure sine chime)
+      const coreOsc = this.ctx.createOscillator();
+      const coreGain = this.ctx.createGain();
+
+      coreOsc.type = 'sine';
+      coreOsc.frequency.setValueAtTime(1480 * pitchMod, t);
+      coreOsc.frequency.exponentialRampToValueAtTime(1380 * pitchMod, t + 0.045);
+
+      coreGain.gain.setValueAtTime(0.001, t);
+      coreGain.gain.linearRampToValueAtTime(0.38 * this.masterVolume, t + 0.0018);
+      coreGain.gain.exponentialRampToValueAtTime(0.001, t + 0.048);
+
+      coreOsc.connect(coreGain);
+      coreGain.connect(this.ctx.destination);
+      coreOsc.start(t);
+      coreOsc.stop(t + 0.050);
+
+      // 2. Celestial 5th Harmonic Shimmer (2220Hz ethereal glow)
+      const shimmerOsc = this.ctx.createOscillator();
+      const shimmerGain = this.ctx.createGain();
+
+      shimmerOsc.type = 'sine';
+      shimmerOsc.frequency.setValueAtTime(2220 * pitchMod, t);
+
+      shimmerGain.gain.setValueAtTime(0.001, t);
+      shimmerGain.gain.linearRampToValueAtTime(0.20 * this.masterVolume, t + 0.002);
+      shimmerGain.gain.exponentialRampToValueAtTime(0.001, t + 0.032);
+
+      shimmerOsc.connect(shimmerGain);
+      shimmerGain.connect(this.ctx.destination);
+      shimmerOsc.start(t);
+      shimmerOsc.stop(t + 0.035);
+
+      // 3. Starlight Sparkle (3700Hz micro-sheen)
+      const sparkleOsc = this.ctx.createOscillator();
+      const sparkleGain = this.ctx.createGain();
+
+      sparkleOsc.type = 'sine';
+      sparkleOsc.frequency.setValueAtTime(3700 * pitchMod, t);
+
+      sparkleGain.gain.setValueAtTime(0.001, t);
+      sparkleGain.gain.linearRampToValueAtTime(0.10 * this.masterVolume, t + 0.0015);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.001, t + 0.018);
+
+      sparkleOsc.connect(sparkleGain);
+      sparkleGain.connect(this.ctx.destination);
+      sparkleOsc.start(t);
+      sparkleOsc.stop(t + 0.020);
+
+      // 4. Grounding Warmth (520Hz acoustic body)
       const bodyOsc = this.ctx.createOscillator();
       const bodyGain = this.ctx.createGain();
 
       bodyOsc.type = 'sine';
-      bodyOsc.frequency.setValueAtTime(560 * pitchMod, t);
-      bodyOsc.frequency.exponentialRampToValueAtTime(260 * pitchMod, t + 0.032);
+      bodyOsc.frequency.setValueAtTime(520 * pitchMod, t);
+      bodyOsc.frequency.exponentialRampToValueAtTime(380 * pitchMod, t + 0.035);
 
-      // Smooth 2.5ms attack eliminates digital clicks / harsh transients
       bodyGain.gain.setValueAtTime(0.001, t);
-      bodyGain.gain.linearRampToValueAtTime(0.28 * this.masterVolume, t + 0.0025);
-      bodyGain.gain.exponentialRampToValueAtTime(0.001, t + 0.036);
+      bodyGain.gain.linearRampToValueAtTime(0.16 * this.masterVolume, t + 0.002);
+      bodyGain.gain.exponentialRampToValueAtTime(0.001, t + 0.038);
 
       bodyOsc.connect(bodyGain);
       bodyGain.connect(this.ctx.destination);
       bodyOsc.start(t);
-      bodyOsc.stop(t + 0.038);
-
-      // 2. Soft Warm Harmonic Overtone (880Hz gently decaying)
-      const overtoneOsc = this.ctx.createOscillator();
-      const overtoneGain = this.ctx.createGain();
-
-      overtoneOsc.type = 'sine';
-      overtoneOsc.frequency.setValueAtTime(880 * pitchMod, t);
-      overtoneOsc.frequency.exponentialRampToValueAtTime(440 * pitchMod, t + 0.016);
-
-      overtoneGain.gain.setValueAtTime(0.001, t);
-      overtoneGain.gain.linearRampToValueAtTime(0.09 * this.masterVolume, t + 0.002);
-      overtoneGain.gain.exponentialRampToValueAtTime(0.001, t + 0.018);
-
-      overtoneOsc.connect(overtoneGain);
-      overtoneGain.connect(this.ctx.destination);
-      overtoneOsc.start(t);
-      overtoneOsc.stop(t + 0.020);
+      bodyOsc.stop(t + 0.040);
     } catch (e) {}
   }
 
   /**
-   * Aesthetic Pebble / Bubble Pop Sound (Soft organic droplet pop)
+   * Aesthetic Stardust Droplet Pop Sound
    */
   playPop() {
     if (this.muted) return;
     this.init();
-    if (this.ctx && this.ctx.state === 'running' && this.buffers.pebblePop) {
+    if (this.ctx && this.ctx.state === 'running' && this.buffers.stardustDroplet) {
       try {
         const source = this.ctx.createBufferSource();
-        source.buffer = this.buffers.pebblePop;
+        source.buffer = this.buffers.stardustDroplet;
         const gainNode = this.ctx.createGain();
-        gainNode.gain.setValueAtTime(0.42 * this.masterVolume, this.ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.50 * this.masterVolume, this.ctx.currentTime);
         source.connect(gainNode);
         gainNode.connect(this.ctx.destination);
         source.start(this.ctx.currentTime);
         return;
       } catch (e) {}
     }
-    this.popPool.play();
+    this.dropletPool.play();
   }
 
   /**
@@ -317,24 +348,24 @@ class SoundController {
   }
 
   /**
-   * Ethereal Glass / Crystal Tap
+   * Ethereal Glass / Vision Crystal Tap
    */
   playGlass() {
     if (this.muted) return;
     this.init();
-    if (this.ctx && this.ctx.state === 'running' && this.buffers.glass) {
+    if (this.ctx && this.ctx.state === 'running' && this.buffers.visionTap) {
       try {
         const source = this.ctx.createBufferSource();
-        source.buffer = this.buffers.glass;
+        source.buffer = this.buffers.visionTap;
         const gainNode = this.ctx.createGain();
-        gainNode.gain.setValueAtTime(0.40 * this.masterVolume, this.ctx.currentTime);
+        gainNode.gain.setValueAtTime(0.50 * this.masterVolume, this.ctx.currentTime);
         source.connect(gainNode);
         gainNode.connect(this.ctx.destination);
         source.start(this.ctx.currentTime);
         return;
       } catch (e) {}
     }
-    this.glassPool.play();
+    this.visionPool.play();
   }
 
   /**
@@ -354,18 +385,18 @@ class SoundController {
       const gain = this.ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(740, t);
-      osc.frequency.exponentialRampToValueAtTime(480, t + 0.016);
+      osc.frequency.setValueAtTime(1200, t);
+      osc.frequency.exponentialRampToValueAtTime(800, t + 0.015);
 
       gain.gain.setValueAtTime(0.001, t);
-      gain.gain.linearRampToValueAtTime(0.08 * this.masterVolume, t + 0.002);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.020);
+      gain.gain.linearRampToValueAtTime(0.09 * this.masterVolume, t + 0.002);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.018);
 
       osc.connect(gain);
       gain.connect(this.ctx.destination);
 
       osc.start(t);
-      osc.stop(t + 0.022);
+      osc.stop(t + 0.020);
     } catch (e) {}
   }
 
@@ -377,7 +408,7 @@ class SoundController {
     try {
       this.init();
       if (!this.ctx || this.ctx.state !== 'running') {
-        this.glassPool.play();
+        this.visionPool.play();
         return;
       }
       const t = this.ctx.currentTime;
@@ -390,7 +421,7 @@ class SoundController {
         osc.frequency.setValueAtTime(f, startT);
 
         gain.gain.setValueAtTime(0.001, startT);
-        gain.gain.linearRampToValueAtTime(0.18 * this.masterVolume, startT + 0.004);
+        gain.gain.linearRampToValueAtTime(0.22 * this.masterVolume, startT + 0.004);
         gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.40);
 
         osc.connect(gain);
@@ -400,7 +431,7 @@ class SoundController {
         osc.stop(startT + 0.44);
       });
     } catch (e) {
-      this.glassPool.play();
+      this.visionPool.play();
     }
   }
 
@@ -412,7 +443,7 @@ class SoundController {
     try {
       this.init();
       if (!this.ctx || this.ctx.state !== 'running') {
-        this.softClickPool.play(0.85);
+        this.aestheticClickPool.play(0.8);
         return;
       }
       const t = this.ctx.currentTime;
@@ -424,7 +455,7 @@ class SoundController {
         osc.frequency.setValueAtTime(f, startT);
 
         gain.gain.setValueAtTime(0.001, startT);
-        gain.gain.linearRampToValueAtTime(0.18 * this.masterVolume, startT + 0.003);
+        gain.gain.linearRampToValueAtTime(0.20 * this.masterVolume, startT + 0.003);
         gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.14);
 
         osc.connect(gain);
@@ -434,7 +465,7 @@ class SoundController {
         osc.stop(startT + 0.16);
       });
     } catch (e) {
-      this.softClickPool.play(0.85);
+      this.aestheticClickPool.play(0.8);
     }
   }
 
@@ -446,7 +477,7 @@ class SoundController {
     try {
       this.init();
       if (!this.ctx || this.ctx.state !== 'running') {
-        this.glassPool.play();
+        this.visionPool.play();
         return;
       }
       const t = this.ctx.currentTime;
@@ -459,7 +490,7 @@ class SoundController {
         osc.frequency.setValueAtTime(freq, startT);
 
         gain.gain.setValueAtTime(0.001, startT);
-        gain.gain.linearRampToValueAtTime(0.20 * this.masterVolume, startT + 0.015);
+        gain.gain.linearRampToValueAtTime(0.22 * this.masterVolume, startT + 0.015);
         gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.65);
 
         osc.connect(gain);
@@ -469,7 +500,7 @@ class SoundController {
         osc.stop(startT + 0.72);
       });
     } catch (e) {
-      this.glassPool.play();
+      this.visionPool.play();
     }
   }
 
