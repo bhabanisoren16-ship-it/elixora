@@ -509,7 +509,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </>
                 ) : (
                   <>
-                    <span>VERIFY &amp; GENERATE PASS</span>
+                    <span>VERIFY</span>
                     <ArrowRight className="w-3.5 h-3.5 text-cyan-200" />
                   </>
                 )}
