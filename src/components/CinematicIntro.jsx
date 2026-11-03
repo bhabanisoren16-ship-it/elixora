@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ArrowRight } from 'lucide-react';
 import { soundController } from '../utils/audio';
+import { scrambleText } from '../innovission/scrambleText';
 
 /**
  * Celestial Orbital Planetary Gateway - Home Screen Loading Page
@@ -57,8 +58,25 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
   const polylineRef = useRef(null);
   const orbRefs = useRef([]);
   const lockRefs = useRef([]);
+  const gatewayTextRef = useRef(null);
   const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+
+  // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY when opening the site
+  useEffect(() => {
+    const scrambleTimer = setTimeout(() => {
+      if (gatewayTextRef.current) {
+        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 0.95 });
+      }
+    }, 100);
+
+    return () => {
+      clearTimeout(scrambleTimer);
+      if (gatewayTextRef.current?._scrambleRaf) {
+        cancelAnimationFrame(gatewayTextRef.current._scrambleRaf);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let currentPercent = 0;
@@ -253,12 +271,27 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       </div>
 
       {/* =========================================================================
-          2. TOP HEADER: CELESTIAL BRANDING (Exact Match to Screenshot)
+          2. TOP HEADER: CELESTIAL BRANDING (Enlarged + Cybernetic Auto-Scramble)
          ========================================================================= */}
-      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase">
-        <div className="flex items-center gap-2.5">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
-          <span className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em]">
+      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 select-none">
+        <div 
+          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group"
+          onClick={() => {
+            if (gatewayTextRef.current) {
+              scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 0.6 });
+            }
+          }}
+          title="ELIXORA GATEWAY · Click to scramble"
+        >
+          <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75 shadow-[0_0_8px_#00f2fe]" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 shadow-[0_0_10px_#00f2fe]" />
+          </span>
+          <span
+            ref={gatewayTextRef}
+            data-text="ELIXORA GATEWAY"
+            className="font-outfit font-black text-sm sm:text-base md:text-lg text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em] sm:tracking-[0.3em] uppercase whitespace-nowrap drop-shadow-[0_0_14px_rgba(0,242,254,0.35)] transition-all duration-300 group-hover:brightness-125"
+          >
             ELIXORA GATEWAY
           </span>
         </div>
