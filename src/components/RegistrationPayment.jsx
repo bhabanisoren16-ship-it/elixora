@@ -328,7 +328,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                     Refreshment Preference
                   </label>
                   <div className="flex gap-2">
-                    {['Veg', 'Non-Veg', 'Jain/Vegan'].map((item) => (
+                    {['Veg', 'Non-Veg'].map((item) => (
                       <button
                         type="button"
                         key={item}
