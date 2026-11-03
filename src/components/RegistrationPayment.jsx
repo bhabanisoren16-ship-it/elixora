@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import {
-  CreditCard,
   QrCode,
   Copy,
   Check,
@@ -10,7 +9,6 @@ import {
   CheckCircle2,
   ArrowRight,
   Smartphone,
-  User,
   Loader2
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';

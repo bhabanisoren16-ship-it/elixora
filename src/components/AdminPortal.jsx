@@ -29,7 +29,6 @@ import {
   UserPlus,
   Zap,
   Calendar,
-  MapPin,
   Save,
   Users,
   Settings,
@@ -40,7 +39,7 @@ import {
 import { adminStore } from '../utils/adminStore';
 import { soundController } from '../utils/audio';
 import { deleteRegistrationFromSupabase } from '../services/supabaseService';
-import { RealisticCalendar, RealisticClock, RealisticMapPin, RealisticCompass, RealisticNavigation, RealisticCalendarLogoBadge, RealisticLocationLogoBadge } from './RealisticIcons';
+import { RealisticCalendar, RealisticClock, RealisticMapPin, RealisticCompass, RealisticNavigation } from './RealisticIcons';
 
 export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
   // Authentication State

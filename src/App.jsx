@@ -7,8 +7,8 @@ import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
 import CinematicIntro from './components/CinematicIntro';
-import { SciFiOrbitalLoader, CelestialCurtain, initGlobalScrambleListener, initInnovisionScroll, destroyInnovisionScroll, refreshInnovisionScroll } from './innovission';
-import { initSmoothScroll, destroySmoothScroll, pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
+import { SciFiOrbitalLoader, CelestialCurtain, initGlobalScrambleListener, initInnovisionScroll, refreshInnovisionScroll } from './innovission';
+import { pauseSmoothScroll, resumeSmoothScroll, scrollToTarget } from './utils/smoothScroll';
 
 import HolographicTicketModal from './components/HolographicTicketModal';
 import AdminPortal from './components/AdminPortal';

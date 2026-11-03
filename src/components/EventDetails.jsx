@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Navigation, ExternalLink, Download, Compass, Info } from 'lucide-react';
-import { RealisticCalendar, RealisticClock, RealisticMapPin, RealisticCompass, RealisticNavigation, RealisticCalendarLogoBadge, RealisticLocationLogoBadge } from './RealisticIcons';
+import { Navigation, ExternalLink, Download, Compass, Info } from 'lucide-react';
+import { RealisticCalendar, RealisticClock, RealisticMapPin, RealisticCompass, RealisticNavigation } from './RealisticIcons';
 import { EVENT_DETAILS, getGoogleCalendarUrl, downloadIcsFile } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';

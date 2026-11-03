@@ -21,7 +21,7 @@ import {
   X, 
   Shirt 
 } from 'lucide-react';
-import { RealisticLock, RealisticShieldCheck, RealisticKey, RealisticUser, RealisticCreditCard, RealisticUpload, RealisticCrown } from './RealisticIcons';
+import { RealisticLock, RealisticShieldCheck, RealisticKey, RealisticUser, RealisticCreditCard, RealisticUpload } from './RealisticIcons';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
 import { adminStore } from '../utils/adminStore';

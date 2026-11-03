@@ -3,8 +3,7 @@ import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
 import QRCode from 'qrcode';
 import { 
-  Download, 
-  CheckCircle2, 
+  Download,  
   ArrowLeft,
   Check,
   Lock

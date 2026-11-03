@@ -3,8 +3,7 @@ import { EVENT_DETAILS } from './calendar.js';
 import { isSupabaseConfigured } from '../lib/supabase.js';
 import { 
   saveRegistrationToSupabase, 
-  fetchRegistrationsFromSupabase, 
-  updateRegistrationStatusInSupabase, 
+  fetchRegistrationsFromSupabase,  
   updateAttendanceInSupabase, 
   deleteRegistrationFromSupabase,
   subscribeToSupabaseRegistrations,
