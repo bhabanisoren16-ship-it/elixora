@@ -254,7 +254,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 <div className="flex items-center gap-2">
                   <div className="relative group/step1 shrink-0">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-b from-purple-500/40 via-purple-900/50 to-obsidian-950/80 border border-purple-400/50 flex items-center justify-center shadow-[0_0_18px_rgba(168,85,247,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all duration-300 group-hover/step1:scale-110 group-hover/step1:shadow-[0_0_24px_rgba(168,85,247,0.7)] p-1">
-                      <RealisticUser className="w-6 h-6 sm:w-6.5 sm:h-6.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                      <RealisticUser className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                     </div>
                   </div>
                   <div>
@@ -358,7 +358,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                 <div className="flex items-center gap-2">
                   <div className="relative group/step2 shrink-0">
                     <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-b from-purple-500/40 via-purple-900/50 to-obsidian-950/80 border border-purple-400/50 flex items-center justify-center shadow-[0_0_18px_rgba(168,85,247,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] transition-all duration-300 group-hover/step2:scale-110 group-hover/step2:shadow-[0_0_24px_rgba(168,85,247,0.7)] p-1">
-                      <RealisticCreditCard className="w-6 h-6 sm:w-6.5 sm:h-6.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                      <RealisticCreditCard className="w-6 h-6 sm:w-7 sm:h-7 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                     </div>
                   </div>
                   <div>

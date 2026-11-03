@@ -898,7 +898,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
                         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-b from-purple-500/40 via-purple-900/50 to-obsidian-950/80 border border-purple-400/50 flex items-center justify-center shadow-[0_0_16px_rgba(168,85,247,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] shrink-0 p-1">
-                          <RealisticUser className="w-5.5 h-5.5 sm:w-6 sm:h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                          <RealisticUser className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                         </div>
                         <span>Senior Personal Details</span>
                       </h4>
@@ -1042,7 +1042,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
                         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-b from-purple-500/40 via-purple-900/50 to-obsidian-950/80 border border-purple-400/50 flex items-center justify-center shadow-[0_0_16px_rgba(168,85,247,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] shrink-0 p-1">
-                          <RealisticCreditCard className="w-5.5 h-5.5 sm:w-6 sm:h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                          <RealisticCreditCard className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                         </div>
                         <span>Pay on Barcode</span>
                       </h4>
@@ -1117,7 +1117,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-white/10 mb-3.5 sm:mb-4">
                       <h4 className="font-outfit font-extrabold text-sm sm:text-lg text-white flex items-center gap-2.5">
                         <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-b from-cyan-500/40 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_16px_rgba(6,182,212,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] shrink-0 p-1">
-                          <RealisticUpload className="w-5.5 h-5.5 sm:w-6 sm:h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                          <RealisticUpload className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                         </div>
                         <span>Proof &amp; Mint Pass</span>
                       </h4>
@@ -1227,7 +1227,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </>
                       ) : (
                         <>
-                          <RealisticCrown className="w-4.5 h-4.5 drop-shadow-sm shrink-0" />
+                          <RealisticCrown className="w-5 h-5 drop-shadow-sm shrink-0" />
                           <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
                         </>
                       )}

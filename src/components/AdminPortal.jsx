@@ -2148,7 +2148,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                               <div className="relative z-10">
                                 {/* 3D Realistic Icon Badge Container */}
                                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_18px_rgba(6,182,212,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] mb-3 p-1 transition-transform group-hover:scale-105">
-                                  <RealisticCalendar className="w-7 h-7 sm:w-7.5 sm:h-7.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                                  <RealisticCalendar className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                                 </div>
 
                                 <span className="text-[10px] sm:text-xs text-cyan-300 font-outfit font-black uppercase tracking-widest block mb-1">
@@ -2188,7 +2188,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                               <div className="relative z-10">
                                 {/* 3D Realistic Icon Badge Container */}
                                 <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-b from-cyan-500/35 via-cyan-900/50 to-obsidian-950/80 border border-cyan-400/50 flex items-center justify-center shadow-[0_0_18px_rgba(6,182,212,0.45),inset_0_1px_1px_rgba(255,255,255,0.4)] mb-3 p-1 transition-transform group-hover:scale-105">
-                                  <RealisticMapPin className="w-7 h-7 sm:w-7.5 sm:h-7.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
+                                  <RealisticMapPin className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]" />
                                 </div>
 
                                 <span className="text-[10px] sm:text-xs text-cyan-300 font-outfit font-black uppercase tracking-widest block mb-1">

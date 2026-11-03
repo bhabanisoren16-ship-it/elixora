@@ -75,6 +75,12 @@ export default {
         'neon-violet': '0 0 25px -5px rgba(139, 92, 246, 0.5), 0 0 10px -5px rgba(139, 92, 246, 0.3)',
         'neon-gold': '0 0 25px -5px rgba(251, 191, 36, 0.5), 0 0 10px -5px rgba(251, 191, 36, 0.3)',
         'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+      },
+      spacing: {
+        '4.5': '1.125rem',
+        '5.5': '1.375rem',
+        '6.5': '1.625rem',
+        '7.5': '1.875rem',
       }
     },
   },

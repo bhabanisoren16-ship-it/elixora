@@ -578,9 +578,16 @@ export function RealisticKey({ className = "w-4 h-4", ...props }) {
   );
 }
 
-export function RealisticCrown({ className = "w-4 h-4", ...props }) {
+export function RealisticCrown({ className = "w-4 h-4", style, ...props }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} {...props}>
+    <svg 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg" 
+      className={`shrink-0 inline-block ${className}`}
+      style={{ maxWidth: '1.5rem', maxHeight: '1.5rem', ...style }}
+      {...props}
+    >
       <defs>
         <linearGradient id="crownGoldGrad" x1="12" y1="3" x2="12" y2="21" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#fef08a" />
