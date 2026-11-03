@@ -66,7 +66,8 @@ export default function RegistrationPayment({ onPassGenerated }) {
   }, [formData.rollNo]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const name = e.target.getAttribute('data-field') || e.target.name;
+    const value = e.target.value;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
@@ -256,7 +257,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-cyber-cyan/15 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
 
-        <form onSubmit={handleSubmit} noValidate className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+        <form onSubmit={handleSubmit} noValidate autoComplete="off" className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
 
           {/* ========================================= */}
           {/* LEFT COLUMN: STEP 1 - Student Details */}
@@ -287,10 +288,18 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   <div className="relative">
                     <input
                       type="text"
-                      name="fullName"
+                      name="elx_candidate_name"
+                      data-field="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
                       placeholder="e.g. Aarav Sharma"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="words"
+                      spellCheck={false}
+                      aria-autocomplete="none"
+                      data-lpignore="true"
+                      data-form-type="other"
                       className={`w-full px-3 py-2.5 rounded-xl bg-obsidian-900/90 border ${errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                         } text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
                     />
@@ -306,10 +315,17 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   <div className="relative">
                     <input
                       type="text"
-                      name="rollNo"
+                      name="elx_student_roll"
+                      data-field="rollNo"
                       value={formData.rollNo}
                       onChange={handleInputChange}
                       placeholder="e.g. 26CS084"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      aria-autocomplete="none"
+                      data-lpignore="true"
+                      data-form-type="other"
                       className={`w-full px-3 py-2.5 rounded-xl bg-obsidian-900/90 border ${errors.rollNo ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                         } text-white placeholder-slate-500 text-xs uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
                     />
@@ -325,10 +341,17 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   <div className="relative">
                     <input
                       type="tel"
-                      name="phone"
+                      name="elx_contact_phone"
+                      data-field="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="10-digit mobile"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      aria-autocomplete="none"
+                      data-lpignore="true"
+                      data-form-type="other"
                       className={`w-full px-3 py-2.5 rounded-xl bg-obsidian-900/90 border ${errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                         } text-white placeholder-slate-500 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
                     />
@@ -426,11 +449,18 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </label>
                   <input
                     type="text"
-                    name="utrNumber"
+                    name="elx_upi_utr"
+                    data-field="utrNumber"
                     value={formData.utrNumber}
                     onChange={handleInputChange}
                     placeholder="e.g. 427189035124"
                     maxLength={18}
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    aria-autocomplete="none"
+                    data-lpignore="true"
+                    data-form-type="other"
                     className={`w-full px-3 py-2 rounded-xl bg-obsidian-900/90 border ${errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                       } text-white font-mono text-xs placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
                   />

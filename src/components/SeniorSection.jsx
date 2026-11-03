@@ -440,7 +440,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const name = e.target.getAttribute('data-field') || e.target.name;
+    const value = e.target.value;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
@@ -907,7 +908,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
 
           {/* Minimalist 3-Column Sideways Dashboard Layout */}
           <main className="w-full shrink-0 min-h-screen pt-4 sm:pt-10 pb-28 sm:pb-40 px-3 sm:px-6 lg:px-8 flex flex-col justify-start items-center relative z-10">
-            <form onSubmit={handleSubmit} className="w-full max-w-full">
+            <form onSubmit={handleSubmit} autoComplete="off" noValidate className="w-full max-w-full">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 xl:gap-7 items-stretch">
                 
                 {/* ================================================================= */}
@@ -936,10 +937,18 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         <div className="relative">
                           <input
                             type="text"
-                            name="fullName"
+                            name="elx_sr_applicant_name"
+                            data-field="fullName"
                             value={formData.fullName}
                             onChange={handleInputChange}
                             placeholder="e.g. Aarav Sharma"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="words"
+                            spellCheck={false}
+                            aria-autocomplete="none"
+                            data-lpignore="true"
+                            data-form-type="other"
                             className={`w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border ${
                               errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                             } text-white placeholder-slate-500 text-xs sm:text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all`}
@@ -975,10 +984,17 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         <div className="relative">
                           <input
                             type="tel"
-                            name="phone"
+                            name="elx_sr_phone"
+                            data-field="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
                             placeholder="10-digit number"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            aria-autocomplete="none"
+                            data-lpignore="true"
+                            data-form-type="other"
                             className={`w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border ${
                               errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                             } text-white placeholder-slate-500 text-xs sm:text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all`}
@@ -1044,6 +1060,11 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                             value={formData.seniorQuote}
                             onChange={handleInputChange}
                             placeholder="e.g. Cherish every single moment!"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            aria-autocomplete="none"
+                            data-lpignore="true"
                             className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-xs sm:text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all"
                           />
                           <Quote className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-amber-400/80 pointer-events-none" />
@@ -1211,11 +1232,18 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </label>
                         <input
                           type="text"
-                          name="utrNumber"
+                          name="elx_sr_utr"
+                          data-field="utrNumber"
                           value={formData.utrNumber}
                           onChange={handleInputChange}
                           placeholder="e.g. 427819234812"
                           maxLength={18}
+                          autoComplete="off"
+                          autoCorrect="off"
+                          spellCheck={false}
+                          aria-autocomplete="none"
+                          data-lpignore="true"
+                          data-form-type="other"
                           className={`w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border ${
                             errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
                           } text-white font-mono text-xs sm:text-sm placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all`}
