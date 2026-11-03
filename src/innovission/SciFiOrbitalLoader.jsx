@@ -277,11 +277,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       </div>
 
       {/* =========================================================================
-          2. TOP HEADER: CELESTIAL BRANDING (Enlarged + Cybernetic Auto-Scramble)
+          2. TOP HEADER: CELESTIAL BRANDING (Original Size + Cybernetic Auto-Scramble)
          ========================================================================= */}
-      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 select-none">
+      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase select-none">
         <div 
-          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group"
           onClick={() => {
             if (gatewayTextRef.current) {
               scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 0.6 });
@@ -289,14 +289,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           }}
           title="ELIXORA GATEWAY · Click to scramble"
         >
-          <span className="relative flex h-2.5 w-2.5 items-center justify-center">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75 shadow-[0_0_8px_#00f2fe]" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 shadow-[0_0_10px_#00f2fe]" />
-          </span>
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
           <span
             ref={gatewayTextRef}
             data-text="ELIXORA GATEWAY"
-            className="font-outfit font-black text-sm sm:text-base md:text-lg text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em] sm:tracking-[0.3em] uppercase whitespace-nowrap drop-shadow-[0_0_14px_rgba(0,242,254,0.35)] transition-all duration-300 group-hover:brightness-125"
+            className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em] whitespace-nowrap transition-all duration-300 group-hover:brightness-125"
           >
             ELIXORA GATEWAY
           </span>
