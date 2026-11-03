@@ -1247,8 +1247,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </>
                       ) : (
                         <>
-                          <RealisticCrown className="w-5 h-5 drop-shadow-sm shrink-0" />
-                          <span>SUBMIT PROOF &amp; MINT SENIOR PASS</span>
+                          <span>VERIFY</span>
+                          <ArrowRight className="w-4 h-4 text-cyan-200" />
                         </>
                       )}
                     </button>
