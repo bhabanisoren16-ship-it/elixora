@@ -82,6 +82,45 @@ function detectInitialLoadState() {
   return { isRefresh: false, isHomeLoading: true };
 }
 
+
+class TicketModalErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(err) {
+    console.warn('[ELIXORA Pass Notice] Modal fallback rendered:', err);
+  }
+  render() {
+    if (this.state.hasError) {
+      const p = this.props.passData || {};
+      return (
+        <div className="fixed inset-0 z-[100] bg-obsidian-950/95 backdrop-blur-2xl flex items-center justify-center p-4">
+          <div className="max-w-md w-full p-6 rounded-2xl bg-obsidian-900 border border-amber-400/50 shadow-2xl text-center">
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 text-xl">
+              🎟️
+            </div>
+            <h3 className="font-outfit font-extrabold text-lg text-white mb-1">ELIXORA 2.0 VIP PASS</h3>
+            <p className="text-xs text-amber-300 font-mono mb-2">ID: {p.ticketId || 'ELX-VIP-PASS'}</p>
+            <p className="text-sm font-bold text-white mb-1">{p.fullName || 'VIP Attendee'}</p>
+            <p className="text-xs text-slate-300 font-mono mb-4">ROLL: {p.rollNo || 'VERIFIED'}</p>
+            <button
+              onClick={this.props.onClose}
+              className="px-5 py-2 rounded-xl bg-amber-400 text-slate-950 font-bold font-outfit text-xs hover:bg-amber-300 transition-all cursor-pointer"
+            >
+              Close Pass
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   const [passData, setPassData] = useState(() => {
     try {

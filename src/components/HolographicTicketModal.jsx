@@ -47,24 +47,26 @@ export default function HolographicTicketModal({ passData, onClose }) {
     const colors = ['#f59e0b', '#06b6d4', '#c084fc', '#ec4899', '#ffffff'];
 
     (function frame() {
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors
-      });
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors
-      });
+      try {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: colors
+        });
 
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      } catch (e) {}
     })();
 
     // Generate dynamic QR code for ticket verification

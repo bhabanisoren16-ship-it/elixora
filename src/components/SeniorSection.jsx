@@ -455,57 +455,77 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   };
 
   const handleScreenshotChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 8 * 1024 * 1024) {
-        alert('File size exceeds 8MB limit');
-        return;
-      }
-      setScreenshotFileName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
+    const file = e.target.files?.[0];
+    if (e.target) e.target.value = '';
+    if (!file) return;
+
+    // Security: Validate image format via MIME or extension for cross-browser / mobile support
+    const fileName = (file.name || '').toLowerCase();
+    const isValidImage = (file.type && file.type.startsWith('image/')) ||
+      /\.(jpe?g|png|webp|heic|heif|bmp|jfif)$/i.test(fileName);
+
+    if (!isValidImage) {
+      setErrors((prev) => ({ ...prev, screenshot: 'Invalid file format. Please attach an image receipt (JPG, PNG, or WEBP).' }));
+      return;
+    }
+
+    if (file.size > 12 * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, screenshot: 'File size exceeds 12MB limit. Please upload a smaller image.' }));
+      return;
+    }
+    setScreenshotFileName(file.name);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      try {
         const img = new Image();
         img.onload = () => {
-          const maxDim = 1200;
-          let { width, height } = img;
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
+          try {
+            const maxDim = 1200;
+            let { width, height } = img;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
             }
-          }
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          const compressed = canvas.toDataURL('image/jpeg', 0.75);
-          setScreenshotPreview(compressed);
-          soundController.playClick?.();
-          if (errors.screenshot) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL('image/jpeg', 0.8);
+            setScreenshotPreview(compressed);
+            soundController.playClick?.();
+            setErrors((prev) => ({ ...prev, screenshot: null }));
+          } catch (canvasErr) {
+            setScreenshotPreview(reader.result);
+            soundController.playClick?.();
             setErrors((prev) => ({ ...prev, screenshot: null }));
           }
         };
         img.onerror = () => {
           setScreenshotPreview(reader.result);
           soundController.playClick?.();
-          if (errors.screenshot) {
-            setErrors((prev) => ({ ...prev, screenshot: null }));
-          }
+          setErrors((prev) => ({ ...prev, screenshot: null }));
         };
         img.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-    }
+      } catch (err) {
+        setScreenshotPreview(reader.result);
+        soundController.playClick?.();
+        setErrors((prev) => ({ ...prev, screenshot: null }));
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleRemoveScreenshot = () => {
     setScreenshotPreview(null);
     setScreenshotFileName('');
     soundController.playClick?.();
+    setErrors((prev) => ({ ...prev, screenshot: null }));
   };
 
   const validateForm = () => {

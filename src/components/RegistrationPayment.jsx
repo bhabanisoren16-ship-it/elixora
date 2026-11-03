@@ -81,51 +81,65 @@ export default function RegistrationPayment({ onPassGenerated }) {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Security: Whitelist image formats and limit raw size
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        setErrors((prev) => ({ ...prev, screenshot: 'Invalid file format. Only JPG, PNG, or WEBP images allowed.' }));
-        return;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        setErrors((prev) => ({ ...prev, screenshot: 'File size too large. Maximum allowed size is 10MB.' }));
-        return;
-      }
+    const file = e.target.files?.[0];
+    if (e.target) e.target.value = '';
+    if (!file) return;
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
+    // Security: Validate image format via MIME or extension for cross-browser / mobile support
+    const fileName = (file.name || '').toLowerCase();
+    const isValidImage = (file.type && file.type.startsWith('image/')) ||
+      /\.(jpe?g|png|webp|heic|heif|bmp|jfif)$/i.test(fileName);
+
+    if (!isValidImage) {
+      setErrors((prev) => ({ ...prev, screenshot: 'Invalid file format. Please upload an image receipt (JPG, PNG, or WEBP).' }));
+      return;
+    }
+    if (file.size > 12 * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, screenshot: 'File size too large. Maximum allowed size is 12MB.' }));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      try {
         const img = new Image();
         img.onload = () => {
-          const maxDim = 1200;
-          let { width, height } = img;
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
+          try {
+            const maxDim = 1200;
+            let { width, height } = img;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
             }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressed = canvas.toDataURL('image/jpeg', 0.8);
+            setScreenshotPreview(compressed);
+            setErrors((prev) => ({ ...prev, screenshot: null }));
+          } catch (canvasErr) {
+            setScreenshotPreview(reader.result);
+            setErrors((prev) => ({ ...prev, screenshot: null }));
           }
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          const compressed = canvas.toDataURL('image/jpeg', 0.75);
-          setScreenshotPreview(compressed);
-          setErrors((prev) => ({ ...prev, screenshot: null }));
         };
         img.onerror = () => {
           setScreenshotPreview(reader.result);
           setErrors((prev) => ({ ...prev, screenshot: null }));
         };
         img.src = reader.result;
-      };
-      reader.readAsDataURL(file);
-    }
+      } catch (readErr) {
+        setScreenshotPreview(reader.result);
+        setErrors((prev) => ({ ...prev, screenshot: null }));
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
 
@@ -463,7 +477,7 @@ export default function RegistrationPayment({ onPassGenerated }) {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setScreenshotPreview(null)}
+                        onClick={() => { setScreenshotPreview(null); setErrors((prev) => ({ ...prev, screenshot: null })); }}
                         className="text-[10px] text-slate-400 hover:text-rose-400 font-mono shrink-0 ml-2 underline cursor-pointer"
                       >
                         Remove

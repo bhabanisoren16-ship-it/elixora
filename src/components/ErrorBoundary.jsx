@@ -34,15 +34,24 @@ export default class ErrorBoundary extends React.Component {
     window.location.replace(url.toString());
   };
 
-  handleReset = () => {
+  handleReset = async () => {
     try {
       localStorage.clear();
       sessionStorage.clear();
-      if ('caches' in window) {
-        caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
+      if (typeof window !== 'undefined' && 'caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const reg of registrations) {
+          await reg.unregister();
+        }
       }
     } catch (e) {}
-    window.location.href = window.location.origin + window.location.pathname;
+    const url = new URL(window.location.origin + window.location.pathname);
+    url.searchParams.set('_v', Date.now().toString());
+    window.location.replace(url.toString());
   };
 
   render() {
