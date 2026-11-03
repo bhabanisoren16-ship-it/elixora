@@ -333,7 +333,7 @@ export default function EventDetails() {
                     <img
                       src="/costume-boys.jpg"
                       alt="Boys Formal Tuxedo and Suit Attire"
-                      className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                      className="w-full h-full object-cover object-[center_62%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
                   </div>
                 </div>
@@ -365,7 +365,7 @@ export default function EventDetails() {
                     <img
                       src="/costume-girls-western.jpg?v=20261027b"
                       alt="Girls Elegant Western Formal Gown Attire"
-                      className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                      className="w-full h-full object-cover object-[center_56%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
                   </div>
                 </div>

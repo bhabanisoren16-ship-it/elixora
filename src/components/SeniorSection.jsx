@@ -1309,12 +1309,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Compact Height */}
-                    <div className="relative rounded-xl overflow-hidden h-[220px] sm:h-[260px] md:h-[240px] lg:h-[270px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-[260px] sm:h-[300px] md:h-[290px] lg:h-[330px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
                         alt="Senior Boys Royal Black-Tie and Indo-Western Suits"
-                        className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_62%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
@@ -1337,12 +1337,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Compact Height */}
-                    <div className="relative rounded-xl overflow-hidden h-[220px] sm:h-[260px] md:h-[240px] lg:h-[270px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden h-[260px] sm:h-[300px] md:h-[290px] lg:h-[330px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls-western.jpg?v=20261027b"
                         alt="Senior Girls Glamorous Western Formal Gowns"
-                        className="w-full h-full object-cover object-[center_20%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_56%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
