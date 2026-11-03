@@ -204,19 +204,13 @@ export default function HeroSection({ onGrabPassClick }) {
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
-  }, [targetDate]);
-
-  return (
-    <div id="hero-wrap" className="relative w-full h-[155vh] sm:h-[180vh]">
-      <section
-        id="hero"
-        className="sticky top-0 h-[100svh] sm:h-[100vh] min-h-[580px] w-full flex flex-col items-center justify-start sm:justify-center px-3 sm:px-6 lg:px-8 overflow-hidden z-10 pt-14 min-[380px]:pt-16 sm:pt-20 pb-6 sm:pb-8"
-      >
-        {/* Innovision Hero Scrub Dimmer Layer */}
-        <div data-h-dim aria-hidden="true" className="absolute inset-0 bg-black/60 pointer-events-none opacity-0 z-0 transition-opacity" />
-
-        {/* Transparent Hero Container with Innovision scale & drift parallax */}
-        <div data-h-content className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 mt-6 min-[380px]:mt-8 sm:my-auto will-change-transform">
+  }, [targetDate]);  return (
+    <section
+      id="hero"
+      className="relative min-h-[100svh] sm:min-h-[100vh] w-full flex flex-col items-center justify-start sm:justify-center px-3 sm:px-6 lg:px-8 overflow-hidden z-10 pt-14 min-[380px]:pt-16 sm:pt-20 pb-12 sm:pb-16"
+    >
+      {/* Hero Container */}
+      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 mt-6 min-[380px]:mt-8 sm:my-auto">
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
@@ -350,8 +344,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
 
-      </div>
+            </div>
     </section>
-  </div>
   );
 }
