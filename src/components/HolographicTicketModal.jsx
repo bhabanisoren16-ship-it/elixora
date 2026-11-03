@@ -6,7 +6,8 @@ import {
   Download, 
   CheckCircle2, 
   ArrowLeft,
-  Check
+  Check,
+  Lock
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../utils/calendar';
 import { soundController } from '../utils/audio';
