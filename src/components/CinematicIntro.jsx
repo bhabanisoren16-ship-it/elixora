@@ -96,13 +96,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
         force3D: true,
       });
 
-      gsap.from('.loader-footer', {
-        y: 20,
-        opacity: 0,
-        duration: entranceDuration * 0.8,
-        ease: 'power3.out',
-        force3D: true,
-      });
+
     }, containerRef);
 
     // Direct high-performance DOM update loop without React re-renders
@@ -208,16 +202,16 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       .to(containerRef.current, { opacity: 0, duration: exitDuration, force3D: true }, exitDuration * 0.2);
   };
 
-  // Keyboard Enter key shortcut listener
+  // Keyboard Enter key shortcut listener (strictly active only after rotation completes)
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && isAligned) {
         handleEnterHomepage();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isAligned]);
 
   return (
     <div
@@ -392,8 +386,10 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
 
         {/* Center Cosmic Starfield Disc with Live Numeric Counter */}
         <div
-          onClick={handleEnterHomepage}
-          className="loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10 cursor-pointer hover:scale-105 active:scale-95 transition-transform transform-gpu"
+          onClick={isAligned ? handleEnterHomepage : undefined}
+          className={`loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10 transition-transform transform-gpu ${
+            isAligned ? 'cursor-pointer hover:scale-105 active:scale-95' : 'cursor-default'
+          }`}
           title="Click to enter ELIXORA 2.0"
           style={{
             background: 'radial-gradient(circle at center, #180e38 0%, #0a0718 70%, #040508 100%)',
@@ -424,17 +420,21 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
           4. BOTTOM STATUS & THE ENTER HOME PAGE OPTION
           Stuck on this loading page until user explicitly clicks ENTER HOME PAGE!
          ========================================================================= */}
-      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-10 text-center pb-2 sm:pb-4 transform-gpu">
+      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-10 text-center pb-2 sm:pb-4 min-h-[58px] sm:min-h-[64px] transform-gpu">
         {/* =====================================================================
             THE ENTER HOME PAGE BUTTON
-            User is stuck on this screen until clicking this button (or pressing Enter)
+            Displays exclusively AFTER completing the circle rotation (at 100%)
            ===================================================================== */}
         <div className="flex flex-col items-center justify-center w-full">
           <button
             id="homescreen-enter-button"
             onClick={handleEnterHomepage}
-            className="group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 px-6 py-2.5 sm:px-8 sm:py-3 rounded-full transition-all duration-300 ease-out hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_35px_rgba(217,70,239,0.45),0_0_20px_rgba(0,242,254,0.35)] transform-gpu"
-            style={{ willChange: 'transform' }}
+            className={`group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 px-6 py-2.5 sm:px-8 sm:py-3 rounded-full transition-all duration-700 cubic-bezier(0.16,1,0.3,1) hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_35px_rgba(217,70,239,0.45),0_0_20px_rgba(0,242,254,0.35)] transform-gpu ${
+              isAligned 
+                ? 'opacity-100 scale-100 pointer-events-auto translate-y-0' 
+                : 'opacity-0 scale-90 pointer-events-none translate-y-4'
+            }`}
+            style={{ willChange: 'transform, opacity' }}
             title="Click to enter ELIXORA 2.0 Home Page"
           >
             {/* Outer Cosmic Multi-Tone Aura Bloom */}
