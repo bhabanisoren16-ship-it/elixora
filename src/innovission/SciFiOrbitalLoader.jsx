@@ -116,7 +116,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     const updateLoader = (now) => {
       const elapsed = now - startTime;
       currentPercent = Math.min(100, (elapsed / totalMs) * 100);
-      setPercent(Math.floor(currentPercent));
 
       // Circular gauge update
       if (progressCircleRef.current) {
@@ -124,7 +123,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         progressCircleRef.current.style.strokeDashoffset = String(offset);
       }
 
-      // Format tabular count (000 - 100)
+      // Format tabular count (000 - 100) directly in DOM
       if (countRef.current) {
         countRef.current.textContent = String(Math.floor(currentPercent)).padStart(3, '0');
       }
@@ -141,7 +140,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
         const orbEl = orbRefs.current[idx];
         if (orbEl) {
-          orbEl.style.transform = `rotate(${angle}deg)`;
+          orbEl.style.transform = `rotate(${angle}deg) translateZ(0)`;
         }
 
         const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);

@@ -275,7 +275,7 @@ export default function App() {
       )}
 
       {/* 1. Fullscreen Concert Poster & Lighting Atmosphere Background */}
-      <Background />
+      <Background paused={showHomeLoadingPage || showRefreshPage} />
 
       {/* 2. Top Navigation Bar */}
       <Navbar

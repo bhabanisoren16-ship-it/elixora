@@ -76,6 +76,7 @@ export default function HeroSection({ onGrabPassClick }) {
     let lastSoundTime = 0;
 
     const handleMouseMove = (e) => {
+      if (document.getElementById('loading-screen-container') || document.getElementById('homescreen-enter-button')) return;
       const mouseX = e.clientX;
       const mouseY = e.clientY;
 

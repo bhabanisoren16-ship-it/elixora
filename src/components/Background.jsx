@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import desktopBg from '../assets/desktop-background.jpg'; // Official concert atmosphere
 
-export default function Background() {
+export default function Background({ paused = false }) {
+  const isPausedRef = useRef(paused);
+  useEffect(() => {
+    isPausedRef.current = paused;
+  }, [paused]);
   const canvasRef = useRef(null);
   const sparksRef = useRef([]);
   const mousePosRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
@@ -103,7 +107,7 @@ export default function Background() {
     const animate = (currentTime) => {
       animFrameRef.current = requestAnimationFrame(animate);
 
-      if (!isVisibleRef.current) {
+      if (!isVisibleRef.current || isPausedRef.current) {
         return;
       }
 
