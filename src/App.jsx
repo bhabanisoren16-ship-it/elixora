@@ -361,10 +361,12 @@ export default function App() {
 
       {/* 4. Interactive 3D Holographic Pass Modal */}
       {isModalOpen && passData && (
-        <HolographicTicketModal
-          passData={passData}
-          onClose={() => setIsModalOpen(false)}
-        />
+        <TicketModalErrorBoundary passData={passData} onClose={() => setIsModalOpen(false)}>
+          <HolographicTicketModal
+            passData={passData}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </TicketModalErrorBoundary>
       )}
 
       {/* 5. ELIXORA 2.0 Command Nexus & Admin Operations Portal */}

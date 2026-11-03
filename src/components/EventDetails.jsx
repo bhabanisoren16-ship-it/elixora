@@ -328,12 +328,12 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-[270px] sm:h-[320px] md:h-[300px] lg:h-[330px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-[320px] sm:h-[380px] md:h-[360px] lg:h-[400px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-boys.jpg"
                       alt="Boys Formal Tuxedo and Suit Attire"
-                      className="w-full h-full object-cover object-[center_48%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                      className="w-full h-full object-cover object-[center_32%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
                   </div>
                 </div>
@@ -360,12 +360,12 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight */}
-                  <div className="relative rounded-2xl overflow-hidden h-[270px] sm:h-[320px] md:h-[300px] lg:h-[330px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden h-[320px] sm:h-[380px] md:h-[360px] lg:h-[400px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-girls-western.jpg?v=20261027b"
                       alt="Girls Elegant Western Formal Gown Attire"
-                      className="w-full h-full object-cover object-[center_45%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                      className="w-full h-full object-cover object-[center_22%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                     />
                   </div>
                 </div>

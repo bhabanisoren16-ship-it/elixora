@@ -1264,7 +1264,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
             {/* ================================================================= */}
             {/* SENIOR DRESS CODE & OUTFIT INSPIRATION LOOKBOOK SECTION */}
             {/* ================================================================= */}
-            <div id="senior-box-outfit" className="w-full max-w-full mt-4 sm:mt-6 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
+            <div id="senior-box-outfit" className="w-full max-w-5xl mx-auto mt-4 sm:mt-6 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
               <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -1308,13 +1308,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       </span>
                     </div>
 
-                    {/* Photo Showcase with Neon Rim Glow - Compact Height */}
-                    <div className="relative rounded-xl overflow-hidden h-[340px] sm:h-[400px] md:h-[380px] lg:h-[410px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    {/* Photo Showcase with Neon Rim Glow - Perfectly Framed */}
+                    <div className="relative rounded-xl overflow-hidden h-[380px] sm:h-[440px] md:h-[420px] lg:h-[460px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
                         alt="Senior Boys Royal Black-Tie and Indo-Western Suits"
-                        className="w-full h-full object-cover object-[center_48%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_32%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
@@ -1336,13 +1336,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       </span>
                     </div>
 
-                    {/* Photo Showcase with Neon Rim Glow - Compact Height */}
-                    <div className="relative rounded-xl overflow-hidden h-[340px] sm:h-[400px] md:h-[380px] lg:h-[410px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    {/* Photo Showcase with Neon Rim Glow - Perfectly Framed */}
+                    <div className="relative rounded-xl overflow-hidden h-[380px] sm:h-[440px] md:h-[420px] lg:h-[460px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls-western.jpg?v=20261027b"
                         alt="Senior Girls Glamorous Western Formal Gowns"
-                        className="w-full h-full object-cover object-[center_45%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_22%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
