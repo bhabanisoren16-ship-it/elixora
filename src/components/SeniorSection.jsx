@@ -1264,52 +1264,52 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
             {/* ================================================================= */}
             {/* SENIOR DRESS CODE & OUTFIT INSPIRATION LOOKBOOK SECTION */}
             {/* ================================================================= */}
-            <div id="senior-box-outfit" className="w-full max-w-full mt-6 sm:mt-12 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
+            <div id="senior-box-outfit" className="w-full max-w-full mt-4 sm:mt-6 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
               <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
               {/* Outfit Header Inside Unified Box */}
-              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div>
-                  <h3 className="font-outfit font-black text-xl sm:text-2xl text-white tracking-tight">
+                  <h3 className="font-outfit font-extrabold text-base sm:text-lg text-white tracking-tight">
                     Senior Outfit &amp; Style Lookbook
                   </h3>
                 </div>
 
                 {/* VIP Theme Color Swatches */}
-                <div className="flex items-center gap-1.5 p-1.5 sm:p-2 rounded-xl bg-white/[0.04] border border-white/10 shrink-0">
+                <div className="flex items-center gap-1.5 p-1 sm:p-1.5 rounded-xl bg-white/[0.04] border border-white/10 shrink-0">
                   <span className="text-[9px] sm:text-[10px] font-mono uppercase text-slate-400 font-bold mr-1 hidden sm:inline">Theme Palette:</span>
-                  <div className="flex items-center gap-1.5" title="Midnight Obsidian">
-                    <span className="w-4 h-4 rounded-full bg-[#040508] border border-white/30 inline-block shadow-sm" title="Royal Obsidian" />
-                    <span className="w-4 h-4 rounded-full bg-[#fbbf24] border border-amber-300 inline-block shadow-[0_0_6px_rgba(251,191,36,0.5)]" title="Royal Cyber Gold" />
-                    <span className="w-4 h-4 rounded-full bg-[#00f2fe] border border-cyan-300 inline-block shadow-[0_0_6px_rgba(0,242,254,0.6)]" title="Electric Cyan" />
-                    <span className="w-4 h-4 rounded-full bg-[#1e3a8a] border border-sky-400 inline-block shadow-sm" title="Deep Sapphire" />
-                    <span className="w-4 h-4 rounded-full bg-[#8b5cf6] border border-purple-400 inline-block shadow-[0_0_6px_rgba(139,92,246,0.5)]" title="Velvet Violet" />
+                  <div className="flex items-center gap-1" title="Midnight Obsidian">
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#040508] border border-white/30 inline-block shadow-sm" title="Royal Obsidian" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#fbbf24] border border-amber-300 inline-block shadow-[0_0_6px_rgba(251,191,36,0.5)]" title="Royal Cyber Gold" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#00f2fe] border border-cyan-300 inline-block shadow-[0_0_6px_rgba(0,242,254,0.6)]" title="Electric Cyan" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#1e3a8a] border border-sky-400 inline-block shadow-sm" title="Deep Sapphire" />
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#8b5cf6] border border-purple-400 inline-block shadow-[0_0_6px_rgba(139,92,246,0.5)]" title="Velvet Violet" />
                   </div>
                 </div>
               </div>
 
               {/* 2-Column Lookbook Showcase Grid Inside Unified Box */}
-              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6 items-stretch">
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4 items-stretch">
                 
                 {/* 1. Senior Gentlemen / Boys Lookbook Panel */}
-                <div className="group rounded-xl sm:rounded-2xl p-3.5 sm:p-5 bg-white/[0.03] border border-white/10 hover:border-sky-400/40 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between">
+                <div className="group rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-white/[0.03] border border-white/10 hover:border-sky-400/40 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between">
                   <div>
                     {/* Panel Header */}
-                    <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10 mb-3 sm:mb-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2.5">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)] animate-pulse" />
-                        <h4 className="font-outfit font-black text-sm sm:text-base text-white tracking-tight">
+                        <h4 className="font-outfit font-extrabold text-xs sm:text-sm text-white tracking-tight">
                           Gentlemen&apos;s Royal Attire
                         </h4>
                       </div>
-                      <span className="text-[9px] sm:text-[10px] font-outfit font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-200 backdrop-blur-md">
+                      <span className="text-[8px] sm:text-[9px] font-outfit font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-200 backdrop-blur-md">
                         BLACK-TIE &amp; INDO-WESTERN
                       </span>
                     </div>
 
-                    {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[520px] md:h-[460px] lg:h-[480px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    {/* Photo Showcase with Neon Rim Glow - Compact Height */}
+                    <div className="relative rounded-xl overflow-hidden h-[220px] sm:h-[260px] md:h-[240px] lg:h-[270px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
@@ -1321,23 +1321,23 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
 
                 {/* 2. Senior Ladies / Girls Lookbook Panel */}
-                <div className="group rounded-xl sm:rounded-2xl p-3.5 sm:p-5 bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between">
+                <div className="group rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between">
                   <div>
                     {/* Panel Header */}
-                    <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10 mb-3 sm:mb-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2.5">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)] animate-pulse" />
-                        <h4 className="font-outfit font-black text-sm sm:text-base text-white tracking-tight">
+                        <h4 className="font-outfit font-extrabold text-xs sm:text-sm text-white tracking-tight">
                           Ladies&apos; Royal Glamour
                         </h4>
                       </div>
-                      <span className="text-[9px] sm:text-[10px] font-outfit font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 backdrop-blur-md">
+                      <span className="text-[8px] sm:text-[9px] font-outfit font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 backdrop-blur-md">
                         WESTERN FORMAL GOWNS
                       </span>
                     </div>
 
-                    {/* Photo Showcase with Neon Rim Glow */}
-                    <div className="relative rounded-xl overflow-hidden h-[420px] sm:h-[520px] md:h-[460px] lg:h-[480px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    {/* Photo Showcase with Neon Rim Glow - Compact Height */}
+                    <div className="relative rounded-xl overflow-hidden h-[220px] sm:h-[260px] md:h-[240px] lg:h-[270px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls-western.jpg?v=20261027b"
