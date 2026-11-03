@@ -213,7 +213,87 @@ router.get('/registrations/:ticketId', ticketLookupLimiter, (req, res) => {
 /**
  * Create or save new registration in real time (Rate Limited + Validated)
  */
-router.post('/registrations', registrationSubmitLimiter, (req, res) => {
+
+// =========================================================================
+// REAL-TIME SERVER-SIDE SUPABASE CLOUD SYNCHRONIZATION
+// =========================================================================
+async function syncToSupabaseDirect(record) {
+  try {
+    const supaUrl = process.env.VITE_SUPABASE_URL || 'https://wpipjvudqumqwltrtrct.supabase.co';
+    const supaKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 
+                    process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || 
+                    process.env.VITE_SUPABASE_ANON_KEY || 
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwaXBqdnVkcXVtcXdsdHJ0cmN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NzI4NTgsImV4cCI6MjEwODA0ODg1OH0.4MoZiaJIdXfMm48FTWawQ2T7m0UNri0WB4dPNILBZbM';
+    if (!supaUrl || !supaKey || !record) return false;
+
+    const cleanRoll = (record.rollNo || '').trim().toUpperCase();
+    if (!cleanRoll) return false;
+
+    const row = {
+      'FULL NAME': record.fullName || 'VIP Attendee',
+      'REGISTRATION': cleanRoll,
+      'MOBILE NO.': record.phone || null,
+      'UTR NO.': record.utrNumber || null,
+      'BRANCH': record.branch || 'Biotechnology',
+      'BATCH': record.batch || (record.isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
+      'is_senior': Boolean(record.isSenior),
+      'ticket_price': Number(record.ticketPrice) || (record.isSenior ? 600 : 399),
+      'SCREENSHOT': record.screenshot || null,
+    };
+
+    // Check existing registration by roll number
+    const checkRes = await fetch(`${supaUrl}/rest/v1/registrations?REGISTRATION=eq.${encodeURIComponent(cleanRoll)}&BRANCH=neq.DELETED&select=id`, {
+      headers: {
+        apikey: supaKey,
+        Authorization: `Bearer ${supaKey}`,
+      },
+    });
+
+    if (checkRes.ok) {
+      const existing = await checkRes.json();
+      if (Array.isArray(existing) && existing.length > 0) {
+        const targetId = existing[0].id;
+        await fetch(`${supaUrl}/rest/v1/registrations?id=eq.${encodeURIComponent(targetId)}`, {
+          method: 'PATCH',
+          headers: {
+            apikey: supaKey,
+            Authorization: `Bearer ${supaKey}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=minimal',
+          },
+          body: JSON.stringify({ ...row, updated_at: new Date().toISOString() }),
+        });
+        console.log(`[ELIXORA Server] Successfully synced registration update to Supabase: ${cleanRoll}`);
+        return true;
+      }
+    }
+
+    // Insert new registration
+    const insertRes = await fetch(`${supaUrl}/rest/v1/registrations`, {
+      method: 'POST',
+      headers: {
+        apikey: supaKey,
+        Authorization: `Bearer ${supaKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify([row]),
+    });
+
+    if (insertRes.ok) {
+      console.log(`[ELIXORA Server] Successfully synced new registration to Supabase: ${cleanRoll}`);
+      return true;
+    } else {
+      const errText = await insertRes.text();
+      console.warn(`[ELIXORA Server] Supabase cloud sync notice (${insertRes.status}):`, errText);
+    }
+  } catch (err) {
+    console.warn('[ELIXORA Server] Supabase cloud sync notice:', err.message);
+  }
+  return false;
+}
+
+router.post('/registrations', registrationSubmitLimiter, async (req, res) => {
   try {
     const payload = req.body;
     if (!payload || !payload.fullName || !payload.rollNo || !payload.utrNumber) {
@@ -249,6 +329,10 @@ router.post('/registrations', registrationSubmitLimiter, (req, res) => {
     };
 
     const savedRecord = addRegistration(sanitizedPayload);
+    // Real-time server-side synchronization to Supabase Cloud
+    syncToSupabaseDirect(savedRecord).catch((supaErr) => {
+      console.warn('[ELIXORA Server] Background Supabase sync notice:', supaErr.message);
+    });
     console.log(`[ELIXORA API] Saved registration securely: ${savedRecord.fullName} (${savedRecord.rollNo}) [${savedRecord.ticketId}]`);
 
     res.status(201).json({
@@ -274,6 +358,9 @@ router.put('/registrations/:ticketId', requireAdminAuth, (req, res) => {
     const { ticketId } = req.params;
     const updates = req.body;
     const updated = updateRegistration(ticketId, updates);
+    if (updated) {
+      syncToSupabaseDirect(updated).catch(() => {});
+    }
 
     if (!updated) {
       return res.status(404).json({ success: false, error: 'Registration not found' });

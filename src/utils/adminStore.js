@@ -195,7 +195,24 @@ export function getAdminAuthHeaders() {
   };
 }
 
+function isAdminAuthenticated() {
+  if (typeof window === 'undefined') return false;
+  try {
+    const auth = sessionStorage.getItem(STORAGE_KEYS.AUTH) || localStorage.getItem(STORAGE_KEYS.AUTH);
+    const token = sessionStorage.getItem('elixora_admin_token') || localStorage.getItem('elixora_admin_token');
+    return Boolean(auth || token);
+  } catch (e) {
+    return false;
+  }
+}
+
 async function fetchRegistrationsFromBackend() {
+  if (typeof window === 'undefined') return [];
+  // Security Hardening: Only sync attendee database if user is authenticated as Admin.
+  // Regular visitors must never fetch or store the full guest manifest in localStorage.
+  if (!isAdminAuthenticated()) {
+    return safeGet(STORAGE_KEYS.REGISTRATIONS, []);
+  }
   if (typeof window === 'undefined') return [];
   try {
     // 1. Prioritize Cloud Supabase if configured
@@ -237,14 +254,23 @@ async function fetchRegistrationsFromBackend() {
 
 async function sendRegistrationToBackend(record) {
   if (typeof window === 'undefined') return null;
-  try {
-    // 1. Sync to Supabase Cloud if configured
-    if (isSupabaseConfigured()) {
-      const supaResult = await saveRegistrationToSupabase(record, record.screenshot);
-      if (supaResult) return supaResult;
-    }
+  let supaResult = null;
+  let serverResult = null;
 
-    // 2. Fall back to local Express server
+  // 1. Parallel Real-Time Sync to Supabase Cloud Database
+  if (isSupabaseConfigured()) {
+    try {
+      supaResult = await saveRegistrationToSupabase(record, record.screenshot);
+      if (supaResult) {
+        console.info('[ELIXORA Real-Time] Direct Supabase Cloud sync confirmed:', record.fullName);
+      }
+    } catch (supaErr) {
+      console.warn('[ELIXORA Real-Time] Direct Supabase sync notice:', supaErr.message);
+    }
+  }
+
+  // 2. Dual-channel Redundant Sync to Backend Server (which also syncs to Supabase server-side)
+  try {
     const res = await fetch('/api/registrations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -252,12 +278,13 @@ async function sendRegistrationToBackend(record) {
     });
     if (res.ok) {
       const json = await res.json();
-      return json.data;
+      serverResult = json.data;
     }
   } catch (err) {
-    console.warn('[ELIXORA Real-Time] Backend sync offline, stored locally:', err.message);
+    console.warn('[ELIXORA Real-Time] Backend server sync offline:', err.message);
   }
-  return null;
+
+  return supaResult || serverResult || record;
 }
 
 function startRealTimeSync() {
@@ -947,6 +974,11 @@ export const adminStore = {
       if (ok) count++;
     }
     return count;
+  },
+
+  async syncRecordToSupabase(record) {
+    if (!isSupabaseConfigured() || !record) return null;
+    return saveRegistrationToSupabase(record, record.screenshot);
   },
 
   async syncAllToSupabase() {

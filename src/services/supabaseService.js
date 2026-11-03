@@ -70,8 +70,8 @@ export function mapRowToRegistration(row) {
  * Maps frontend registration object to the exact Supabase table column schema
  */
 export function mapRegistrationToRow(reg, screenshotUrl = null) {
-  const cleanRoll = (reg.rollNo || reg.REGISTRATION || '').trim().toUpperCase();
-  const utr = (reg.utrNumber || reg['UTR NO.'] || '').trim();
+    const cleanRoll = (reg.rollNo || reg.REGISTRATION || '').replace(/[^a-zA-Z0-9]/g, '').trim().toUpperCase();
+  const utr = (reg.utrNumber || reg['UTR NO.'] || '').replace(/[^a-zA-Z0-9]/g, '').trim();
   return {
     'FULL NAME': reg.fullName || reg['FULL NAME'] || 'VIP Attendee',
     'REGISTRATION': cleanRoll || ('REG_' + Date.now()),
@@ -116,12 +116,13 @@ export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
       return typeof fileOrDataUrl === 'string' ? fileOrDataUrl : null;
     }
 
-    const fileName = `${ticketOrRoll}-${Date.now()}.${ext}`;
-    const filePath = `receipts/${fileName}`;
+    // Sanitize identifier to prevent path traversal or invalid bucket characters
+    const safePrefix = String(ticketOrRoll || 'ticket').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30);
+    const fileName = `${safePrefix}_${Date.now()}.${ext}`;
 
     const { error: uploadError } = await client.storage
       .from('receipts')
-      .upload(filePath, blob, {
+      .upload(fileName, blob, {
         contentType,
         upsert: true,
       });
@@ -133,7 +134,7 @@ export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
 
     const { data: urlData } = client.storage
       .from('receipts')
-      .getPublicUrl(filePath);
+      .getPublicUrl(fileName);
 
     return urlData.publicUrl;
   } catch (err) {
@@ -143,7 +144,7 @@ export async function uploadReceipt(fileOrDataUrl, ticketOrRoll) {
 }
 
 /**
- * Automatically save attendee registration to Supabase database
+ * Automatically save attendee registration to Supabase database in real time
  */
 export async function saveRegistrationToSupabase(registration, fileOrDataUrl = null) {
   if (!isSupabaseConfigured() || (!supabase && !supabaseAdmin)) {
@@ -159,28 +160,47 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
       if (uploadedUrl) publicReceiptUrl = uploadedUrl;
     }
 
-    // 2. Map fields to exact Supabase schema
-    const row = mapRegistrationToRow(registration, publicReceiptUrl);
-    const cleanRoll = (registration.rollNo || '').trim().toUpperCase();
+    // 2. Strict Input Sanitization & Mapping
+    const cleanRoll = (registration.rollNo || registration.REGISTRATION || '')
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .trim()
+      .toUpperCase();
+    const cleanUtr = (registration.utrNumber || registration['UTR NO.'] || '')
+      .replace(/[^a-zA-Z0-9]/g, '')
+      .trim();
 
-    // 3. Upsert checking existing row by UUID id, then REGISTRATION (roll number), then UTR NO.
+    if (!cleanRoll || cleanRoll.length < 4) {
+      throw new Error('Registration number must be at least 4 alphanumeric characters');
+    }
+    if (!cleanUtr || cleanUtr.length < 6) {
+      throw new Error('UPI UTR / Reference number must be at least 6 characters');
+    }
+
+    // 3. Security: Check for UTR Replay / Hijacking across registrations
+    const { data: existingWithUtr } = await client
+      .from('registrations')
+      .select('id, REGISTRATION')
+      .filter('"UTR NO."', 'eq', cleanUtr)
+      .neq('BRANCH', 'DELETED')
+      .maybeSingle();
+
+    if (existingWithUtr && existingWithUtr.REGISTRATION && existingWithUtr.REGISTRATION !== cleanRoll) {
+      console.error('[ELIXORA Security] Duplicate UTR detected for different roll number:', cleanUtr);
+      throw new Error('This UPI Reference / UTR Number has already been registered with another student pass.');
+    }
+
+    const row = mapRegistrationToRow(registration, publicReceiptUrl);
+
+    // 4. Find existing record by roll number to allow re-issues/updates by the same student
     let existingId = registration.id || null;
-    if (!existingId && cleanRoll) {
+    if (!existingId) {
       const { data: existingByRoll } = await client
         .from('registrations')
         .select('id')
         .eq('REGISTRATION', cleanRoll)
+        .neq('BRANCH', 'DELETED')
         .maybeSingle();
       if (existingByRoll?.id) existingId = existingByRoll.id;
-    }
-    const cleanUtr = (registration.utrNumber || registration['UTR NO.'] || '').trim();
-    if (!existingId && cleanUtr) {
-      const { data: existingByUtr } = await client
-        .from('registrations')
-        .select('id')
-        .eq('UTR NO.', cleanUtr)
-        .maybeSingle();
-      if (existingByUtr?.id) existingId = existingByUtr.id;
     }
 
     let resultData = null;
@@ -208,11 +228,11 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
       resultData = data;
     }
 
-    console.info('[ELIXORA Supabase] Successfully synced to Supabase Cloud:', registration.fullName, registration.rollNo);
+    console.info('[ELIXORA Supabase] Successfully synced to Supabase Cloud in real time:', registration.fullName, cleanRoll);
     return mapRowToRegistration(resultData);
   } catch (err) {
-    console.error('[ELIXORA Supabase] Unexpected error during save:', err.message || err);
-    return null;
+    console.error('[ELIXORA Supabase] Real-time sync notice:', err.message || err);
+    throw err;
   }
 }
 
