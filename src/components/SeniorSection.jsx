@@ -1309,20 +1309,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Compact Height */}
-                    <div className="relative rounded-xl overflow-hidden h-[280px] sm:h-[340px] md:h-[320px] lg:h-[350px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/60 shadow-lg flex items-center justify-center">
-                      {/* Ambient Blurred Backdrop */}
-                      <img
-                        src="/costume-boys.jpg"
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-110 pointer-events-none"
-                      />
+                    <div className="relative rounded-xl overflow-hidden h-[340px] sm:h-[400px] md:h-[380px] lg:h-[410px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
-                      {/* Sharp fitted image - 100% visible inside frame */}
                       <img
                         src="/costume-boys.jpg"
                         alt="Senior Boys Royal Black-Tie and Indo-Western Suits"
-                        className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] group-hover:scale-[1.02] transition-transform duration-500 rounded-lg"
+                        className="w-full h-full object-cover object-[center_48%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
@@ -1345,20 +1337,12 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Compact Height */}
-                    <div className="relative rounded-xl overflow-hidden h-[280px] sm:h-[340px] md:h-[320px] lg:h-[350px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/60 shadow-lg flex items-center justify-center">
-                      {/* Ambient Blurred Backdrop */}
-                      <img
-                        src="/costume-girls-western.jpg?v=20261027b"
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-110 pointer-events-none"
-                      />
+                    <div className="relative rounded-xl overflow-hidden h-[340px] sm:h-[400px] md:h-[380px] lg:h-[410px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
-                      {/* Sharp fitted image - 100% visible inside frame */}
                       <img
                         src="/costume-girls-western.jpg?v=20261027b"
                         alt="Senior Girls Glamorous Western Formal Gowns"
-                        className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] group-hover:scale-[1.02] transition-transform duration-500 rounded-lg"
+                        className="w-full h-full object-cover object-[center_45%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
