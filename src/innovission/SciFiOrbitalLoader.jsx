@@ -76,7 +76,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   useEffect(() => {
     const scrambleTimer = setTimeout(() => {
       if (gatewayTextRef.current) {
-        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 0.95 });
+        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 2.2 });
       }
     }, 100);
 
@@ -284,7 +284,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           className="flex items-center gap-2.5 cursor-pointer group"
           onClick={() => {
             if (gatewayTextRef.current) {
-              scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 0.6 });
+              scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.5 });
             }
           }}
           title="ELIXORA GATEWAY · Click to scramble"

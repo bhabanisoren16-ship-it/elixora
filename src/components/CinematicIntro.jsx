@@ -66,7 +66,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
   useEffect(() => {
     const scrambleTimer = setTimeout(() => {
       if (gatewayTextRef.current) {
-        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 0.95 });
+        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 2.2 });
       }
     }, 100);
 
@@ -278,7 +278,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
           className="flex items-center gap-2.5 cursor-pointer group"
           onClick={() => {
             if (gatewayTextRef.current) {
-              scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 0.6 });
+              scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.5 });
             }
           }}
           title="ELIXORA GATEWAY · Click to scramble"
