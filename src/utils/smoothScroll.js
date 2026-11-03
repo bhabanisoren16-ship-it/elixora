@@ -21,6 +21,10 @@ function easeInOutCubic(t) {
 function animateWindowScroll(targetY, duration = 850) {
   if (typeof window === 'undefined') return;
 
+  if (typeof window !== 'undefined' && window.__cancelInertiaWheel) {
+    window.__cancelInertiaWheel();
+  }
+
   if (activeScrollAnimationId) {
     cancelAnimationFrame(activeScrollAnimationId);
     activeScrollAnimationId = null;
@@ -175,6 +179,9 @@ export function scrollToTarget(target, customOptions = {}) {
 export function pauseSmoothScroll() {
   if (typeof document === 'undefined') return;
   try {
+    if (typeof window !== 'undefined' && window.__cancelInertiaWheel) {
+      window.__cancelInertiaWheel();
+    }
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = 'hidden';
     if (scrollbarWidth > 0) {
@@ -189,6 +196,9 @@ export function pauseSmoothScroll() {
 export function resumeSmoothScroll() {
   if (typeof document === 'undefined') return;
   try {
+    if (typeof window !== 'undefined' && window.__cancelInertiaWheel) {
+      window.__cancelInertiaWheel();
+    }
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
     document.documentElement.style.overflow = '';
