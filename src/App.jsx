@@ -3,7 +3,6 @@ import Background from './components/Background';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import EventDetails from './components/EventDetails';
-import LineupSection from './components/LineupSection';
 import RegistrationPayment from './components/RegistrationPayment';
 import SeniorSection from './components/SeniorSection';
 import FloatingHomeButton from './components/FloatingHomeButton';
@@ -307,9 +306,6 @@ export default function App() {
 
         {/* Event Details & Navigation Grid */}
         <EventDetails />
-
-        {/* Festival Highlights & Lineup */}
-        <LineupSection />
 
         {/* Registration & Dynamic UPI Payment */}
         <RegistrationPayment
