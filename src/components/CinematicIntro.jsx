@@ -229,14 +229,13 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       style={{
         backgroundColor: '#040508',
         backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(26, 14, 56, 0.75) 0%, rgba(10, 8, 26, 0.96) 55%, #040508 100%)',
-        contain: 'paint layout',
         willChange: isExiting ? 'opacity, transform' : 'auto',
       }}
     >
       {/* =========================================================================
           1. RADIAL CELESTIAL NEBULA & STARLIGHT BACKGROUND (Exact Match to Screenshot)
          ========================================================================= */}
-      <div className="absolute inset-0 pointer-events-none transform-gpu" style={{ contain: 'paint' }}>
+      <div className="absolute inset-0 pointer-events-none transform-gpu">
         {/* Deep Cosmic Ambient Glowing Auroras - Hardware accelerated */}
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/15 blur-[100px] transform-gpu pointer-events-none" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-purple-600/20 blur-[100px] transform-gpu pointer-events-none" />
@@ -275,8 +274,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
           3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE (Exact Match to Screenshot)
          ========================================================================= */}
       <div
-        className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[245px] max-h-[245px] sm:w-[440px] sm:h-[440px] sm:max-w-[50vmin] sm:max-h-[50vmin] transition-transform duration-300 transform-gpu"
-        style={{ contain: 'layout paint' }}
+        className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[440px] sm:h-[440px] sm:max-w-[50vmin] sm:max-h-[50vmin] transition-transform duration-300 transform-gpu overflow-visible"
       >
         {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
         <div 

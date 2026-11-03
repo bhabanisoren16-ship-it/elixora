@@ -269,7 +269,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE
          ========================================================================= */}
       <div
-        className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[245px] max-h-[245px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] transition-transform duration-300"
+        className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] transition-transform duration-300 overflow-visible"
       >
         {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
         <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
