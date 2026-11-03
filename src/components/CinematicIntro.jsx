@@ -462,7 +462,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
             {/* Button Content: Luminous Crisp Typography & Icon Capsule */}
             <div className="relative z-10 flex items-center gap-2.5">
               <span className="font-outfit font-black text-[11px] sm:text-xs tracking-[0.22em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5">
-                ENTER HOME PAGE
+                ENTER
               </span>
 
               {/* Glowing Arrow Capsule */}
