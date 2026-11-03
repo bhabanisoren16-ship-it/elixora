@@ -59,7 +59,7 @@ export default function EventDetails() {
           Event Details &amp; Blueprint
         </h2>
         <p className="mt-2 text-white max-w-2xl mx-auto text-sm sm:text-base font-outfit font-bold subheading-readable tracking-wide">
-          All you need to navigate the biggest night of your college journey. Sync to your calendar and plan your style.
+          All you need to navigate the biggest day of your college journey. Sync to your calendar and plan your style.
         </p>
       </div>
 
