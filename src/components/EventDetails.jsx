@@ -39,7 +39,9 @@ export default function EventDetails() {
   // Teaser copy for announcement lock
   const teaserBadge = settings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE';
   const teaserTitle = settings.teaserTitle || 'Yet to be announced';
-  const teaserMessage = settings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.';
+  const teaserMessage = (settings.teaserMessage || 'The official event date and secret venue coordinates will be revealed soon.')
+    .replace(/,?\s*red carpet timings,?\s*and\s*/i, ' and ')
+    .replace(/,?\s*red carpet timings,?\s*/i, ' ');
   const teaserPill = settings.teaserPill || 'Dropping Soon • Keep An Eye Out';
 
   // Overrides for calendar helpers

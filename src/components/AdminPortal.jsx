@@ -138,7 +138,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
     venueMapsUrl: settings?.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
     teaserBadge: settings?.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
     teaserTitle: settings?.teaserTitle || 'Yet to be announced',
-    teaserMessage: settings?.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+    teaserMessage: settings?.teaserMessage?.replace(/,?\s*red carpet timings,?\s*and\s*/i, ' and ') || 'The official event date and secret venue coordinates will be revealed soon.',
     teaserPill: settings?.teaserPill || 'Dropping Soon • Keep An Eye Out',
   });
   const [schedulePreviewTab, setSchedulePreviewTab] = useState('auto'); // 'auto' | 'unlocked' | 'locked'
@@ -187,7 +187,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
           venueMapsUrl: newSettings.venueMapsUrl || 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
           teaserBadge: newSettings.teaserBadge || 'OFFICIAL SCHEDULE & VENUE',
           teaserTitle: newSettings.teaserTitle || 'Yet to be announced',
-          teaserMessage: newSettings.teaserMessage || 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+          teaserMessage: newSettings.teaserMessage?.replace(/,?\s*red carpet timings,?\s*and\s*/i, ' and ') || 'The official event date and secret venue coordinates will be revealed soon.',
           teaserPill: newSettings.teaserPill || 'Dropping Soon • Keep An Eye Out',
         });
       }
@@ -492,7 +492,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
         venueMapsUrl: 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
         teaserBadge: 'OFFICIAL SCHEDULE & VENUE',
         teaserTitle: 'Yet to be announced',
-        teaserMessage: 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+        teaserMessage: 'The official event date and secret venue coordinates will be revealed soon.',
         teaserPill: 'Dropping Soon • Keep An Eye Out',
       };
       adminStore.saveSettings(defaults);
@@ -1718,7 +1718,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
 
                         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-outfit">
                           {settings.isDateVenueAnnounced
-                            ? 'Attendees can view the real event date, red carpet timings, Grand Aurora Arena coordinates, map navigation, and can sync to their calendars.'
+                            ? 'Attendees can view the real event date, Grand Aurora Arena coordinates, map navigation, and can sync to their calendars.'
                             : 'Visitors see the frosted glass teaser ("Yet to be announced"). Date, times, and venue coordinates are hidden until you unlock them here.'}
                         </p>
                       </div>
@@ -2020,7 +2020,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                             rows={2}
                             value={scheduleDraft.teaserMessage}
                             onChange={(e) => setScheduleDraft({ ...scheduleDraft, teaserMessage: e.target.value })}
-                            placeholder="The official event date, red carpet timings, and secret venue coordinates will be revealed soon."
+                            placeholder="The official event date and secret venue coordinates will be revealed soon."
                             className="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-white/15 text-white text-xs focus:outline-none focus:border-amber-400"
                           />
                         </div>

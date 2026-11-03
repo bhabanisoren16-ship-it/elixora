@@ -96,7 +96,7 @@ const DEFAULT_SETTINGS = {
   venueMapsUrl: 'https://maps.google.com/?q=Tech+Campus+Grand+Arena',
   teaserBadge: 'OFFICIAL SCHEDULE & VENUE',
   teaserTitle: 'Yet to be announced',
-  teaserMessage: 'The official event date, red carpet timings, and secret venue coordinates will be revealed soon.',
+  teaserMessage: 'The official event date and secret venue coordinates will be revealed soon.',
   teaserPill: 'Dropping Soon • Keep An Eye Out',
 };
 
