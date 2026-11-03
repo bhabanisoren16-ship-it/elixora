@@ -132,32 +132,38 @@ export default function Background({ paused = false }) {
         ctx.save();
         ctx.globalCompositeOperation = 'screen';
 
-        const beamConfigs = [
-          { originFrac: 0.15, targetFrac: 0.35, speed: 0.0007, width: isDesktop ? 140 : Math.max(76, Math.round(w * 0.22)), color: 'rgba(0, 229, 255, 0.42)', phase: 0 },
-          { originFrac: 0.30, targetFrac: 0.52, speed: 0.0009, width: isDesktop ? 125 : Math.max(72, Math.round(w * 0.20)), color: 'rgba(56, 189, 248, 0.36)', phase: 1.2 },
-          { originFrac: 0.70, targetFrac: 0.45, speed: 0.0008, width: isDesktop ? 135 : Math.max(74, Math.round(w * 0.21)), color: 'rgba(0, 229, 255, 0.38)', phase: 2.5 },
-          { originFrac: 0.85, targetFrac: 0.62, speed: 0.0006, width: isDesktop ? 150 : Math.max(82, Math.round(w * 0.24)), color: 'rgba(192, 132, 252, 0.34)', phase: 3.8 },
-          { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: isDesktop ? 160 : Math.max(86, Math.round(w * 0.25)), color: 'rgba(56, 189, 248, 0.32)', phase: 4.5 },
+        // Desktop: Full 5-beam concert array; Mobile: Refined 3-beam array to prevent overcrowding on narrow screens
+        const beamConfigs = isDesktop ? [
+          { originFrac: 0.15, targetFrac: 0.35, speed: 0.0007, width: 140, color: 'rgba(0, 229, 255, 0.42)', phase: 0 },
+          { originFrac: 0.30, targetFrac: 0.52, speed: 0.0009, width: 125, color: 'rgba(56, 189, 248, 0.36)', phase: 1.2 },
+          { originFrac: 0.70, targetFrac: 0.45, speed: 0.0008, width: 135, color: 'rgba(0, 229, 255, 0.38)', phase: 2.5 },
+          { originFrac: 0.85, targetFrac: 0.62, speed: 0.0006, width: 150, color: 'rgba(192, 132, 252, 0.34)', phase: 3.8 },
+          { originFrac: 0.50, targetFrac: 0.50, speed: 0.0011, width: 160, color: 'rgba(56, 189, 248, 0.32)', phase: 4.5 },
+        ] : [
+          { originFrac: 0.18, targetFrac: 0.30, speed: 0.0006, width: Math.max(34, Math.round(w * 0.11)), color: 'rgba(0, 229, 255, 0.30)', phase: 0 },
+          { originFrac: 0.50, targetFrac: 0.50, speed: 0.0008, width: Math.max(38, Math.round(w * 0.12)), color: 'rgba(56, 189, 248, 0.28)', phase: 1.8 },
+          { originFrac: 0.82, targetFrac: 0.70, speed: 0.0007, width: Math.max(34, Math.round(w * 0.11)), color: 'rgba(192, 132, 252, 0.26)', phase: 3.4 },
         ];
 
         for (let i = 0; i < beamConfigs.length; i++) {
           const b = beamConfigs[i];
-          const sweepAmp = isDesktop ? 80 : Math.max(45, Math.round(w * 0.15));
+          const sweepAmp = isDesktop ? 80 : Math.max(22, Math.round(w * 0.07));
           const sweep = Math.sin(now * b.speed + b.phase) * sweepAmp;
           const topX = w * b.originFrac + parallaxX * 0.4;
           const topY = 0;
           const bottomX = w * b.targetFrac + sweep + parallaxX;
-          const bottomY = h * 0.95;
+          const bottomY = isDesktop ? h * 0.95 : h * 0.82;
 
           const grad = ctx.createLinearGradient(topX, topY, bottomX, bottomY);
-          grad.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+          grad.addColorStop(0, isDesktop ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.55)');
           grad.addColorStop(0.18, b.color);
-          grad.addColorStop(0.65, b.color.replace(/0\.\d+\)/, '0.12)'));
+          grad.addColorStop(0.65, b.color.replace(/0\.\d+\)/, isDesktop ? '0.12)' : '0.05)'));
           grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
+          const topHalfWidth = isDesktop ? 8 : 4;
           ctx.beginPath();
-          ctx.moveTo(topX - (isDesktop ? 8 : 6), topY);
-          ctx.lineTo(topX + (isDesktop ? 8 : 6), topY);
+          ctx.moveTo(topX - topHalfWidth, topY);
+          ctx.lineTo(topX + topHalfWidth, topY);
           ctx.lineTo(bottomX + b.width, bottomY);
           ctx.lineTo(bottomX - b.width, bottomY);
           ctx.closePath();
@@ -165,10 +171,10 @@ export default function Background({ paused = false }) {
           ctx.fill();
 
           // Glowing lens flare spotlight fixture head
-          const flareRadius = isDesktop ? 18 : 14;
+          const flareRadius = isDesktop ? 18 : 9;
           const flareGrad = ctx.createRadialGradient(topX, topY, 0, topX, topY, flareRadius);
           flareGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
-          flareGrad.addColorStop(0.35, 'rgba(0, 229, 255, 0.95)');
+          flareGrad.addColorStop(0.35, isDesktop ? 'rgba(0, 229, 255, 0.95)' : 'rgba(0, 229, 255, 0.70)');
           flareGrad.addColorStop(1, 'rgba(0, 229, 255, 0)');
           ctx.beginPath();
           ctx.arc(topX, topY, flareRadius, 0, Math.PI * 2);
@@ -177,21 +183,25 @@ export default function Background({ paused = false }) {
         }
 
         // 2. CONCERT LASER BEAMS (Crisp, vibrant neon lasers slicing the sky - Active on Both Desktop & Mobile)
-        const laserConfigs = [
+        // Desktop: 4 lasers; Mobile: 2 refined precision lasers
+        const laserConfigs = isDesktop ? [
           { originFrac: 0.28, targetFrac: 0.15, speed: 0.0012, color: '#00e5ff', phase: 0.5 },
           { originFrac: 0.38, targetFrac: 0.68, speed: 0.0009, color: '#c084fc', phase: 2.1 },
           { originFrac: 0.62, targetFrac: 0.32, speed: 0.0011, color: '#38bdf8', phase: 3.4 },
           { originFrac: 0.72, targetFrac: 0.86, speed: 0.0013, color: '#00e5ff', phase: 5.0 },
+        ] : [
+          { originFrac: 0.25, targetFrac: 0.20, speed: 0.0009, color: '#00e5ff', phase: 0.5 },
+          { originFrac: 0.75, targetFrac: 0.80, speed: 0.0010, color: '#c084fc', phase: 2.8 },
         ];
 
         for (let i = 0; i < laserConfigs.length; i++) {
           const l = laserConfigs[i];
-          const laserSweepAmp = isDesktop ? 120 : Math.max(55, Math.round(w * 0.18));
+          const laserSweepAmp = isDesktop ? 120 : Math.max(28, Math.round(w * 0.08));
           const sweep = Math.sin(now * l.speed + l.phase) * laserSweepAmp;
           const lx1 = w * l.originFrac + parallaxX * 0.4;
           const ly1 = 0;
           const lx2 = w * l.targetFrac + sweep + parallaxX;
-          const ly2 = h * 0.95;
+          const ly2 = isDesktop ? h * 0.95 : h * 0.75;
 
           const laserPulse = 0.42 + 0.36 * Math.sin(now * 0.0025 + l.phase);
 
@@ -200,8 +210,8 @@ export default function Background({ paused = false }) {
           ctx.moveTo(lx1, ly1);
           ctx.lineTo(lx2, ly2);
           ctx.strokeStyle = l.color;
-          ctx.lineWidth = isDesktop ? 3.5 : 2.8;
-          ctx.globalAlpha = laserPulse * 0.55;
+          ctx.lineWidth = isDesktop ? 3.5 : 1.6;
+          ctx.globalAlpha = laserPulse * (isDesktop ? 0.55 : 0.38);
           ctx.stroke();
 
           // Incandescent laser core
@@ -209,24 +219,28 @@ export default function Background({ paused = false }) {
           ctx.moveTo(lx1, ly1);
           ctx.lineTo(lx2, ly2);
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = isDesktop ? 1.0 : 1.2;
-          ctx.globalAlpha = laserPulse * 0.98;
+          ctx.lineWidth = isDesktop ? 1.0 : 0.7;
+          ctx.globalAlpha = laserPulse * (isDesktop ? 0.98 : 0.75);
           ctx.stroke();
         }
 
         // 3. RHYTHMIC STAGE BASS PULSE (Stage center glow beating in music tempo)
         const bassBeat = Math.pow(Math.max(0, Math.sin(now * 0.0028)), 3);
-        const stagePulseRadius = isDesktop ? w * 0.28 : w * 0.50;
+        const stagePulseRadius = isDesktop ? w * 0.28 : w * 0.32;
         const stageCenterX = w * 0.5 + parallaxX * 0.3;
-        const stageCenterY = isDesktop ? h * 0.26 : h * 0.24;
+        const stageCenterY = isDesktop ? h * 0.26 : h * 0.20;
 
         const pulseGrad = ctx.createRadialGradient(
           stageCenterX, stageCenterY, 5,
           stageCenterX, stageCenterY, stagePulseRadius
         );
-        pulseGrad.addColorStop(0, `rgba(0, 229, 255, ${0.20 + bassBeat * 0.26})`);
-        pulseGrad.addColorStop(0.35, `rgba(168, 85, 247, ${0.11 + bassBeat * 0.16})`);
-        pulseGrad.addColorStop(0.7, `rgba(245, 158, 11, ${0.05 + bassBeat * 0.08})`);
+        const pAlpha1 = isDesktop ? (0.20 + bassBeat * 0.26) : (0.12 + bassBeat * 0.16);
+        const pAlpha2 = isDesktop ? (0.11 + bassBeat * 0.16) : (0.07 + bassBeat * 0.10);
+        const pAlpha3 = isDesktop ? (0.05 + bassBeat * 0.08) : (0.03 + bassBeat * 0.05);
+
+        pulseGrad.addColorStop(0, `rgba(0, 229, 255, ${pAlpha1})`);
+        pulseGrad.addColorStop(0.35, `rgba(168, 85, 247, ${pAlpha2})`);
+        pulseGrad.addColorStop(0.7, `rgba(245, 158, 11, ${pAlpha3})`);
         pulseGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
         ctx.beginPath();
@@ -235,13 +249,15 @@ export default function Background({ paused = false }) {
         ctx.fill();
 
         // 4. TOP STAGE PYRO & LIGHTING TRUSS WARMTH BREATH
+        const pyroHeight = isDesktop ? h * 0.45 : h * 0.26;
+        const pyroAlphaMultiplier = isDesktop ? 1.2 : 0.65;
         const pyroBreath = 0.14 + 0.07 * Math.sin(now * 0.0015);
-        const topGrad = ctx.createRadialGradient(w * 0.5, 0, 10, w * 0.5, 0, h * 0.45);
-        topGrad.addColorStop(0, `rgba(255, 120, 20, ${pyroBreath * 1.2})`);
-        topGrad.addColorStop(0.4, `rgba(245, 158, 11, ${pyroBreath * 0.6})`);
+        const topGrad = ctx.createRadialGradient(w * 0.5, 0, 10, w * 0.5, 0, pyroHeight);
+        topGrad.addColorStop(0, `rgba(255, 120, 20, ${pyroBreath * pyroAlphaMultiplier})`);
+        topGrad.addColorStop(0.4, `rgba(245, 158, 11, ${pyroBreath * pyroAlphaMultiplier * 0.5})`);
         topGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
         ctx.fillStyle = topGrad;
-        ctx.fillRect(0, 0, w, h * 0.45);
+        ctx.fillRect(0, 0, w, pyroHeight);
 
         // 5. ATMOSPHERIC CONCERT SPARKS & LIGHT MOTES (Rising from crowd)
         const maxSparks = isDesktop ? 40 : 28;
@@ -369,15 +385,15 @@ export default function Background({ paused = false }) {
           aria-hidden="true"
         />
 
-        {/* Dynamic Rhythmic Beat Pulse Glow (Concert Lighting Heartbeat) */}
+        {/* Dynamic Rhythmic Beat Pulse Glow (Concert Lighting Heartbeat - tailored for mobile vs desktop) */}
         <div 
-          className="absolute top-[22%] sm:top-[26%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] sm:w-[900px] sm:h-[450px] bg-gradient-to-tr from-cyan-500/20 via-purple-600/15 to-sky-400/20 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none animate-stage-pulse" 
+          className="absolute top-[18%] sm:top-[26%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[180px] sm:w-[900px] sm:h-[450px] bg-gradient-to-tr from-cyan-500/14 via-purple-600/10 to-sky-400/14 sm:from-cyan-500/20 sm:via-purple-600/15 sm:to-sky-400/20 rounded-full blur-[55px] sm:blur-[120px] pointer-events-none animate-stage-pulse" 
           aria-hidden="true"
         />
 
         {/* Soft Ambient Concert Atmosphere Haze */}
         <div 
-          className="absolute top-[8%] inset-x-0 h-[45%] bg-gradient-to-b from-cyan-500/10 via-purple-500/8 to-transparent blur-3xl pointer-events-none animate-stage-haze" 
+          className="absolute top-[6%] sm:top-[8%] inset-x-0 h-[28%] sm:h-[45%] bg-gradient-to-b from-cyan-500/6 via-purple-500/5 sm:from-cyan-500/10 sm:via-purple-500/8 to-transparent blur-2xl sm:blur-3xl pointer-events-none animate-stage-haze" 
           aria-hidden="true"
         />
 
