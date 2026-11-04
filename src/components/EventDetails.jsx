@@ -328,7 +328,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight - Perfectly Framed in Mobile & Desktop */}
-                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-boys.jpg"
@@ -360,7 +360,7 @@ export default function EventDetails() {
                   </div>
 
                   {/* Photo Space with Neon Rim Backlight - Perfectly Framed in Mobile & Desktop */}
-                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
+                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
                     <div className="lookbook-backlight" />
                     <img
                       src="/costume-girls-western.jpg?v=20261027b"

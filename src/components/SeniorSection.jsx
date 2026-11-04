@@ -907,8 +907,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           </nav>
 
           {/* Minimalist 3-Column Sideways Dashboard Layout */}
-          <main className="w-full shrink-0 min-h-screen pt-4 sm:pt-10 pb-28 sm:pb-40 px-3 sm:px-6 lg:px-8 flex flex-col justify-start items-center relative z-10">
-            <form onSubmit={handleSubmit} autoComplete="off" noValidate className="w-full max-w-7xl xl:max-w-[88rem] 2xl:max-w-[92rem] mx-auto">
+          <main className="w-full shrink-0 min-h-screen pt-4 sm:pt-10 pb-28 sm:pb-40 px-2.5 sm:px-4 lg:px-6 xl:px-8 flex flex-col justify-start items-center relative z-10">
+            <form onSubmit={handleSubmit} autoComplete="off" noValidate className="w-full max-w-full lg:max-w-[98%] xl:max-w-[96%] 2xl:max-w-[95%] mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 xl:gap-7 items-stretch">
                 
                 {/* ================================================================= */}
@@ -1289,7 +1289,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
             {/* ================================================================= */}
             {/* SENIOR DRESS CODE & OUTFIT INSPIRATION LOOKBOOK SECTION */}
             {/* ================================================================= */}
-            <div id="senior-box-outfit" className="w-full max-w-7xl xl:max-w-[88rem] 2xl:max-w-[92rem] mx-auto mt-4 sm:mt-6 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
+            <div id="senior-box-outfit" className="w-full max-w-full lg:max-w-[98%] xl:max-w-[96%] 2xl:max-w-[95%] mx-auto mt-4 sm:mt-6 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
               <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -1334,7 +1334,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
-                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[340px] md:h-[310px] lg:h-[340px] xl:h-[360px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
@@ -1362,7 +1362,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
-                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[340px] md:h-[310px] lg:h-[340px] xl:h-[360px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls-western.jpg?v=20261027b"
