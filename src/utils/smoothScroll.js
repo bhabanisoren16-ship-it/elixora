@@ -21,6 +21,11 @@ function easeInOutCubic(t) {
 function animateWindowScroll(targetY, duration = 850) {
   if (typeof window === 'undefined') return;
 
+  if (typeof window !== 'undefined' && window.__smoothScrollTo) {
+    window.__smoothScrollTo(targetY);
+    return;
+  }
+
   if (typeof window !== 'undefined' && window.__cancelInertiaWheel) {
     window.__cancelInertiaWheel();
   }
