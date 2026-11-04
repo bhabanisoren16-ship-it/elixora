@@ -720,18 +720,22 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
                 <input
                   type="text"
-                  name="seniorAccessPass"
+                  name="elx_sr_key_pass"
                   value={accessRegNo}
                   onChange={(e) => {
                     setAccessRegNo(e.target.value);
                     if (accessError) setAccessError('');
                   }}
                   placeholder="ENTER PASS"
-                  autoComplete="off"
+                  autoComplete="one-time-code"
                   autoCorrect="off"
                   autoCapitalize="characters"
-                  spellCheck="false"
+                  spellCheck={false}
+                  aria-autocomplete="none"
                   data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-form-type="other"
                   className="w-full pl-10 pr-3.5 py-3 sm:py-3.5 rounded-xl bg-black/60 border border-white/20 text-white placeholder-slate-500 text-xs sm:text-sm font-outfit font-semibold uppercase tracking-wider focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all placeholder:text-xs sm:placeholder:text-sm"
                 />
               </div>
@@ -937,17 +941,19 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         <div className="relative">
                           <input
                             type="text"
-                            name="elx_sr_applicant_name"
+                            name="sr_usr_title_disp"
                             data-field="fullName"
                             value={formData.fullName}
                             onChange={handleInputChange}
                             placeholder="e.g. Aarav Sharma"
-                            autoComplete="off"
+                            autoComplete="one-time-code"
                             autoCorrect="off"
                             autoCapitalize="words"
                             spellCheck={false}
                             aria-autocomplete="none"
                             data-lpignore="true"
+                            data-1p-ignore="true"
+                            data-bwignore="true"
                             data-form-type="other"
                             className={`w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border ${
                               errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
@@ -983,17 +989,20 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </label>
                         <div className="relative">
                           <input
-                            type="tel"
-                            name="elx_sr_phone"
+                            type="text"
+                            inputMode="numeric"
+                            name="sr_contact_num_seq"
                             data-field="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
                             placeholder="10-digit number"
-                            autoComplete="off"
+                            autoComplete="one-time-code"
                             autoCorrect="off"
                             spellCheck={false}
                             aria-autocomplete="none"
                             data-lpignore="true"
+                            data-1p-ignore="true"
+                            data-bwignore="true"
                             data-form-type="other"
                             className={`w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border ${
                               errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'
@@ -1056,15 +1065,19 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         <div className="relative">
                           <input
                             type="text"
-                            name="seniorQuote"
+                            name="sr_memo_entry_text"
+                            data-field="seniorQuote"
                             value={formData.seniorQuote}
                             onChange={handleInputChange}
                             placeholder="e.g. Cherish every single moment!"
-                            autoComplete="off"
+                            autoComplete="one-time-code"
                             autoCorrect="off"
                             spellCheck={false}
                             aria-autocomplete="none"
                             data-lpignore="true"
+                            data-1p-ignore="true"
+                            data-bwignore="true"
+                            data-form-type="other"
                             className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border border-white/15 text-white placeholder-slate-500 text-xs sm:text-sm font-outfit focus:outline-none focus:ring-1 focus:ring-cyan-400 transition-all"
                           />
                           <Quote className="absolute right-3.5 top-3 sm:top-3.5 w-4 h-4 text-amber-400/80 pointer-events-none" />
@@ -1232,17 +1245,20 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                         </label>
                         <input
                           type="text"
-                          name="elx_sr_utr"
+                          inputMode="numeric"
+                          name="sr_ref_txn_code"
                           data-field="utrNumber"
                           value={formData.utrNumber}
                           onChange={handleInputChange}
                           placeholder="e.g. 427819234812"
                           maxLength={18}
-                          autoComplete="off"
+                          autoComplete="one-time-code"
                           autoCorrect="off"
                           spellCheck={false}
                           aria-autocomplete="none"
                           data-lpignore="true"
+                          data-1p-ignore="true"
+                          data-bwignore="true"
                           data-form-type="other"
                           className={`w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-obsidian-900 border ${
                             errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15'

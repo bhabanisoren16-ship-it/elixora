@@ -286,17 +286,19 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   <div className="relative">
                     <input
                       type="text"
-                      name="elx_candidate_name"
+                      name="cand_usr_disp_entry"
                       data-field="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
                       placeholder="e.g. Aarav Sharma"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                       autoCorrect="off"
                       autoCapitalize="words"
                       spellCheck={false}
                       aria-autocomplete="none"
                       data-lpignore="true"
+                      data-1p-ignore="true"
+                      data-bwignore="true"
                       data-form-type="other"
                       className={`w-full px-3 py-2.5 rounded-xl bg-obsidian-900/90 border ${errors.fullName ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                         } text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
@@ -313,16 +315,18 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   <div className="relative">
                     <input
                       type="text"
-                      name="elx_student_roll"
+                      name="cand_univ_reg_code"
                       data-field="rollNo"
                       value={formData.rollNo}
                       onChange={handleInputChange}
                       placeholder="e.g. 26CS084"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                       autoCorrect="off"
                       spellCheck={false}
                       aria-autocomplete="none"
                       data-lpignore="true"
+                      data-1p-ignore="true"
+                      data-bwignore="true"
                       data-form-type="other"
                       className={`w-full px-3 py-2.5 rounded-xl bg-obsidian-900/90 border ${errors.rollNo ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                         } text-white placeholder-slate-500 text-xs uppercase font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
@@ -338,17 +342,20 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </label>
                   <div className="relative">
                     <input
-                      type="tel"
-                      name="elx_contact_phone"
+                      type="text"
+                      inputMode="numeric"
+                      name="cand_mobile_num_seq"
                       data-field="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="10-digit mobile"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                       autoCorrect="off"
                       spellCheck={false}
                       aria-autocomplete="none"
                       data-lpignore="true"
+                      data-1p-ignore="true"
+                      data-bwignore="true"
                       data-form-type="other"
                       className={`w-full px-3 py-2.5 rounded-xl bg-obsidian-900/90 border ${errors.phone ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                         } text-white placeholder-slate-500 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
@@ -447,17 +454,20 @@ export default function RegistrationPayment({ onPassGenerated }) {
                   </label>
                   <input
                     type="text"
-                    name="elx_upi_utr"
+                    inputMode="numeric"
+                    name="cand_utr_ref_digits"
                     data-field="utrNumber"
                     value={formData.utrNumber}
                     onChange={handleInputChange}
                     placeholder="e.g. 427189035124"
                     maxLength={18}
-                    autoComplete="off"
+                    autoComplete="one-time-code"
                     autoCorrect="off"
                     spellCheck={false}
                     aria-autocomplete="none"
                     data-lpignore="true"
+                    data-1p-ignore="true"
+                    data-bwignore="true"
                     data-form-type="other"
                     className={`w-full px-3 py-2 rounded-xl bg-obsidian-900/90 border ${errors.utrNumber ? 'border-rose-500 ring-1 ring-rose-500' : 'border-white/15 focus:border-cyber-cyan'
                       } text-white font-mono text-xs placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyber-cyan transition-all`}
