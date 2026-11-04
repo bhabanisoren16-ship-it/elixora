@@ -268,111 +268,81 @@ export default function EventDetails() {
         </h2>
       </div>
 
-      {/* Box 2: Dedicated Dress Costume Box (Translucent Glass Screen with Light Spotlight) */}
+      {/* Box 2: Dedicated Dress Costume Box (Same as Senior Section Lookbook) */}
       <div 
         data-reveal
         id="dress-code" 
-        onMouseMove={handleMouseMove}
-        className="rounded-3xl sm:rounded-[2rem] p-4 sm:p-5 lg:p-6 translucent-glass-screen light-spotlight-card hover:border-cyan-300/50 hover:shadow-[0_12px_45px_0_rgba(0,0,0,0.35),0_0_35px_rgba(0,229,255,0.22)] relative overflow-hidden transition-all duration-300 scroll-mt-20 sm:scroll-mt-24 w-full"
+        className="w-full max-w-full lg:max-w-[98%] xl:max-w-[96%] 2xl:max-w-[95%] mx-auto bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden transition-all duration-300 scroll-mt-20 sm:scroll-mt-24"
       >
-        {/* Interactive pointer light overlay & illuminated border */}
-        <div className="light-spotlight-overlay" />
-        <div className="light-spotlight-border" />
-        <div className="card-top-light-beam" />
-        <div className="light-glint-sweep" />
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Ambient breathing aurora atmospheric glows */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-cyan-400/25 rounded-full blur-[100px] pointer-events-none aurora-light-beacon" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-violet-500/25 rounded-full blur-[100px] pointer-events-none aurora-light-beacon" />
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-80 h-80 bg-amber-500/12 rounded-full blur-[90px] pointer-events-none aurora-light-beacon" />
+        {/* Outfit Header Inside Unified Box */}
+        <div className="relative z-10 flex items-center justify-between gap-2.5">
+          <h3 className="font-outfit font-extrabold text-base sm:text-lg text-white tracking-tight">
+            Freshers&apos; Outfit &amp; Style Lookbook
+          </h3>
+        </div>
 
-        <div className="relative z-10">
-          {/* Header row */}
-          <div className="mb-2.5 sm:mb-3.5">
+        {/* 2-Column Lookbook Showcase Grid Inside Unified Box */}
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4 items-stretch">
+          
+          {/* 1. Gentlemen / Boys Lookbook Panel */}
+          <div className="group rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-white/[0.03] border border-white/10 hover:border-sky-400/40 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between">
             <div>
-              <h3 className="font-outfit font-black text-2xl sm:text-3xl text-white tracking-tight">
-                Formal &amp; Indo-Western Fusion
-              </h3>
+              {/* Panel Header */}
+              <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)] animate-pulse" />
+                  <h4 className="font-outfit font-extrabold text-xs sm:text-sm text-white tracking-tight">
+                    Gentlemen&apos;s Royal Attire
+                  </h4>
+                </div>
+                <span className="text-[8px] sm:text-[9px] font-outfit font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-200 backdrop-blur-md">
+                  BLACK-TIE &amp; INDO-WESTERN
+                </span>
+              </div>
+
+              {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
+              <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                <div className="lookbook-backlight" />
+                <img
+                  src="/costume-boys.jpg"
+                  alt="Boys Royal Black-Tie and Indo-Western Suits"
+                  className="w-full h-full object-cover object-[center_20%] md:object-[center_28%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Costume Photo Space for Boys and Girls */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-outfit text-cyan-300 tracking-wider uppercase font-black flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
-                ATTIRE INSPIRATION LOOKBOOK
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch w-full">
-              
-              {/* Boys Costume Card (Translucent Glass Card) */}
-              <div 
-                onMouseMove={handleMouseMove}
-                className="rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 translucent-glass-card light-spotlight-card hover:border-sky-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden w-full"
-              >
-                <div className="light-spotlight-overlay" />
-                <div className="light-spotlight-border" />
-                <div className="card-top-light-beam" />
-
-                <div className="relative z-10 w-full">
-                  <div className="flex items-center justify-between mb-2.5">
-                    <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)]" />
-                      BOYS' ATTIRE LOOKBOOK
-                    </span>
-                    <span className="text-[10px] font-outfit bg-sky-500/25 text-sky-200 px-3 py-1 rounded-full border border-sky-400/50 font-black uppercase tracking-wider backdrop-blur-md">
-                      FORMAL SUITS &amp; INDO-WESTERN
-                    </span>
-                  </div>
-
-                  {/* Photo Space with Neon Rim Backlight - Perfectly Framed in Mobile & Desktop */}
-                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-md">
-                    <div className="lookbook-backlight" />
-                    <img
-                      src="/costume-boys.jpg"
-                      alt="Boys Formal Tuxedo and Suit Attire"
-                      className="w-full h-full object-cover object-[center_20%] md:object-[center_28%] group-hover:scale-105 transition-transform duration-500 relative z-10"
-                    />
-                  </div>
+          {/* 2. Ladies / Girls Lookbook Panel */}
+          <div className="group rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between">
+            <div>
+              {/* Panel Header */}
+              <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2.5">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)] animate-pulse" />
+                  <h4 className="font-outfit font-extrabold text-xs sm:text-sm text-white tracking-tight">
+                    Ladies&apos; Royal Glamour
+                  </h4>
                 </div>
+                <span className="text-[8px] sm:text-[9px] font-outfit font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-200 backdrop-blur-md">
+                  WESTERN FORMAL GOWNS
+                </span>
               </div>
 
-              {/* Girls Costume Card (Translucent Glass Card) */}
-              <div 
-                onMouseMove={handleMouseMove}
-                className="rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 translucent-glass-card light-spotlight-card hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all duration-300 group flex flex-col justify-between relative overflow-hidden w-full"
-              >
-                <div className="light-spotlight-overlay" />
-                <div className="light-spotlight-border" />
-                <div className="card-top-light-beam" />
-
-                <div className="relative z-10 w-full">
-                  <div className="flex items-center justify-between mb-2.5">
-                    <span className="text-xs font-outfit font-extrabold text-white tracking-wider flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]" />
-                      GIRLS' ATTIRE LOOKBOOK
-                    </span>
-                    <span className="text-[10px] font-outfit bg-cyan-500/25 text-cyan-200 px-3 py-1 rounded-full border border-cyan-400/50 font-black uppercase tracking-wider backdrop-blur-md">
-                      WESTERN FORMAL DRESS
-                    </span>
-                  </div>
-
-                  {/* Photo Space with Neon Rim Backlight - Perfectly Framed in Mobile & Desktop */}
-                  <div className="relative rounded-2xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-md">
-                    <div className="lookbook-backlight" />
-                    <img
-                      src="/costume-girls-western.jpg?v=20261027b"
-                      alt="Girls Elegant Western Formal Gown Attire"
-                      className="w-full h-full object-cover object-[center_12%] md:object-[center_12%] group-hover:scale-105 transition-transform duration-500 relative z-10"
-                    />
-                  </div>
-                </div>
+              {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
+              <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                <div className="lookbook-backlight" />
+                <img
+                  src="/costume-girls-western.jpg?v=20261027b"
+                  alt="Girls Glamorous Western Formal Gowns"
+                  className="w-full h-full object-cover object-[center_12%] md:object-[center_12%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                />
               </div>
-
             </div>
           </div>
+
         </div>
       </div>
 
