@@ -50,6 +50,12 @@ const CELESTIAL_ORBS = [
   },
 ];
 
+// Perlin's Smootherstep: zero 1st and 2nd derivatives at ends for buttery-smooth acceleration and deceleration
+const smootherstep = (t) => {
+  const x = Math.max(0, Math.min(1, t));
+  return x * x * x * (x * (x * 6 - 15) + 10);
+};
+
 export default function CinematicIntro({ onComplete, duration = 2.4 }) {
   const containerRef = useRef(null);
   const countRef = useRef(null);
@@ -57,6 +63,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
   const flareRef = useRef(null);
   const polylineRef = useRef(null);
   const orbRefs = useRef([]);
+  const imgRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
   const [isAligned, setIsAligned] = useState(false);
@@ -133,25 +140,33 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
         countRef.current.textContent = String(Math.floor(currentPercent)).padStart(3, '0');
       }
 
-      // 3. Update planetary alignment rotation & laser alignment trajectory
+      // 3. Update planetary alignment rotation & laser alignment trajectory with Perlin smootherstep
       const normProgress = currentPercent / 100;
-      const pts = ['50,50'];
-      const thresholds = [0.34, 0.67, 1.0];
+      // Staggered orbital locks: Mars glides until 88%, Earth until 94%, Tidal Moon until 100%
+      const thresholds = [0.88, 0.94, 1.0];
+      const orbCoords = [];
 
       for (let idx = 0; idx < CELESTIAL_ORBS.length; idx++) {
         const orb = CELESTIAL_ORBS[idx];
         const q = Math.min(1, normProgress / thresholds[orb.i]);
-        const angle = orb.a0 * Math.pow(1 - q, 3);
+        const ease = smootherstep(q);
+        const angle = orb.a0 * (1 - ease);
         const rad = (angle * Math.PI) / 180;
 
         const orbEl = orbRefs.current[idx];
         if (orbEl) {
-          orbEl.style.transform = `rotate(${angle}deg) translateZ(0)`;
+          orbEl.style.transform = `rotate(${angle.toFixed(3)}deg) translateZ(0)`;
+        }
+
+        // Keep planet image upright with zero tumbling
+        const imgEl = imgRefs.current[idx];
+        if (imgEl) {
+          imgEl.style.transform = `rotate(${(-angle).toFixed(3)}deg) translateZ(0)`;
         }
 
         const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);
         const py = (50 - orb.radius * Math.cos(rad)).toFixed(2);
-        pts.push(`${px},${py}`);
+        orbCoords[orb.i] = `${px},${py}`;
 
         // Shockwave lock animation when planet aligns at top
         if (q >= 1 && !doneLocks[orb.i]) {
@@ -167,8 +182,9 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
         }
       }
 
-      if (polylineRef.current) {
-        polylineRef.current.setAttribute('points', pts.join(' '));
+      // Strict radial order from center outward: Center -> Mars (i:0) -> Earth (i:1) -> Tidal (i:2)
+      if (polylineRef.current && orbCoords[0] && orbCoords[1] && orbCoords[2]) {
+        polylineRef.current.setAttribute('points', `50,50 ${orbCoords[0]} ${orbCoords[1]} ${orbCoords[2]}`);
       }
 
       if (currentPercent < 100) {
@@ -300,12 +316,15 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       <div
         className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[440px] sm:h-[440px] sm:max-w-[50vmin] sm:max-h-[50vmin] transition-transform duration-300 transform-gpu overflow-visible"
       >
-        {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
+        {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura - Smooth Continuous Rotation */}
         <div 
-          className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)] transform-gpu" 
-          style={{ willChange: 'transform, opacity' }}
+          className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)] animate-[spin_45s_linear_infinite] transform-gpu" 
+          style={{ willChange: 'transform' }}
         />
-        <div className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none transform-gpu" />
+        <div 
+          className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none transform-gpu"
+          style={{ animation: 'spin 70s linear infinite reverse', willChange: 'transform' }}
+        />
 
         {/* Dynamic Multi-Color Laser Conjunction Trajectory (Points connect center to each planet) */}
         <svg
@@ -361,11 +380,13 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
                   className={`absolute inset-[-40%] rounded-full border-2 ${orb.lockBorder} opacity-0 pointer-events-none transform-gpu`}
                 />
                 <img
+                  ref={(el) => (imgRefs.current[idx] = el)}
                   src={`/assets/${orb.img}`}
                   alt={orb.name}
                   loading="eager"
                   decoding="async"
-                  className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)]"
+                  className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)] transform-gpu"
+                  style={{ willChange: 'transform' }}
                 />
               </div>
             </div>
