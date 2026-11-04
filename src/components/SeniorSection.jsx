@@ -911,8 +911,8 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
           </nav>
 
           {/* Minimalist 3-Column Sideways Dashboard Layout */}
-          <main className="w-full shrink-0 min-h-screen pt-4 sm:pt-10 pb-28 sm:pb-40 px-2.5 sm:px-4 lg:px-6 xl:px-8 flex flex-col justify-start items-center relative z-10">
-            <form onSubmit={handleSubmit} autoComplete="off" noValidate className="w-full max-w-full lg:max-w-[98%] xl:max-w-[96%] 2xl:max-w-[95%] mx-auto">
+          <main className="w-full shrink-0 min-h-screen pt-4 sm:pt-10 pb-28 sm:pb-40 px-2 sm:px-3.5 lg:px-5 flex flex-col justify-start items-center relative z-10">
+            <form onSubmit={handleSubmit} autoComplete="off" noValidate className="w-full max-w-full mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 xl:gap-7 items-stretch">
                 
                 {/* ================================================================= */}
@@ -1305,7 +1305,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
             {/* ================================================================= */}
             {/* SENIOR DRESS CODE & OUTFIT INSPIRATION LOOKBOOK SECTION */}
             {/* ================================================================= */}
-            <div id="senior-box-outfit" className="w-full max-w-full lg:max-w-[98%] xl:max-w-[96%] 2xl:max-w-[95%] mx-auto mt-4 sm:mt-6 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
+            <div id="senior-box-outfit" className="w-full max-w-full mx-auto mt-4 sm:mt-6 scroll-mt-28 sm:scroll-mt-36 bg-obsidian-950/85 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.7)] relative overflow-hidden">
               <div className="absolute -top-20 -left-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -1317,13 +1317,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               </div>
 
               {/* 2-Column Lookbook Showcase Grid Inside Unified Box */}
-              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4 items-stretch">
+              <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5 mt-2.5 sm:mt-3.5 items-stretch">
                 
                 {/* 1. Senior Gentlemen / Boys Lookbook Panel */}
-                <div className="group rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-white/[0.03] border border-white/10 hover:border-sky-400/40 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between">
+                <div className="group rounded-xl sm:rounded-2xl p-2 sm:p-2.5 bg-white/[0.03] border border-white/10 hover:border-sky-400/40 shadow-md hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all duration-300 flex flex-col justify-between">
                   <div>
                     {/* Panel Header */}
-                    <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2.5">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.9)] animate-pulse" />
                         <h4 className="font-outfit font-extrabold text-xs sm:text-sm text-white tracking-tight">
@@ -1336,7 +1336,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
-                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[260px] md:h-[240px] lg:h-[260px] xl:h-[290px] 2xl:h-[320px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
@@ -1348,10 +1348,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                 </div>
 
                 {/* 2. Senior Ladies / Girls Lookbook Panel */}
-                <div className="group rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between">
+                <div className="group rounded-xl sm:rounded-2xl p-2 sm:p-2.5 bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 shadow-md hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 flex flex-col justify-between">
                   <div>
                     {/* Panel Header */}
-                    <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2.5">
+                    <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2">
                       <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)] animate-pulse" />
                         <h4 className="font-outfit font-extrabold text-xs sm:text-sm text-white tracking-tight">
@@ -1364,7 +1364,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                     </div>
 
                     {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
-                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[320px] md:h-[300px] lg:h-[330px] xl:h-[350px] 2xl:h-[380px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[260px] md:h-[240px] lg:h-[260px] xl:h-[290px] 2xl:h-[320px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls-western.jpg?v=20261027b"
