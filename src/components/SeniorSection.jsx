@@ -1336,13 +1336,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       </span>
                     </div>
 
-                    {/* Photo Showcase with Neon Rim Glow - Perfectly Framed */}
-                    <div className="relative rounded-xl overflow-hidden h-[380px] sm:h-[440px] md:h-[420px] lg:h-[460px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
+                    {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
+                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[440px] md:h-[420px] lg:h-[460px] w-full border border-white/20 group-hover:border-sky-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-boys.jpg"
                         alt="Senior Boys Royal Black-Tie and Indo-Western Suits"
-                        className="w-full h-full object-cover object-[center_32%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_20%] md:object-[center_32%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
@@ -1364,13 +1364,13 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
                       </span>
                     </div>
 
-                    {/* Photo Showcase with Neon Rim Glow - Perfectly Framed */}
-                    <div className="relative rounded-xl overflow-hidden h-[380px] sm:h-[440px] md:h-[420px] lg:h-[460px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
+                    {/* Photo Showcase with Neon Rim Glow - Perfectly Framed in Mobile & Desktop */}
+                    <div className="relative rounded-xl overflow-hidden aspect-[3/4] sm:aspect-auto h-auto sm:h-[440px] md:h-[420px] lg:h-[460px] w-full border border-white/20 group-hover:border-cyan-400/50 transition-all bg-black/40 shadow-lg">
                       <div className="lookbook-backlight" />
                       <img
                         src="/costume-girls-western.jpg?v=20261027b"
                         alt="Senior Girls Glamorous Western Formal Gowns"
-                        className="w-full h-full object-cover object-[center_22%] group-hover:scale-105 transition-transform duration-500 relative z-10"
+                        className="w-full h-full object-cover object-[center_16%] md:object-[center_22%] group-hover:scale-105 transition-transform duration-500 relative z-10"
                       />
                     </div>
                   </div>
