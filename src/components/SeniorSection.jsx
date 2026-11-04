@@ -1294,24 +1294,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
               <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
 
               {/* Outfit Header Inside Unified Box */}
-              <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                <div>
-                  <h3 className="font-outfit font-extrabold text-base sm:text-lg text-white tracking-tight">
-                    Senior Outfit &amp; Style Lookbook
-                  </h3>
-                </div>
-
-                {/* VIP Theme Color Swatches */}
-                <div className="flex items-center gap-1.5 p-1 sm:p-1.5 rounded-xl bg-white/[0.04] border border-white/10 shrink-0">
-                  <span className="text-[9px] sm:text-[10px] font-mono uppercase text-slate-400 font-bold mr-1 hidden sm:inline">Theme Palette:</span>
-                  <div className="flex items-center gap-1" title="Midnight Obsidian">
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#040508] border border-white/30 inline-block shadow-sm" title="Royal Obsidian" />
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#fbbf24] border border-amber-300 inline-block shadow-[0_0_6px_rgba(251,191,36,0.5)]" title="Royal Cyber Gold" />
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#00f2fe] border border-cyan-300 inline-block shadow-[0_0_6px_rgba(0,242,254,0.6)]" title="Electric Cyan" />
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#1e3a8a] border border-sky-400 inline-block shadow-sm" title="Deep Sapphire" />
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#8b5cf6] border border-purple-400 inline-block shadow-[0_0_6px_rgba(139,92,246,0.5)]" title="Velvet Violet" />
-                  </div>
-                </div>
+              <div className="relative z-10 flex items-center justify-between gap-2.5">
+                <h3 className="font-outfit font-extrabold text-base sm:text-lg text-white tracking-tight">
+                  Senior Outfit &amp; Style Lookbook
+                </h3>
               </div>
 
               {/* 2-Column Lookbook Showcase Grid Inside Unified Box */}
