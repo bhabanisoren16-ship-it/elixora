@@ -21,7 +21,7 @@ const CELESTIAL_ORBS = [
     border: '1px dotted rgba(0, 242, 254, 0.55)', 
     lockBorder: 'border-cyan-400 shadow-[0_0_18px_#00f2fe]', 
     i: 2, 
-    a0: -480, // 1.33 full clockwise rotations from 240° (bottom-left) to 0° (top meridian)
+    a0: 236, 
     size: 12, 
     img: 'planet-tide.webp', 
     name: 'TIDAL WORLD',
@@ -32,7 +32,7 @@ const CELESTIAL_ORBS = [
     border: '1px dashed rgba(168, 85, 247, 0.55)', 
     lockBorder: 'border-purple-400 shadow-[0_0_18px_#a855f7]', 
     i: 1, 
-    a0: -600, // 1.67 full clockwise rotations from 120° (bottom-right) to 0° (top meridian)
+    a0: -148, 
     size: 13, 
     img: 'planet-earth.webp', 
     name: 'TERRA SPHERE',
@@ -43,19 +43,13 @@ const CELESTIAL_ORBS = [
     border: '1px solid rgba(236, 72, 153, 0.55)', 
     lockBorder: 'border-pink-400 shadow-[0_0_18px_#ec4899]', 
     i: 0, 
-    a0: -900, // 2.50 full clockwise rotations from 180° (bottom) to 0° (top meridian)
+    a0: 128, 
     size: 16, 
     img: 'planet-mars.webp', 
     name: 'ASTRAL MARS',
     radius: 24 
   },
 ];
-
-// Perlin's Smootherstep: zero 1st and 2nd derivatives at ends for buttery-smooth acceleration and deceleration
-const smootherstep = (t) => {
-  const x = Math.max(0, Math.min(1, t));
-  return x * x * x * (x * (x * 6 - 15) + 10);
-};
 
 const REFRESH_STATUSES = [
   'PAGE RELOAD DETECTED · INITIATING CELESTIAL REFRESH',
@@ -151,26 +145,24 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         countRef.current.textContent = String(Math.floor(currentPercent)).padStart(3, '0');
       }
 
-      // Update planetary alignment rotation & laser alignment trajectory with Perlin smootherstep
+      // Update planetary alignment rotation & laser alignment trajectory
       const normProgress = currentPercent / 100;
-      // Staggered orbital locks: Mars glides until 88%, Earth until 94%, Tidal Moon until 100%
-      const thresholds = [0.88, 0.94, 1.0];
-      const orbCoords = [];
+      const pts = ['50,50'];
+      const thresholds = [0.34, 0.67, 1.0];
 
       CELESTIAL_ORBS.forEach((orb, idx) => {
         const q = Math.min(1, normProgress / thresholds[orb.i]);
-        const ease = smootherstep(q);
-        const angle = orb.a0 * (1 - ease);
+        const angle = orb.a0 * Math.pow(1 - q, 3);
         const rad = (angle * Math.PI) / 180;
 
         const orbEl = orbRefs.current[idx];
         if (orbEl) {
-          orbEl.style.transform = `rotate(${angle.toFixed(3)}deg) translateZ(0)`;
+          orbEl.style.transform = `rotate(${angle}deg) translateZ(0)`;
         }
 
         const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);
         const py = (50 - orb.radius * Math.cos(rad)).toFixed(2);
-        orbCoords[orb.i] = `${px},${py}`;
+        pts.push(`${px},${py}`);
 
         // Shockwave lock animation when planet aligns at top
         if (q >= 1 && !doneLocks[orb.i]) {
@@ -186,9 +178,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         }
       });
 
-      // Strict radial order from center outward: Center -> Mars (i:0) -> Earth (i:1) -> Tidal (i:2)
-      if (polylineRef.current && orbCoords[0] && orbCoords[1] && orbCoords[2]) {
-        polylineRef.current.setAttribute('points', `50,50 ${orbCoords[0]} ${orbCoords[1]} ${orbCoords[2]}`);
+      if (polylineRef.current) {
+        polylineRef.current.setAttribute('points', pts.join(' '));
       }
 
       // Status text updates with ScrambleText
@@ -316,17 +307,13 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] transition-transform duration-300 overflow-visible"
       >
         {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
-        <div 
-          className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)] transform-gpu"
-        />
-        <div 
-          className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none transform-gpu"
-        />
+        <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
+        <div className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none" />
 
         {/* Dynamic Multi-Color Laser Conjunction Trajectory */}
         <svg
           viewBox="0 0 100 100"
-          className="loader-fade absolute inset-0 w-full h-full overflow-visible pointer-events-none z-10 transform-gpu"
+          className="loader-fade absolute inset-0 w-full h-full overflow-visible pointer-events-none z-10"
         >
           <defs>
             <linearGradient id="laserGrad" x1="0%" y1="100%" x2="0%" y2="0%">
@@ -351,17 +338,16 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         {CELESTIAL_ORBS.map((orb, idx) => (
           <div
             key={orb.i}
-            className="loader-ring absolute rounded-full transform-gpu"
+            className="loader-ring absolute rounded-full"
             style={{
               inset: orb.inset,
               border: orb.border,
             }}
           >
-            {/* Orbiting Planet Container - GPU Hardware Accelerated */}
+            {/* Orbiting Planet Container */}
             <div
               ref={(el) => (orbRefs.current[idx] = el)}
-              className="absolute inset-0 pointer-events-none transform-gpu"
-              style={{ willChange: 'transform' }}
+              className="absolute inset-0 pointer-events-none"
             >
               <div
                 className="absolute left-1/2 top-0"
@@ -374,13 +360,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
                 {/* Lock Shockwave Ring */}
                 <span
                   ref={(el) => (lockRefs.current[idx] = el)}
-                  className={`absolute inset-[-40%] rounded-full border-2 ${orb.lockBorder} opacity-0 pointer-events-none transform-gpu`}
+                  className={`absolute inset-[-40%] rounded-full border-2 ${orb.lockBorder} opacity-0 pointer-events-none`}
                 />
                 <img
                   src={`/assets/${orb.img}`}
                   alt={orb.name}
-                  loading="eager"
-                  decoding="async"
                   className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)]"
                 />
               </div>
