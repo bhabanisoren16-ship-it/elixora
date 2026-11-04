@@ -20,7 +20,7 @@ const CELESTIAL_ORBS = [
     border: '1px dotted rgba(0, 242, 254, 0.55)', 
     lockBorder: 'border-cyan-400 shadow-[0_0_18px_#00f2fe]', 
     i: 2, 
-    a0: 236, 
+    a0: -480, // 1.33 full clockwise rotations from 240° (bottom-left) to 0° (top meridian)
     size: 12, 
     img: 'planet-tide.webp', 
     name: 'TIDAL WORLD',
@@ -31,7 +31,7 @@ const CELESTIAL_ORBS = [
     border: '1px dashed rgba(168, 85, 247, 0.55)', 
     lockBorder: 'border-purple-400 shadow-[0_0_18px_#a855f7]', 
     i: 1, 
-    a0: -148, 
+    a0: -600, // 1.67 full clockwise rotations from 120° (bottom-right) to 0° (top meridian)
     size: 13, 
     img: 'planet-earth.webp', 
     name: 'TERRA SPHERE',
@@ -42,7 +42,7 @@ const CELESTIAL_ORBS = [
     border: '1px solid rgba(236, 72, 153, 0.55)', 
     lockBorder: 'border-pink-400 shadow-[0_0_18px_#ec4899]', 
     i: 0, 
-    a0: 128, 
+    a0: -900, // 2.50 full clockwise rotations from 180° (bottom) to 0° (top meridian)
     size: 16, 
     img: 'planet-mars.webp', 
     name: 'ASTRAL MARS',
@@ -63,7 +63,6 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
   const flareRef = useRef(null);
   const polylineRef = useRef(null);
   const orbRefs = useRef([]);
-  const imgRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
   const [isAligned, setIsAligned] = useState(false);
@@ -124,6 +123,9 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
 
     }, containerRef);
 
+    let conjunctionTime = null;
+    let isConjunctionAchieved = false;
+
     // Direct high-performance DOM update loop without React re-renders
     const updateLoader = (now) => {
       const elapsed = now - startTime;
@@ -140,45 +142,76 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
         countRef.current.textContent = String(Math.floor(currentPercent)).padStart(3, '0');
       }
 
-      // 3. Update planetary alignment rotation & laser alignment trajectory with Perlin smootherstep
-      const normProgress = currentPercent / 100;
-      // Staggered orbital locks: Mars glides until 88%, Earth until 94%, Tidal Moon until 100%
-      const thresholds = [0.88, 0.94, 1.0];
       const orbCoords = [];
 
-      for (let idx = 0; idx < CELESTIAL_ORBS.length; idx++) {
-        const orb = CELESTIAL_ORBS[idx];
-        const q = Math.min(1, normProgress / thresholds[orb.i]);
-        const ease = smootherstep(q);
-        const angle = orb.a0 * (1 - ease);
-        const rad = (angle * Math.PI) / 180;
+      if (currentPercent < 100) {
+        // Phase 1: 0% -> 100% full clockwise orbital revolutions into syzygy alignment
+        const normProgress = currentPercent / 100;
+        const thresholds = [0.88, 0.94, 1.0];
 
-        const orbEl = orbRefs.current[idx];
-        if (orbEl) {
-          orbEl.style.transform = `rotate(${angle.toFixed(3)}deg) translateZ(0)`;
+        for (let idx = 0; idx < CELESTIAL_ORBS.length; idx++) {
+          const orb = CELESTIAL_ORBS[idx];
+          const q = Math.min(1, normProgress / thresholds[orb.i]);
+          const ease = smootherstep(q);
+          const angle = orb.a0 * (1 - ease);
+          const rad = (angle * Math.PI) / 180;
+
+          const orbEl = orbRefs.current[idx];
+          if (orbEl) {
+            orbEl.style.transform = `rotate(${angle.toFixed(3)}deg) translateZ(0)`;
+          }
+
+          const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);
+          const py = (50 - orb.radius * Math.cos(rad)).toFixed(2);
+          orbCoords[orb.i] = `${px},${py}`;
+
+          // Shockwave lock animation when planet aligns at top
+          if (q >= 1 && !doneLocks[orb.i]) {
+            doneLocks[orb.i] = true;
+            const lockEl = lockRefs.current[idx];
+            if (lockEl) {
+              gsap.fromTo(
+                lockEl,
+                { scale: 0.6, opacity: 1 },
+                { scale: 2.8, opacity: 0, duration: 0.6, ease: 'expo.out', force3D: true }
+              );
+            }
+          }
         }
-
-        // Keep planet image upright with zero tumbling
-        const imgEl = imgRefs.current[idx];
-        if (imgEl) {
-          imgEl.style.transform = `rotate(${(-angle).toFixed(3)}deg) translateZ(0)`;
-        }
-
-        const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);
-        const py = (50 - orb.radius * Math.cos(rad)).toFixed(2);
-        orbCoords[orb.i] = `${px},${py}`;
-
-        // Shockwave lock animation when planet aligns at top
-        if (q >= 1 && !doneLocks[orb.i]) {
-          doneLocks[orb.i] = true;
-          const lockEl = lockRefs.current[idx];
-          if (lockEl) {
+      } else {
+        // Phase 2: 100% reached! Syzygy conjunction achieved!
+        if (!isConjunctionAchieved) {
+          isConjunctionAchieved = true;
+          conjunctionTime = now;
+          setIsAligned(true);
+          if (flareRef.current) {
             gsap.fromTo(
-              lockEl,
-              { scale: 0.6, opacity: 1 },
-              { scale: 2.8, opacity: 0, duration: 0.6, ease: 'expo.out', force3D: true }
+              flareRef.current,
+              { scale: 0.8, opacity: 1 },
+              { scale: 2.6, opacity: 0, duration: 0.8, ease: 'expo.out', force3D: true }
             );
           }
+        }
+
+        // CONTINUOUS PROPER ROTATION AT 100%:
+        // The aligned syzygy conjunction beam continues to glide smoothly 360° continuously around the central core!
+        const postElapsed = now - (conjunctionTime || now);
+        // Smooth continuous clockwise rotation: 1 full majestic 360-degree sweep every 20 seconds
+        const postAngle = (postElapsed / 20000) * 360;
+
+        for (let idx = 0; idx < CELESTIAL_ORBS.length; idx++) {
+          const orb = CELESTIAL_ORBS[idx];
+          const angle = postAngle;
+          const rad = (angle * Math.PI) / 180;
+
+          const orbEl = orbRefs.current[idx];
+          if (orbEl) {
+            orbEl.style.transform = `rotate(${angle.toFixed(3)}deg) translateZ(0)`;
+          }
+
+          const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);
+          const py = (50 - orb.radius * Math.cos(rad)).toFixed(2);
+          orbCoords[orb.i] = `${px},${py}`;
         }
       }
 
@@ -187,19 +220,8 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
         polylineRef.current.setAttribute('points', `50,50 ${orbCoords[0]} ${orbCoords[1]} ${orbCoords[2]}`);
       }
 
-      if (currentPercent < 100) {
-        animId = requestAnimationFrame(updateLoader);
-      } else {
-        // Conjunction achieved! Pulse Enter button and fire completion flare
-        setIsAligned(true);
-        if (flareRef.current) {
-          gsap.fromTo(
-            flareRef.current,
-            { scale: 0.8, opacity: 1 },
-            { scale: 2.6, opacity: 0, duration: 0.8, ease: 'expo.out', force3D: true }
-          );
-        }
-      }
+      // Keep RAF continuously running so rotation NEVER freezes!
+      animId = requestAnimationFrame(updateLoader);
     };
 
     animId = requestAnimationFrame(updateLoader);
@@ -316,14 +338,12 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       <div
         className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[440px] sm:h-[440px] sm:max-w-[50vmin] sm:max-h-[50vmin] transition-transform duration-300 transform-gpu overflow-visible"
       >
-        {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura - Smooth Continuous Rotation */}
+        {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
         <div 
-          className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)] animate-[spin_45s_linear_infinite] transform-gpu" 
-          style={{ willChange: 'transform' }}
+          className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)] transform-gpu" 
         />
         <div 
           className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none transform-gpu"
-          style={{ animation: 'spin 70s linear infinite reverse', willChange: 'transform' }}
         />
 
         {/* Dynamic Multi-Color Laser Conjunction Trajectory (Points connect center to each planet) */}
@@ -380,13 +400,11 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
                   className={`absolute inset-[-40%] rounded-full border-2 ${orb.lockBorder} opacity-0 pointer-events-none transform-gpu`}
                 />
                 <img
-                  ref={(el) => (imgRefs.current[idx] = el)}
                   src={`/assets/${orb.img}`}
                   alt={orb.name}
                   loading="eager"
                   decoding="async"
-                  className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)] transform-gpu"
-                  style={{ willChange: 'transform' }}
+                  className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)]"
                 />
               </div>
             </div>
