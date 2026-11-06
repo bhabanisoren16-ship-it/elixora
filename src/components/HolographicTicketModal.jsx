@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
-import QRCode from 'qrcode';
 import { 
   Download,  
   ArrowLeft,
@@ -15,7 +14,6 @@ import { soundController } from '../utils/audio';
 export default function HolographicTicketModal({ passData, onClose }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [ticketQrUrl, setTicketQrUrl] = useState('');
 
   // Safe normalized fallback data
   const safeData = {
@@ -67,27 +65,6 @@ export default function HolographicTicketModal({ passData, onClose }) {
         }
       } catch (e) {}
     })();
-
-    // Generate dynamic QR code for ticket verification
-    const qrData = JSON.stringify({
-      event: 'ELIXORA-2.0',
-      ticketId: safeData.ticketId,
-      name: safeData.fullName,
-      roll: safeData.rollNo,
-      branch: safeData.branch,
-      status: 'VERIFIED_VIP'
-    });
-
-    QRCode.toDataURL(qrData, {
-      margin: 1,
-      width: 180,
-      color: {
-        dark: '#0a0e1a',
-        light: '#ffffff'
-      }
-    }).then(url => {
-      setTicketQrUrl(url);
-    }).catch(err => console.error(err));
 
     return () => {
       if (mouseRafRef.current) cancelAnimationFrame(mouseRafRef.current);
@@ -181,25 +158,6 @@ export default function HolographicTicketModal({ passData, onClose }) {
     } finally {
       setIsDownloading(false);
     }
-  };
-
-  // WhatsApp Share Helper
-  const shareOnWhatsApp = () => {
-    soundController.playClick?.();
-    const text = encodeURIComponent(
-      `🎉 I just got my Official VIP Ticket for ELIXORA 2.0 Concert & Freshers' Night!\n\n` +
-      `👤 Attendee: ${safeData.fullName}\n` +
-      `🎟️ Ticket ID: ${safeData.ticketId}\n` +
-      `📅 Date: ${EVENT_DETAILS.humanDate}\n` +
-      `📍 Venue: ${EVENT_DETAILS.location}\n\n` +
-      `See you at the grand arena! Grab your pass: ${window.location.origin}`
-    );
-    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
-  };
-
-  const handlePrint = () => {
-    soundController.playClick?.();
-    window.print();
   };
 
   // Format Attendee Name to Title Case if user typed lowercase

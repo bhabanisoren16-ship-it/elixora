@@ -34,7 +34,6 @@ export default {
         satisfy: ['Satisfy', 'cursive'],
         oxanium: ['Oxanium', 'sans-serif'],
         bebas: ['"Bebas Neue"', 'sans-serif'],
-        lazydog: ['"Lazy Dog"', 'LazyDog', 'cursive', 'sans-serif'],
         righteous: ['Righteous', 'sans-serif'],
         bungee: ['Bungee', 'sans-serif'],
         titan: ['"Titan One"', 'sans-serif'],

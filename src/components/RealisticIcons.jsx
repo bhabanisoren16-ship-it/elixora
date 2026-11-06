@@ -1,5 +1,3 @@
-import React from 'react';
-
 /**
  * High-fidelity, realistic skeuomorphic multi-tone SVG icons.
  * Designed to provide tactile depth, rich real-world materials (warm woods, 

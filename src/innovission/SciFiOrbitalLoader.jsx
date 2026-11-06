@@ -68,8 +68,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   const orbRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
-  const [percent, setPercent] = useState(0);
-  const [isReady, setIsReady] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
   // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY

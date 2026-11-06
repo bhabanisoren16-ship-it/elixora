@@ -1,7 +1,6 @@
 import { createPortal } from 'react-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
-import partyBg from '../assets/party-background.jpg';
 import desktopBg from '../assets/desktop-background.jpg';
 import { 
   Crown, 
@@ -680,7 +679,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
           <picture className="w-full h-full block">
             <source media="(min-width: 768px)" srcSet={desktopBg} />
-            <img src={partyBg} alt="" className="w-full h-full object-cover object-center filter brightness-75 contrast-125" />
+            <img src={desktopBg} alt="" className="w-full h-full object-cover object-center filter brightness-75 contrast-125" />
           </picture>
           <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/80 to-obsidian-950/70" />
         </div>
@@ -795,7 +794,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
             <picture className="w-full h-full block">
               <source media="(min-width: 768px)" srcSet={desktopBg} />
               <img 
-                src={partyBg} 
+                src={desktopBg} 
                 alt="Senior Portal Backdrop" 
                 className="w-full h-full object-cover object-center filter brightness-[0.30] contrast-[1.18] saturate-[1.20]" 
               />

@@ -280,11 +280,6 @@ export default function App() {
     setShowCurtain(true);
   };
 
-  // Replaying intro from HUD replays the Home Screen Loading Page with the ENTER button:
-  const handleReplayIntro = () => {
-    setShowHomeLoadingPage(true);
-  };
-
   return (
     <div className="relative min-h-screen w-full max-w-full overflow-x-clip bg-[#040508] text-slate-100 selection:bg-purple-600 selection:text-white font-outfit">
 

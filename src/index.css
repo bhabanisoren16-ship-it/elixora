@@ -5,22 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'Lazy Dog';
-  src: url('/fonts/lazydog_khurasan.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'LazyDog';
-  src: url('/fonts/lazydog_khurasan.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 .font-innovision-serif {
   font-family: 'DM Serif Display', 'Bodoni Moda', 'Playfair Display', 'Cinzel', 'Italiana', 'Prata', 'Didot', Georgia, serif;
   font-style: normal;
