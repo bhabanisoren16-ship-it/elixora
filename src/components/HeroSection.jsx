@@ -207,10 +207,10 @@ export default function HeroSection({ onGrabPassClick }) {
   }, [targetDate]);  return (
     <section
       id="hero"
-      className="relative min-h-[100svh] sm:min-h-[100vh] w-full flex flex-col items-center justify-start sm:justify-center px-3 sm:px-6 lg:px-8 overflow-hidden z-10 pt-14 min-[380px]:pt-16 sm:pt-20 pb-12 sm:pb-16"
+      className="relative min-h-[100svh] sm:min-h-[100vh] w-full flex flex-col items-center justify-center px-3 sm:px-6 lg:px-8 overflow-hidden z-10 pt-14 min-[380px]:pt-16 pb-14 min-[380px]:pb-16 sm:pt-20 sm:pb-16"
     >
       {/* Hero Container */}
-      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 mt-6 min-[380px]:mt-8 sm:my-auto">
+      <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 my-auto">
         
         {/* Title Container with Exact Official Logo Graphic */}
         <div className="relative my-0.5 sm:my-2 select-none flex flex-col items-center justify-center">
@@ -317,7 +317,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-1 sm:mt-2">
+        <div className="w-full max-w-sm sm:max-w-none mx-auto px-2 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-1 sm:mt-2">
           <button
             onMouseEnter={() => {
               triggerPassBtnScramble();
