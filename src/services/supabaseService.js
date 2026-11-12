@@ -83,6 +83,34 @@ export function mapRowToRegistration(row) {
     row.status ||
     'VERIFIED';
 
+  const regDate =
+    row['REGISTRATION DATE'] ||
+    row['DATE'] ||
+    row.registration_date ||
+    (row.created_at
+      ? new Date(row.created_at).toLocaleDateString('en-IN', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        })
+      : null);
+
+  const regTime =
+    row['REGISTRATION TIME'] ||
+    row['TIME'] ||
+    row.registration_time ||
+    (row.created_at
+      ? new Date(row.created_at).toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+      : null);
+
+  const regDateTime =
+    row['REGISTRATION DATE & TIME'] ||
+    (regDate && regTime ? `${regDate}, ${regTime}` : null);
+
   return {
     id: row.id,
     _id: row.id || (roll ? `reg_roll_${roll}` : `reg_${ticketId || Date.now()}`),
@@ -102,22 +130,26 @@ export function mapRowToRegistration(row) {
     screenshotUrl: photo,
     photo,
     status,
+    registrationDate: regDate,
+    registrationTime: regTime,
+    registrationDateTime: regDateTime,
     attendanceMarked: Boolean(row.attendance_marked),
     attendanceMarkedAt: row.attendance_marked_at || null,
-    issuedAt: row.created_at ? new Date(row.created_at).toLocaleDateString('en-IN', {
+    issuedAt: regDateTime || (row.created_at ? new Date(row.created_at).toLocaleDateString('en-IN', {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
-    }) : new Date().toLocaleDateString('en-IN'),
-    createdAt: row.created_at || new Date().toISOString(),
+    }) : new Date().toLocaleDateString('en-IN')),
+    createdAt: row.registered_at || row.created_at || new Date().toISOString(),
   };
 }
 
 /**
  * Maps frontend registration object to the exact Supabase table column schema
  * Supporting [STUDENT NAME | ROLL NO | CATEGORY | TICKET ID | PHOTO | STATUS]
+ * and Registration Date & Time Options
  */
 export function mapRegistrationToRow(reg, screenshotUrl = null) {
   const cleanRoll = (
@@ -149,6 +181,25 @@ export function mapRegistrationToRow(reg, screenshotUrl = null) {
   const photo = screenshotUrl || reg.photo || reg['PHOTO'] || reg.screenshot || reg['SCREENSHOT'] || reg.screenshotUrl || null;
   const status = reg.status || reg['STATUS'] || 'VERIFIED';
 
+  const now = new Date();
+  const regDate =
+    reg.registrationDate ||
+    now.toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+
+  const regTime =
+    reg.registrationTime ||
+    now.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+  const regDateTime = reg.issuedAt || `${regDate}, ${regTime}`;
+
   return {
     // Exact schema matching the admin table headers
     'STUDENT NAME': fullName,
@@ -157,6 +208,16 @@ export function mapRegistrationToRow(reg, screenshotUrl = null) {
     'TICKET ID': ticketId,
     'PHOTO': photo,
     'STATUS': status,
+
+    // Time & Date of Registration Options for Supabase Table
+    'REGISTRATION DATE': regDate,
+    'REGISTRATION TIME': regTime,
+    'REGISTRATION DATE & TIME': regDateTime,
+    'DATE': regDate,
+    'TIME': regTime,
+    registration_date: now.toISOString().split('T')[0],
+    registration_time: regTime,
+    registered_at: reg.createdAt || now.toISOString(),
 
     // Legacy / base schema columns for full backward compatibility
     'FULL NAME': fullName,

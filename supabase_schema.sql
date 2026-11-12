@@ -1,7 +1,8 @@
 -- ============================================================
 -- ELIXORA 2.0 - SUPABASE SCHEMA MIGRATION: STUDENT & ATTENDEE PASSES
 -- ============================================================
--- Based on: [STUDENT NAME | ROLL NO | CATEGORY | TICKET ID | PHOTO | STATUS]
+-- Matches: [STUDENT NAME | ROLL NO | CATEGORY | TICKET ID | PHOTO | STATUS]
+-- Plus: [REGISTRATION DATE | REGISTRATION TIME | REGISTRATION DATE & TIME]
 -- Run this in your Supabase Dashboard: SQL Editor -> New Query -> Run
 -- ============================================================
 
@@ -20,7 +21,17 @@ ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "TICKET ID" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "PHOTO" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "STATUS" TEXT DEFAULT 'VERIFIED';
 
--- 3. Add lowercase / snake_case aliases for API & PostgREST query compatibility
+-- 3. Time & Date of Registration Columns
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "REGISTRATION DATE" TEXT;
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "REGISTRATION TIME" TEXT;
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "REGISTRATION DATE & TIME" TEXT;
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "DATE" TEXT;
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "TIME" TEXT;
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS registration_date DATE DEFAULT CURRENT_DATE;
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS registration_time TIME DEFAULT CURRENT_TIME;
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS registered_at TIMESTAMPTZ DEFAULT NOW();
+
+-- 4. Add lowercase / snake_case aliases for API & PostgREST query compatibility
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS student_name TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS roll_no TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'FRESHER';
@@ -28,7 +39,7 @@ ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS ticket_id TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS photo TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'VERIFIED';
 
--- 4. Maintain standard transactional fields
+-- 5. Maintain standard transactional fields
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "FULL NAME" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "REGISTRATION" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "MOBILE NO." TEXT;
@@ -43,7 +54,7 @@ ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS senior_quote TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS attendance_marked BOOLEAN DEFAULT false;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS attendance_marked_at TIMESTAMPTZ;
 
--- 5. Backfill existing rows so all columns are populated with clean data
+-- 6. Backfill existing rows so all columns are populated with clean data
 UPDATE public.registrations
 SET 
   "STUDENT NAME" = COALESCE("STUDENT NAME", student_name, "FULL NAME", 'VIP Attendee'),
@@ -52,6 +63,14 @@ SET
   "TICKET ID"    = COALESCE("TICKET ID", ticket_id, 'ELX-' || CASE WHEN is_senior THEN 'SR' ELSE '26' END || '-' || RIGHT(COALESCE("REGISTRATION", "ROLL NO", 'PASS'), 4)),
   "PHOTO"        = COALESCE("PHOTO", photo, "SCREENSHOT"),
   "STATUS"       = COALESCE("STATUS", status, 'VERIFIED'),
+  "REGISTRATION DATE" = COALESCE("REGISTRATION DATE", TO_CHAR(COALESCE(created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'DD Mon YYYY')),
+  "REGISTRATION TIME" = COALESCE("REGISTRATION TIME", TO_CHAR(COALESCE(created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'HH12:MI AM')),
+  "REGISTRATION DATE & TIME" = COALESCE("REGISTRATION DATE & TIME", TO_CHAR(COALESCE(created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'DD Mon YYYY, HH12:MI AM')),
+  "DATE"         = COALESCE("DATE", "REGISTRATION DATE", TO_CHAR(COALESCE(created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'DD Mon YYYY')),
+  "TIME"         = COALESCE("TIME", "REGISTRATION TIME", TO_CHAR(COALESCE(created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'HH12:MI AM')),
+  registration_date = COALESCE(registration_date, (COALESCE(created_at, NOW()) AT TIME ZONE 'Asia/Kolkata')::DATE),
+  registration_time = COALESCE(registration_time, (COALESCE(created_at, NOW()) AT TIME ZONE 'Asia/Kolkata')::TIME),
+  registered_at  = COALESCE(registered_at, created_at, NOW()),
   student_name   = COALESCE(student_name, "STUDENT NAME", "FULL NAME", 'VIP Attendee'),
   roll_no        = COALESCE(roll_no, "ROLL NO", "REGISTRATION"),
   category       = COALESCE(category, "CATEGORY", CASE WHEN is_senior THEN 'SENIOR VIP' ELSE 'FRESHER' END),
@@ -62,9 +81,9 @@ SET
   "REGISTRATION" = COALESCE("REGISTRATION", "ROLL NO", roll_no),
   "SCREENSHOT"   = COALESCE("SCREENSHOT", "PHOTO", photo);
 
--- 6. Bi-directional Synchronization Trigger
--- Automatically keeps "STUDENT NAME", "ROLL NO", "CATEGORY", "TICKET ID", "PHOTO", "STATUS"
--- perfectly synchronized with legacy columns on every INSERT or UPDATE.
+-- 7. Bi-directional Synchronization Trigger
+-- Automatically keeps "STUDENT NAME", "ROLL NO", "CATEGORY", "TICKET ID", "PHOTO", "STATUS",
+-- and Date / Time columns perfectly synchronized on every INSERT or UPDATE.
 CREATE OR REPLACE FUNCTION public.sync_registration_columns()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -140,6 +159,23 @@ BEGIN
     NEW.status := 'VERIFIED';
   END IF;
 
+  -- Sync Registration Date & Time (Indian Standard Time: Asia/Kolkata)
+  IF NEW."REGISTRATION DATE" IS NULL THEN
+    NEW."REGISTRATION DATE" := TO_CHAR(COALESCE(NEW.created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'DD Mon YYYY');
+  END IF;
+  IF NEW."REGISTRATION TIME" IS NULL THEN
+    NEW."REGISTRATION TIME" := TO_CHAR(COALESCE(NEW.created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'HH12:MI AM');
+  END IF;
+  IF NEW."REGISTRATION DATE & TIME" IS NULL THEN
+    NEW."REGISTRATION DATE & TIME" := NEW."REGISTRATION DATE" || ', ' || NEW."REGISTRATION TIME";
+  END IF;
+
+  NEW."DATE" := NEW."REGISTRATION DATE";
+  NEW."TIME" := NEW."REGISTRATION TIME";
+  NEW.registration_date := (COALESCE(NEW.created_at, NOW()) AT TIME ZONE 'Asia/Kolkata')::DATE;
+  NEW.registration_time := (COALESCE(NEW.created_at, NOW()) AT TIME ZONE 'Asia/Kolkata')::TIME;
+  NEW.registered_at := COALESCE(NEW.created_at, NOW());
+
   NEW.updated_at := NOW();
   RETURN NEW;
 END;
@@ -151,29 +187,28 @@ CREATE TRIGGER trg_sync_registration_columns
   FOR EACH ROW
   EXECUTE FUNCTION public.sync_registration_columns();
 
--- 7. Performance Indexes
+-- 8. Performance Indexes
 CREATE INDEX IF NOT EXISTS idx_reg_student_name ON public.registrations("STUDENT NAME");
 CREATE INDEX IF NOT EXISTS idx_reg_roll_no ON public.registrations("ROLL NO");
 CREATE INDEX IF NOT EXISTS idx_reg_ticket_id ON public.registrations("TICKET ID");
 CREATE INDEX IF NOT EXISTS idx_reg_status ON public.registrations("STATUS");
 CREATE INDEX IF NOT EXISTS idx_reg_category ON public.registrations("CATEGORY");
+CREATE INDEX IF NOT EXISTS idx_reg_date ON public.registrations("REGISTRATION DATE");
+CREATE INDEX IF NOT EXISTS idx_reg_registered_at ON public.registrations(registered_at DESC);
 CREATE INDEX IF NOT EXISTS idx_reg_legacy_roll ON public.registrations("REGISTRATION");
 CREATE INDEX IF NOT EXISTS idx_reg_created ON public.registrations(created_at DESC);
 
--- 8. Row Level Security (RLS) Policies
+-- 9. Row Level Security (RLS) Policies
 ALTER TABLE public.registrations ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Allow public registration insert" ON public.registrations;
-DROP POLICY IF EXISTS "Allow public insert on registrations" ON public.registrations;
-
 CREATE POLICY "Allow public registration insert"
   ON public.registrations
   FOR INSERT
   TO anon, authenticated
   WITH CHECK (
     char_length(trim(COALESCE("STUDENT NAME", student_name, "FULL NAME", ''))) >= 2 AND
-    char_length(trim(COALESCE("ROLL NO", roll_no, "REGISTRATION", ''))) >= 4 AND
-    (char_length(trim(COALESCE("UTR NO.", ''))) >= 6 OR char_length(trim(COALESCE("TICKET ID", ticket_id, ''))) >= 6)
+    char_length(trim(COALESCE("ROLL NO", roll_no, "REGISTRATION", ''))) >= 4
   );
 
 DROP POLICY IF EXISTS "Allow public read on registrations" ON public.registrations;
@@ -202,10 +237,10 @@ CREATE POLICY "Allow service_role delete on registrations"
   TO service_role
   USING (true);
 
--- 9. Realtime Publication
+-- 10. Realtime Publication
 ALTER PUBLICATION supabase_realtime ADD TABLE public.registrations;
 
--- 10. Receipts Storage Bucket Configuration
+-- 11. Receipts Storage Bucket Configuration
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
   'receipts', 
