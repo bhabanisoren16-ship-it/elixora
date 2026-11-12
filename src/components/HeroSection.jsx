@@ -219,7 +219,7 @@ export default function HeroSection({ onGrabPassClick }) {
   }, [targetDate]);  return (
     <section
       id="hero"
-      className="relative min-h-[100svh] sm:min-h-[100vh] w-full flex flex-col items-center justify-center px-3 sm:px-6 lg:px-8 overflow-hidden z-10 pt-14 min-[380px]:pt-16 pb-14 min-[380px]:pb-16 sm:pt-20 sm:pb-16"
+      className="relative min-h-[100svh] sm:min-h-[100vh] w-full flex flex-col items-center justify-center px-3 sm:px-6 lg:px-8 overflow-hidden z-10 pt-16 min-[380px]:pt-20 pb-20 min-[380px]:pb-24 sm:pt-20 sm:pb-16"
     >
       {/* Hero Container */}
       <div className="max-w-4xl mx-auto text-center relative z-10 p-1 sm:p-4 my-auto">
@@ -307,7 +307,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* Real-time Countdown Timer Grid */}
-        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-3.5 max-w-sm sm:max-w-lg mx-auto w-full px-2">
+        <div className="mt-2.5 sm:mt-4 mb-3 sm:mb-4 inline-grid grid-cols-4 gap-2 sm:gap-3.5 max-w-[340px] min-[380px]:max-w-[368px] sm:max-w-lg mx-auto w-full px-1.5 sm:px-2">
           {[
             { label: 'DAYS', value: timeLeft.days },
             { label: 'HOURS', value: timeLeft.hours },
@@ -329,7 +329,7 @@ export default function HeroSection({ onGrabPassClick }) {
         </div>
 
         {/* CTAs */}
-        <div className="w-full max-w-sm sm:max-w-none mx-auto px-2 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-1 sm:mt-2">
+        <div className="w-full max-w-[340px] min-[380px]:max-w-[368px] sm:max-w-none mx-auto px-1.5 sm:px-2 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3.5 mt-1 sm:mt-2">
           <button
             onMouseEnter={() => {
               triggerPassBtnScramble();
