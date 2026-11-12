@@ -25,23 +25,71 @@ function dataURItoBlob(dataURI) {
 export function mapRowToRegistration(row) {
   if (!row) return null;
   // Ignore deleted registrations
-  if (row['BRANCH'] === 'DELETED' || (row['FULL NAME'] && row['FULL NAME'].includes('[DELETED]'))) {
+  if (
+    row['BRANCH'] === 'DELETED' ||
+    (row['FULL NAME'] && row['FULL NAME'].includes('[DELETED]')) ||
+    (row['STUDENT NAME'] && row['STUDENT NAME'].includes('[DELETED]'))
+  ) {
     return null;
   }
-  const roll = (row['REGISTRATION'] || row.roll_no || '').trim().toUpperCase();
-  const fullName = (row['FULL NAME'] || row.full_name || '').trim();
+  const roll = (
+    row['ROLL NO'] ||
+    row.roll_no ||
+    row['REGISTRATION'] ||
+    row.registration ||
+    ''
+  ).trim().toUpperCase();
+
+  const fullName = (
+    row['STUDENT NAME'] ||
+    row.student_name ||
+    row['FULL NAME'] ||
+    row.full_name ||
+    ''
+  ).trim();
+
   // Ignore empty ghost entries
   if (!roll && !fullName) {
     return null;
   }
-  const isSenior = Boolean(row.is_senior);
+
+  const isSenior = Boolean(
+    row.is_senior ||
+    (row['CATEGORY'] && String(row['CATEGORY']).toUpperCase().includes('SENIOR')) ||
+    (row.category && String(row.category).toUpperCase().includes('SENIOR'))
+  );
+
+  const category =
+    row['CATEGORY'] ||
+    row.category ||
+    (isSenior ? 'SENIOR VIP' : 'FRESHER');
+
+  const ticketId =
+    row['TICKET ID'] ||
+    row.ticket_id ||
+    `ELX-${isSenior ? 'SR' : '26'}-${roll ? roll.slice(-4) : (row.id ? row.id.slice(0, 4).toUpperCase() : 'PASS')}`;
+
+  const photo =
+    row['PHOTO'] ||
+    row.photo ||
+    row['SCREENSHOT'] ||
+    row.screenshot ||
+    row.screenshot_url ||
+    row['screenshot_url'] ||
+    null;
+
+  const status =
+    row['STATUS'] ||
+    row.status ||
+    'VERIFIED';
 
   return {
     id: row.id,
-    _id: row.id || (roll ? `reg_roll_${roll}` : `reg_${row.ticket_id || Date.now()}`),
-    ticketId: row.ticket_id || `ELX-${isSenior ? 'SR' : '26'}-${roll ? roll.slice(-4) : (row.id ? row.id.slice(0, 4).toUpperCase() : 'PASS')}`,
+    _id: row.id || (roll ? `reg_roll_${roll}` : `reg_${ticketId || Date.now()}`),
+    ticketId,
     fullName,
     rollNo: roll,
+    category,
     phone: row['MOBILE NO.'] || row.phone || '',
     utrNumber: row['UTR NO.'] || row.utr_number || '',
     branch: row['BRANCH'] || row.branch || 'Biotechnology',
@@ -50,9 +98,10 @@ export function mapRowToRegistration(row) {
     seniorQuote: row.senior_quote || '',
     isSenior,
     ticketPrice: Number(row.ticket_price) || (isSenior ? 600 : 399),
-    screenshot: row['SCREENSHOT'] || row.screenshot || row.screenshot_url || row['screenshot_url'] || row.photo || row['PHOTO'] || null,
-    screenshotUrl: row['SCREENSHOT'] || row.screenshot || row.screenshot_url || row['screenshot_url'] || row.photo || row['PHOTO'] || null,
-    status: row.status || 'VERIFIED',
+    screenshot: photo,
+    screenshotUrl: photo,
+    photo,
+    status,
     attendanceMarked: Boolean(row.attendance_marked),
     attendanceMarkedAt: row.attendance_marked_at || null,
     issuedAt: row.created_at ? new Date(row.created_at).toLocaleDateString('en-IN', {
@@ -68,20 +117,57 @@ export function mapRowToRegistration(row) {
 
 /**
  * Maps frontend registration object to the exact Supabase table column schema
+ * Supporting [STUDENT NAME | ROLL NO | CATEGORY | TICKET ID | PHOTO | STATUS]
  */
 export function mapRegistrationToRow(reg, screenshotUrl = null) {
-    const cleanRoll = (reg.rollNo || reg.REGISTRATION || '').replace(/[^a-zA-Z0-9]/g, '').trim().toUpperCase();
-  const utr = (reg.utrNumber || reg['UTR NO.'] || '').replace(/[^a-zA-Z0-9]/g, '').trim();
+  const cleanRoll = (
+    reg.rollNo ||
+    reg['ROLL NO'] ||
+    reg.roll_no ||
+    reg.REGISTRATION ||
+    ''
+  ).replace(/[^a-zA-Z0-9]/g, '').trim().toUpperCase();
+
+  const utr = (
+    reg.utrNumber ||
+    reg['UTR NO.'] ||
+    reg.utr_number ||
+    ''
+  ).replace(/[^a-zA-Z0-9]/g, '').trim();
+
+  const fullName = (
+    reg.fullName ||
+    reg['STUDENT NAME'] ||
+    reg.student_name ||
+    reg['FULL NAME'] ||
+    'VIP Attendee'
+  ).trim();
+
+  const isSenior = Boolean(reg.isSenior);
+  const category = reg.category || reg['CATEGORY'] || (isSenior ? 'SENIOR VIP' : 'FRESHER');
+  const ticketId = reg.ticketId || reg['TICKET ID'] || reg.ticket_id || `ELX-${isSenior ? 'SR' : '26'}-${cleanRoll ? cleanRoll.slice(-4) : 'PASS'}`;
+  const photo = screenshotUrl || reg.photo || reg['PHOTO'] || reg.screenshot || reg['SCREENSHOT'] || reg.screenshotUrl || null;
+  const status = reg.status || reg['STATUS'] || 'VERIFIED';
+
   return {
-    'FULL NAME': reg.fullName || reg['FULL NAME'] || 'VIP Attendee',
+    // Exact schema matching the admin table headers
+    'STUDENT NAME': fullName,
+    'ROLL NO': cleanRoll || ('REG_' + Date.now()),
+    'CATEGORY': category,
+    'TICKET ID': ticketId,
+    'PHOTO': photo,
+    'STATUS': status,
+
+    // Legacy / base schema columns for full backward compatibility
+    'FULL NAME': fullName,
     'REGISTRATION': cleanRoll || ('REG_' + Date.now()),
     'MOBILE NO.': reg.phone || reg['MOBILE NO.'] || null,
-    'UTR NO.': utr || ('UTR_MANUAL_' + (reg.ticketId || Date.now())),
+    'UTR NO.': utr || ('UTR_MANUAL_' + (ticketId || Date.now())),
     'BRANCH': reg.branch || reg['BRANCH'] || 'Biotechnology',
-    'BATCH': reg.batch || reg['BATCH'] || (reg.isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
-    'is_senior': Boolean(reg.isSenior),
-    'ticket_price': Number(reg.ticketPrice) || (reg.isSenior ? 600 : 399),
-    'SCREENSHOT': screenshotUrl || reg.screenshot || reg['SCREENSHOT'] || null,
+    'BATCH': reg.batch || reg['BATCH'] || (isSenior ? "Batch of '25 • Senior" : "Batch of '26 • Fresher"),
+    'is_senior': isSenior,
+    'ticket_price': Number(reg.ticketPrice) || (isSenior ? 600 : 399),
+    'SCREENSHOT': photo,
   };
 }
 
@@ -203,29 +289,51 @@ export async function saveRegistrationToSupabase(registration, fileOrDataUrl = n
       if (existingByRoll?.id) existingId = existingByRoll.id;
     }
 
+    // 5. Dynamic Adaptive Save: Writes new columns [STUDENT NAME, ROLL NO, CATEGORY, TICKET ID, PHOTO, STATUS]
+    // while gracefully stripping any columns not yet created in remote table before migration
+    const saveWithDynamicFallback = async (payload, isUpdate, targetId) => {
+      let currentPayload = { ...payload };
+      let attempts = 0;
+      while (attempts < 10) {
+        attempts++;
+        try {
+          if (isUpdate) {
+            const { data, error } = await client
+              .from('registrations')
+              .update({ ...currentPayload, updated_at: new Date().toISOString() })
+              .eq('id', targetId)
+              .select()
+              .single();
+            if (error) throw error;
+            return data;
+          } else {
+            const { data, error } = await client
+              .from('registrations')
+              .insert([currentPayload])
+              .select()
+              .single();
+            if (error) throw error;
+            return data;
+          }
+        } catch (err) {
+          if (err?.code === 'PGRST204' || (err?.message && (err.message.includes('column') || err.message.includes('schema cache')))) {
+            const match = err.message.match(/Could not find the '([^']+)' column/) || err.message.match(/column [^.]+\.([^ ]+) does not exist/);
+            if (match && match[1] && currentPayload[match[1]] !== undefined) {
+              console.warn(`[ELIXORA Supabase] Column '${match[1]}' not yet in database; stripping and retrying...`);
+              delete currentPayload[match[1]];
+              continue;
+            }
+          }
+          throw err;
+        }
+      }
+    };
+
     let resultData = null;
     if (existingId) {
-      const { data, error } = await client
-        .from('registrations')
-        .update({
-          ...row,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', existingId)
-        .select()
-        .single();
-
-      if (error) throw error;
-      resultData = data;
+      resultData = await saveWithDynamicFallback(row, true, existingId);
     } else {
-      const { data, error } = await client
-        .from('registrations')
-        .insert([row])
-        .select()
-        .single();
-
-      if (error) throw error;
-      resultData = data;
+      resultData = await saveWithDynamicFallback(row, false);
     }
 
     console.info('[ELIXORA Supabase] Successfully synced to Supabase Cloud in real time:', registration.fullName, cleanRoll);
@@ -290,17 +398,38 @@ export async function updateRegistrationStatusInSupabase(ticketOrRoll, status) {
 
   try {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ticketOrRoll);
+    let updatePayload = { 
+      'STATUS': status,
+      status: status,
+      updated_at: new Date().toISOString() 
+    };
+
     let query = supabase
       .from('registrations')
-      .update({ updated_at: new Date().toISOString() });
+      .update(updatePayload);
 
     if (isUuid) {
       query = query.eq('id', ticketOrRoll);
     } else {
-      query = query.eq('REGISTRATION', (ticketOrRoll || '').trim().toUpperCase());
+      query = query.or(`REGISTRATION.eq.${(ticketOrRoll || '').trim().toUpperCase()},"ROLL NO".eq.${(ticketOrRoll || '').trim().toUpperCase()},"TICKET ID".eq.${ticketOrRoll}`);
     }
 
-    const { data, error } = await query.select().single();
+    let { data, error } = await query.select().maybeSingle();
+
+    // If 'STATUS' column not yet in remote table schema, retry with status only
+    if (error && (error.code === 'PGRST204' || error.message?.includes('STATUS') || error.message?.includes('schema cache'))) {
+      delete updatePayload['STATUS'];
+      delete updatePayload.status;
+      query = supabase.from('registrations').update({ updated_at: new Date().toISOString() });
+      if (isUuid) {
+        query = query.eq('id', ticketOrRoll);
+      } else {
+        query = query.eq('REGISTRATION', (ticketOrRoll || '').trim().toUpperCase());
+      }
+      const retryResult = await query.select().maybeSingle();
+      data = retryResult.data;
+      error = retryResult.error;
+    }
 
     if (error) {
       console.error('[ELIXORA Supabase] Update status error:', error.message);
@@ -386,12 +515,24 @@ export async function deleteRegistrationFromSupabase(identifierOrTarget) {
       }
     }
 
-    // 2. Hard delete by REGISTRATION (roll number)
+    // 2. Hard delete by REGISTRATION or ROLL NO (roll number)
     if (cleanRoll) {
-      const { data, error } = await client.from('registrations').delete().eq('REGISTRATION', cleanRoll).select();
-      if (!error && data && data.length > 0) {
-        deleted = true;
-        console.info('[ELIXORA Supabase] Hard deleted registration row by REGISTRATION in real time:', cleanRoll);
+      try {
+        const { data, error } = await client.from('registrations').delete().eq('REGISTRATION', cleanRoll).select();
+        if (!error && data && data.length > 0) {
+          deleted = true;
+          console.info('[ELIXORA Supabase] Hard deleted registration row by REGISTRATION in real time:', cleanRoll);
+        }
+      } catch (e) {}
+
+      if (!deleted) {
+        try {
+          const { data, error } = await client.from('registrations').delete().eq('ROLL NO', cleanRoll).select();
+          if (!error && data && data.length > 0) {
+            deleted = true;
+            console.info('[ELIXORA Supabase] Hard deleted registration row by ROLL NO in real time:', cleanRoll);
+          }
+        } catch (e) {}
       }
     }
 
