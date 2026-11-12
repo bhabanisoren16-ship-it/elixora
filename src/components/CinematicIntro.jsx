@@ -87,27 +87,35 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
     };
   }, []);
 
-  // Cybernetic Scramble Decode Effect on ENTER button when conjunction achieves 100%
+  // Continuous Cybernetic Scramble Loop on ENTER button (starts right as button appears)
   useEffect(() => {
-    if (!isAligned) return;
+    if (!isAligned || isExiting) return;
 
-    // Immediate decode on conjunction alignment entrance
-    const entranceTimer = setTimeout(() => {
-      if (enterBtnTextRef.current && !isExiting) {
-        scrambleText(enterBtnTextRef.current, 'ENTER', { duration: 0.65 });
-      }
-    }, 120);
+    let isCancelled = false;
+    let cycleTimer = null;
 
-    // Periodic ambient scramble pulse while waiting for user to click
-    const ambientInterval = setInterval(() => {
-      if (enterBtnTextRef.current && !isExiting) {
-        scrambleText(enterBtnTextRef.current, 'ENTER', { duration: 0.42 });
-      }
-    }, 4500);
+    const runScrambleCycle = () => {
+      if (isCancelled || isExiting) return;
+      const el = enterBtnTextRef.current;
+      if (!el) return;
+
+      // Scramble actively for 800ms with rich cyber glyphs
+      scrambleText(el, 'ENTER', {
+        duration: 0.8,
+        onComplete: () => {
+          if (isCancelled || isExiting) return;
+          // Hold clearly on "ENTER" for 1100ms so user can read it, then repeat!
+          cycleTimer = setTimeout(runScrambleCycle, 1100);
+        },
+      });
+    };
+
+    // Begin looping scramble as soon as the button appears
+    cycleTimer = setTimeout(runScrambleCycle, 200);
 
     return () => {
-      clearTimeout(entranceTimer);
-      clearInterval(ambientInterval);
+      isCancelled = true;
+      clearTimeout(cycleTimer);
       if (enterBtnTextRef.current?._scrambleRaf) {
         cancelAnimationFrame(enterBtnTextRef.current._scrambleRaf);
       }
@@ -567,7 +575,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
                 ref={enterBtnTextRef}
                 data-scr="true"
                 data-text="ENTER"
-                className="font-outfit font-black text-[11px] sm:text-xs tracking-[0.22em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5 inline-block min-w-[50px] sm:min-w-[56px] text-center"
+                className="font-outfit font-black text-[11px] sm:text-xs tracking-[0.22em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5 inline-block min-w-[54px] sm:min-w-[60px] text-center tabular-nums"
               >
                 ENTER
               </span>
