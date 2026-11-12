@@ -40,6 +40,15 @@ function animateWindowScroll(targetY, duration = 600) {
     return;
   }
 
+  // Smooth scroll in mobile view only: delegate to mobile hardware GPU compositor for 120Hz native smooth scroll
+  if (window.innerWidth < 768) {
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth',
+    });
+    return;
+  }
+
   const startTime = performance.now();
 
   // Cancel animation if user manually scrolls or touches
@@ -85,8 +94,11 @@ export function initSmoothScroll() {
     document.body.classList.remove('lenis', 'lenis-smooth', 'lenis-stopped');
     document.documentElement.style.overflow = '';
     document.body.style.overflow = '';
-    document.documentElement.style.scrollBehavior = 'auto';
-    document.body.style.scrollBehavior = 'auto';
+
+    // Smooth scroll in mobile view only (< 768px)
+    const isMobile = window.innerWidth < 768;
+    document.documentElement.style.scrollBehavior = isMobile ? 'smooth' : 'auto';
+    document.body.style.scrollBehavior = isMobile ? 'smooth' : 'auto';
   } catch (e) {}
 
   return {
@@ -200,6 +212,13 @@ export function resumeSmoothScroll() {
     document.documentElement.style.overflow = '';
     document.documentElement.classList.remove('lenis-stopped');
     document.body.classList.remove('lenis-stopped');
+
+    // Smooth scroll in mobile view only (< 768px)
+    if (typeof window !== 'undefined') {
+      const isMobile = window.innerWidth < 768;
+      document.documentElement.style.scrollBehavior = isMobile ? 'smooth' : 'auto';
+      document.body.style.scrollBehavior = isMobile ? 'smooth' : 'auto';
+    }
   } catch (e) {}
 }
 
@@ -212,4 +231,17 @@ export function destroySmoothScroll() {
     cancelAnimationFrame(activeScrollAnimationId);
     activeScrollAnimationId = null;
   }
+}
+
+// Ensure smooth scroll remains active exclusively in mobile view (< 768px) on viewport resize
+if (typeof window !== 'undefined') {
+  window.addEventListener(
+    'resize',
+    () => {
+      const isMobile = window.innerWidth < 768;
+      document.documentElement.style.scrollBehavior = isMobile ? 'smooth' : 'auto';
+      document.body.style.scrollBehavior = isMobile ? 'smooth' : 'auto';
+    },
+    { passive: true }
+  );
 }

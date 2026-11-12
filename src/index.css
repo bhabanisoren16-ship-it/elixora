@@ -52,14 +52,28 @@ html {
   scroll-padding-top: 6.5rem;
   /* Extra clearance for 2-row mobile fixed header */
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: auto;
   touch-action: pan-y;
 }
 
+/* Mobile View Only: Butter-Smooth Native Momentum & Hardware Smooth Scroll */
+@media (max-width: 767px) {
+  html {
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* Desktop View: Standard Clearance for Single-Row Header with Native Trackpad Input */
 @media (min-width: 768px) {
   html {
     scroll-padding-top: 5.5rem;
-    /* Standard clearance for single-row desktop header */
+    scroll-behavior: auto;
   }
 }
 
