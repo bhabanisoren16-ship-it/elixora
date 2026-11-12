@@ -18,17 +18,8 @@ function easeInOutCubic(t) {
 /**
  * Smoothly animate window scroll position to targetY without hijacking user wheel events
  */
-function animateWindowScroll(targetY, duration = 850) {
+function animateWindowScroll(targetY, duration = 600) {
   if (typeof window === 'undefined') return;
-
-  if (typeof window !== 'undefined' && window.__smoothScrollTo) {
-    window.__smoothScrollTo(targetY);
-    return;
-  }
-
-  if (typeof window !== 'undefined' && window.__cancelInertiaWheel) {
-    window.__cancelInertiaWheel();
-  }
 
   if (activeScrollAnimationId) {
     cancelAnimationFrame(activeScrollAnimationId);
@@ -115,7 +106,7 @@ export function scrollToTarget(target, customOptions = {}) {
 
   const header = document.querySelector('header');
   const headerOffset = header ? header.offsetHeight + 14 : (window.innerWidth < 768 ? 90 : 80);
-  const duration = typeof customOptions.duration === 'number' ? customOptions.duration * 1000 : 750;
+  const duration = typeof customOptions.duration === 'number' ? customOptions.duration * 1000 : 600;
 
   // 1. Target is top, 0, or #hero
   if (target === 0 || target === 'top' || target === '#hero') {

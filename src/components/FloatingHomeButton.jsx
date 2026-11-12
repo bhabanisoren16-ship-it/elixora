@@ -8,16 +8,20 @@ export default function FloatingHomeButton() {
   const [isPressed, setIsPressed] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      // Show when scrolled past hero section (~350px)
-      if (window.scrollY > 350) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const pastThreshold = (window.pageYOffset || window.scrollY || 0) > 350;
+          setIsVisible((prev) => (prev !== pastThreshold ? pastThreshold : prev));
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 

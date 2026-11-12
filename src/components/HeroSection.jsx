@@ -75,70 +75,82 @@ export default function HeroSection({ onGrabPassClick }) {
     const EFFECT_RADIUS = 180; // Proximity threshold in pixels
     let lastSoundTime = 0;
 
+    let mouseTicking = false;
+
     const handleMouseMove = (e) => {
+      // Zero CPU/GPU overhead when scrolled past the hero section
+      if ((window.pageYOffset || window.scrollY || 0) > (window.innerHeight || 800)) return;
       if (document.getElementById('loading-screen-container') || document.getElementById('homescreen-enter-button')) return;
+
+      if (mouseTicking) return;
+      mouseTicking = true;
+
       const mouseX = e.clientX;
       const mouseY = e.clientY;
 
-      lettersRef.current.forEach((el, idx) => {
-        if (!el) return;
+      window.requestAnimationFrame(() => {
+        mouseTicking = false;
 
-        const rect = el.getBoundingClientRect();
-        // Remove current displacement to find original resting center
-        const currX = gsap.getProperty(el, 'x') || 0;
-        const currY = gsap.getProperty(el, 'y') || 0;
-        const origCenterX = (rect.left - currX) + rect.width / 2;
-        const origCenterY = (rect.top - currY) + rect.height / 2;
+        lettersRef.current.forEach((el, idx) => {
+          if (!el) return;
 
-        // Vector pointing TOWARDS the cursor (Innovision magnetic attraction)
-        const dx = mouseX - origCenterX;
-        const dy = mouseY - origCenterY;
-        const dist = Math.hypot(dx, dy);
+          const rect = el.getBoundingClientRect();
+          // Remove current displacement to find original resting center
+          const currX = gsap.getProperty(el, 'x') || 0;
+          const currY = gsap.getProperty(el, 'y') || 0;
+          const origCenterX = (rect.left - currX) + rect.width / 2;
+          const origCenterY = (rect.top - currY) + rect.height / 2;
 
-        if (dist < EFFECT_RADIUS) {
-          // Exact Innovision data-attract=".22" magnetic curve
-          const ATTRACT_FACTOR = 0.22;
-          const power = Math.pow(1 - dist / EFFECT_RADIUS, 1.25);
+          // Vector pointing TOWARDS the cursor (Innovision magnetic attraction)
+          const dx = mouseX - origCenterX;
+          const dy = mouseY - origCenterY;
+          const dist = Math.hypot(dx, dy);
 
-          // Magnetic pull towards cursor
-          const pullX = dx * ATTRACT_FACTOR * power;
-          const pullY = dy * ATTRACT_FACTOR * power;
+          if (dist < EFFECT_RADIUS) {
+            // Exact Innovision data-attract=".22" magnetic curve
+            const ATTRACT_FACTOR = 0.22;
+            const power = Math.pow(1 - dist / EFFECT_RADIUS, 1.25);
 
-          // Subtle kinetic vibration & dynamic tilt leaning towards cursor
-          const time = Date.now() * 0.035 + idx * 1.5;
-          const shakeX = Math.sin(time) * 3 * power;
-          const shakeY = Math.cos(time * 1.1) * 2.5 * power;
-          const tilt = (dx / EFFECT_RADIUS) * 14 * power;
+            // Magnetic pull towards cursor
+            const pullX = dx * ATTRACT_FACTOR * power;
+            const pullY = dy * ATTRACT_FACTOR * power;
 
-          gsap.to(el, {
-            x: pullX + shakeX,
-            y: pullY + shakeY,
-            rotation: tilt,
-            scale: 1 + power * 0.1,
-            duration: 0.14,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          });
+            // Subtle kinetic vibration & dynamic tilt leaning towards cursor
+            const time = Date.now() * 0.035 + idx * 1.5;
+            const shakeX = Math.sin(time) * 3 * power;
+            const shakeY = Math.cos(time * 1.1) * 2.5 * power;
+            const tilt = (dx / EFFECT_RADIUS) * 14 * power;
 
-          // Play subtle celestial hover sound on close encounter
-          if (dist < 70 && Date.now() - lastSoundTime > 180) {
-            lastSoundTime = Date.now();
-            soundController.playHover?.();
-          }
-        } else {
-          // Smoothly spring back to rest position when cursor leaves proximity
-          if (currX !== 0 || currY !== 0) {
             gsap.to(el, {
-              x: 0,
-              y: 0,
-              rotation: 0,
-              scale: 1,
-              duration: 0.65,
-              ease: 'elastic.out(1.15, 0.4)',
+              x: pullX + shakeX,
+              y: pullY + shakeY,
+              rotation: tilt,
+              scale: 1 + power * 0.1,
+              duration: 0.14,
+              ease: 'power2.out',
               overwrite: 'auto',
             });
+
+            // Play subtle celestial hover sound on close encounter
+            if (dist < 70 && Date.now() - lastSoundTime > 180) {
+              lastSoundTime = Date.now();
+              soundController.playHover?.();
+            }
+          } else {
+            // Smoothly spring back to rest position when cursor leaves proximity
+            if (currX !== 0 || currY !== 0) {
+              gsap.to(el, {
+                x: 0,
+                y: 0,
+                rotation: 0,
+                scale: 1,
+                duration: 0.65,
+                ease: 'elastic.out(1.15, 0.4)',
+                overwrite: 'auto',
+              });
+            }
           }
-        }
+        });
       });
     };
 

@@ -15,22 +15,30 @@ export default function Navbar({ onOpenPass, onOpenAdmin, hasGeneratedPass }) {
   const [activeSection, setActiveSection] = useState('HOME');
   const mobileMenuRef = useRef(null);
 
-  // Synchronize active section with scroll position
+  // Synchronize active section with scroll position (throttled via RAF to eliminate forced reflows)
   useEffect(() => {
+    let ticking = false;
     const handleScrollSpy = () => {
-      const scrollY = window.pageYOffset || window.scrollY || 0;
-      const detailsEl = document.getElementById('details');
-      const seniorsEl = document.getElementById('seniors');
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.pageYOffset || window.scrollY || 0;
+          const detailsEl = document.getElementById('details');
+          const seniorsEl = document.getElementById('seniors');
 
-      const detailsTop = detailsEl ? detailsEl.offsetTop - 300 : 999999;
-      const seniorsTop = seniorsEl ? seniorsEl.offsetTop - 300 : 999999;
+          const detailsTop = detailsEl ? detailsEl.offsetTop - 300 : 999999;
+          const seniorsTop = seniorsEl ? seniorsEl.offsetTop - 300 : 999999;
 
-      if (scrollY >= seniorsTop) {
-        setActiveSection('SENIORS');
-      } else if (scrollY >= detailsTop) {
-        setActiveSection('EVENT DETAILS');
-      } else {
-        setActiveSection('HOME');
+          let nextSection = 'HOME';
+          if (scrollY >= seniorsTop) {
+            nextSection = 'SENIORS';
+          } else if (scrollY >= detailsTop) {
+            nextSection = 'EVENT DETAILS';
+          }
+
+          setActiveSection((prev) => (prev !== nextSection ? nextSection : prev));
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -56,16 +64,16 @@ export default function Navbar({ onOpenPass, onOpenAdmin, hasGeneratedPass }) {
 
           // Near top: always keep navbar fully visible
           if (currentScrollY <= 25) {
-            setIsScrolledDown(false);
+            setIsScrolledDown((prev) => (prev ? false : prev));
           } else {
             const scrollDifference = currentScrollY - lastScrollY;
             // Scroll down threshold: user scrolled down by more than 8px
             if (scrollDifference > 8 && currentScrollY > 50) {
-              setIsScrolledDown(true);
+              setIsScrolledDown((prev) => (!prev ? true : prev));
             } 
             // Scroll up threshold: user scrolled up by more than 8px
             else if (scrollDifference < -8) {
-              setIsScrolledDown(false);
+              setIsScrolledDown((prev) => (prev ? false : prev));
             }
           }
 
