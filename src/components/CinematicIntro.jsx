@@ -59,7 +59,9 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
   const orbRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
+  const enterBtnRef = useRef(null);
   const enterBtnTextRef = useRef(null);
+  const isNearbyRef = useRef(false);
   const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
@@ -87,35 +89,45 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
     };
   }, []);
 
-  // Continuous Cybernetic Scramble Loop on ENTER button (starts right as button appears)
+  // Scramble ENTER button ONLY when cursor is moved nearby (Proximity Detection)
   useEffect(() => {
     if (!isAligned || isExiting) return;
 
-    let isCancelled = false;
-    let cycleTimer = null;
+    const PROXIMITY_RADIUS = 135; // Sensitive proximity zone in pixels around the button
+    let ticking = false;
 
-    const runScrambleCycle = () => {
-      if (isCancelled || isExiting) return;
-      const el = enterBtnTextRef.current;
-      if (!el) return;
+    const handlePointerMove = (e) => {
+      if (ticking || isExiting || !enterBtnRef.current || !enterBtnTextRef.current) return;
 
-      // Scramble actively for 800ms with rich cyber glyphs
-      scrambleText(el, 'ENTER', {
-        duration: 0.8,
-        onComplete: () => {
-          if (isCancelled || isExiting) return;
-          // Hold clearly on "ENTER" for 1100ms so user can read it, then repeat!
-          cycleTimer = setTimeout(runScrambleCycle, 1100);
-        },
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        if (isExiting || !enterBtnRef.current) return;
+
+        const rect = enterBtnRef.current.getBoundingClientRect();
+        const cursorX = e.clientX;
+        const cursorY = e.clientY;
+
+        // Calculate closest distance from cursor to the button bounding box
+        const dx = Math.max(rect.left - cursorX, 0, cursorX - rect.right);
+        const dy = Math.max(rect.top - cursorY, 0, cursorY - rect.bottom);
+        const distance = Math.hypot(dx, dy);
+
+        if (distance <= PROXIMITY_RADIUS) {
+          if (!isNearbyRef.current) {
+            isNearbyRef.current = true;
+            triggerEnterScramble(0.48);
+          }
+        } else {
+          isNearbyRef.current = false;
+        }
       });
     };
 
-    // Begin looping scramble as soon as the button appears
-    cycleTimer = setTimeout(runScrambleCycle, 200);
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
 
     return () => {
-      isCancelled = true;
-      clearTimeout(cycleTimer);
+      window.removeEventListener('pointermove', handlePointerMove);
       if (enterBtnTextRef.current?._scrambleRaf) {
         cancelAnimationFrame(enterBtnTextRef.current._scrambleRaf);
       }
@@ -535,6 +547,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
            ===================================================================== */}
         <div className="flex flex-col items-center justify-center w-full">
           <button
+            ref={enterBtnRef}
             id="homescreen-enter-button"
             onClick={handleEnterHomepage}
             onMouseEnter={() => triggerEnterScramble(0.4)}
