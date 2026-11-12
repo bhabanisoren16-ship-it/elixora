@@ -274,8 +274,11 @@ export default function App() {
     setShowCurtain(true);
   };
 
-  // When the Refresh Page finishes its telemetry synchronization:
+  // When user clicks the ENTER button on the Dedicated Refresh Page:
   const handleRefreshComplete = () => {
+    try {
+      sessionStorage.setItem('elixora_entered_homepage', 'true');
+    } catch (e) { }
     setShowRefreshPage(false);
     setShowCurtain(true);
   };

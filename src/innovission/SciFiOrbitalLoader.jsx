@@ -94,7 +94,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     const startTime = performance.now();
     const totalMs = duration * 1000;
     let animId;
-    let autoExitTimer;
     let lastStatusIdx = 0;
     const doneLocks = [false, false, false];
 
@@ -223,11 +222,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             { scale: 2.6, opacity: 0, duration: 0.6, ease: 'expo.out' }
           );
         }
-        // Auto-exit fallback after 1.2s so it seamlessly opens homepage if untouched,
-        // while allowing immediate manual click/Enter keypress anytime!
-        autoExitTimer = setTimeout(() => {
-          triggerExit();
-        }, 1200);
       }
     };
 
@@ -251,7 +245,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
     return () => {
       cancelAnimationFrame(animId);
-      clearTimeout(autoExitTimer);
       clearTimeout(safetyTimer);
       ctx.revert();
     };
