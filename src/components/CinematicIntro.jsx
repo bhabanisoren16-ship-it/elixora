@@ -59,8 +59,17 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
   const orbRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
+  const enterBtnTextRef = useRef(null);
   const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+
+  // Helper to trigger cyber scramble text effect on the ENTER button
+  const triggerEnterScramble = (dur = 0.45) => {
+    if (enterBtnTextRef.current && !isExiting) {
+      soundController.playHover?.();
+      scrambleText(enterBtnTextRef.current, 'ENTER', { duration: dur });
+    }
+  };
 
   // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY when opening the site
   useEffect(() => {
@@ -77,6 +86,33 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       }
     };
   }, []);
+
+  // Cybernetic Scramble Decode Effect on ENTER button when conjunction achieves 100%
+  useEffect(() => {
+    if (!isAligned) return;
+
+    // Immediate decode on conjunction alignment entrance
+    const entranceTimer = setTimeout(() => {
+      if (enterBtnTextRef.current && !isExiting) {
+        scrambleText(enterBtnTextRef.current, 'ENTER', { duration: 0.65 });
+      }
+    }, 120);
+
+    // Periodic ambient scramble pulse while waiting for user to click
+    const ambientInterval = setInterval(() => {
+      if (enterBtnTextRef.current && !isExiting) {
+        scrambleText(enterBtnTextRef.current, 'ENTER', { duration: 0.42 });
+      }
+    }, 4500);
+
+    return () => {
+      clearTimeout(entranceTimer);
+      clearInterval(ambientInterval);
+      if (enterBtnTextRef.current?._scrambleRaf) {
+        cancelAnimationFrame(enterBtnTextRef.current._scrambleRaf);
+      }
+    };
+  }, [isAligned, isExiting]);
 
   useEffect(() => {
     let currentPercent = 0;
@@ -493,6 +529,8 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
           <button
             id="homescreen-enter-button"
             onClick={handleEnterHomepage}
+            onMouseEnter={() => triggerEnterScramble(0.4)}
+            onTouchStart={() => triggerEnterScramble(0.4)}
             className={`group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 px-6 py-2 sm:px-8 sm:py-2.5 rounded-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_35px_rgba(217,70,239,0.45),0_0_20px_rgba(0,242,254,0.35)] transform-gpu ${
               isAligned 
                 ? 'opacity-100 scale-100 pointer-events-auto translate-y-0' 
@@ -525,7 +563,12 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
 
             {/* Button Content: Luminous Crisp Typography & Icon Capsule */}
             <div className="relative z-10 flex items-center gap-2.5">
-              <span className="font-outfit font-black text-[11px] sm:text-xs tracking-[0.22em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5">
+              <span
+                ref={enterBtnTextRef}
+                data-scr="true"
+                data-text="ENTER"
+                className="font-outfit font-black text-[11px] sm:text-xs tracking-[0.22em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5 inline-block min-w-[50px] sm:min-w-[56px] text-center"
+              >
                 ENTER
               </span>
 
