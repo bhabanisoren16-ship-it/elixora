@@ -311,7 +311,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
     <div
       ref={containerRef}
       id="loading-screen-container"
-      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-3 sm:p-6 py-2.5 sm:py-4 select-none overflow-hidden transition-all duration-700 font-outfit ${
+      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-3.5 sm:p-6 pt-3 sm:pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pb-4 select-none overflow-hidden transition-all duration-700 font-outfit ${
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       style={{
@@ -347,11 +347,11 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       </div>
 
       {/* =========================================================================
-          2. TOP HEADER: CELESTIAL BRANDING (Original Size + Cybernetic Auto-Scramble)
+          2. TOP HEADER: CELESTIAL BRANDING (Centered on mobile, exact size)
          ========================================================================= */}
-      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase select-none flex-shrink-0">
+      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-center sm:justify-between relative z-10 font-mono text-[10.5px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase select-none flex-shrink-0 pt-1 sm:pt-0">
         <div 
-          className="flex items-center gap-2.5 cursor-pointer group"
+          className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group"
           onClick={() => {
             if (gatewayTextRef.current) {
               scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.5 });
@@ -359,11 +359,11 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
           }}
           title="ELIXORA GATEWAY · Click to scramble"
         >
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
           <span
             ref={gatewayTextRef}
             data-text="ELIXORA GATEWAY"
-            className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em] whitespace-nowrap transition-all duration-300 group-hover:brightness-125"
+            className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.22em] sm:tracking-[0.25em] whitespace-nowrap transition-all duration-300 group-hover:brightness-125"
           >
             ELIXORA GATEWAY
           </span>
@@ -371,11 +371,11 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       </header>
 
       {/* =========================================================================
-          3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE (Exact Match to Screenshot)
+          3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE (Properly sized for mobile)
          ========================================================================= */}
-      <div className="flex-1 min-h-0 w-full flex items-center justify-center relative py-1">
+      <div className="flex-1 min-h-0 w-full flex items-center justify-center relative py-1 sm:py-2">
         <div
-          className="relative flex items-center justify-center w-[min(62vw,38vh,250px)] h-[min(62vw,38vh,250px)] sm:w-[min(46vmin,42vh,380px)] sm:h-[min(46vmin,42vh,380px)] transition-transform duration-300 transform-gpu overflow-visible"
+          className="relative flex items-center justify-center w-[min(68vw,36vh,260px)] h-[min(68vw,36vh,260px)] sm:w-[min(46vmin,42vh,380px)] sm:h-[min(46vmin,42vh,380px)] transition-transform duration-300 transform-gpu overflow-visible"
         >
           {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
           <div 
@@ -512,11 +512,11 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
             <div className="relative z-10 flex flex-col items-center justify-center text-center">
               <span
                 ref={countRef}
-                className="font-outfit font-black text-2xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]"
+                className="font-outfit font-black text-[28px] sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]"
               >
                 000
               </span>
-              <span className="mt-0.5 sm:mt-1 font-mono text-[8px] sm:text-[10px] tracking-[0.28em] sm:tracking-[0.35em] text-cyan-300 font-bold uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
+              <span className="mt-0.5 sm:mt-1 font-mono text-[8.5px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.35em] text-cyan-300 font-bold uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
                 PERCENT
               </span>
             </div>
@@ -525,10 +525,10 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
       </div>
 
       {/* =========================================================================
-          4. BOTTOM STATUS & THE ENTER HOME PAGE OPTION
+          4. BOTTOM STATUS & THE ENTER HOME PAGE OPTION (Calibrated for Mobile View)
           Stuck on this loading page until user explicitly clicks ENTER HOME PAGE!
          ========================================================================= */}
-      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-20 text-center pb-1 sm:pb-3 flex-shrink-0 min-h-[50px] sm:min-h-[56px] transform-gpu">
+      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-20 text-center pb-2.5 sm:pb-3 flex-shrink-0 min-h-[54px] sm:min-h-[56px] transform-gpu">
         {/* =====================================================================
             THE ENTER HOME PAGE BUTTON
             Displays exclusively AFTER completing the circle rotation (at 100%)
@@ -539,7 +539,7 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
             onClick={handleEnterHomepage}
             onMouseEnter={() => triggerEnterScramble(0.4)}
             onTouchStart={() => triggerEnterScramble(0.4)}
-            className={`group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 px-6 py-2 sm:px-8 sm:py-2.5 rounded-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_35px_rgba(217,70,239,0.45),0_0_20px_rgba(0,242,254,0.35)] transform-gpu ${
+            className={`group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 px-7 py-2.5 sm:px-8 sm:py-2.5 min-h-[44px] rounded-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_35px_rgba(217,70,239,0.45),0_0_20px_rgba(0,242,254,0.35)] transform-gpu ${
               isAligned 
                 ? 'opacity-100 scale-100 pointer-events-auto translate-y-0' 
                 : 'opacity-0 scale-90 pointer-events-none translate-y-2'
@@ -550,9 +550,9 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
             {/* Outer Cosmic Multi-Tone Aura Bloom */}
             <div className={`absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-300 transform-gpu ${isAligned ? 'animate-pulse' : ''}`} />
 
-            {/* Orbiting Satellite Particle around the Enter Button */}
+            {/* Orbiting Satellite Particle around the Enter Button (Desktop only to prevent oval wobble on mobile) */}
             <div 
-              className="absolute -inset-2 rounded-full border border-cyan-400/30 border-dotted animate-[spin_7s_linear_infinite] pointer-events-none transform-gpu"
+              className="hidden sm:block absolute -inset-2 rounded-full border border-cyan-400/30 border-dotted animate-[spin_7s_linear_infinite] pointer-events-none transform-gpu"
               style={{ willChange: 'transform' }}
             >
               <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_6px_#00f2fe]" />
@@ -570,19 +570,19 @@ export default function CinematicIntro({ onComplete, duration = 2.4 }) {
             </div>
 
             {/* Button Content: Luminous Crisp Typography & Icon Capsule */}
-            <div className="relative z-10 flex items-center gap-2.5">
+            <div className="relative z-10 flex items-center gap-2.5 sm:gap-3">
               <span
                 ref={enterBtnTextRef}
                 data-scr="true"
                 data-text="ENTER"
-                className="font-outfit font-black text-[11px] sm:text-xs tracking-[0.22em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5 inline-block min-w-[54px] sm:min-w-[60px] text-center tabular-nums"
+                className="font-outfit font-black text-xs sm:text-xs tracking-[0.24em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5 inline-block min-w-[56px] sm:min-w-[60px] text-center tabular-nums"
               >
                 ENTER
               </span>
 
               {/* Glowing Arrow Capsule */}
-              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 border border-white/60 group-hover:border-white group-hover:bg-white flex items-center justify-center transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.4)]">
-                <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
+              <div className="w-5.5 h-5.5 sm:w-6 sm:h-6 rounded-full bg-white/20 border border-white/60 group-hover:border-white group-hover:bg-white flex items-center justify-center transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.4)]">
+                <ArrowRight className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
               </div>
             </div>
           </button>
