@@ -111,6 +111,13 @@ export function mapRowToRegistration(row) {
     row['REGISTRATION DATE & TIME'] ||
     (regDate && regTime ? `${regDate}, ${regTime}` : null);
 
+  const food =
+    row['FOOD'] ||
+    row.food ||
+    row['DIET'] ||
+    row.diet ||
+    'Veg';
+
   return {
     id: row.id,
     _id: row.id || (roll ? `reg_roll_${roll}` : `reg_${ticketId || Date.now()}`),
@@ -118,6 +125,8 @@ export function mapRowToRegistration(row) {
     fullName,
     rollNo: roll,
     category,
+    food,
+    diet: food,
     phone: row['MOBILE NO.'] || row.phone || '',
     utrNumber: row['UTR NO.'] || row.utr_number || '',
     branch: row['BRANCH'] || row.branch || 'Biotechnology',
@@ -180,6 +189,7 @@ export function mapRegistrationToRow(reg, screenshotUrl = null) {
   const ticketId = reg.ticketId || reg['TICKET ID'] || reg.ticket_id || `ELX-${isSenior ? 'SR' : '26'}-${cleanRoll ? cleanRoll.slice(-4) : 'PASS'}`;
   const photo = screenshotUrl || reg.photo || reg['PHOTO'] || reg.screenshot || reg['SCREENSHOT'] || reg.screenshotUrl || null;
   const status = reg.status || reg['STATUS'] || 'VERIFIED';
+  const food = reg.food || reg.diet || reg['FOOD'] || reg['DIET'] || 'Veg';
 
   const now = new Date();
   const regDate =
@@ -208,6 +218,10 @@ export function mapRegistrationToRow(reg, screenshotUrl = null) {
     'TICKET ID': ticketId,
     'PHOTO': photo,
     'STATUS': status,
+    'FOOD': food,
+    'DIET': food,
+    food: food,
+    diet: food,
 
     // Time & Date of Registration Options for Supabase Table
     'REGISTRATION DATE': regDate,

@@ -1,7 +1,7 @@
 -- ============================================================
 -- ELIXORA 2.0 - SUPABASE SCHEMA MIGRATION: STUDENT & ATTENDEE PASSES
 -- ============================================================
--- Matches: [STUDENT NAME | ROLL NO | CATEGORY | TICKET ID | PHOTO | STATUS]
+-- Matches: [STUDENT NAME | ROLL NO | CATEGORY | TICKET ID | PHOTO | STATUS | FOOD]
 -- Plus: [REGISTRATION DATE | REGISTRATION TIME | REGISTRATION DATE & TIME]
 -- Run this in your Supabase Dashboard: SQL Editor -> New Query -> Run
 -- ============================================================
@@ -13,13 +13,15 @@ CREATE TABLE IF NOT EXISTS public.registrations (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. Add columns matching the table header: STUDENT NAME, ROLL NO, CATEGORY, TICKET ID, PHOTO, STATUS
+-- 2. Add columns matching the table header: STUDENT NAME, ROLL NO, CATEGORY, TICKET ID, PHOTO, STATUS, FOOD
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "STUDENT NAME" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "ROLL NO" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "CATEGORY" TEXT DEFAULT 'FRESHER';
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "TICKET ID" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "PHOTO" TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "STATUS" TEXT DEFAULT 'VERIFIED';
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "FOOD" TEXT DEFAULT 'Veg';
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "DIET" TEXT DEFAULT 'Veg';
 
 -- 3. Time & Date of Registration Columns
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "REGISTRATION DATE" TEXT;
@@ -38,6 +40,7 @@ ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS ticket_id TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS photo TEXT;
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'VERIFIED';
+ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS food TEXT DEFAULT 'Veg';
 
 -- 5. Maintain standard transactional fields
 ALTER TABLE public.registrations ADD COLUMN IF NOT EXISTS "FULL NAME" TEXT;
@@ -79,10 +82,14 @@ SET
   status         = COALESCE(status, "STATUS", 'VERIFIED'),
   "FULL NAME"    = COALESCE("FULL NAME", "STUDENT NAME", student_name),
   "REGISTRATION" = COALESCE("REGISTRATION", "ROLL NO", roll_no),
-  "SCREENSHOT"   = COALESCE("SCREENSHOT", "PHOTO", photo);
+  "SCREENSHOT"   = COALESCE("SCREENSHOT", "PHOTO", photo),
+  "FOOD"         = COALESCE("FOOD", food, "DIET", diet, 'Veg'),
+  "DIET"         = COALESCE("DIET", "FOOD", food, diet, 'Veg'),
+  food           = COALESCE(food, "FOOD", "DIET", diet, 'Veg'),
+  diet           = COALESCE(diet, "FOOD", "DIET", food, 'Veg');
 
 -- 7. Bi-directional Synchronization Trigger
--- Automatically keeps "STUDENT NAME", "ROLL NO", "CATEGORY", "TICKET ID", "PHOTO", "STATUS",
+-- Automatically keeps "STUDENT NAME", "ROLL NO", "CATEGORY", "TICKET ID", "PHOTO", "STATUS", "FOOD",
 -- and Date / Time columns perfectly synchronized on every INSERT or UPDATE.
 CREATE OR REPLACE FUNCTION public.sync_registration_columns()
 RETURNS TRIGGER AS $$
@@ -159,6 +166,30 @@ BEGIN
     NEW.status := 'VERIFIED';
   END IF;
 
+  -- Sync Food / Diet Preference
+  IF NEW."FOOD" IS NOT NULL THEN
+    NEW."DIET" := NEW."FOOD";
+    NEW.food := NEW."FOOD";
+    NEW.diet := NEW."FOOD";
+  ELSIF NEW.food IS NOT NULL THEN
+    NEW."FOOD" := NEW.food;
+    NEW."DIET" := NEW.food;
+    NEW.diet := NEW.food;
+  ELSIF NEW."DIET" IS NOT NULL THEN
+    NEW."FOOD" := NEW."DIET";
+    NEW.food := NEW."DIET";
+    NEW.diet := NEW."DIET";
+  ELSIF NEW.diet IS NOT NULL THEN
+    NEW."FOOD" := NEW.diet;
+    NEW."DIET" := NEW.diet;
+    NEW.food := NEW.diet;
+  ELSE
+    NEW."FOOD" := 'Veg';
+    NEW."DIET" := 'Veg';
+    NEW.food := 'Veg';
+    NEW.diet := 'Veg';
+  END IF;
+
   -- Sync Registration Date & Time (Indian Standard Time: Asia/Kolkata)
   IF NEW."REGISTRATION DATE" IS NULL THEN
     NEW."REGISTRATION DATE" := TO_CHAR(COALESCE(NEW.created_at, NOW()) AT TIME ZONE 'Asia/Kolkata', 'DD Mon YYYY');
@@ -193,6 +224,7 @@ CREATE INDEX IF NOT EXISTS idx_reg_roll_no ON public.registrations("ROLL NO");
 CREATE INDEX IF NOT EXISTS idx_reg_ticket_id ON public.registrations("TICKET ID");
 CREATE INDEX IF NOT EXISTS idx_reg_status ON public.registrations("STATUS");
 CREATE INDEX IF NOT EXISTS idx_reg_category ON public.registrations("CATEGORY");
+CREATE INDEX IF NOT EXISTS idx_reg_food ON public.registrations("FOOD");
 CREATE INDEX IF NOT EXISTS idx_reg_date ON public.registrations("REGISTRATION DATE");
 CREATE INDEX IF NOT EXISTS idx_reg_registered_at ON public.registrations(registered_at DESC);
 CREATE INDEX IF NOT EXISTS idx_reg_legacy_roll ON public.registrations("REGISTRATION");

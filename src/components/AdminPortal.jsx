@@ -1219,13 +1219,13 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                         <option value="NOT_CHECKED_IN">Awaiting Entry</option>
                       </select>
 
-                      {/* Diet Filter */}
+                      {/* Food Filter */}
                       <select
                         value={filterDiet}
                         onChange={(e) => setFilterDiet(e.target.value)}
                         className="px-3 py-2 rounded-xl bg-obsidian-900 border border-white/10 text-xs text-slate-200 focus:outline-none focus:border-cyan-400 cursor-pointer"
                       >
-                        <option value="ALL">All Diets</option>
+                        <option value="ALL">All Food</option>
                         <option value="Veg">Veg</option>
                         <option value="Non-Veg">Non-Veg</option>
                       </select>
@@ -1280,7 +1280,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                             <th className="py-3 px-3.5">Ticket ID</th>
                             <th className="py-3 px-3.5">Photo / Receipt</th>
                             <th className="py-3 px-3.5">Payment &amp; UTR</th>
-                            <th className="py-3 px-3.5">Diet</th>
+                            <th className="py-3 px-3.5">Food</th>
                             <th className="py-3 px-3.5">Approval Status</th>
                             <th className="py-3 px-3.5 text-right">Actions</th>
                           </tr>
@@ -1459,14 +1459,14 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                                   )}
                                 </td>
 
-                                {/* 5. Diet */}
+                                {/* 5. Food */}
                                 <td className="py-3 px-3.5">
                                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                    item.diet === 'Veg'
+                                    (item.food || item.diet) === 'Veg'
                                       ? 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-300'
                                       : 'bg-rose-500/15 border border-rose-500/40 text-rose-300'
                                   }`}>
-                                    {item.diet || 'Veg'}
+                                    {item.food || item.diet || 'Veg'}
                                   </span>
                                 </td>
 
@@ -2768,7 +2768,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Dietary Preference</label>
+                  <label className="block text-slate-300 font-semibold mb-1">Food Preference</label>
                   <select
                     value={manualPass.diet}
                     onChange={(e) => setManualPass({ ...manualPass, diet: e.target.value })}
@@ -3035,7 +3035,7 @@ export default function AdminPortal({ isOpen, onClose, onOpenTicket }) {
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Diet Preference</label>
+                  <label className="block text-slate-300 font-semibold mb-1">Food Preference</label>
                   <select
                     value={editingItem.diet || 'Veg'}
                     onChange={(e) => setEditingItem({ ...editingItem, diet: e.target.value })}
