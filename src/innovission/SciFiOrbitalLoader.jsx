@@ -253,8 +253,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     isExitedRef.current = true;
     setIsExiting(true);
 
-    const curtainDuration = 0.95;
-    const stagger = 0.035;
+    const curtainDuration = 1.45;
+    const stagger = 0.055;
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -265,21 +265,21 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     // 1. Center orbital stage scales down and dissolves into starlight
     tl.to(
       '.loader-center-stage',
-      { scale: 0.9, opacity: 0, duration: 0.35, ease: 'power2.in', force3D: true },
+      { scale: 0.9, opacity: 0, duration: 0.45, ease: 'power2.in', force3D: true },
       0
     )
     // 2. Header and background fade out gracefully into the lifting curtain
     .to(
       '.loader-fade-ui',
-      { opacity: 0, duration: 0.28, ease: 'power2.in', force3D: true },
+      { opacity: 0, duration: 0.35, ease: 'power2.in', force3D: true },
       0
     )
     .to(
       '.loader-bg-pane',
-      { opacity: 0, duration: 0.38, ease: 'power2.in', force3D: true },
+      { opacity: 0, duration: 0.5, ease: 'power2.in', force3D: true },
       0.02
     )
-    // 3. Layered Pure Black Celestial Curtain banks sweep swiftly and smoothly upward
+    // 3. Layered Pure Black Celestial Curtain banks sweep majestically and smoothly upward
     .to(
       '.curtain-layer',
       {
