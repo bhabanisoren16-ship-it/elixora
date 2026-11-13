@@ -42,23 +42,26 @@ function checkIsSeniorPortalRoute() {
  */
 function detectInitialLoadState() {
   if (typeof window === 'undefined') {
-    return { isRefresh: false, isHomeLoading: false };
+    return { isRefresh: false, isHomeLoading: false, isCurtain: false };
   }
 
   // Bypass on direct admin / senior portal hash routes
   if (checkIsAdminRoute() || checkIsSeniorPortalRoute()) {
-    return { isRefresh: false, isHomeLoading: false };
+    return { isRefresh: false, isHomeLoading: false, isCurtain: false };
   }
 
   // URL parameters / hashes for previewing or testing
   const searchParams = new URLSearchParams(window.location.search);
   const hash = window.location.hash;
 
+  if (searchParams.get('curtain') === 'true' || searchParams.get('loader') === 'curtain' || hash === '#preview-curtain') {
+    return { isRefresh: false, isHomeLoading: false, isCurtain: true };
+  }
   if (searchParams.get('loader') === 'refresh' || hash === '#preview-refresh') {
-    return { isRefresh: true, isHomeLoading: false };
+    return { isRefresh: true, isHomeLoading: false, isCurtain: false };
   }
   if (searchParams.get('loader') === 'home' || hash === '#preview-home-loader') {
-    return { isRefresh: false, isHomeLoading: true };
+    return { isRefresh: false, isHomeLoading: true, isCurtain: false };
   }
 
   let isBrowserReload = false;
@@ -73,17 +76,16 @@ function detectInitialLoadState() {
 
   const hasEnteredHomepage = sessionStorage.getItem('elixora_entered_homepage') === 'true';
 
-  // 1. WHEN PAGE IS REFRESHED (or user has already entered in this session):
-  // Open the website home page automatically and immediately without any loading hurdle!
+  // 1. WHEN PAGE IS REFRESHED: Show the curtain animation to reveal the home page automatically!
   if (isBrowserReload || hasEnteredHomepage) {
     try {
       sessionStorage.setItem('elixora_entered_homepage', 'true');
     } catch (e) { }
-    return { isRefresh: false, isHomeLoading: false };
+    return { isRefresh: false, isHomeLoading: false, isCurtain: true };
   }
 
   // 2. FIRST VISIT ONLY (fresh tab/session): Show Home Loading Page and wait until user clicks ENTER HOME PAGE
-  return { isRefresh: false, isHomeLoading: true };
+  return { isRefresh: false, isHomeLoading: true, isCurtain: false };
 }
 
 
@@ -142,7 +144,7 @@ export default function App() {
   const [initialLoad] = useState(detectInitialLoadState);
   const [showHomeLoadingPage, setShowHomeLoadingPage] = useState(initialLoad.isHomeLoading);
   const [showRefreshPage, setShowRefreshPage] = useState(initialLoad.isRefresh);
-  const [showCurtain, setShowCurtain] = useState(false);
+  const [showCurtain, setShowCurtain] = useState(initialLoad.isCurtain);
 
   // Initialize global hover ScrambleText listener
   useEffect(() => {
