@@ -277,7 +277,8 @@ export default function App() {
       sessionStorage.setItem('elixora_entered_homepage', 'true');
     } catch (e) { }
     setShowHomeLoadingPage(false);
-    setShowCurtain(true);
+    setShowCurtain(false);
+    refreshInnovisionScroll();
   };
 
   // When the Refresh Page finishes its orbital conjunction and curtain reveal:

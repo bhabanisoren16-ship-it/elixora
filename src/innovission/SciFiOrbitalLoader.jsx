@@ -1,8 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { scrambleText } from './scrambleText';
-import { REFRESH_CURTAIN_LAYERS } from './curtainLayers';
-import { Clouds } from './CelestialCurtain';
 
 /**
  * Celestial Telemetry Refresh Page for ELIXORA 2.0
@@ -229,8 +227,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
             { scale: 2.6, opacity: 0, duration: 0.5, ease: 'expo.out', force3D: true }
           );
         }
-        // Seamlessly trigger the curtain reveal without any intermediate flicker
-        triggerCurtainReveal();
+        // Seamlessly trigger exit and reveal homepage directly
+        triggerExit();
       }
     };
 
@@ -238,7 +236,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
 
     // Guaranteed safety fallback: automatically trigger exit even if RAF stalls
     const safetyTimer = setTimeout(() => {
-      triggerCurtainReveal();
+      triggerExit();
     }, (duration + 1.2) * 1000);
 
     return () => {
@@ -248,134 +246,52 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     };
   }, [duration]);
 
-  const triggerCurtainReveal = () => {
+  const triggerExit = () => {
     if (isExitedRef.current) return;
     isExitedRef.current = true;
 
-    // Immediately disable pointer events on container directly without triggering React re-render
     if (containerRef.current) {
       containerRef.current.style.pointerEvents = 'none';
     }
 
-    // Cancel any pending scramble and ensure clean text
     if (gatewayTextRef.current?._scrambleRaf) {
       cancelAnimationFrame(gatewayTextRef.current._scrambleRaf);
       gatewayTextRef.current.textContent = 'ELIXORA GATEWAY';
     }
 
-    const curtainDuration = 1.45;
-    const stagger = 0.055;
-    const exitFadeDuration = 0.22;
+    const exitDuration = 0.38;
 
-    const safetyTimeoutMs = Math.round((exitFadeDuration + curtainDuration + 5 * stagger + 0.35) * 1000);
     const safetyTimer = setTimeout(() => {
       onCompleteRef.current?.();
-    }, safetyTimeoutMs);
+    }, (exitDuration + 0.3) * 1000);
 
-    // 1. Conjunction Shockwave Flare
+    // Conjunction Shockwave Flare
     if (flareRef.current) {
       gsap.fromTo(
         flareRef.current,
         { scale: 0.8, opacity: 1 },
-        { scale: 3.2, opacity: 0, duration: 0.45, ease: 'expo.out', force3D: true }
+        { scale: 3.2, opacity: 0, duration: exitDuration * 1.3, ease: 'expo.out', force3D: true }
       );
     }
 
-    const tl = gsap.timeline({
+    gsap.timeline({
       onComplete: () => {
         clearTimeout(safetyTimer);
         onCompleteRef.current?.();
       },
-    });
-
-    // 2. Center stage, UI headers, and telemetry starfield dissolve cleanly into the flare
-    tl.to(
-      ['.loader-center-stage', '.loader-fade-ui', '.loader-bg-pane'],
-      {
-        scale: 0.88,
-        opacity: 0,
-        duration: exitFadeDuration,
-        ease: 'power2.in',
-        force3D: true,
-      },
-      0
-    )
-    // 3. Immediately hide the loader elements so they NEVER appear in the curtain opening
-    .set(
-      ['.loader-center-stage', '.loader-fade-ui', '.loader-bg-pane'],
-      { display: 'none' },
-      exitFadeDuration
-    )
-    // 4. Reset & sweep the 5 colorful celestial curtain layers downward (reversed effect for refresh only)
-    .set('.curtain-layer', { yPercent: -33.333, force3D: true }, 0)
-    .to(
-      '.curtain-layer',
-      {
-        yPercent: 35,
-        duration: curtainDuration,
-        ease: 'power3.inOut',
-        stagger: {
-          each: stagger,
-          from: 'end',
-        },
-        force3D: true,
-      },
-      exitFadeDuration + 0.02
-    )
-    // 5. Fade out underlying cosmic mask as curtains open
-    .to(
-      '.curtain-mask',
-      {
-        opacity: 0,
-        duration: curtainDuration * 0.7,
-        ease: 'power2.out',
-      },
-      exitFadeDuration + 0.06
-    );
+    })
+      .to('.loader-ring', { scale: 1.7, opacity: 0, duration: exitDuration, ease: 'power2.in', force3D: true }, 0)
+      .to('.loader-disc', { scale: 0.65, opacity: 0, duration: exitDuration, ease: 'power2.in', force3D: true }, 0)
+      .to('.loader-fade-ui', { y: -25, opacity: 0, duration: exitDuration * 0.8, ease: 'power2.in', force3D: true }, 0)
+      .to('.loader-bg-pane', { opacity: 0, duration: exitDuration * 1.1, ease: 'power2.in', force3D: true }, 0)
+      .to(containerRef.current, { opacity: 0, duration: exitDuration * 0.45, ease: 'power2.out', force3D: true }, exitDuration * 0.65);
   };
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden font-outfit"
-      style={{
-        backgroundColor: 'transparent',
-      }}
+      className="fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden font-outfit bg-[#040508]"
     >
-      {/* Underlying Solid Cosmic Backdrop Mask */}
-      <div className="curtain-mask absolute inset-0 bg-[#040508] pointer-events-none -z-10" />
-
-      {/* =========================================================================
-          0. 5 THEMED VIBRANT COSMIC CELESTIAL CURTAINS (Layered colorful cloud reveal)
-         ========================================================================= */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {REFRESH_CURTAIN_LAYERS.map((l, k) => (
-          <div
-            key={k}
-            className="curtain-layer absolute top-0 left-0 w-full h-[300vh] will-change-transform pointer-events-none"
-            style={{
-              transform: 'translateY(-33.333%)',
-              zIndex: k + 1,
-            }}
-          >
-            {/* Top Cloud Skyline Bank */}
-            <Clouds l={l} />
-
-            {/* Middle Solid Section with Cosmic Theme Gradient and Neon Backlight */}
-            <div
-              className="h-[calc(100vh+4px)] -my-[2px]"
-              style={{
-                background: l.bgGradient || l.color,
-                boxShadow: l.glow ? `inset 0 0 90px ${l.glow}` : undefined,
-              }}
-            />
-
-            {/* Bottom Trailing Edge Cloud Bank (Flips to lift off the screen) */}
-            <Clouds l={l} flip />
-          </div>
-        ))}
-      </div>
-
       {/* =========================================================================
           1. RADIAL CELESTIAL NEBULA & STARLIGHT BACKGROUND
          ========================================================================= */}
