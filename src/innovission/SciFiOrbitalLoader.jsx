@@ -69,6 +69,12 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
   const [isExiting, setIsExiting] = useState(false);
+  const isExitedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY
   useEffect(() => {
@@ -211,14 +217,21 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
     animId = requestAnimationFrame(updateLoader);
 
+    // Guaranteed safety fallback: automatically trigger exit even if RAF stalls
+    const safetyTimer = setTimeout(() => {
+      triggerExit();
+    }, (duration + 0.4) * 1000);
+
     return () => {
       cancelAnimationFrame(animId);
+      clearTimeout(safetyTimer);
       ctx.revert();
     };
   }, [duration]);
 
   const triggerExit = () => {
-    if (isExiting) return;
+    if (isExitedRef.current) return;
+    isExitedRef.current = true;
     setIsExiting(true);
 
     const exitDuration = Math.max(0.3, Math.min(0.45, duration * 0.3));
@@ -232,7 +245,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
     gsap.timeline({
       onComplete: () => {
-        if (onComplete) onComplete();
+        onCompleteRef.current?.();
       },
     })
       .to('.loader-ring', { scale: 1.8, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)

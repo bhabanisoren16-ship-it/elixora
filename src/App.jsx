@@ -76,12 +76,12 @@ function detectInitialLoadState() {
 
   const hasEnteredHomepage = sessionStorage.getItem('elixora_entered_homepage') === 'true';
 
-  // 1. WHEN PAGE IS REFRESHED: Show the curtain animation to reveal the home page automatically!
+  // 1. WHEN PAGE IS REFRESHED: Play Orbital animation first, which transitions automatically into Curtain animation!
   if (isBrowserReload || hasEnteredHomepage) {
     try {
       sessionStorage.setItem('elixora_entered_homepage', 'true');
     } catch (e) { }
-    return { isRefresh: false, isHomeLoading: false, isCurtain: true };
+    return { isRefresh: true, isHomeLoading: false, isCurtain: false };
   }
 
   // 2. FIRST VISIT ONLY (fresh tab/session): Show Home Loading Page and wait until user clicks ENTER HOME PAGE
