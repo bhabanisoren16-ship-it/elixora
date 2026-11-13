@@ -72,11 +72,10 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   const gatewayTextRef = useRef(null);
   const enterBtnRef = useRef(null);
   const enterBtnTextRef = useRef(null);
-  const isNearbyRef = useRef(false);
   const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
-  // Helper to trigger cyber scramble text effect on the ENTER button
+  // Scramble text effect on ENTER button ONLY triggered on direct hover/touch
   const triggerEnterScramble = (dur = 0.45) => {
     if (enterBtnTextRef.current && !isExiting) {
       soundController.playHover?.();
@@ -84,73 +83,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     }
   };
 
-  // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY
-  useEffect(() => {
-    const scrambleTimer = setTimeout(() => {
-      if (gatewayTextRef.current) {
-        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 2.2 });
-      }
-    }, 100);
-
-    return () => {
-      clearTimeout(scrambleTimer);
-      if (gatewayTextRef.current?._scrambleRaf) {
-        cancelAnimationFrame(gatewayTextRef.current._scrambleRaf);
-      }
-    };
-  }, []);
-
-  // Scramble ENTER button ONLY when cursor is moved nearby (Proximity Detection)
-  useEffect(() => {
-    if (!isAligned || isExiting) return;
-
-    const PROXIMITY_RADIUS = 135; // Sensitive proximity zone in pixels around the button
-    let ticking = false;
-
-    const handlePointerMove = (e) => {
-      if (ticking || isExiting || !enterBtnRef.current || !enterBtnTextRef.current) return;
-
-      ticking = true;
-      requestAnimationFrame(() => {
-        ticking = false;
-        if (isExiting || !enterBtnRef.current) return;
-
-        const rect = enterBtnRef.current.getBoundingClientRect();
-        const cursorX = e.clientX;
-        const cursorY = e.clientY;
-
-        // Calculate closest distance from cursor to the button bounding box
-        const dx = Math.max(rect.left - cursorX, 0, cursorX - rect.right);
-        const dy = Math.max(rect.top - cursorY, 0, cursorY - rect.bottom);
-        const distance = Math.hypot(dx, dy);
-
-        if (distance <= PROXIMITY_RADIUS) {
-          if (!isNearbyRef.current) {
-            isNearbyRef.current = true;
-            triggerEnterScramble(0.48);
-          }
-        } else {
-          isNearbyRef.current = false;
-        }
-      });
-    };
-
-    window.addEventListener('pointermove', handlePointerMove, { passive: true });
-
-    return () => {
-      window.removeEventListener('pointermove', handlePointerMove);
-      if (enterBtnTextRef.current?._scrambleRaf) {
-        cancelAnimationFrame(enterBtnTextRef.current._scrambleRaf);
-      }
-    };
-  }, [isAligned, isExiting]);
-
   useEffect(() => {
     let currentPercent = 0;
     const startTime = performance.now();
     const totalMs = duration * 1000;
     let animId;
-    let lastStatusIdx = 0;
     const doneLocks = [false, false, false];
 
     const entranceDuration = Math.max(0.22, Math.min(0.32, duration * 0.25));
@@ -239,15 +176,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         polylineRef.current.setAttribute('points', pts.join(' '));
       }
 
-      // Status text updates with ScrambleText
-      const statusIdx = Math.min(3, Math.floor(currentPercent / 25));
-      if (statusIdx !== lastStatusIdx) {
-        lastStatusIdx = statusIdx;
-        if (statusRef.current) {
-          scrambleText(statusRef.current, REFRESH_STATUSES[statusIdx], { duration: Math.min(0.24, duration * 0.18) });
-        }
-      }
-
       if (currentPercent < 99.5) {
         animId = requestAnimationFrame(updateLoader);
       } else {
@@ -268,9 +196,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         }
 
         setIsAligned(true);
-        if (statusRef.current) {
-          scrambleText(statusRef.current, REFRESH_STATUSES[3], { duration: 0.25 });
-        }
         if (flareRef.current) {
           gsap.fromTo(
             flareRef.current,
@@ -595,7 +520,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             <div className="relative z-10 flex items-center gap-2.5 sm:gap-3">
               <span
                 ref={enterBtnTextRef}
-                data-scr="true"
                 data-text="ENTER"
                 className="font-outfit font-black text-xs sm:text-xs tracking-[0.24em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5 inline-block min-w-[56px] sm:min-w-[60px] text-center tabular-nums"
               >
