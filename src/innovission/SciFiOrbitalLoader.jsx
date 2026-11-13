@@ -83,6 +83,22 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     }
   };
 
+  // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY when opening the page
+  useEffect(() => {
+    const scrambleTimer = setTimeout(() => {
+      if (gatewayTextRef.current) {
+        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.8 });
+      }
+    }, 150);
+
+    return () => {
+      clearTimeout(scrambleTimer);
+      if (gatewayTextRef.current?._scrambleRaf) {
+        cancelAnimationFrame(gatewayTextRef.current._scrambleRaf);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     let currentPercent = 0;
     const startTime = performance.now();
@@ -315,13 +331,18 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
               scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.5 });
             }
           }}
-          title="ELIXORA GATEWAY · Click to scramble"
+          onMouseEnter={() => {
+            if (gatewayTextRef.current) {
+              scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.2 });
+            }
+          }}
+          title="ELIXORA GATEWAY · Click or hover to scramble"
         >
           <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
           <span
             ref={gatewayTextRef}
             data-text="ELIXORA GATEWAY"
-            className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.22em] sm:tracking-[0.25em] whitespace-nowrap transition-all duration-300 group-hover:brightness-125"
+            className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 bg-[length:200%_auto] animate-shimmer tracking-[0.22em] sm:tracking-[0.25em] whitespace-nowrap transition-all duration-300 group-hover:brightness-125"
           >
             ELIXORA GATEWAY
           </span>
