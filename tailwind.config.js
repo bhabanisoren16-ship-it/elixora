@@ -44,7 +44,6 @@ export default {
         rajdhani: ['Rajdhani', 'sans-serif'],
         syncopate: ['Syncopate', 'sans-serif'],
         bodoni: ['"Bodoni Moda"', 'serif'],
-        didot: ['Didot', '"GFS Didot"', '"Bodoni Moda"', '"Playfair Display"', 'Georgia', 'serif'],
         cinzel: ['Cinzel', 'serif'],
         playfair: ['"Playfair Display"', 'serif'],
         italiana: ['Italiana', 'serif'],
