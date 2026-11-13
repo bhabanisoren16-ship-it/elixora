@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { scrambleText } from './scrambleText';
-import { LAYERS } from './curtainLayers';
+import { REFRESH_CURTAIN_LAYERS } from './curtainLayers';
 import { Clouds } from './CelestialCurtain';
 
 /**
@@ -279,14 +279,18 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
       { opacity: 0, duration: 0.5, ease: 'power2.in', force3D: true },
       0.02
     )
-    // 3. Layered Pure Black Celestial Curtain banks sweep majestically and smoothly upward
-    .to(
+    // 3. Layered Vibrant Cosmic Celestial Curtain banks sweep majestically from front to back
+    .fromTo(
       '.curtain-layer',
+      { yPercent: -33.333 },
       {
         yPercent: -100,
         duration: curtainDuration,
         ease: 'power3.inOut',
-        stagger: stagger,
+        stagger: {
+          each: stagger,
+          from: 'end',
+        },
         force3D: true,
       },
       0.04
@@ -304,22 +308,28 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
       }}
     >
       {/* =========================================================================
-          0. 5 THEMED PURE BLACK CELESTIAL CURTAIN BANKS (Layered cloud wipe reveal)
+          0. 5 THEMED VIBRANT COSMIC CELESTIAL CURTAINS (Layered colorful cloud reveal)
          ========================================================================= */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {LAYERS.map((l, k) => (
+        {REFRESH_CURTAIN_LAYERS.map((l, k) => (
           <div
             key={k}
             className="curtain-layer absolute top-0 left-0 w-full h-[300vh] will-change-transform pointer-events-none"
-            style={{ transform: 'translateY(-33.333%)' }}
+            style={{
+              transform: 'translateY(-33.333%)',
+              zIndex: k + 1,
+            }}
           >
             {/* Top Cloud Skyline Bank */}
             <Clouds l={l} />
 
-            {/* Middle Solid Section */}
+            {/* Middle Solid Section with Cosmic Theme Gradient and Neon Backlight */}
             <div
               className="h-[calc(100vh+4px)] -my-[2px]"
-              style={{ background: l.color }}
+              style={{
+                background: l.bgGradient || l.color,
+                boxShadow: l.glow ? `inset 0 0 90px ${l.glow}` : undefined,
+              }}
             />
 
             {/* Bottom Trailing Edge Cloud Bank (Flips to lift off the screen) */}
