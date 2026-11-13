@@ -70,7 +70,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
   const orbRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
-  const [isExiting, setIsExiting] = useState(false);
   const isExitedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
 
@@ -78,13 +77,14 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
 
-  // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY
+  // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY (decodes smoothly before conjunction)
   useEffect(() => {
+    const scrambleDur = Math.min(0.75, Math.max(0.4, duration * 0.75));
     const scrambleTimer = setTimeout(() => {
       if (gatewayTextRef.current) {
-        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 2.2 });
+        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: scrambleDur });
       }
-    }, 100);
+    }, 80);
 
     return () => {
       clearTimeout(scrambleTimer);
@@ -92,7 +92,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
         cancelAnimationFrame(gatewayTextRef.current._scrambleRaf);
       }
     };
-  }, []);
+  }, [duration]);
 
   useEffect(() => {
     let currentPercent = 0;
@@ -251,38 +251,65 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
   const triggerCurtainReveal = () => {
     if (isExitedRef.current) return;
     isExitedRef.current = true;
-    setIsExiting(true);
+
+    // Immediately disable pointer events on container directly without triggering React re-render
+    if (containerRef.current) {
+      containerRef.current.style.pointerEvents = 'none';
+    }
+
+    // Cancel any pending scramble and ensure clean text
+    if (gatewayTextRef.current?._scrambleRaf) {
+      cancelAnimationFrame(gatewayTextRef.current._scrambleRaf);
+      gatewayTextRef.current.textContent = 'ELIXORA GATEWAY';
+    }
 
     const curtainDuration = 1.45;
     const stagger = 0.055;
+    const exitFadeDuration = 0.22;
+
+    const safetyTimeoutMs = Math.round((exitFadeDuration + curtainDuration + 5 * stagger + 0.35) * 1000);
+    const safetyTimer = setTimeout(() => {
+      onCompleteRef.current?.();
+    }, safetyTimeoutMs);
+
+    // 1. Conjunction Shockwave Flare
+    if (flareRef.current) {
+      gsap.fromTo(
+        flareRef.current,
+        { scale: 0.8, opacity: 1 },
+        { scale: 3.2, opacity: 0, duration: 0.45, ease: 'expo.out', force3D: true }
+      );
+    }
 
     const tl = gsap.timeline({
       onComplete: () => {
+        clearTimeout(safetyTimer);
         onCompleteRef.current?.();
       },
     });
 
-    // 1. Center orbital stage scales down and dissolves into starlight
+    // 2. Center stage, UI headers, and telemetry starfield dissolve cleanly into the flare
     tl.to(
-      '.loader-center-stage',
-      { scale: 0.9, opacity: 0, duration: 0.45, ease: 'power2.in', force3D: true },
+      ['.loader-center-stage', '.loader-fade-ui', '.loader-bg-pane'],
+      {
+        scale: 0.88,
+        opacity: 0,
+        duration: exitFadeDuration,
+        ease: 'power2.in',
+        force3D: true,
+      },
       0
     )
-    // 2. Header and background fade out gracefully into the lifting curtain
-    .to(
-      '.loader-fade-ui',
-      { opacity: 0, duration: 0.35, ease: 'power2.in', force3D: true },
-      0
+    // 3. Immediately hide the loader elements so they NEVER appear in the curtain opening
+    .set(
+      ['.loader-center-stage', '.loader-fade-ui', '.loader-bg-pane'],
+      { display: 'none' },
+      exitFadeDuration
     )
+    // 4. Reset & sweep the 5 colorful celestial curtain layers upward from front to back
+    .set('.curtain-layer', { yPercent: -33.333, force3D: true }, 0)
     .to(
-      '.loader-bg-pane',
-      { opacity: 0, duration: 0.5, ease: 'power2.in', force3D: true },
-      0.02
-    )
-    // 3. Layered Vibrant Cosmic Celestial Curtain banks sweep majestically from front to back
-    .fromTo(
       '.curtain-layer',
-      { yPercent: -33.333 },
       {
         yPercent: -100,
         duration: curtainDuration,
@@ -293,20 +320,31 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
         },
         force3D: true,
       },
-      0.04
+      exitFadeDuration + 0.02
+    )
+    // 5. Fade out underlying cosmic mask as curtains open
+    .to(
+      '.curtain-mask',
+      {
+        opacity: 0,
+        duration: curtainDuration * 0.7,
+        ease: 'power2.out',
+      },
+      exitFadeDuration + 0.06
     );
   };
 
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden font-outfit ${
-        isExiting ? 'pointer-events-none' : 'pointer-events-auto'
-      }`}
+      className="fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden font-outfit"
       style={{
         backgroundColor: 'transparent',
       }}
     >
+      {/* Underlying Solid Cosmic Backdrop Mask */}
+      <div className="curtain-mask absolute inset-0 bg-[#040508] pointer-events-none -z-10" />
+
       {/* =========================================================================
           0. 5 THEMED VIBRANT COSMIC CELESTIAL CURTAINS (Layered colorful cloud reveal)
          ========================================================================= */}
