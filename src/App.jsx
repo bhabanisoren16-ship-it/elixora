@@ -274,13 +274,14 @@ export default function App() {
     setShowCurtain(true);
   };
 
-  // When user clicks the ENTER button on the Dedicated Refresh Page:
+  // When Dedicated Refresh Page finishes:
   const handleRefreshComplete = () => {
     try {
       sessionStorage.setItem('elixora_entered_homepage', 'true');
     } catch (e) { }
     setShowRefreshPage(false);
-    setShowCurtain(true);
+    setShowCurtain(false);
+    refreshInnovisionScroll();
   };
 
   return (
@@ -297,7 +298,7 @@ export default function App() {
       {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Telemetry Sync - Automated, NO enter button) */}
       {showRefreshPage && (
         <SciFiOrbitalLoader
-          duration={1.2}
+          duration={1.0}
           onComplete={handleRefreshComplete}
         />
       )}

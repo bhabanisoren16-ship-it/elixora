@@ -59,7 +59,7 @@ const REFRESH_STATUSES = [
   'CELESTIAL REFRESH COMPLETE · OPENING HOMEPAGE',
 ];
 
-export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
+export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
   const containerRef = useRef(null);
   const statusRef = useRef(null);
   const countRef = useRef(null);
@@ -71,13 +71,20 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   const gatewayTextRef = useRef(null);
   const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const isExitedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   // Smooth automatic exit timeline transitioning into the website
-  const triggerExit = useCallback(() => {
-    if (isExiting) return;
+  const triggerExit = () => {
+    if (isExitedRef.current) return;
+    isExitedRef.current = true;
     setIsExiting(true);
 
-    const exitDuration = Math.max(0.3, Math.min(0.45, duration * 0.3));
+    const exitDuration = 0.35;
     if (flareRef.current) {
       gsap.fromTo(
         flareRef.current,
@@ -86,16 +93,20 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       );
     }
 
-    gsap.timeline({
-      onComplete: () => {
-        if (onComplete) onComplete();
-      },
-    })
-      .to('.loader-ring', { scale: 1.8, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
-      .to('.loader-disc', { scale: 0.6, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
-      .to('.loader-fade', { opacity: 0, duration: exitDuration * 0.8 }, 0)
-      .to(containerRef.current, { opacity: 0, duration: exitDuration }, exitDuration * 0.2);
-  }, [duration, isExiting, onComplete]);
+    if (containerRef.current) {
+      gsap.to(containerRef.current, {
+        opacity: 0,
+        scale: 1.05,
+        duration: exitDuration,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          onCompleteRef.current?.();
+        },
+      });
+    } else {
+      onCompleteRef.current?.();
+    }
+  };
 
   // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY when opening the page
   useEffect(() => {
@@ -121,8 +132,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     let autoExitTimer;
     const doneLocks = [false, false, false];
 
-    const entranceDuration = Math.max(0.22, Math.min(0.32, duration * 0.25));
-    const entranceStagger = Math.max(0.015, Math.min(0.03, duration * 0.025));
+    const entranceDuration = Math.max(0.2, Math.min(0.3, duration * 0.25));
+    const entranceStagger = 0.02;
 
     // GSAP Entrance
     const ctx = gsap.context(() => {
@@ -156,6 +167,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     }, containerRef);
 
     const updateLoader = (now) => {
+      if (isExitedRef.current) return;
+
       const elapsed = now - startTime;
       currentPercent = Math.min(100, (elapsed / totalMs) * 100);
 
@@ -197,7 +210,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             gsap.fromTo(
               lockEl,
               { scale: 0.6, opacity: 1 },
-              { scale: 2.8, opacity: 0, duration: Math.max(0.4, Math.min(0.7, duration * 0.45)), ease: 'expo.out' }
+              { scale: 2.8, opacity: 0, duration: 0.45, ease: 'expo.out' }
             );
           }
         }
@@ -210,7 +223,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       if (currentPercent < 99.5) {
         animId = requestAnimationFrame(updateLoader);
       } else {
-        // Conjunction achieved! Align at top and trigger Enter button
+        // Conjunction achieved! Align at top and trigger automatic exit
         currentPercent = 100;
         if (progressCircleRef.current) {
           progressCircleRef.current.style.strokeDashoffset = '0';
@@ -231,14 +244,14 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           gsap.fromTo(
             flareRef.current,
             { scale: 0.8, opacity: 1 },
-            { scale: 2.6, opacity: 0, duration: 0.6, ease: 'expo.out' }
+            { scale: 2.6, opacity: 0, duration: 0.5, ease: 'expo.out' }
           );
         }
 
         // On page refresh: Automatically open website without showing any Enter button
         autoExitTimer = setTimeout(() => {
           triggerExit();
-        }, 220);
+        }, 120);
       }
     };
 
@@ -246,20 +259,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
     // Guaranteed safety fallback: automatically open website even if RAF stalls
     const safetyTimer = setTimeout(() => {
-      setIsAligned((prev) => {
-        if (!prev) {
-          if (countRef.current) countRef.current.textContent = '100';
-          if (progressCircleRef.current) progressCircleRef.current.style.strokeDashoffset = '0';
-          CELESTIAL_ORBS.forEach((_, idx) => {
-            const orbEl = orbRefs.current[idx];
-            if (orbEl) orbEl.style.transform = 'rotate(0deg) translateZ(0)';
-          });
-          return true;
-        }
-        return prev;
-      });
       triggerExit();
-    }, (duration + 0.3) * 1000);
+    }, (duration + 0.35) * 1000);
 
     return () => {
       cancelAnimationFrame(animId);
@@ -267,7 +268,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       clearTimeout(autoExitTimer);
       ctx.revert();
     };
-  }, [duration, triggerExit]);
+  }, [duration]);
 
   return (
     <div
