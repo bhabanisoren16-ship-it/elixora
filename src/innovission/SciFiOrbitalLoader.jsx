@@ -253,8 +253,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     isExitedRef.current = true;
     setIsExiting(true);
 
-    const curtainDuration = 0.65;
-    const stagger = 0.025;
+    const curtainDuration = 0.95;
+    const stagger = 0.035;
 
     const tl = gsap.timeline({
       onComplete: () => {
