@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
-import { ArrowRight } from 'lucide-react';
 import { soundController } from '../utils/audio';
 import { scrambleText } from './scrambleText';
 
@@ -70,18 +69,33 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   const orbRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
-  const enterBtnRef = useRef(null);
-  const enterBtnTextRef = useRef(null);
   const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
-  // Scramble text effect on ENTER button ONLY triggered on direct hover/touch
-  const triggerEnterScramble = (dur = 0.45) => {
-    if (enterBtnTextRef.current && !isExiting) {
-      soundController.playHover?.();
-      scrambleText(enterBtnTextRef.current, 'ENTER', { duration: dur });
+  // Smooth automatic exit timeline transitioning into the website
+  const triggerExit = useCallback(() => {
+    if (isExiting) return;
+    setIsExiting(true);
+
+    const exitDuration = Math.max(0.3, Math.min(0.45, duration * 0.3));
+    if (flareRef.current) {
+      gsap.fromTo(
+        flareRef.current,
+        { scale: 0.9, opacity: 1 },
+        { scale: 2.6, opacity: 0, duration: exitDuration * 1.5, ease: 'expo.out' }
+      );
     }
-  };
+
+    gsap.timeline({
+      onComplete: () => {
+        if (onComplete) onComplete();
+      },
+    })
+      .to('.loader-ring', { scale: 1.8, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
+      .to('.loader-disc', { scale: 0.6, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
+      .to('.loader-fade', { opacity: 0, duration: exitDuration * 0.8 }, 0)
+      .to(containerRef.current, { opacity: 0, duration: exitDuration }, exitDuration * 0.2);
+  }, [duration, isExiting, onComplete]);
 
   // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY when opening the page
   useEffect(() => {
@@ -104,6 +118,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     const startTime = performance.now();
     const totalMs = duration * 1000;
     let animId;
+    let autoExitTimer;
     const doneLocks = [false, false, false];
 
     const entranceDuration = Math.max(0.22, Math.min(0.32, duration * 0.25));
@@ -219,12 +234,17 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             { scale: 2.6, opacity: 0, duration: 0.6, ease: 'expo.out' }
           );
         }
+
+        // On page refresh: Automatically open website without showing any Enter button
+        autoExitTimer = setTimeout(() => {
+          triggerExit();
+        }, 220);
       }
     };
 
     animId = requestAnimationFrame(updateLoader);
 
-    // Guaranteed safety fallback: activate Enter button even if RAF stalls
+    // Guaranteed safety fallback: automatically open website even if RAF stalls
     const safetyTimer = setTimeout(() => {
       setIsAligned((prev) => {
         if (!prev) {
@@ -238,55 +258,16 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         }
         return prev;
       });
+      triggerExit();
     }, (duration + 0.3) * 1000);
 
     return () => {
       cancelAnimationFrame(animId);
       clearTimeout(safetyTimer);
+      clearTimeout(autoExitTimer);
       ctx.revert();
     };
-  }, [duration]);
-
-  const triggerExit = () => {
-    if (isExiting) return;
-    setIsExiting(true);
-
-    const exitDuration = Math.max(0.3, Math.min(0.45, duration * 0.3));
-    if (flareRef.current) {
-      gsap.fromTo(
-        flareRef.current,
-        { scale: 0.9, opacity: 1 },
-        { scale: 2.6, opacity: 0, duration: exitDuration * 1.5, ease: 'expo.out' }
-      );
-    }
-
-    gsap.timeline({
-      onComplete: () => {
-        if (onComplete) onComplete();
-      },
-    })
-      .to('.loader-ring', { scale: 1.8, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
-      .to('.loader-disc', { scale: 0.6, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
-      .to('.loader-fade', { opacity: 0, duration: exitDuration * 0.8 }, 0)
-      .to(containerRef.current, { opacity: 0, duration: exitDuration }, exitDuration * 0.2);
-  };
-
-  const handleEnterHomepage = () => {
-    if (isExiting) return;
-    soundController.playClick?.();
-    triggerExit();
-  };
-
-  // Keyboard Enter key shortcut listener
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Enter' && isAligned) {
-        handleEnterHomepage();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAligned]);
+  }, [duration, triggerExit]);
 
   return (
     <div
@@ -465,11 +446,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
           {/* Center Cosmic Starfield Disc with Live Numeric Counter */}
           <div
-            onClick={isAligned ? handleEnterHomepage : undefined}
+            onClick={isAligned ? triggerExit : undefined}
             className={`loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10 transition-all duration-300 ${
               isAligned ? 'cursor-pointer hover:scale-105 active:scale-95 ring-2 ring-cyan-400/60 ring-offset-2 ring-offset-transparent' : 'cursor-default'
             }`}
-            title={isAligned ? 'Click to enter ELIXORA 2.0' : 'Celestial Conjunction in Progress'}
+            title={isAligned ? 'Opening ELIXORA 2.0' : 'Celestial Conjunction in Progress'}
             style={{
               background: 'radial-gradient(circle at center, #180e38 0%, #0a0718 70%, #040508 100%)',
             }}
@@ -495,64 +476,13 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       </div>
 
       {/* =========================================================================
-          4. BOTTOM STATUS & THE ENTER HOME PAGE OPTION (Calibrated for Mobile View)
+          4. BOTTOM STATUS (Automated Real-Time Telemetry Sync - NO ENTER BUTTON)
          ========================================================================= */}
       <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-20 text-center pb-2.5 sm:pb-3 flex-shrink-0 min-h-[54px] sm:min-h-[56px] transform-gpu">
-        {/* Hidden status ref for safe script reference */}
         <span ref={statusRef} className="hidden" aria-hidden="true" />
-        <div className="flex flex-col items-center justify-center w-full">
-          <button
-            ref={enterBtnRef}
-            id="refresh-enter-button"
-            onClick={handleEnterHomepage}
-            onMouseEnter={() => triggerEnterScramble(0.4)}
-            onTouchStart={() => triggerEnterScramble(0.4)}
-            className={`group relative inline-flex items-center justify-center gap-2.5 sm:gap-3 px-7 py-2.5 sm:px-8 sm:py-2.5 min-h-[44px] rounded-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_35px_rgba(217,70,239,0.45),0_0_20px_rgba(0,242,254,0.35)] transform-gpu ${
-              isAligned 
-                ? 'opacity-100 scale-100 pointer-events-auto translate-y-0' 
-                : 'opacity-0 scale-90 pointer-events-none translate-y-2'
-            }`}
-            style={{ willChange: 'transform, opacity' }}
-            title="Click to enter ELIXORA 2.0 Home Page"
-          >
-            {/* Outer Cosmic Multi-Tone Aura Bloom */}
-            <div className={`absolute -inset-1 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 opacity-75 blur-md group-hover:opacity-100 group-hover:blur-xl transition-all duration-300 transform-gpu ${isAligned ? 'animate-pulse' : ''}`} />
-
-            {/* Orbiting Satellite Particle around the Enter Button (Desktop only to prevent oval wobble on mobile) */}
-            <div 
-              className="hidden sm:block absolute -inset-2 rounded-full border border-cyan-400/30 border-dotted animate-[spin_7s_linear_infinite] pointer-events-none transform-gpu"
-              style={{ willChange: 'transform' }}
-            >
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-cyan-300 shadow-[0_0_6px_#00f2fe]" />
-              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-1 h-1 rounded-full bg-fuchsia-400 shadow-[0_0_5px_#e879f9]" />
-            </div>
-
-            {/* Vibrant Electric Cosmic Capsule Body with Glass Highlights */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-700 via-fuchsia-600 to-pink-500 border border-pink-300/60 group-hover:border-white/90 backdrop-blur-2xl shadow-[0_6px_24px_rgba(217,70,239,0.5),inset_0_1px_2px_rgba(255,255,255,0.5)] transition-all duration-300 overflow-hidden transform-gpu">
-              {/* Gloss overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-black/25 pointer-events-none" />
-              {/* Top Glass Bevel Glint */}
-              <div className="absolute inset-x-5 top-0 h-[1.5px] bg-gradient-to-r from-transparent via-white/80 to-transparent" />
-              {/* Shimmer Light Beam on Hover */}
-              <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/35 to-transparent skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-1000 ease-in-out pointer-events-none" />
-            </div>
-
-            {/* Button Content: Luminous Crisp Typography & Icon Capsule */}
-            <div className="relative z-10 flex items-center gap-2.5 sm:gap-3">
-              <span
-                ref={enterBtnTextRef}
-                data-text="ENTER"
-                className="font-outfit font-black text-xs sm:text-xs tracking-[0.24em] sm:tracking-[0.25em] uppercase text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] drop-shadow-[0_0_10px_rgba(255,255,255,0.7)] ml-0.5 inline-block min-w-[56px] sm:min-w-[60px] text-center tabular-nums"
-              >
-                ENTER
-              </span>
-
-              {/* Glowing Arrow Capsule */}
-              <div className="w-5.5 h-5.5 sm:w-6 sm:h-6 rounded-full bg-white/20 border border-white/60 group-hover:border-white group-hover:bg-white flex items-center justify-center transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.4)]">
-                <ArrowRight className="w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 text-white group-hover:text-purple-900 group-hover:translate-x-0.5 transition-all duration-300" />
-              </div>
-            </div>
-          </button>
+        <div className="flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-500/20 backdrop-blur-md text-cyan-300 font-mono text-[9px] sm:text-[10.5px] tracking-[0.25em] sm:tracking-[0.3em] uppercase transition-all duration-300">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
+          <span>{isAligned ? 'ORBITAL SYNC COMPLETE · ENTERING' : 'SYNCHRONIZING CELESTIAL TELEMETRY'}</span>
         </div>
       </footer>
     </div>
