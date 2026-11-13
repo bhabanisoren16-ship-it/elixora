@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { scrambleText } from './scrambleText';
+import { LAYERS, Clouds } from './CelestialCurtain';
 
 /**
  * Celestial Telemetry Refresh Page for ELIXORA 2.0
@@ -111,12 +112,14 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         duration: entranceDuration,
         ease: 'expo.out',
         stagger: entranceStagger,
+        force3D: true,
       });
 
       gsap.from('.loader-disc', {
         scale: 0,
         duration: entranceDuration,
         ease: 'back.out(1.6)',
+        force3D: true,
       });
 
       gsap.from('.loader-header', {
@@ -124,6 +127,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         opacity: 0,
         duration: entranceDuration * 0.8,
         ease: 'power3.out',
+        force3D: true,
       });
 
       gsap.from('.loader-footer', {
@@ -131,31 +135,35 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         opacity: 0,
         duration: entranceDuration * 0.8,
         ease: 'power3.out',
+        force3D: true,
       });
     }, containerRef);
 
     const updateLoader = (now) => {
       const elapsed = now - startTime;
-      currentPercent = Math.min(100, (elapsed / totalMs) * 100);
+      const rawT = Math.min(1, elapsed / totalMs);
 
-      // Circular gauge update
+      // Organic ease-out deceleration curve for butter-smooth numbers and planetary alignment
+      const easeT = 1 - Math.pow(1 - rawT, 2.4);
+      currentPercent = Math.min(100, easeT * 100);
+
+      // 1. Circular gauge update
       if (progressCircleRef.current) {
         const offset = 307.9 * (1 - currentPercent / 100);
         progressCircleRef.current.style.strokeDashoffset = String(offset);
       }
 
-      // Format tabular count (000 - 100) directly in DOM
+      // 2. Format tabular count (000 - 100) directly in DOM
       if (countRef.current) {
         countRef.current.textContent = String(Math.floor(currentPercent)).padStart(3, '0');
       }
 
-      // Update planetary alignment rotation & laser alignment trajectory
-      const normProgress = currentPercent / 100;
+      // 3. Update planetary alignment rotation & laser alignment trajectory
       const pts = ['50,50'];
       const thresholds = [0.34, 0.67, 1.0];
 
       CELESTIAL_ORBS.forEach((orb, idx) => {
-        const q = Math.min(1, normProgress / thresholds[orb.i]);
+        const q = Math.min(1, easeT / thresholds[orb.i]);
         const angle = orb.a0 * Math.pow(1 - q, 3);
         const rad = (angle * Math.PI) / 180;
 
@@ -176,7 +184,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             gsap.fromTo(
               lockEl,
               { scale: 0.6, opacity: 1 },
-              { scale: 2.8, opacity: 0, duration: Math.max(0.4, Math.min(0.7, duration * 0.45)), ease: 'expo.out' }
+              { scale: 2.8, opacity: 0, duration: 0.5, ease: 'expo.out', force3D: true }
             );
           }
         }
@@ -195,10 +203,16 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         }
       }
 
-      if (currentPercent < 100) {
+      if (rawT < 1) {
         animId = requestAnimationFrame(updateLoader);
       } else {
-        // Conjunction achieved! Trigger automated exit
+        // Conjunction achieved! Align planets at top and trigger smooth curtain reveal
+        if (progressCircleRef.current) {
+          progressCircleRef.current.style.strokeDashoffset = '0';
+        }
+        if (countRef.current) {
+          countRef.current.textContent = '100';
+        }
         if (statusRef.current) {
           scrambleText(statusRef.current, REFRESH_STATUSES[3], { duration: 0.25 });
         }
@@ -206,12 +220,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           gsap.fromTo(
             flareRef.current,
             { scale: 0.8, opacity: 1 },
-            { scale: 2.6, opacity: 0, duration: 0.6, ease: 'expo.out' }
+            { scale: 2.6, opacity: 0, duration: 0.5, ease: 'expo.out', force3D: true }
           );
         }
-        setTimeout(() => {
-          triggerExit();
-        }, 220);
+        // Seamlessly trigger the curtain reveal without any intermediate flicker
+        triggerCurtainReveal();
       }
     };
 
@@ -219,8 +232,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
     // Guaranteed safety fallback: automatically trigger exit even if RAF stalls
     const safetyTimer = setTimeout(() => {
-      triggerExit();
-    }, (duration + 0.4) * 1000);
+      triggerCurtainReveal();
+    }, (duration + 1.2) * 1000);
 
     return () => {
       cancelAnimationFrame(animId);
@@ -229,46 +242,90 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
     };
   }, [duration]);
 
-  const triggerExit = () => {
+  const triggerCurtainReveal = () => {
     if (isExitedRef.current) return;
     isExitedRef.current = true;
     setIsExiting(true);
 
-    const exitDuration = Math.max(0.3, Math.min(0.45, duration * 0.3));
-    if (flareRef.current) {
-      gsap.fromTo(
-        flareRef.current,
-        { scale: 0.9, opacity: 1 },
-        { scale: 2.6, opacity: 0, duration: exitDuration * 1.5, ease: 'expo.out' }
-      );
-    }
+    const curtainDuration = 0.85;
+    const stagger = 0.035;
 
-    gsap.timeline({
+    const tl = gsap.timeline({
       onComplete: () => {
         onCompleteRef.current?.();
       },
-    })
-      .to('.loader-ring', { scale: 1.8, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
-      .to('.loader-disc', { scale: 0.6, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
-      .to('.loader-fade', { opacity: 0, duration: exitDuration * 0.8 }, 0)
-      .to(containerRef.current, { opacity: 0, duration: exitDuration }, exitDuration * 0.2);
+    });
+
+    // 1. Center orbital stage scales down and dissolves into starlight
+    tl.to(
+      '.loader-center-stage',
+      { scale: 0.9, opacity: 0, duration: 0.35, ease: 'power2.in', force3D: true },
+      0
+    )
+    // 2. Header and background fade out gracefully into the lifting curtain
+    .to(
+      '.loader-fade-ui',
+      { opacity: 0, duration: 0.28, ease: 'power2.in', force3D: true },
+      0
+    )
+    .to(
+      '.loader-bg-pane',
+      { opacity: 0, duration: 0.38, ease: 'power2.in', force3D: true },
+      0.02
+    )
+    // 3. Layered Pure Black Celestial Curtain banks sweep swiftly and smoothly upward
+    .to(
+      '.curtain-layer',
+      {
+        yPercent: -100,
+        duration: curtainDuration,
+        ease: 'power3.inOut',
+        stagger: stagger,
+        force3D: true,
+      },
+      0.04
+    );
   };
 
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden transition-all duration-700 font-outfit ${
-        isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
+      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden font-outfit ${
+        isExiting ? 'pointer-events-none' : 'pointer-events-auto'
       }`}
       style={{
-        backgroundColor: '#040508',
-        backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(26, 14, 56, 0.75) 0%, rgba(10, 8, 26, 0.96) 55%, #040508 100%)',
+        backgroundColor: 'transparent',
       }}
     >
       {/* =========================================================================
+          0. 5 THEMED PURE BLACK CELESTIAL CURTAIN BANKS (Layered cloud wipe reveal)
+         ========================================================================= */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {LAYERS.map((l, k) => (
+          <div
+            key={k}
+            className="curtain-layer absolute top-0 left-0 w-full h-[300vh] will-change-transform pointer-events-none"
+            style={{ transform: 'translateY(-33.333%)' }}
+          >
+            {/* Top Cloud Skyline Bank */}
+            <Clouds l={l} />
+
+            {/* Middle Solid Section */}
+            <div
+              className="h-[calc(100vh+4px)] -my-[2px]"
+              style={{ background: l.color }}
+            />
+
+            {/* Bottom Trailing Edge Cloud Bank (Flips to lift off the screen) */}
+            <Clouds l={l} flip />
+          </div>
+        ))}
+      </div>
+
+      {/* =========================================================================
           1. RADIAL CELESTIAL NEBULA & STARLIGHT BACKGROUND
          ========================================================================= */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="loader-bg-pane absolute inset-0 pointer-events-none z-10 will-change-transform">
         {/* Deep Cosmic Ambient Glowing Auroras in Theme Cyan & Cyber Violet */}
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-cyan-500/15 blur-[120px]" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-purple-600/20 blur-[120px]" />
@@ -289,7 +346,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       {/* =========================================================================
           2. TOP HEADER: CELESTIAL BRANDING (Original Size + Cybernetic Auto-Scramble)
          ========================================================================= */}
-      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase select-none">
+      <header className="loader-fade-ui loader-header w-full max-w-6xl flex items-center justify-between relative z-20 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase select-none">
         <div 
           className="flex items-center gap-2.5 cursor-pointer group"
           onClick={() => {
@@ -314,7 +371,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
           3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE
          ========================================================================= */}
       <div
-        className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] transition-transform duration-300 overflow-visible"
+        className="loader-center-stage relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] overflow-visible z-20 will-change-transform"
       >
         {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
         <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
@@ -357,7 +414,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             {/* Orbiting Planet Container */}
             <div
               ref={(el) => (orbRefs.current[idx] = el)}
-              className="absolute inset-0 pointer-events-none"
+              className="absolute inset-0 pointer-events-none will-change-transform"
             >
               <div
                 className="absolute left-1/2 top-0"
@@ -450,9 +507,9 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
       </div>
 
       {/* =========================================================================
-          4. BOTTOM STATUS (Hidden for Ultra-Clean Minimalist Refresh)
+          4. BOTTOM STATUS TELEMETRY (Seamless & Minimalist)
          ========================================================================= */}
-      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-10 text-center pb-2 sm:pb-4 min-h-[32px]">
+      <footer className="loader-fade-ui loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-20 text-center pb-2 sm:pb-4 min-h-[32px]">
         {/* Hidden status ref for safe script reference */}
         <span ref={statusRef} className="hidden" aria-hidden="true" />
       </footer>

@@ -280,10 +280,11 @@ export default function App() {
     setShowCurtain(true);
   };
 
-  // When the Refresh Page finishes its telemetry synchronization:
+  // When the Refresh Page finishes its orbital conjunction and curtain reveal:
   const handleRefreshComplete = () => {
     setShowRefreshPage(false);
-    setShowCurtain(true);
+    setShowCurtain(false);
+    refreshInnovisionScroll();
   };
 
   return (

@@ -60,7 +60,7 @@ function cloudBank(seed) {
  * with deep charcoal ink outlines (#141414, #1a1a1a, #202020).
  * Exclusively black color tones without purple, violet, or indigo tint.
  */
-const LAYERS = [
+export const LAYERS = [
   { color: '#000000', ink: '#141414', ...cloudBank(11) }, // Layer 0: Pure Pitch Black
   { color: '#050505', ink: '#181818', ...cloudBank(23) }, // Layer 1: Obsidian Black
   { color: '#090909', ink: '#1e1e1e', ...cloudBank(37) }, // Layer 2: Deep Charcoal Black
@@ -68,7 +68,7 @@ const LAYERS = [
   { color: '#040404', ink: '#191919', ...cloudBank(59) }, // Layer 4 (Front): Jet Black Nexus
 ];
 
-function Clouds({ l, flip }) {
+export function Clouds({ l, flip }) {
   return (
     <svg
       viewBox="0 0 2000 1125"
@@ -109,9 +109,9 @@ export default function CelestialCurtain({
     };
 
     // Safety timeout scaled to curtain duration
-    const delay = 0.08;
+    const delay = 0.01;
     const stagger = 0.035;
-    const totalExpectedMs = Math.round((delay + duration + 5 * stagger + 0.2) * 1000);
+    const totalExpectedMs = Math.round((delay + duration + 5 * stagger + 0.15) * 1000);
     const safetyTimer = setTimeout(() => {
       completeOnce();
     }, totalExpectedMs);
