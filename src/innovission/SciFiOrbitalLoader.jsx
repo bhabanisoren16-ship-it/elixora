@@ -60,7 +60,7 @@ const REFRESH_STATUSES = [
   'CELESTIAL REFRESH COMPLETE · OPENING HOMEPAGE',
 ];
 
-export default function SciFiOrbitalLoader({ onComplete, duration = 2.4 }) {
+export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
   const containerRef = useRef(null);
   const statusRef = useRef(null);
   const countRef = useRef(null);
@@ -253,8 +253,8 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 2.4 }) {
     isExitedRef.current = true;
     setIsExiting(true);
 
-    const curtainDuration = 0.85;
-    const stagger = 0.035;
+    const curtainDuration = 0.65;
+    const stagger = 0.025;
 
     const tl = gsap.timeline({
       onComplete: () => {
