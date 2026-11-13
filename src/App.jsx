@@ -301,7 +301,7 @@ export default function App() {
       {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Curtain Reveal - Automated, Ultra-Smooth, NO enter button) */}
       {showRefreshPage && (
         <SciFiOrbitalLoader
-          duration={1.3}
+          duration={2.4}
           onComplete={handleRefreshComplete}
         />
       )}
