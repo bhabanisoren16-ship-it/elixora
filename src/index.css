@@ -1,5 +1,5 @@
 /* High-Contrast Luxury Modern/Didone Serif matching the reference INNOVISION artwork */
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,700..900;1,6..96,700..900&family=Cinzel:wght@700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Italiana&family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,700..900;1,6..96,700..900&family=Cinzel:wght@700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Italiana&family=Prata&family=GFS+Didot&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,6 +7,13 @@
 
 .font-innovision-serif {
   font-family: 'DM Serif Display', 'Bodoni Moda', 'Playfair Display', 'Cinzel', 'Italiana', 'Prata', 'Didot', Georgia, serif;
+  font-style: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-didot {
+  font-family: 'Didot', 'GFS Didot', 'Bodoni Moda', 'Playfair Display', Georgia, serif;
   font-style: normal;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
