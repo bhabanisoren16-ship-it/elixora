@@ -306,12 +306,12 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
       { display: 'none' },
       exitFadeDuration
     )
-    // 4. Reset & sweep the 5 colorful celestial curtain layers upward from front to back
+    // 4. Reset & sweep the 5 colorful celestial curtain layers downward (reversed effect for refresh only)
     .set('.curtain-layer', { yPercent: -33.333, force3D: true }, 0)
     .to(
       '.curtain-layer',
       {
-        yPercent: -100,
+        yPercent: 35,
         duration: curtainDuration,
         ease: 'power3.inOut',
         stagger: {
