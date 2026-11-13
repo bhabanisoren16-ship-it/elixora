@@ -73,12 +73,16 @@ function detectInitialLoadState() {
 
   const hasEnteredHomepage = sessionStorage.getItem('elixora_entered_homepage') === 'true';
 
-  // 1. REFRESH PAGE: Only if the user has ALREADY entered the homepage in this session and then reloads
-  if (hasEnteredHomepage && isBrowserReload) {
-    return { isRefresh: true, isHomeLoading: false };
+  // 1. WHEN PAGE IS REFRESHED (or user has already entered in this session):
+  // Open the website home page automatically and immediately without any loading hurdle!
+  if (isBrowserReload || hasEnteredHomepage) {
+    try {
+      sessionStorage.setItem('elixora_entered_homepage', 'true');
+    } catch (e) { }
+    return { isRefresh: false, isHomeLoading: false };
   }
 
-  // 2. WHEN USER OPENS WEBSITE: ALWAYS show Home Loading Page and STAY STUCK on it until user clicks ENTER HOME PAGE!
+  // 2. FIRST VISIT ONLY (fresh tab/session): Show Home Loading Page and wait until user clicks ENTER HOME PAGE
   return { isRefresh: false, isHomeLoading: true };
 }
 

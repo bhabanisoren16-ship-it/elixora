@@ -193,7 +193,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         animId = requestAnimationFrame(updateLoader);
       } else {
         // Conjunction achieved! Trigger automated exit
-        setIsReady(true);
         if (statusRef.current) {
           scrambleText(statusRef.current, REFRESH_STATUSES[3], { duration: 0.25 });
         }
