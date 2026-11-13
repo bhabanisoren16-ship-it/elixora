@@ -23,7 +23,7 @@ const CELESTIAL_ORBS = [
     border: '1px dotted rgba(0, 242, 254, 0.55)', 
     lockBorder: 'border-cyan-400 shadow-[0_0_18px_#00f2fe]', 
     i: 2, 
-    a0: 236, 
+    a0: -480, // 1.33 full clockwise rotations from 240° (bottom-left) to 0° (top meridian)
     size: 12, 
     img: 'planet-tide.webp', 
     name: 'TIDAL WORLD',
@@ -34,7 +34,7 @@ const CELESTIAL_ORBS = [
     border: '1px dashed rgba(168, 85, 247, 0.55)', 
     lockBorder: 'border-purple-400 shadow-[0_0_18px_#a855f7]', 
     i: 1, 
-    a0: -148, 
+    a0: -600, // 1.67 full clockwise rotations from 120° (bottom-right) to 0° (top meridian)
     size: 13, 
     img: 'planet-earth.webp', 
     name: 'TERRA SPHERE',
@@ -45,13 +45,19 @@ const CELESTIAL_ORBS = [
     border: '1px solid rgba(236, 72, 153, 0.55)', 
     lockBorder: 'border-pink-400 shadow-[0_0_18px_#ec4899]', 
     i: 0, 
-    a0: 128, 
+    a0: -900, // 2.50 full clockwise rotations from 180° (bottom) to 0° (top meridian)
     size: 16, 
     img: 'planet-mars.webp', 
     name: 'ASTRAL MARS',
     radius: 24 
   },
 ];
+
+// Perlin's Smootherstep: zero 1st and 2nd derivatives at ends for buttery-smooth acceleration and deceleration
+const smootherstep = (t) => {
+  const x = Math.max(0, Math.min(1, t));
+  return x * x * x * (x * (x * 6 - 15) + 10);
+};
 
 const REFRESH_STATUSES = [
   'PAGE RELOAD DETECTED · INITIATING CELESTIAL REFRESH',
@@ -60,7 +66,7 @@ const REFRESH_STATUSES = [
   'CELESTIAL REFRESH COMPLETE · OPENING HOMEPAGE',
 ];
 
-export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
+export default function SciFiOrbitalLoader({ onComplete, duration = 1.3 }) {
   const containerRef = useRef(null);
   const statusRef = useRef(null);
   const countRef = useRef(null);
@@ -142,11 +148,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
 
     const updateLoader = (now) => {
       const elapsed = now - startTime;
-      const rawT = Math.min(1, elapsed / totalMs);
-
-      // Organic ease-out deceleration curve for butter-smooth numbers and planetary alignment
-      const easeT = 1 - Math.pow(1 - rawT, 2.4);
-      currentPercent = Math.min(100, easeT * 100);
+      currentPercent = Math.min(100, (elapsed / totalMs) * 100);
 
       // 1. Circular gauge update
       if (progressCircleRef.current) {
@@ -159,23 +161,26 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         countRef.current.textContent = String(Math.floor(currentPercent)).padStart(3, '0');
       }
 
-      // 3. Update planetary alignment rotation & laser alignment trajectory
-      const pts = ['50,50'];
-      const thresholds = [0.34, 0.67, 1.0];
+      // 3. Update planetary alignment rotation & laser alignment trajectory with Perlin smootherstep
+      const normProgress = currentPercent / 100;
+      // Staggered orbital locks: Mars glides until 88%, Earth until 94%, Tidal Moon until 100%
+      const thresholds = [0.88, 0.94, 1.0];
+      const orbCoords = [];
 
       CELESTIAL_ORBS.forEach((orb, idx) => {
-        const q = Math.min(1, easeT / thresholds[orb.i]);
-        const angle = orb.a0 * Math.pow(1 - q, 3);
+        const q = Math.min(1, normProgress / thresholds[orb.i]);
+        const ease = smootherstep(q);
+        const angle = orb.a0 * (1 - ease);
         const rad = (angle * Math.PI) / 180;
 
         const orbEl = orbRefs.current[idx];
         if (orbEl) {
-          orbEl.style.transform = `rotate(${angle}deg) translateZ(0)`;
+          orbEl.style.transform = `rotate(${angle.toFixed(3)}deg) translateZ(0)`;
         }
 
         const px = (50 + orb.radius * Math.sin(rad)).toFixed(2);
         const py = (50 - orb.radius * Math.cos(rad)).toFixed(2);
-        pts.push(`${px},${py}`);
+        orbCoords[orb.i] = `${px},${py}`;
 
         // Shockwave lock animation when planet aligns at top
         if (q >= 1 && !doneLocks[orb.i]) {
@@ -185,14 +190,15 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
             gsap.fromTo(
               lockEl,
               { scale: 0.6, opacity: 1 },
-              { scale: 2.8, opacity: 0, duration: 0.5, ease: 'expo.out', force3D: true }
+              { scale: 2.8, opacity: 0, duration: Math.max(0.4, Math.min(0.7, duration * 0.45)), ease: 'expo.out', force3D: true }
             );
           }
         }
       });
 
-      if (polylineRef.current) {
-        polylineRef.current.setAttribute('points', pts.join(' '));
+      // Strict radial order from center outward: Center -> Mars (i:0) -> Earth (i:1) -> Tidal (i:2)
+      if (polylineRef.current && orbCoords[0] && orbCoords[1] && orbCoords[2]) {
+        polylineRef.current.setAttribute('points', `50,50 ${orbCoords[0]} ${orbCoords[1]} ${orbCoords[2]}`);
       }
 
       // Status text updates with ScrambleText
@@ -204,7 +210,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         }
       }
 
-      if (rawT < 1) {
+      if (currentPercent < 99.5) {
         animId = requestAnimationFrame(updateLoader);
       } else {
         // Conjunction achieved! Align planets at top and trigger smooth curtain reveal
@@ -213,6 +219,13 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
         }
         if (countRef.current) {
           countRef.current.textContent = '100';
+        }
+        CELESTIAL_ORBS.forEach((_, idx) => {
+          const orbEl = orbRefs.current[idx];
+          if (orbEl) orbEl.style.transform = 'rotate(0deg) translateZ(0)';
+        });
+        if (polylineRef.current) {
+          polylineRef.current.setAttribute('points', '50,50 50,26 50,14 50,0');
         }
         if (statusRef.current) {
           scrambleText(statusRef.current, REFRESH_STATUSES[3], { duration: 0.25 });

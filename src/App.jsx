@@ -298,10 +298,10 @@ export default function App() {
         />
       )}
 
-      {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Telemetry Sync - Automated, NO enter button) */}
+      {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Curtain Reveal - Automated, Ultra-Smooth, NO enter button) */}
       {showRefreshPage && (
         <SciFiOrbitalLoader
-          duration={1.2}
+          duration={1.3}
           onComplete={handleRefreshComplete}
         />
       )}
