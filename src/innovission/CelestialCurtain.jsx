@@ -2,8 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { LAYERS } from './curtainLayers';
 
-export { LAYERS };
-
 export function Clouds({ l, flip }) {
   return (
     <svg
