@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { scrambleText } from './scrambleText';
-import { LAYERS, Clouds } from './CelestialCurtain';
+import { LAYERS } from './curtainLayers';
+import { Clouds } from './CelestialCurtain';
 
 /**
  * Celestial Telemetry Refresh Page for ELIXORA 2.0
