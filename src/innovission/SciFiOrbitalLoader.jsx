@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { soundController } from '../utils/audio';
 import { scrambleText } from './scrambleText';
 
 /**
@@ -13,7 +12,7 @@ import { scrambleText } from './scrambleText';
  * 4. Real-time laser vector line tracking conjunction angles
  * 5. Starfield core with high-precision tabular numeric counter (000% -> 100%)
  * 6. Dynamic ScrambleText celestial status telemetry
- * 7. Prominent ENTER button upon conjunction + optional auto-advance fallback (never gets permanently stuck)
+ * 7. STRICTLY NO ENTER BUTTON: Automatically synchronizes in ~1.3s and seamlessly opens the refreshed homepage
  */
 
 const CELESTIAL_ORBS = [
@@ -59,7 +58,7 @@ const REFRESH_STATUSES = [
   'CELESTIAL REFRESH COMPLETE · OPENING HOMEPAGE',
 ];
 
-export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
+export default function SciFiOrbitalLoader({ onComplete, duration = 1.2 }) {
   const containerRef = useRef(null);
   const statusRef = useRef(null);
   const countRef = useRef(null);
@@ -69,52 +68,15 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
   const orbRefs = useRef([]);
   const lockRefs = useRef([]);
   const gatewayTextRef = useRef(null);
-  const [isAligned, setIsAligned] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
-  const isExitedRef = useRef(false);
-  const onCompleteRef = useRef(onComplete);
 
-  useEffect(() => {
-    onCompleteRef.current = onComplete;
-  }, [onComplete]);
-
-  // Smooth automatic exit timeline transitioning into the website
-  const triggerExit = () => {
-    if (isExitedRef.current) return;
-    isExitedRef.current = true;
-    setIsExiting(true);
-
-    const exitDuration = 0.35;
-    if (flareRef.current) {
-      gsap.fromTo(
-        flareRef.current,
-        { scale: 0.9, opacity: 1 },
-        { scale: 2.6, opacity: 0, duration: exitDuration * 1.5, ease: 'expo.out' }
-      );
-    }
-
-    if (containerRef.current) {
-      gsap.to(containerRef.current, {
-        opacity: 0,
-        scale: 1.05,
-        duration: exitDuration,
-        ease: 'power2.inOut',
-        onComplete: () => {
-          onCompleteRef.current?.();
-        },
-      });
-    } else {
-      onCompleteRef.current?.();
-    }
-  };
-
-  // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY when opening the page
+  // Automatically trigger cybernetic scramble effect on ELIXORA GATEWAY
   useEffect(() => {
     const scrambleTimer = setTimeout(() => {
       if (gatewayTextRef.current) {
-        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.8 });
+        scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 2.2 });
       }
-    }, 150);
+    }, 100);
 
     return () => {
       clearTimeout(scrambleTimer);
@@ -129,11 +91,11 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     const startTime = performance.now();
     const totalMs = duration * 1000;
     let animId;
-    let autoExitTimer;
+    let lastStatusIdx = 0;
     const doneLocks = [false, false, false];
 
-    const entranceDuration = Math.max(0.2, Math.min(0.3, duration * 0.25));
-    const entranceStagger = 0.02;
+    const entranceDuration = Math.max(0.22, Math.min(0.32, duration * 0.25));
+    const entranceStagger = Math.max(0.015, Math.min(0.03, duration * 0.025));
 
     // GSAP Entrance
     const ctx = gsap.context(() => {
@@ -167,8 +129,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     }, containerRef);
 
     const updateLoader = (now) => {
-      if (isExitedRef.current) return;
-
       const elapsed = now - startTime;
       currentPercent = Math.min(100, (elapsed / totalMs) * 100);
 
@@ -210,7 +170,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
             gsap.fromTo(
               lockEl,
               { scale: 0.6, opacity: 1 },
-              { scale: 2.8, opacity: 0, duration: 0.45, ease: 'expo.out' }
+              { scale: 2.8, opacity: 0, duration: Math.max(0.4, Math.min(0.7, duration * 0.45)), ease: 'expo.out' }
             );
           }
         }
@@ -220,60 +180,72 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
         polylineRef.current.setAttribute('points', pts.join(' '));
       }
 
-      if (currentPercent < 99.5) {
+      // Status text updates with ScrambleText
+      const statusIdx = Math.min(3, Math.floor(currentPercent / 25));
+      if (statusIdx !== lastStatusIdx) {
+        lastStatusIdx = statusIdx;
+        if (statusRef.current) {
+          scrambleText(statusRef.current, REFRESH_STATUSES[statusIdx], { duration: Math.min(0.24, duration * 0.18) });
+        }
+      }
+
+      if (currentPercent < 100) {
         animId = requestAnimationFrame(updateLoader);
       } else {
-        // Conjunction achieved! Align at top and trigger automatic exit
-        currentPercent = 100;
-        if (progressCircleRef.current) {
-          progressCircleRef.current.style.strokeDashoffset = '0';
+        // Conjunction achieved! Trigger automated exit
+        setIsReady(true);
+        if (statusRef.current) {
+          scrambleText(statusRef.current, REFRESH_STATUSES[3], { duration: 0.25 });
         }
-        if (countRef.current) {
-          countRef.current.textContent = '100';
-        }
-        CELESTIAL_ORBS.forEach((_, idx) => {
-          const orbEl = orbRefs.current[idx];
-          if (orbEl) orbEl.style.transform = 'rotate(0deg) translateZ(0)';
-        });
-        if (polylineRef.current) {
-          polylineRef.current.setAttribute('points', '50,50 50,26 50,14 50,0');
-        }
-
-        setIsAligned(true);
         if (flareRef.current) {
           gsap.fromTo(
             flareRef.current,
             { scale: 0.8, opacity: 1 },
-            { scale: 2.6, opacity: 0, duration: 0.5, ease: 'expo.out' }
+            { scale: 2.6, opacity: 0, duration: 0.6, ease: 'expo.out' }
           );
         }
-
-        // On page refresh: Automatically open website without showing any Enter button
-        autoExitTimer = setTimeout(() => {
+        setTimeout(() => {
           triggerExit();
-        }, 120);
+        }, 220);
       }
     };
 
     animId = requestAnimationFrame(updateLoader);
 
-    // Guaranteed safety fallback: automatically open website even if RAF stalls
-    const safetyTimer = setTimeout(() => {
-      triggerExit();
-    }, (duration + 0.35) * 1000);
-
     return () => {
       cancelAnimationFrame(animId);
-      clearTimeout(safetyTimer);
-      clearTimeout(autoExitTimer);
       ctx.revert();
     };
   }, [duration]);
 
+  const triggerExit = () => {
+    if (isExiting) return;
+    setIsExiting(true);
+
+    const exitDuration = Math.max(0.3, Math.min(0.45, duration * 0.3));
+    if (flareRef.current) {
+      gsap.fromTo(
+        flareRef.current,
+        { scale: 0.9, opacity: 1 },
+        { scale: 2.6, opacity: 0, duration: exitDuration * 1.5, ease: 'expo.out' }
+      );
+    }
+
+    gsap.timeline({
+      onComplete: () => {
+        if (onComplete) onComplete();
+      },
+    })
+      .to('.loader-ring', { scale: 1.8, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
+      .to('.loader-disc', { scale: 0.6, opacity: 0, duration: exitDuration, ease: 'power2.in' }, 0)
+      .to('.loader-fade', { opacity: 0, duration: exitDuration * 0.8 }, 0)
+      .to(containerRef.current, { opacity: 0, duration: exitDuration }, exitDuration * 0.2);
+  };
+
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-3.5 sm:p-6 pt-3 sm:pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pb-4 select-none overflow-hidden transition-all duration-700 font-outfit ${
+      className={`fixed inset-0 z-[120] text-white flex flex-col items-center justify-between p-6 sm:p-10 select-none overflow-hidden transition-all duration-700 font-outfit ${
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       style={{
@@ -303,28 +275,23 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
       </div>
 
       {/* =========================================================================
-          2. TOP HEADER: CELESTIAL BRANDING (Centered on mobile, exact size)
+          2. TOP HEADER: CELESTIAL BRANDING (Original Size + Cybernetic Auto-Scramble)
          ========================================================================= */}
-      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-center sm:justify-between relative z-10 font-mono text-[10.5px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase select-none flex-shrink-0 pt-1 sm:pt-0">
+      <header className="loader-fade loader-header w-full max-w-6xl flex items-center justify-between relative z-10 font-mono text-[11px] sm:text-xs tracking-[0.3em] uppercase select-none">
         <div 
-          className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group"
           onClick={() => {
             if (gatewayTextRef.current) {
               scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.5 });
             }
           }}
-          onMouseEnter={() => {
-            if (gatewayTextRef.current) {
-              scrambleText(gatewayTextRef.current, 'ELIXORA GATEWAY', { duration: 1.2 });
-            }
-          }}
-          title="ELIXORA GATEWAY · Click or hover to scramble"
+          title="ELIXORA GATEWAY · Click to scramble"
         >
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
           <span
             ref={gatewayTextRef}
             data-text="ELIXORA GATEWAY"
-            className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 bg-[length:200%_auto] animate-shimmer tracking-[0.22em] sm:tracking-[0.25em] whitespace-nowrap transition-all duration-300 group-hover:brightness-125"
+            className="font-outfit font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-300 to-purple-400 tracking-[0.25em] whitespace-nowrap transition-all duration-300 group-hover:brightness-125"
           >
             ELIXORA GATEWAY
           </span>
@@ -332,159 +299,150 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
       </header>
 
       {/* =========================================================================
-          3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE (Properly sized for mobile)
+          3. CENTRAL 3-ORBITAL PLANETARY CONJUNCTION STAGE
          ========================================================================= */}
-      <div className="flex-1 min-h-0 w-full flex items-center justify-center relative py-1 sm:py-2">
-        <div
-          className="relative flex items-center justify-center w-[min(68vw,36vh,260px)] h-[min(68vw,36vh,260px)] sm:w-[min(46vmin,42vh,380px)] sm:h-[min(46vmin,42vh,380px)] transition-transform duration-300 overflow-visible"
+      <div
+        className="relative my-auto flex items-center justify-center w-[64vw] h-[64vw] max-w-[250px] max-h-[250px] sm:w-[480px] sm:h-[480px] sm:max-w-[56vmin] sm:max-h-[56vmin] transition-transform duration-300 overflow-visible"
+      >
+        {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
+        <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
+        <div className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none" />
+
+        {/* Dynamic Multi-Color Laser Conjunction Trajectory */}
+        <svg
+          viewBox="0 0 100 100"
+          className="loader-fade absolute inset-0 w-full h-full overflow-visible pointer-events-none z-10"
         >
-          {/* Outer Circular Radial Calibration Ticks with Cyan-Purple Aura */}
-          <div className="loader-ring absolute inset-[-6%] rounded-full bg-[repeating-conic-gradient(from_-0.25deg,rgba(0,242,254,0.35)_0deg_0.5deg,transparent_0.5deg_3.6deg)] [mask-image:radial-gradient(circle_closest-side,transparent_93%,#000_94%,#000_98%,transparent_99%)] pointer-events-none drop-shadow-[0_0_12px_rgba(0,242,254,0.3)]" />
-          <div className="loader-ring absolute inset-[-3%] rounded-full border border-purple-500/20 pointer-events-none" />
-
-          {/* Dynamic Multi-Color Laser Conjunction Trajectory */}
-          <svg
-            viewBox="0 0 100 100"
-            className="loader-fade absolute inset-0 w-full h-full overflow-visible pointer-events-none z-10"
-          >
-            <defs>
-              <linearGradient id="laserGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-                <stop offset="0%" stopColor="#ec4899" stopOpacity="0.95" />
-                <stop offset="50%" stopColor="#a855f7" stopOpacity="0.95" />
-                <stop offset="100%" stopColor="#00f2fe" stopOpacity="0.95" />
-              </linearGradient>
-            </defs>
-            <polyline
-              ref={polylineRef}
-              points="50,50 50,26 50,14 50,0"
-              fill="none"
-              stroke="url(#laserGrad)"
-              strokeWidth="0.8"
-              strokeLinecap="round"
-              strokeDasharray="1.2 1.8"
-              className="drop-shadow-[0_0_10px_#00f2fe]"
-            />
-          </svg>
-
-          {/* 3 Concentric Planetary Alignment Rings */}
-          {CELESTIAL_ORBS.map((orb, idx) => (
-            <div
-              key={orb.i}
-              className="loader-ring absolute rounded-full"
-              style={{
-                inset: orb.inset,
-                border: orb.border,
-              }}
-            >
-              {/* Orbiting Planet Container */}
-              <div
-                ref={(el) => (orbRefs.current[idx] = el)}
-                className="absolute inset-0 pointer-events-none"
-              >
-                <div
-                  className="absolute left-1/2 top-0"
-                  style={{
-                    width: `${orb.size}%`,
-                    height: `${orb.size}%`,
-                    margin: `-${orb.size / 2}% 0 0 -${orb.size / 2}%`,
-                  }}
-                >
-                  {/* Lock Shockwave Ring */}
-                  <span
-                    ref={(el) => (lockRefs.current[idx] = el)}
-                    className={`absolute inset-[-40%] rounded-full border-2 ${orb.lockBorder} opacity-0 pointer-events-none`}
-                  />
-                  <img
-                    src={`/assets/${orb.img}`}
-                    alt={orb.name}
-                    className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)]"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* SVG Circular Loading Progress Ring */}
-          <svg
-            viewBox="0 0 100 100"
-            className="loader-fade absolute inset-[30%] w-[40%] h-[40%] overflow-visible pointer-events-none z-20"
-          >
-            <defs>
-              <linearGradient id="refreshProgressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00f2fe" />
-                <stop offset="50%" stopColor="#a855f7" />
-                <stop offset="100%" stopColor="#8b5cf6" />
-              </linearGradient>
-            </defs>
-            <circle
-              cx="50"
-              cy="50"
-              r="49"
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.08)"
-              strokeWidth="1.5"
-            />
-            <circle
-              ref={progressCircleRef}
-              cx="50"
-              cy="50"
-              r="49"
-              fill="none"
-              stroke="url(#refreshProgressGrad)"
-              strokeWidth="2.4"
-              strokeDasharray="307.9"
-              strokeDashoffset="307.9"
-              transform="rotate(-90 50 50)"
-              className="drop-shadow-[0_0_10px_rgba(168,85,247,0.7)]"
-            />
-          </svg>
-
-          {/* Flare Shockwave on Conjunction Completion */}
-          <span
-            ref={flareRef}
-            className="absolute inset-[24%] rounded-full border-2 border-violet-400 shadow-[0_0_30px_#8b5cf6] opacity-0 pointer-events-none z-30"
+          <defs>
+            <linearGradient id="laserGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#ec4899" stopOpacity="0.95" />
+              <stop offset="50%" stopColor="#a855f7" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#00f2fe" stopOpacity="0.95" />
+            </linearGradient>
+          </defs>
+          <polyline
+            ref={polylineRef}
+            points="50,50 50,26 50,14 50,0"
+            fill="none"
+            stroke="url(#laserGrad)"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            strokeDasharray="1.2 1.8"
+            className="drop-shadow-[0_0_10px_#00f2fe]"
           />
+        </svg>
 
-          {/* Center Cosmic Starfield Disc with Live Numeric Counter */}
+        {/* 3 Concentric Planetary Alignment Rings */}
+        {CELESTIAL_ORBS.map((orb, idx) => (
           <div
-            onClick={isAligned ? triggerExit : undefined}
-            className={`loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10 transition-all duration-300 ${
-              isAligned ? 'cursor-pointer hover:scale-105 active:scale-95 ring-2 ring-cyan-400/60 ring-offset-2 ring-offset-transparent' : 'cursor-default'
-            }`}
-            title={isAligned ? 'Opening ELIXORA 2.0' : 'Celestial Conjunction in Progress'}
+            key={orb.i}
+            className="loader-ring absolute rounded-full"
             style={{
-              background: 'radial-gradient(circle at center, #180e38 0%, #0a0718 70%, #040508 100%)',
+              inset: orb.inset,
+              border: orb.border,
             }}
           >
-            <img
-              src="/assets/starfield.svg"
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none mix-blend-screen"
-            />
-            <div className="relative z-10 flex flex-col items-center justify-center text-center">
-              <span
-                ref={countRef}
-                className="font-outfit font-black text-[28px] sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]"
+            {/* Orbiting Planet Container */}
+            <div
+              ref={(el) => (orbRefs.current[idx] = el)}
+              className="absolute inset-0 pointer-events-none"
+            >
+              <div
+                className="absolute left-1/2 top-0"
+                style={{
+                  width: `${orb.size}%`,
+                  height: `${orb.size}%`,
+                  margin: `-${orb.size / 2}% 0 0 -${orb.size / 2}%`,
+                }}
               >
-                000
-              </span>
-              <span className="mt-0.5 sm:mt-1 font-mono text-[8.5px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.35em] text-cyan-300 font-bold uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
-                PERCENT
-              </span>
+                {/* Lock Shockwave Ring */}
+                <span
+                  ref={(el) => (lockRefs.current[idx] = el)}
+                  className={`absolute inset-[-40%] rounded-full border-2 ${orb.lockBorder} opacity-0 pointer-events-none`}
+                />
+                <img
+                  src={`/assets/${orb.img}`}
+                  alt={orb.name}
+                  className="w-full h-full object-contain drop-shadow-[0_0_14px_rgba(168,85,247,0.7)]"
+                />
+              </div>
             </div>
+          </div>
+        ))}
+
+        {/* SVG Circular Loading Progress Ring */}
+        <svg
+          viewBox="0 0 100 100"
+          className="loader-fade absolute inset-[30%] w-[40%] h-[40%] overflow-visible pointer-events-none z-20"
+        >
+          <defs>
+            <linearGradient id="refreshProgressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#00f2fe" />
+              <stop offset="50%" stopColor="#a855f7" />
+              <stop offset="100%" stopColor="#8b5cf6" />
+            </linearGradient>
+          </defs>
+          <circle
+            cx="50"
+            cy="50"
+            r="49"
+            fill="none"
+            stroke="rgba(255, 255, 255, 0.08)"
+            strokeWidth="1.5"
+          />
+          <circle
+            ref={progressCircleRef}
+            cx="50"
+            cy="50"
+            r="49"
+            fill="none"
+            stroke="url(#refreshProgressGrad)"
+            strokeWidth="2.4"
+            strokeDasharray="307.9"
+            strokeDashoffset="307.9"
+            transform="rotate(-90 50 50)"
+            className="drop-shadow-[0_0_10px_rgba(168,85,247,0.7)]"
+          />
+        </svg>
+
+        {/* Flare Shockwave on Conjunction Completion */}
+        <span
+          ref={flareRef}
+          className="absolute inset-[24%] rounded-full border-2 border-violet-400 shadow-[0_0_30px_#8b5cf6] opacity-0 pointer-events-none z-30"
+        />
+
+        {/* Center Cosmic Starfield Disc with Live Numeric Counter */}
+        <div
+          className="loader-disc absolute inset-[33%] rounded-full border border-violet-400/50 overflow-hidden shadow-[0_0_45px_rgba(139,92,246,0.5),0_0_20px_rgba(0,242,254,0.3)] flex flex-col items-center justify-center z-10"
+          style={{
+            background: 'radial-gradient(circle at center, #180e38 0%, #0a0718 70%, #040508 100%)',
+          }}
+        >
+          <img
+            src="/assets/starfield.svg"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-75 pointer-events-none mix-blend-screen"
+          />
+          <div className="relative z-10 flex flex-col items-center justify-center text-center">
+            <span
+              ref={countRef}
+              className="font-outfit font-black text-2xl sm:text-5xl text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-purple-200 tabular-nums leading-none tracking-tight drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]"
+            >
+              000
+            </span>
+            <span className="mt-0.5 sm:mt-1 font-mono text-[8px] sm:text-[10px] tracking-[0.28em] sm:tracking-[0.35em] text-cyan-300 font-bold uppercase drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
+              PERCENT
+            </span>
           </div>
         </div>
       </div>
 
       {/* =========================================================================
-          4. BOTTOM STATUS (Automated Real-Time Telemetry Sync - NO ENTER BUTTON)
+          4. BOTTOM STATUS (Hidden for Ultra-Clean Minimalist Refresh)
          ========================================================================= */}
-      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-20 text-center pb-2.5 sm:pb-3 flex-shrink-0 min-h-[54px] sm:min-h-[56px] transform-gpu">
+      <footer className="loader-fade loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-10 text-center pb-2 sm:pb-4 min-h-[32px]">
+        {/* Hidden status ref for safe script reference */}
         <span ref={statusRef} className="hidden" aria-hidden="true" />
-        <div className="flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/40 border border-cyan-500/20 backdrop-blur-md text-cyan-300 font-mono text-[9px] sm:text-[10.5px] tracking-[0.25em] sm:tracking-[0.3em] uppercase transition-all duration-300">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping shadow-[0_0_8px_#00f2fe]" />
-          <span>{isAligned ? 'ORBITAL SYNC COMPLETE · ENTERING' : 'SYNCHRONIZING CELESTIAL TELEMETRY'}</span>
-        </div>
       </footer>
     </div>
   );

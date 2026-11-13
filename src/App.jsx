@@ -73,12 +73,12 @@ function detectInitialLoadState() {
 
   const hasEnteredHomepage = sessionStorage.getItem('elixora_entered_homepage') === 'true';
 
-  // 1. REFRESH PAGE: On page reload/refresh (or if user already entered), open website automatically without Enter option
-  if (isBrowserReload || hasEnteredHomepage) {
+  // 1. REFRESH PAGE: Only if the user has ALREADY entered the homepage in this session and then reloads
+  if (hasEnteredHomepage && isBrowserReload) {
     return { isRefresh: true, isHomeLoading: false };
   }
 
-  // 2. FIRST VISIT: Always show Home Loading Page and wait until user clicks ENTER HOME PAGE
+  // 2. WHEN USER OPENS WEBSITE: ALWAYS show Home Loading Page and STAY STUCK on it until user clicks ENTER HOME PAGE!
   return { isRefresh: false, isHomeLoading: true };
 }
 
@@ -274,14 +274,10 @@ export default function App() {
     setShowCurtain(true);
   };
 
-  // When Dedicated Refresh Page finishes:
+  // When the Refresh Page finishes its telemetry synchronization:
   const handleRefreshComplete = () => {
-    try {
-      sessionStorage.setItem('elixora_entered_homepage', 'true');
-    } catch (e) { }
     setShowRefreshPage(false);
-    setShowCurtain(false);
-    refreshInnovisionScroll();
+    setShowCurtain(true);
   };
 
   return (
@@ -298,7 +294,7 @@ export default function App() {
       {/* 0.1. Dedicated Real-Time Refresh Page (Celestial Conjunction & Telemetry Sync - Automated, NO enter button) */}
       {showRefreshPage && (
         <SciFiOrbitalLoader
-          duration={1.0}
+          duration={1.2}
           onComplete={handleRefreshComplete}
         />
       )}
