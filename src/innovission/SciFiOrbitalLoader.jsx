@@ -283,8 +283,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
       .to('.loader-ring', { scale: 1.7, opacity: 0, duration: exitDuration, ease: 'power2.in', force3D: true }, 0)
       .to('.loader-disc', { scale: 0.65, opacity: 0, duration: exitDuration, ease: 'power2.in', force3D: true }, 0)
       .to('.loader-fade-ui', { y: -25, opacity: 0, duration: exitDuration * 0.8, ease: 'power2.in', force3D: true }, 0)
-      .to('.loader-bg-pane', { opacity: 0, duration: exitDuration * 1.1, ease: 'power2.in', force3D: true }, 0)
-      .to(containerRef.current, { opacity: 0, duration: exitDuration * 0.45, ease: 'power2.out', force3D: true }, exitDuration * 0.65);
+      .to('.loader-bg-pane', { opacity: 0, duration: exitDuration * 1.1, ease: 'power2.in', force3D: true }, 0);
   };
 
   return (
