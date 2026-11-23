@@ -66,8 +66,8 @@ const STORAGE_KEYS = {
 };
 
 const DEFAULT_SETTINGS = {
-  adminPin: 'ELIXORA2026',
-  backupPin: 'ADMIN@ELX26',
+  adminPin: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ADMIN_PIN) || 'ELIXORA_SECURE_ADMIN_2026_!#',
+  backupPin: '',
   fresherPrice: 399,
   seniorPrice: 600,
   upiId: EVENT_DETAILS.upiId || 'elixora2026@okhdfcbank',
@@ -184,13 +184,14 @@ let isRealtimeStarted = false;
 let sseConnection = null;
 
 export function getAdminAuthHeaders() {
+  const envPin = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ADMIN_PIN) || '';
   const token = 
     (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('elixora_admin_token')) || 
     (typeof localStorage !== 'undefined' && localStorage.getItem('elixora_admin_token')) || 
-    'ELIXORA2026';
+    envPin;
   return {
     'Content-Type': 'application/json',
-    'x-admin-key': token,
+    ...(token ? { 'x-admin-key': token } : {}),
   };
 }
 
@@ -865,11 +866,11 @@ export const adminStore = {
     const settings = this.getSettings();
     const input = (pin || '').trim();
 
+    const envPin = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ADMIN_PIN) || '';
     const isValid =
-      input === settings.adminPin ||
-      input === settings.backupPin ||
-      input === 'ELIXORA2026' ||
-      input === 'ADMIN@ELX26';
+      (settings.adminPin && input === settings.adminPin) ||
+      (settings.backupPin && input === settings.backupPin) ||
+      (envPin && input === envPin);
 
     if (isValid) {
       try {

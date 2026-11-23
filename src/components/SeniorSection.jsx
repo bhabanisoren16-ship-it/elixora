@@ -256,7 +256,7 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
   }, [isUnlocked, formData.rollNo, formData.phone, formData.seniorQuote, formData.utrNumber, formData.batch, formData.diet]);
 
   // Helper: Verify Senior Registration Number strictly against the authorized roster
-  const handleVerifyAccess = (e) => {
+  const handleVerifyAccess = async (e) => {
     if (e) e.preventDefault();
     const cleaned = accessRegNo.trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
@@ -270,14 +270,42 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
     setIsVerifyingAccess(true);
     soundController.playClick?.();
 
-    setTimeout(() => {
+    try {
+      // 1. Prioritize secure server-side verification with rate limiting
+      let verifiedData = null;
+      try {
+        const res = await fetch('/api/seniors/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rollNo: cleaned }),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.success && json.data) {
+            verifiedData = json.data;
+          }
+        }
+      } catch (netErr) {
+        // Fallback to local roster if server is unreachable
+      }
+
+      // 2. Fallback to local roster if offline
+      if (!verifiedData) {
+        const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
+        const localFound = REGISTERED_SENIORS[cleaned] || dynamicRoster[cleaned];
+        if (localFound) {
+          verifiedData = {
+            name: localFound.name,
+            branch: localFound.branch || 'Biotechnology',
+            batch: localFound.batch || "Batch of '25 • Senior",
+            role: 'Senior VIP Pass (Full Access + Red Carpet)',
+          };
+        }
+      }
+
       setIsVerifyingAccess(false);
 
-      // STRICT CHECK: Match with registered registration numbers (static or admin roster)
-      const dynamicRoster = adminStore?.getSeniorRoster?.() || {};
-      const found = REGISTERED_SENIORS[cleaned] || dynamicRoster[cleaned];
-
-      if (!found) {
+      if (!verifiedData) {
         soundController.playError?.();
         setAccessError(`Access Denied: Registration number "${cleaned}" is not on the official senior list. Senior portal can be accessed through matched registration number only.`);
         setIsUnlocked(false);
@@ -288,10 +316,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
       soundController.playSuccess?.();
 
       const profile = {
-        name: found.name,
-        branch: found.branch || 'Biotechnology',
-        batch: found.batch || "Batch of '25 • Senior",
-        role: 'Senior VIP Pass (Full Access + Red Carpet)',
+        name: verifiedData.name,
+        branch: verifiedData.branch || 'Biotechnology',
+        batch: verifiedData.batch || "Batch of '25 • Senior",
+        role: verifiedData.role || 'Senior VIP Pass (Full Access + Red Carpet)',
         phone: '',
         email: ''
       };
@@ -314,7 +342,10 @@ export default function SeniorSection({ onPassGenerated, onPortalToggle }) {
         sessionStorage.setItem('elixora_senior_portal_open', 'true');
         localStorage.setItem('elixora_senior_portal_open', 'true');
       } catch (err) {}
-    }, 450);
+    } catch (err) {
+      setIsVerifyingAccess(false);
+      setAccessError('An error occurred during verification. Please try again.');
+    }
   };
 
   const handleClosePortal = () => {

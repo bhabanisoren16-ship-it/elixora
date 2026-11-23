@@ -21,6 +21,26 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = isVercel ? path.join('/tmp', 'elixora_data') : path.resolve(__dirname, '..', 'data');
 const RECEIPTS_DIR = path.join(DATA_DIR, 'receipts');
 
+// Load environment variables from .env if present and not already loaded into process.env
+try {
+  const envPath = path.join(ROOT_DIR, '.env');
+  if (fs.existsSync(envPath)) {
+    const envLines = fs.readFileSync(envPath, 'utf8').split(/\r?\n/);
+    for (const line of envLines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx > 0) {
+        const key = trimmed.slice(0, eqIdx).trim();
+        const val = trimmed.slice(eqIdx + 1).trim();
+        if (!process.env[key]) {
+          process.env[key] = val;
+        }
+      }
+    }
+  }
+} catch (e) {}
+
 const router = express.Router();
 
 // =========================================================================
@@ -127,9 +147,15 @@ export function requireAdminAuth(req, res, next) {
   const validKeys = [
     process.env.ADMIN_SECRET_KEY,
     process.env.ADMIN_PIN,
-    'ELIXORA2026',
-    'ADMIN@ELX26',
   ].filter(Boolean);
+
+  if (validKeys.length === 0) {
+    console.error('[SECURITY ALERT] No ADMIN_SECRET_KEY or ADMIN_PIN configured in environment.');
+    return res.status(500).json({
+      success: false,
+      error: 'Security Error: Server administrator credentials are not configured.',
+    });
+  }
 
   const cleanInput = (providedKey || '').trim();
   const isMatch = cleanInput.length > 0 && validKeys.some((k) => timingSafeCheck(cleanInput, k.trim()));
@@ -162,6 +188,86 @@ router.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     service: 'ELIXORA 2.0 Real-Time Backend API',
   });
+});
+
+/**
+ * Official authorized roster of registered seniors (Protected server-side verification)
+ */
+const SENIOR_ROSTER = {
+  '25110039': { name: 'Anandita Mohanty', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110040': { name: 'Ankita Priyadarshini', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110041': { name: 'Anwesha Mishra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110042': { name: 'Arpita Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110043': { name: 'Astha Agrawalla', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110044': { name: 'Ayushman Mahapatra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110045': { name: 'Barenya Ranjan Acharya', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110046': { name: 'Bhabani Shankar Soren', branch: 'Biotechnology', batch: "Batch of '25 • Senior Lead" },
+  '25110047': { name: 'Bishnupriya Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110048': { name: 'Biswaranjan Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110049': { name: 'D Niharika Patra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110050': { name: 'Deepsikha Biswal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110051': { name: 'Devika Tripathy', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110052': { name: 'Dipesh Behera', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110053': { name: 'Ipsita Bhol', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110054': { name: 'Jayasmita Rout', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110055': { name: 'Jigyansha Mishra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110056': { name: 'Lipsita Dash', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110057': { name: 'Lokesh Kumar Nayak', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110058': { name: 'Mahek Habib', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110059': { name: 'Manas Pritam Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110060': { name: 'Manoswani Lenka', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110061': { name: 'Nirup Sundar Muduli', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110062': { name: 'Paurnamashi Samal', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110063': { name: 'Prateek Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110064': { name: 'Priyadarshani Malik', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110065': { name: 'S Saiman Satyajit', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110066': { name: 'S Shubhashree Swain', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110067': { name: 'Sai Sourav Khandual', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110068': { name: 'Samikshya Padhy', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110069': { name: 'Sangram Kumar Sahu', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110070': { name: 'Shradhashine Parida', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110071': { name: 'Soumyajeet Panda', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110072': { name: 'Soyal Parija', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110073': { name: 'Swagat Panda', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110074': { name: 'Swatiprava Sahoo', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110075': { name: 'Turvi Bhuyan', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110076': { name: 'Bhaswati Mishra', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '25110077': { name: 'Prabhuprasad Jena', branch: 'Biotechnology', batch: "Batch of '25 • Senior" },
+  '24110033': { name: 'Subrat Dhal', branch: 'Biotechnology', batch: "Batch of '24 • Senior" }
+};
+
+/**
+ * Verify Senior Registration Access (Rate Limited)
+ */
+router.post('/seniors/verify', ticketLookupLimiter, (req, res) => {
+  try {
+    const rawRoll = req.body?.rollNo || req.body?.accessPass || '';
+    const cleanRoll = String(rawRoll).trim().replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 20);
+
+    if (!cleanRoll) {
+      return res.status(400).json({ success: false, error: 'Registration number is required' });
+    }
+
+    const match = SENIOR_ROSTER[cleanRoll];
+    if (!match) {
+      return res.status(404).json({
+        success: false,
+        error: `Registration number "${cleanRoll}" is not on the authorized senior roster.`,
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        name: match.name,
+        branch: match.branch,
+        batch: match.batch,
+        role: 'Senior VIP Pass (Full Access + Red Carpet)',
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 /**
@@ -463,11 +569,12 @@ router.get('/stats', (req, res) => {
  * Real-Time Server-Sent Events (SSE) Stream
  */
 router.get('/events', (req, res) => {
+  const origin = req.headers.origin || '*';
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': origin,
   });
 
   addSSEClient(res);
