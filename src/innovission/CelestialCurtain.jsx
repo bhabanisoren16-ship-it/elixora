@@ -2,20 +2,17 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { LAYERS } from './curtainLayers';
 
-export function Clouds({ l, flip }) {
+function Clouds({ l, flip }) {
   return (
     <svg
       viewBox="0 0 2000 1125"
       preserveAspectRatio="xMidYMax slice"
       className="block w-full h-screen pointer-events-none select-none"
-      style={{
-        transform: flip ? 'scaleY(-1)' : undefined,
-        filter: l.glow ? `drop-shadow(0 0 16px ${l.glow})` : undefined,
-      }}
+      style={{ transform: flip ? 'scaleY(-1)' : undefined }}
     >
-      <path d={l.back} fill={l.color} stroke={l.ink} strokeWidth={l.glow ? "6" : "5"} vectorEffect="non-scaling-stroke" />
+      <path d={l.back} fill={l.color} stroke={l.ink} strokeWidth="5" vectorEffect="non-scaling-stroke" />
       <path d={l.back} fill={l.color} />
-      <path d={l.front} fill={l.color} stroke={l.ink} strokeWidth={l.glow ? "5" : "4"} vectorEffect="non-scaling-stroke" />
+      <path d={l.front} fill={l.color} stroke={l.ink} strokeWidth="4" vectorEffect="non-scaling-stroke" />
       <path d={l.front} fill={l.color} />
     </svg>
   );

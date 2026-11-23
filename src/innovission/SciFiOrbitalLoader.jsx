@@ -51,16 +51,8 @@ const CELESTIAL_ORBS = [
   },
 ];
 
-const REFRESH_STATUSES = [
-  'PAGE RELOAD DETECTED · INITIATING CELESTIAL REFRESH',
-  'SYNCHRONIZING CELESTIAL ORBITAL MERIDIAN',
-  'UPDATING FESTIVAL TELEMETRY & TICKET CACHE',
-  'CELESTIAL REFRESH COMPLETE · OPENING HOMEPAGE',
-];
-
 export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
   const containerRef = useRef(null);
-  const statusRef = useRef(null);
   const countRef = useRef(null);
   const progressCircleRef = useRef(null);
   const flareRef = useRef(null);
@@ -97,7 +89,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
     const startTime = performance.now();
     const totalMs = duration * 1000;
     let animId;
-    let lastStatusIdx = 0;
     const doneLocks = [false, false, false];
 
     const entranceDuration = Math.max(0.22, Math.min(0.32, duration * 0.25));
@@ -191,15 +182,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
         polylineRef.current.setAttribute('points', pts.join(' '));
       }
 
-      // Status text updates with ScrambleText
-      const statusIdx = Math.min(3, Math.floor(currentPercent / 25));
-      if (statusIdx !== lastStatusIdx) {
-        lastStatusIdx = statusIdx;
-        if (statusRef.current) {
-          scrambleText(statusRef.current, REFRESH_STATUSES[statusIdx], { duration: Math.min(0.24, duration * 0.18) });
-        }
-      }
-
       if (currentPercent < 99.5) {
         animId = requestAnimationFrame(updateLoader);
       } else {
@@ -216,9 +198,6 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
         });
         if (polylineRef.current) {
           polylineRef.current.setAttribute('points', '50,50 50,26 50,14 50,0');
-        }
-        if (statusRef.current) {
-          scrambleText(statusRef.current, REFRESH_STATUSES[3], { duration: 0.25 });
         }
         if (flareRef.current) {
           gsap.fromTo(
@@ -489,10 +468,7 @@ export default function SciFiOrbitalLoader({ onComplete, duration = 1.0 }) {
       {/* =========================================================================
           4. BOTTOM STATUS TELEMETRY (Seamless & Minimalist)
          ========================================================================= */}
-      <footer className="loader-fade-ui loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-20 text-center pb-2 sm:pb-4 min-h-[32px]">
-        {/* Hidden status ref for safe script reference */}
-        <span ref={statusRef} className="hidden" aria-hidden="true" />
-      </footer>
+      <footer className="loader-fade-ui loader-footer w-full max-w-xl flex flex-col items-center justify-center relative z-20 text-center pb-2 sm:pb-4 min-h-[32px]" />
     </div>
   );
 }
